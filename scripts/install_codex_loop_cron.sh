@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SCHEDULE="${CODEX_LOOP_CRON_SCHEDULE:-17 */5 * * *}"
+SCHEDULE="${CODEX_LOOP_CRON_SCHEDULE:-*/30 * * * *}"
 MAX_ITERS="${CODEX_LOOP_MAX_ITERS:-0}"
 REVIEWER="${CODEX_LOOP_REVIEWER:-1}"
 LOG_FILE="${ROOT_DIR}/runs/codex-loop/cron.log"

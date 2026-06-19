@@ -31,7 +31,7 @@ The default worker prompt treats the loop scripts as part of the project harness
 
 The runner fails before invoking Codex if `CODEX_LOOP_SPEC_FILE` or `CODEX_LOOP_RESEARCH_PLAN_FILE` is missing, so automated runs do not drift away from the harness design or research plan.
 
-Install a cron job. By default, cron runs every 5 hours and sets `CODEX_LOOP_MAX_ITERS=0`, so each scheduled launch keeps iterating until Codex or the reviewer fails. The lock directory prevents overlapping runs if one launch is still active when the next 5-hour slot arrives.
+Install a cron job. By default, cron retries every 30 minutes and sets `CODEX_LOOP_MAX_ITERS=0`, so each scheduled launch keeps iterating until Codex or the reviewer fails. The lock directory prevents overlapping runs if one launch is still active when the next slot arrives.
 
 ```sh
 ./scripts/install_codex_loop_cron.sh
