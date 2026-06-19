@@ -43,4 +43,5 @@ Override the schedule or loop count when installing:
 ```sh
 CODEX_LOOP_CRON_SCHEDULE="*/30 * * * *" ./scripts/install_codex_loop_cron.sh
 CODEX_LOOP_MAX_ITERS=1 ./scripts/install_codex_loop_cron.sh
+CODEX_LOOP_ENV_FILE=secret/codex.env ./scripts/install_codex_loop_cron.sh
 ```
