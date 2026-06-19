@@ -13,6 +13,7 @@ PUSH_REMOTE="${CODEX_LOOP_REMOTE:-origin}"
 PUSH_BRANCH="${CODEX_LOOP_BRANCH:-main}"
 SANDBOX_MODE="${CODEX_LOOP_SANDBOX:-workspace-write}"
 APPROVAL_MODE="${CODEX_LOOP_APPROVAL:-never}"
+NETWORK_ACCESS="${CODEX_LOOP_NETWORK_ACCESS:-true}"
 WORK_PROMPT_FILE="${CODEX_LOOP_PROMPT_FILE:-}"
 REVIEW_PROMPT_FILE="${CODEX_LOOP_REVIEW_PROMPT_FILE:-}"
 SPEC_FILE="${CODEX_LOOP_SPEC_FILE:-docs/harness_design.md}"
@@ -34,6 +35,9 @@ SPEC_PATH="$(resolve_path "${SPEC_FILE}")"
 RESEARCH_PLAN_PATH="$(resolve_path "${RESEARCH_PLAN_FILE}")"
 BASE_CODEX=(codex --cd "${ROOT_DIR}" --ask-for-approval "${APPROVAL_MODE}" --sandbox "${SANDBOX_MODE}")
 BASE_CODEX+=(--model "${MODEL}")
+if [[ "${SANDBOX_MODE}" == "workspace-write" && "${NETWORK_ACCESS}" == "true" ]]; then
+  BASE_CODEX+=(-c sandbox_workspace_write.network_access=true)
+fi
 
 export CODEX_LOOP_MAX_DIALOGUES="${MAX_DIALOGUES}"
 export CODEX_LOOP_TRIAL_MODEL="${TRIAL_MODEL}"
@@ -144,6 +148,7 @@ Research update path: ${research_update_file}
 Codex model: ${MODEL}
 Mini-only trial model: ${TRIAL_MODEL}
 Maximum dialogue trials this pass: ${MAX_DIALOGUES}
+Workspace network access enabled: ${NETWORK_ACCESS}
 
 This loop must follow those documents. If a requested change conflicts with the specification or research plan, prefer the documents unless the change is explicitly about improving the loop's ability to execute them.
 PROMPT

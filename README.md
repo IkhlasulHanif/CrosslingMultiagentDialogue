@@ -20,6 +20,7 @@ Useful environment variables:
 - `CODEX_LOOP_MAX_DIALOGUES=100` caps trial dialogue runs per pass.
 - `CODEX_LOOP_TRIAL_MODEL=gpt-5-mini` is the mini-only default for API-backed trials.
 - `CODEX_LOOP_ENV_FILE=<path>` can load local secrets such as `OPENAI_API_KEY`; env files are ignored by Git.
+- `CODEX_LOOP_NETWORK_ACCESS=true` enables network access for workspace-write Codex runs, needed for API-backed trials.
 - `CODEX_LOOP_SANDBOX=workspace-write` keeps Codex in the repo sandbox.
 - `CODEX_LOOP_APPROVAL=never` runs without approval prompts.
 
