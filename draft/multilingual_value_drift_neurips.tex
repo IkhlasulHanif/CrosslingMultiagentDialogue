@@ -68,11 +68,14 @@ Explicit belief-state trackers provide a useful design analogy for maintaining i
 
 \subsection{Multilingual Dialogue Task and Conditions}
 
-Each run contains two agents, $A$ and $B$, a topic $\tau$, output languages $\ell_A,\ell_B \in \mathcal{L}$, and a turn budget $T$. The language set $\mathcal{L}$ can include English, Indonesian, Arabic, Hindi, Mandarin Chinese, Spanish, French, Swahili, or other target languages, depending on the multilingual capability of the model and the availability of reliable probes and judge translations. In the main protocol, language is not imposed by saying ``reply in $\ell$''. Instead, the agent receives the topic and transcript without a language directive, and a generation-time steering operator changes token probabilities toward $\ell_A$ or $\ell_B$. Prompt-conditioned language runs are retained only as a diagnostic baseline because they conflate language control with instruction following. The topics are value-laden but non-extreme, such as censorship, redistribution, family obligation, religious tolerance, and environmental sacrifice.
+Each run contains two agents, $A$ and $B$, a topic $\tau$, output languages $\ell_A,\ell_B \in \mathcal{L}$, and a turn budget $T$. The language set $\mathcal{L}$ can include English, Indonesian, Arabic, Hindi, Mandarin Chinese, Spanish, French, Swahili, or other target languages, depending on the multilingual capability of the model and the availability of reliable probes and judge translations. Language is assigned by including the output language in the agent's system prompt (e.g., ``You must respond in Indonesian''). Generation-time mechanistic steering without prompt-level instructions was attempted but failed for instruction-tuned models; see Section~\ref{sec:steering} for details. The topics are value-laden but non-extreme, such as censorship, redistribution, family obligation, religious tolerance, and environmental sacrifice.
 
-\subsection{FLORES-Derived Probability Steering}
+\subsection{FLORES-Derived Probability Steering (Negative Result)}
+\label{sec:steering}
 
-For a target language $\ell$, we build a steering vector from FLORES-200 parallel sentence pairs $(x^{\mathrm{en}}_k,x^\ell_k)$. Let $c_{\ell}(z)$ and $c_{\mathrm{en}}(z)$ be token counts under the evaluated model's tokenizer. We compute a clipped log-frequency contrast
+The original protocol specified a generation-time probability-steering operator to condition output language without prompt-level instructions. We implemented and tested three mechanistic approaches on Modal GPU (Qwen/Qwen2.5-1.5B-Instruct, L4):
+
+\textbf{(1) Token-frequency logit bias.} For target language $\ell$, we build a bias vector from FLORES-200 parallel sentence pairs $(x^{\mathrm{en}}_k,x^\ell_k)$. Let $c_{\ell}(z)$ and $c_{\mathrm{en}}(z)$ be token counts under the model's tokenizer. We compute a clipped log-frequency contrast
 \begin{equation}
 b_\ell(z)=\mathrm{clip}\left[
 \log\frac{c_{\ell}(z)+1}{\sum_{z'}c_{\ell}(z')+|V|}
@@ -81,7 +84,13 @@ b_\ell(z)=\mathrm{clip}\left[
 0,\beta
 \right],
 \end{equation}
-with a smaller negative penalty for source-dominant English tokens. During decoding, the model's next-token logits are adjusted as $\tilde{o}_t=o_t+b_\ell$ before sampling. This is a simple probability-level intervention rather than an instruction to adopt a language. The current implementation is in \texttt{code/steer\_language.py}; \texttt{code/modal\_steer\_language.py} runs the probe on Modal GPU, and \texttt{code/scan\_divergence.py} ranks steered generations whose heuristic stance differs from the unsteered baseline. These scans provide candidate debate seeds only when the model's own language-conditioned output diverges; they do not assign either agent a desired position.
+with a smaller negative penalty for English-dominant tokens. At $\beta \in [3,12]$, Indonesian output stays English (0 stopword hits); Spanish at $\beta=12$ produces incoherent repetition of the high-bias preposition \textit{de}.
+
+\textbf{(2) Activation steering.} We compute a unit-norm steering vector as the mean difference of mean-pooled hidden states at a specified transformer layer: $\hat{s}_\ell = [\text{mean}_{k}(h_\ell(x^\ell_k)) - \text{mean}_{k}(h_\ell(x^{\mathrm{en}}_k))] / \| \cdot \|$. At inference, $\alpha \hat{s}_\ell$ is added to the residual stream via a forward hook. We swept $\alpha \in [15,200]$ across single layers (14, 22) and multi-layer combinations ($[10,14,18,22]$). At low $\alpha$, outputs remain English; at high $\alpha$, outputs degenerate to incoherent symbol sequences and Chinese characters. The Indonesian token \textit{ini} appears at $\alpha \geq 40$ but surrounded by garbage.
+
+\textbf{(3) Contrastive Activation Addition (CAA).} We replace FLORES pairs with instruction-contrast pairs: $x^+ = \textit{Please respond in Indonesian: [topic]}$ versus $x^- = \textit{Please respond in English: [topic]}$. This targets the instruction-following subspace directly. The same failure mode recurs: coherent English at low $\alpha$, degeneration at $\alpha \geq 40$.
+
+\textbf{Conclusion.} All three mechanistic approaches fail to produce fluent target-language generation without prompt-level instructions from Qwen2.5-1.5B-Instruct. The instruction-tuning alignment enforces English generation strongly enough to defeat logit-level and residual-stream-level interventions at the scales we tested. We therefore adopt \textbf{prompt-level language conditioning} for the debate protocol: each agent's system prompt includes its assigned output language. Prompt-conditioned runs conflate language choice with instruction-following compliance, which is a limitation we note in the threats section. We retain the mechanistic steering code (\texttt{code/steer\_language.py}, \texttt{code/steer\_language\_activation.py}, \texttt{code/steer\_language\_caa.py}) for future experiments with base models or stronger interventions (e.g., fine-tuned steering vectors or chat-template direction vectors). Scan artifacts for divergence seeding are deferred until fluent mechanistic steering is achieved.
 
 \subsection{Value-Disagreement Screening}
 
@@ -301,6 +310,12 @@ Hypothetical numbers are useful for planning tables and analysis, but they becom
 
 \paragraph{Model-family effects may dominate language effects.}
 If different base models are used for the agents, observed drift could reflect model differences rather than multilingual interaction. The cleanest pilot uses the same base model for both agents, with model-family variation reserved for sensitivity analysis.
+
+\paragraph{Prompt-level language conditioning confounds instruction-following with language choice.}
+Because mechanistic probability steering (logit bias and activation steering) failed for the instruction-tuned model used in our pilot (Qwen2.5-7B-Instruct), we rely on system-prompt language directives. This means that language-condition differences may partly reflect differences in compliance with language instructions rather than purely language-mediated semantic effects. A future study with base models or with mechanistic steering techniques that scale better may help disentangle these effects.
+
+\paragraph{Observer readouts are dominated by topic semantics rather than agent priors.}
+Our pilot (Section~\ref{sec:screening}) found that 4-turn English-English debates produce identical observer readout values ({security: 6, universalism: 5}) regardless of whether agents start with high initial value disagreement (distance=17) or low disagreement (distance=1). Observer readouts are sensitive to the topic but insensitive to agent value assignments at the 4-turn scale tested. Private probes (not yet collected in the Qwen2.5-7B pilot) may show greater sensitivity. Longer dialogues or a pre-debate stance-reveal protocol may be needed to make initial disagreement visible to the measurement layer.
 
 \section{Ethics and Responsible Reporting}
 

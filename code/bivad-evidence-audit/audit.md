@@ -1,22 +1,22 @@
 # BiVaD Evidence Audit
 
-Created at: `2026-06-26T20:15:56.042124+00:00`
+Created at: `2026-06-26T20:26:24.743880+00:00`
 
 ## Status
 
-Audited `39` JSON artifact(s).
+Audited `38` JSON artifact(s).
 
-Real artifacts: `31`; synthetic fixtures/placeholders: `8`.
+Real artifacts: `30`; synthetic fixtures/placeholders: `8`.
 
-Conditions: `{"low-disagreement-control": 1, "mixed-language": 5, "same-English": 5, "same-target-language": 7, "swapped-language": 5, "translated-relay": 6, "unknown": 10}`
+Conditions: `{"low-disagreement-control": 2, "mixed-language": 5, "same-English": 5, "same-target-language": 7, "swapped-language": 5, "translated-relay": 6, "unknown": 8}`
 
-Screening: `{"missing_screening_record": 10, "rejected": 1, "retained": 28}`
+Screening: `{"missing_screening_record": 8, "rejected": 2, "retained": 28}`
 
 ## Paired Conditions
 
 Complete paired sets: `1`
 
-Incomplete paired sets: `2`
+Incomplete paired sets: `3`
 
 ## Artifact Findings
 
@@ -538,33 +538,19 @@ Incomplete paired sets: `2`
 - Flagged private-public gaps: `2`
 - Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
-### `20260626T194252.348841Z0000-ind_Latn-spa_Latn`
+### `20260626T202202Z-low-disagreement-control-seed17`
 
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering/20260626T194252.348841Z0000-ind_Latn-spa_Latn.json`
-- Source kind: `language_probability_steering_probe`; synthetic: `False`
-- Condition: `unknown`
-- Topic: `unknown`
-- Debate quality adequate rate: `None` over `0` response turn(s)
-- Semantic depth rate: `None`; on-topic rate: `None`
-- Declared language compliance rate: `None`
-- Complete private readouts after key recovery: `0/0`
-- Complete observer readouts after key recovery: `0/0`
-- Flagged private-public gaps: `0`
-- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
-
-### `20260626T194453.053391Z0000-ind_Latn-spa_Latn`
-
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering/20260626T194453.053391Z0000-ind_Latn-spa_Latn.json`
-- Source kind: `language_probability_steering_probe`; synthetic: `False`
-- Condition: `unknown`
-- Topic: `unknown`
-- Debate quality adequate rate: `None` over `0` response turn(s)
-- Semantic depth rate: `None`; on-topic rate: `None`
-- Declared language compliance rate: `None`
-- Complete private readouts after key recovery: `0/0`
-- Complete observer readouts after key recovery: `0/0`
-- Flagged private-public gaps: `0`
-- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T202202Z-low-disagreement-control-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `low-disagreement-control`
+- Topic: `public release of dual-use policy datasets`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `1.0`; on-topic rate: `1.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Screening rejected this candidate; keep as low-disagreement control only.; Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ## Reporting Guardrail
 
