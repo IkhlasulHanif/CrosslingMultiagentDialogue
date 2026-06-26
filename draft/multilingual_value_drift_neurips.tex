@@ -45,7 +45,7 @@ We propose \method, a measurement framework for multilingual multi-agent value d
 This paper makes three contributions. First, it formalizes multilingual value drift as a time-series measurement problem over private prompted and expressed value states. Second, it gives a concrete experimental protocol with value-disagreement screening, same-language, mixed-language, translated-relay, and no-dialogue controls. Third, it provides an analysis plan, including drift, convergence, probe-language sensitivity, observer-language sensitivity, and private-public gap metrics.
 
 \paragraph{Responsible status of results.}
-Section~\ref{sec:hypothetical} contains hypothetical numbers to illustrate the full intended table format and expected qualitative pattern. These are synthetic scaffolding and must not be reported as experimental findings. Section~\ref{sec:empirical} reports \emph{executed} pilot experiments: a five-condition comparison for dual-use policy datasets (Table~\ref{tab:empirical}), a multi-topic cross-lingual divergence scan across five topics (Table~\ref{tab:topic-scan}), complete five-condition sets for all five scan topics --- universal basic income (Table~\ref{tab:empirical-ubi}), religious exemptions from anti-discrimination law (Table~\ref{tab:empirical-religious}), government surveillance (Table~\ref{tab:empirical-surveillance}), and content moderation (Table~\ref{tab:empirical-content}) --- a cross-topic synthesis (Table~\ref{tab:cross-topic}), and a multi-seed and multi-language-pair replication for UBI (Table~\ref{tab:multiseed}). All executed results are logged artifacts under \texttt{runs/bivad-local-lm/}.
+Section~\ref{sec:hypothetical} contains hypothetical numbers to illustrate the full intended table format and expected qualitative pattern. These are synthetic scaffolding and must not be reported as experimental findings. Section~\ref{sec:empirical} reports \emph{executed} pilot experiments: a five-condition comparison for dual-use policy datasets (Table~\ref{tab:empirical}), a multi-topic cross-lingual divergence scan across five topics (Table~\ref{tab:topic-scan}), complete five-condition sets for all five scan topics --- universal basic income (Table~\ref{tab:empirical-ubi}), religious exemptions from anti-discrimination law (Table~\ref{tab:empirical-religious}), government surveillance (Table~\ref{tab:empirical-surveillance}), and content moderation (Table~\ref{tab:empirical-content}) --- a cross-topic synthesis (Table~\ref{tab:cross-topic}), a multi-seed and multi-language-pair replication for UBI (Table~\ref{tab:multiseed}), and a no-dialogue control establishing measurement-induced drift baselines for dual-use and UBI (Table~\ref{tab:no-dialogue}). All executed results are logged artifacts under \texttt{runs/bivad-local-lm/}.
 
 \section{Related Work}
 
@@ -590,6 +590,37 @@ Across all four Indonesian/English seeds tested, only seed~17 produces $\Delta_B
 The zero-divergence seeds also have higher absolute B shifts ($D_B \in \{4.47, 5.00, 5.29\}$) compared with the mixed-language leg of seed~17 ($D_B=3.32$), suggesting that seed~17's mixed-language condition suppresses B's total shift from an otherwise higher baseline, while seeds~7, 23, 42 converge identically regardless of language condition.
 
 \textbf{Interpretation.} These findings together indicate that: (1) the cross-lingual probe-shift difference is not a systematic bias of the UBI topic at this model and scale; (2) it is trajectory-dependent, arising from the specific argument content that the fixed seed~17 initializes; (3) when it does arise, the effect generalizes across language pairs, confirming it is not an artifact of Indonesian specifically. Code: \texttt{code/modal\_bivad\_runner.py}, \texttt{runs/bivad-local-lm/}.
+
+\subsection{No-Dialogue Control: Measurement-Induced Drift}
+\label{sec:no-dialogue}
+
+To separate debate-induced drift from drift caused by repeated measurement or reflection framing alone, we ran a no-dialogue condition for the dual-use and UBI topics at seed~17. Both agents were probed twice with the same value battery: once before any interaction (identical to the pre-debate probe) and once after a prompt that says ``No dialogue has occurred. This is a second private measurement taken after the same elapsed time as a 4-turn debate. Give private value ratings again.'' No debate turns were run between the two probes.
+
+\textbf{Agent A shows zero probe-shift under no-dialogue.} For both topics, A's initial and final private probe vectors are bit-for-bit identical (L2 shift $= 0.000$). At the greedy decoding temperature used for probes (temperature $= 0.0$), a repeated probe with A's value profile is fully deterministic and stable.
+
+\textbf{Agent B shows 2.000--2.449 probe-shift under no-dialogue.} B's tradition dimension (initially 5 in both topics) increases to 7 in both no-dialogue runs, producing L2 shifts of 2.000 (dual-use) and 2.449 (UBI). This drift arises entirely from the ``reflection without peer interaction'' framing: when told that time has elapsed without dialogue, B's security-and-tradition-weighted prior hardens. No argument was made; no opponent was consulted.
+
+\textbf{Debate-condition B drifts consistently exceed the no-dialogue baseline.} Table~\ref{tab:no-dialogue} compares B's no-dialogue drift against the range of B's shifts across the five debate conditions for the same topics.
+
+\begin{table}[h]
+\centering
+\caption{No-dialogue B drift vs.\ debate-condition B drift range (Qwen2.5-7B-Instruct, seed~17, Indonesian/English). All values are L2 shift in 8D Schwartz space.}
+\label{tab:no-dialogue}
+\begin{tabular}{lrrr}
+\toprule
+Topic & No-dialogue $D_B$ & Debate min $D_B$ & Debate max $D_B$ \\
+\midrule
+Dual-use datasets    & 2.000 & 2.646 & 3.873 \\
+UBI                  & 2.449 & 3.317 & 5.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+In both topics, every debate-condition B drift exceeds the no-dialogue baseline, confirming that peer interaction drives incremental shift beyond what reflection alone produces. The smallest debate drift (2.646 for dual-use same-target-language) is only modestly above the no-dialogue baseline (2.000), while the largest debate drift (5.000 for UBI same-English) is more than twice the baseline.
+
+\textbf{Observer readouts are uninformative under no-dialogue.} Because the transcript is empty, the observer produces identical low-value ratings for both A and B (e.g., $[3,2,1,2,1,2,1,2]$ for both agents under dual-use). Private-public gaps are correspondingly large: 7.550 (A) and 9.274 (B) for dual-use; 5.568 (A) and 8.888 (B) for UBI. These gaps --- much larger than the 1.4--3.9 range observed under debate conditions --- confirm that observer readouts are only meaningful when transcript evidence exists. Without a transcript, the observer cannot distinguish the two agents and defaults to low ratings unrelated to either agent's actual private probe vector.
+
+These results are exploratory (two topics, single seed and model). Artifacts: \texttt{runs/bivad-local-lm/20260626T222507Z-no-dialogue-seed17.json}, \texttt{runs/bivad-local-lm/20260626T222616Z-no-dialogue-seed17.json}. Code: \texttt{code/modal\_bivad\_runner.py}.
 
 \section{Threats to Validity}
 

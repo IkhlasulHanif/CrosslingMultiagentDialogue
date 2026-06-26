@@ -101,6 +101,7 @@ CONDITIONS = (
     "swapped-language",
     "translated-relay",
     "low-disagreement-control",
+    "no-dialogue",
 )
 
 DEFAULT_CONDITIONS = tuple(c for c in CONDITIONS if c != "low-disagreement-control")
@@ -162,6 +163,12 @@ def condition_agents(condition: str, target_language: str) -> list[dict[str, Any
         return [
             agent("A", "English", BASE_AGENT_A_STANCE, BASE_AGENT_A_VALUES),
             agent("B", "English", BASE_AGENT_A_STANCE, LOW_DISAGREEMENT_AGENT_B_VALUES),
+        ]
+    if condition == "no-dialogue":
+        # Same agent setup as same-English; debate loop is skipped entirely.
+        return [
+            agent("A", "English", BASE_AGENT_A_STANCE, BASE_AGENT_A_VALUES),
+            agent("B", "English", BASE_AGENT_B_STANCE, BASE_AGENT_B_VALUES),
         ]
     raise ValueError(f"unknown condition: {condition}")
 
@@ -404,13 +411,19 @@ def run_condition_remote(
             "All three are mandatory. Include the change declaration."
         )
 
-    def _probe(agent: dict, transcript: list) -> dict:
+    def _probe(agent: dict, transcript: list, repeated_no_dialogue: bool = False) -> dict:
         turn = transcript[-1]["turn"] if transcript else 0
         if transcript:
             user_input = (
                 f"Topic: {topic}\n"
                 f"Transcript:\n{transcript_text(transcript)}\n"
                 f"You are Agent {agent['agent_id']}. Give private value ratings now."
+            )
+        elif repeated_no_dialogue:
+            user_input = (
+                f"Topic: {topic}\nYou are Agent {agent['agent_id']} with stance: {agent['stance']}.\n"
+                "No dialogue has occurred. This is a second private measurement taken after the "
+                "same elapsed time as a 4-turn debate. Give private value ratings again."
             )
         else:
             user_input = (
@@ -465,7 +478,10 @@ def run_condition_remote(
     prior_texts: list[str] = []
     private_probes = [_probe(ag, transcript) for ag in agents]
 
-    for turn_num in range(1, turns + 1):
+    # no-dialogue: skip all debate turns; only initial and repeated probe.
+    effective_turns = 0 if condition == "no-dialogue" else turns
+
+    for turn_num in range(1, effective_turns + 1):
         agent = agents[(turn_num - 1) % 2]
         has_opponent = any(t["speaker"] != agent["agent_id"] for t in transcript)
         labels = DEBATE_LABELS.get(agent["language"], DEBATE_LABELS["English"])
@@ -496,7 +512,10 @@ def run_condition_remote(
         })
         time.sleep(0.05)
 
-    private_probes.extend(_probe(ag, transcript) for ag in agents)
+    is_no_dialogue = condition == "no-dialogue"
+    private_probes.extend(
+        _probe(ag, transcript, repeated_no_dialogue=is_no_dialogue) for ag in agents
+    )
 
     return {
         "artifact_type": "local_lm_bivad_pilot",
