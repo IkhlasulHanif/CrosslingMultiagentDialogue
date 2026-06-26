@@ -1,6 +1,6 @@
 # BiVaD Evidence Audit
 
-Created at: `2026-06-26T17:40:17.737673+00:00`
+Created at: `2026-06-26T18:06:54.633091+00:00`
 
 ## Status
 
@@ -28,6 +28,8 @@ Incomplete paired sets: `2`
 - Topic: `unknown`
 - Debate quality adequate rate: `None` over `0` response turn(s)
 - Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
 - Flagged private-public gaps: `0`
 - Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.; Synthetic fixture or placeholder; do not report as empirical evidence.`
 
@@ -39,8 +41,10 @@ Incomplete paired sets: `2`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.0` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `3/4`
+- Complete observer readouts after key recovery: `0/2`
 - Flagged private-public gaps: `0`
-- Notes: `none`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ### `20260626T171807Z-same-English-seed17`
 
@@ -50,8 +54,10 @@ Incomplete paired sets: `2`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.0` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
-- Flagged private-public gaps: `0`
-- Notes: `none`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `0/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ### `20260626T171807Z-same-target-language-seed17`
 
@@ -61,8 +67,10 @@ Incomplete paired sets: `2`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.0` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
-- Flagged private-public gaps: `0`
-- Notes: `none`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ### `20260626T171807Z-swapped-language-seed17`
 
@@ -72,8 +80,10 @@ Incomplete paired sets: `2`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.0` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `0/2`
 - Flagged private-public gaps: `0`
-- Notes: `none`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ### `20260626T171807Z-translated-relay-seed17`
 
@@ -83,8 +93,10 @@ Incomplete paired sets: `2`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.0` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
-- Flagged private-public gaps: `0`
-- Notes: `none`
+- Complete private readouts after key recovery: `3/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ### `20260626T172158Z-manifest`
 
@@ -94,6 +106,8 @@ Incomplete paired sets: `2`
 - Topic: `unknown`
 - Debate quality adequate rate: `None` over `0` response turn(s)
 - Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
 - Flagged private-public gaps: `0`
 - Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.; Synthetic fixture or placeholder; do not report as empirical evidence.`
 
@@ -105,6 +119,8 @@ Incomplete paired sets: `2`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.667` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `0/4`
+- Complete observer readouts after key recovery: `0/2`
 - Flagged private-public gaps: `0`
 - Notes: `none`
 
@@ -116,6 +132,8 @@ Incomplete paired sets: `2`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `0/4`
+- Complete observer readouts after key recovery: `0/2`
 - Flagged private-public gaps: `0`
 - Notes: `none`
 
@@ -127,6 +145,8 @@ Incomplete paired sets: `2`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.667` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `0/4`
+- Complete observer readouts after key recovery: `0/2`
 - Flagged private-public gaps: `0`
 - Notes: `none`
 
@@ -138,7 +158,9 @@ Incomplete paired sets: `2`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.667` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
-- Flagged private-public gaps: `0`
+- Complete private readouts after key recovery: `0/4`
+- Complete observer readouts after key recovery: `0/2`
+- Flagged private-public gaps: `1`
 - Notes: `none`
 
 ### `20260626T172158Z-translated-relay-seed17`
@@ -149,6 +171,8 @@ Incomplete paired sets: `2`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `0/4`
+- Complete observer readouts after key recovery: `0/2`
 - Flagged private-public gaps: `0`
 - Notes: `none`
 
@@ -160,6 +184,8 @@ Incomplete paired sets: `2`
 - Topic: `unknown`
 - Debate quality adequate rate: `None` over `0` response turn(s)
 - Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
 - Flagged private-public gaps: `0`
 - Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.; Synthetic fixture or placeholder; do not report as empirical evidence.`
 
@@ -171,8 +197,10 @@ Incomplete paired sets: `2`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.667` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `1/4`
+- Complete observer readouts after key recovery: `0/2`
 - Flagged private-public gaps: `2`
-- Notes: `none`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ### `20260626T172537Z-same-English-seed17`
 
@@ -182,8 +210,10 @@ Incomplete paired sets: `2`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.0` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
-- Flagged private-public gaps: `0`
-- Notes: `none`
+- Complete private readouts after key recovery: `1/4`
+- Complete observer readouts after key recovery: `0/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ### `20260626T172537Z-same-target-language-seed17`
 
@@ -193,8 +223,10 @@ Incomplete paired sets: `2`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
-- Flagged private-public gaps: `1`
-- Notes: `none`
+- Complete private readouts after key recovery: `1/4`
+- Complete observer readouts after key recovery: `0/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ### `20260626T172537Z-swapped-language-seed17`
 
@@ -204,8 +236,10 @@ Incomplete paired sets: `2`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
-- Flagged private-public gaps: `0`
-- Notes: `none`
+- Complete private readouts after key recovery: `1/4`
+- Complete observer readouts after key recovery: `0/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ### `20260626T172537Z-translated-relay-seed17`
 
@@ -215,8 +249,10 @@ Incomplete paired sets: `2`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
-- Flagged private-public gaps: `1`
-- Notes: `none`
+- Complete private readouts after key recovery: `3/4`
+- Complete observer readouts after key recovery: `0/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ### `20260626T173227Z-manifest`
 
@@ -226,6 +262,8 @@ Incomplete paired sets: `2`
 - Topic: `unknown`
 - Debate quality adequate rate: `None` over `0` response turn(s)
 - Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
 - Flagged private-public gaps: `0`
 - Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.; Synthetic fixture or placeholder; do not report as empirical evidence.`
 
@@ -235,10 +273,12 @@ Incomplete paired sets: `2`
 - Source kind: `local_lm_bivad_pilot`; synthetic: `False`
 - Condition: `mixed-language`
 - Topic: `public release of dual-use policy datasets`
-- Debate quality adequate rate: `0.333` over `3` response turn(s)
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
-- Flagged private-public gaps: `0`
-- Notes: `none`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ### `20260626T173227Z-same-English-seed17`
 
@@ -246,10 +286,12 @@ Incomplete paired sets: `2`
 - Source kind: `local_lm_bivad_pilot`; synthetic: `False`
 - Condition: `same-English`
 - Topic: `public release of dual-use policy datasets`
-- Debate quality adequate rate: `0.333` over `3` response turn(s)
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
-- Flagged private-public gaps: `0`
-- Notes: `none`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ### `20260626T173227Z-same-target-language-seed17`
 
@@ -257,10 +299,12 @@ Incomplete paired sets: `2`
 - Source kind: `local_lm_bivad_pilot`; synthetic: `False`
 - Condition: `same-target-language`
 - Topic: `public release of dual-use policy datasets`
-- Debate quality adequate rate: `0.0` over `3` response turn(s)
+- Debate quality adequate rate: `0.333` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
-- Flagged private-public gaps: `0`
-- Notes: `none`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ### `20260626T173227Z-swapped-language-seed17`
 
@@ -268,10 +312,12 @@ Incomplete paired sets: `2`
 - Source kind: `local_lm_bivad_pilot`; synthetic: `False`
 - Condition: `swapped-language`
 - Topic: `public release of dual-use policy datasets`
-- Debate quality adequate rate: `0.667` over `3` response turn(s)
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
-- Flagged private-public gaps: `0`
-- Notes: `none`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ### `20260626T173227Z-translated-relay-seed17`
 
@@ -279,10 +325,12 @@ Incomplete paired sets: `2`
 - Source kind: `local_lm_bivad_pilot`; synthetic: `False`
 - Condition: `translated-relay`
 - Topic: `public release of dual-use policy datasets`
-- Debate quality adequate rate: `0.333` over `3` response turn(s)
+- Debate quality adequate rate: `0.667` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
-- Flagged private-public gaps: `0`
-- Notes: `none`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ### `20260626T173933Z-low-disagreement-control-seed17`
 
@@ -292,8 +340,10 @@ Incomplete paired sets: `2`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
 - Declared language compliance rate: `1.0`
-- Flagged private-public gaps: `0`
-- Notes: `Screening rejected this candidate; keep as low-disagreement control only.`
+- Complete private readouts after key recovery: `2/4`
+- Complete observer readouts after key recovery: `0/2`
+- Flagged private-public gaps: `2`
+- Notes: `Screening rejected this candidate; keep as low-disagreement control only.; Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ### `20260626T173933Z-manifest`
 
@@ -303,6 +353,8 @@ Incomplete paired sets: `2`
 - Topic: `unknown`
 - Debate quality adequate rate: `None` over `0` response turn(s)
 - Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
 - Flagged private-public gaps: `0`
 - Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.; Synthetic fixture or placeholder; do not report as empirical evidence.`
 

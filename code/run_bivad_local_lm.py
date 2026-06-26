@@ -20,6 +20,8 @@ from typing import Any
 
 import torch
 
+from audit_bivad_evidence import normalized_values_from_mapping, normalized_values_from_text
+
 
 VALUE_KEYS = (
     "universalism",
@@ -372,15 +374,15 @@ def numeric_value(value: Any) -> float | None:
     return None
 
 
-def coerce_values(data: dict[str, Any] | None) -> dict[str, float]:
-    if not data:
-        return {}
-    values = {}
-    for key in VALUE_KEYS:
-        number = numeric_value(data.get(key))
-        if number is not None:
+def coerce_values(data: dict[str, Any] | None, raw_text: str = "") -> tuple[dict[str, float], list[dict[str, Any]]]:
+    values, trace = normalized_values_from_mapping(data)
+    if value_readout_complete(values) or not raw_text:
+        return values, trace
+    raw_values, raw_trace = normalized_values_from_text(raw_text)
+    for key, number in raw_values.items():
+        if key not in values:
             values[key] = number
-    return values
+    return values, trace + raw_trace
 
 
 def value_readout_complete(values: dict[str, float]) -> bool:
@@ -422,6 +424,7 @@ def private_probe(
     text = ""
     parsed = None
     values: dict[str, float] = {}
+    normalization_trace: list[dict[str, Any]] = []
     for attempt in range(args.json_retries + 1):
         attempt_input = user_input if attempt == 0 else user_input + json_retry_note(attempt, text)
         text = generate_text_with_overrides(
@@ -435,7 +438,7 @@ def private_probe(
             temperature=args.readout_temperature,
         )
         parsed = parse_json_object(text)
-        values = coerce_values(parsed)
+        values, normalization_trace = coerce_values(parsed, text)
         if value_readout_complete(values):
             break
     return {
@@ -444,6 +447,7 @@ def private_probe(
         "values": values,
         "raw_text": text,
         "parse_ok": parsed is not None,
+        "normalization_trace": normalization_trace,
         "complete": value_readout_complete(values),
     }
 
@@ -477,13 +481,14 @@ def observer_readouts(
         values_by_agent = {}
         for agent_id in ("A", "B"):
             item = parsed.get(agent_id)
-            values_by_agent[agent_id] = coerce_values(item if isinstance(item, dict) else None)
+            values_by_agent[agent_id], _trace = coerce_values(item if isinstance(item, dict) else None)
         if all(value_readout_complete(values_by_agent[agent_id]) for agent_id in ("A", "B")):
             break
     turn = transcript[-1]["turn"] if transcript else 0
     readouts = []
     for agent_id in ("A", "B"):
         item = parsed.get(agent_id)
+        _values, normalization_trace = coerce_values(item if isinstance(item, dict) else None)
         readouts.append(
             {
                 "agent_id": agent_id,
@@ -491,6 +496,7 @@ def observer_readouts(
                 "values": values_by_agent[agent_id],
                 "raw_text": text,
                 "parse_ok": isinstance(item, dict),
+                "normalization_trace": normalization_trace,
                 "complete": value_readout_complete(values_by_agent[agent_id]),
             }
         )

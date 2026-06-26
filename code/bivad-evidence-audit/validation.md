@@ -2,13 +2,9 @@
 
 Artifacts checked: `26`
 
-Citable empirical candidates: `0`
+Citable empirical candidates: `3`
 
 Complete real paired sets: `1`
-
-## Global Blockers
-
-- no artifacts pass the citable empirical candidate gate
 
 ## Artifacts
 
@@ -24,7 +20,7 @@ Complete real paired sets: `1`
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T171807Z-mixed-language-seed17.json`
 - Condition: `mixed-language`
 - Citable candidate: `False`
-- Blockers: `missing complete observer readout values; at least one response turn fails debate-quality audit`
+- Blockers: `missing complete private probe value readouts; missing complete observer readout values; at least one response turn fails debate-quality audit`
 
 ### `20260626T171807Z-same-English-seed17`
 
@@ -38,21 +34,21 @@ Complete real paired sets: `1`
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T171807Z-same-target-language-seed17.json`
 - Condition: `same-target-language`
 - Citable candidate: `False`
-- Blockers: `missing complete private probe value readouts; missing complete observer readout values; at least one response turn fails debate-quality audit`
+- Blockers: `at least one response turn fails debate-quality audit`
 
 ### `20260626T171807Z-swapped-language-seed17`
 
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T171807Z-swapped-language-seed17.json`
 - Condition: `swapped-language`
 - Citable candidate: `False`
-- Blockers: `missing complete private probe value readouts; missing complete observer readout values; at least one response turn fails debate-quality audit`
+- Blockers: `missing complete observer readout values; at least one response turn fails debate-quality audit`
 
 ### `20260626T171807Z-translated-relay-seed17`
 
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T171807Z-translated-relay-seed17.json`
 - Condition: `translated-relay`
 - Citable candidate: `False`
-- Blockers: `missing complete private probe value readouts; missing complete observer readout values; at least one response turn fails debate-quality audit`
+- Blockers: `missing complete private probe value readouts; at least one response turn fails debate-quality audit`
 
 ### `20260626T172158Z-manifest`
 
@@ -122,7 +118,7 @@ Complete real paired sets: `1`
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T172537Z-same-target-language-seed17.json`
 - Condition: `same-target-language`
 - Citable candidate: `False`
-- Blockers: `missing complete observer readout values`
+- Blockers: `missing complete private probe value readouts; missing complete observer readout values`
 
 ### `20260626T172537Z-swapped-language-seed17`
 
@@ -149,36 +145,36 @@ Complete real paired sets: `1`
 
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T173227Z-mixed-language-seed17.json`
 - Condition: `mixed-language`
-- Citable candidate: `False`
-- Blockers: `missing complete private probe value readouts; missing complete observer readout values; at least one response turn fails debate-quality audit`
+- Citable candidate: `True`
+- Blockers: `none`
 
 ### `20260626T173227Z-same-English-seed17`
 
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T173227Z-same-English-seed17.json`
 - Condition: `same-English`
-- Citable candidate: `False`
-- Blockers: `missing complete private probe value readouts; missing complete observer readout values; at least one response turn fails debate-quality audit`
+- Citable candidate: `True`
+- Blockers: `none`
 
 ### `20260626T173227Z-same-target-language-seed17`
 
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T173227Z-same-target-language-seed17.json`
 - Condition: `same-target-language`
 - Citable candidate: `False`
-- Blockers: `missing complete private probe value readouts; missing complete observer readout values; at least one response turn fails debate-quality audit`
+- Blockers: `at least one response turn fails debate-quality audit`
 
 ### `20260626T173227Z-swapped-language-seed17`
 
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T173227Z-swapped-language-seed17.json`
 - Condition: `swapped-language`
-- Citable candidate: `False`
-- Blockers: `missing complete private probe value readouts; missing complete observer readout values; at least one response turn fails debate-quality audit`
+- Citable candidate: `True`
+- Blockers: `none`
 
 ### `20260626T173227Z-translated-relay-seed17`
 
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T173227Z-translated-relay-seed17.json`
 - Condition: `translated-relay`
 - Citable candidate: `False`
-- Blockers: `missing complete private probe value readouts; missing complete observer readout values; at least one response turn fails debate-quality audit`
+- Blockers: `at least one response turn fails debate-quality audit`
 
 ### `20260626T173933Z-low-disagreement-control-seed17`
 

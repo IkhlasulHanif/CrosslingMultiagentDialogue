@@ -31,6 +31,49 @@ VALUE_KEYS = (
     "power",
 )
 
+VALUE_KEY_ALIASES = {
+    "universalism": "universalism",
+    "security": "security",
+    "conformity": "conformity",
+    "conformation": "conformity",
+    "conforms": "conformity",
+    "benevolence": "benevolence",
+    "benevolent": "benevolence",
+    "benevolance": "benevolence",
+    "benevoline": "benevolence",
+    "benevolience": "benevolence",
+    "beneficence": "benevolence",
+    "benefice": "benevolence",
+    "beneficent": "benevolence",
+    "selfdirection": "self_direction",
+    "selfdir": "self_direction",
+    "seldir": "self_direction",
+    "seldirection": "self_direction",
+    "selldirection": "self_direction",
+    "tradition": "tradition",
+    "traditional": "tradition",
+    "traditions": "tradition",
+    "tradi": "tradition",
+    "achievement": "achievement",
+    "achievements": "achievement",
+    "achieve": "achievement",
+    "power": "power",
+    "powers": "power",
+    "pow": "power",
+    "powere": "power",
+    "自我方向": "self_direction",
+    "自我direction": "self_direction",
+    "传统": "tradition",
+    "成就": "achievement",
+    "权力": "power",
+}
+
+RAW_VALUE_PAIR_RE = re.compile(
+    r"[\"'“”]?\s*([A-Za-zÀ-ÿ_\- +%#!&/]+|自我方向|自我_direction|传统|成就|权力)"
+    r"\s*[\"'“”]?\s*[\)\]\}!#&%_]*\s*:\s*[\"'“”]?\s*([1-7](?:\.0+)?)\s*[\"'“”]?",
+    flags=re.IGNORECASE,
+)
+
 COUNTER_MARKERS = (
     "however",
     "but",
@@ -50,11 +93,15 @@ COUNTER_MARKERS = (
 
 ADDRESS_MARKERS = (
     "strongest",
+    "strongest objection",
     "main point",
+    "primary concern",
     "your point",
     "other agent",
     "opponent",
     "counterpoint",
+    "poin kuat",
+    "poin terkuat",
     "poin lawan",
     "poin utama",
     "argumen lawan",
@@ -69,8 +116,15 @@ CHANGE_MARKERS = (
     "unchanged",
     "did not change",
     "no change",
+    "remains the same",
+    "remain unchanged",
+    "not altered",
     "berubah",
     "tidak berubah",
+    "belum berubah",
+    "masih belum berubah",
+    "tetap sama",
+    "tetap identik",
     "mantengo",
     "cambi",
 )
@@ -129,6 +183,7 @@ class ArtifactAudit:
     debate_quality: dict[str, Any]
     language_compliance: dict[str, Any]
     screening: dict[str, Any]
+    readout_normalization: dict[str, Any]
     private_public_divergence: dict[str, Any]
     translated_relay_ready: bool
     notes: list[str]
@@ -224,6 +279,98 @@ def normalize_language(name: str | None) -> str | None:
 
 def words(text: str) -> set[str]:
     return set(re.findall(r"[A-Za-zÀ-ÿ']+", text.lower()))
+
+
+def normalize_value_key(key: Any) -> str | None:
+    raw = str(key).strip().strip("\"'“”")
+    compact = re.sub(r"[^A-Za-zÀ-ÿ0-9\u4e00-\u9fff]+", "", raw).lower()
+    return VALUE_KEY_ALIASES.get(compact)
+
+
+def numeric_value(value: Any) -> float | None:
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        number = float(value)
+    elif isinstance(value, str) and re.fullmatch(r"\s*[1-7](?:\.0+)?\s*", value):
+        number = float(value.strip())
+    else:
+        return None
+    return number if 1 <= number <= 7 else None
+
+
+def normalized_values_from_mapping(mapping: Any) -> tuple[dict[str, float], list[dict[str, Any]]]:
+    values: dict[str, float] = {}
+    trace: list[dict[str, Any]] = []
+    if not isinstance(mapping, dict):
+        return values, trace
+    for raw_key, raw_value in mapping.items():
+        normalized = normalize_value_key(raw_key)
+        number = numeric_value(raw_value)
+        if not normalized or number is None:
+            continue
+        if normalized in values and values[normalized] != number:
+            trace.append(
+                {
+                    "raw_key": str(raw_key),
+                    "normalized_key": normalized,
+                    "value": number,
+                    "action": "ignored_conflicting_duplicate",
+                }
+            )
+            continue
+        values[normalized] = number
+        if raw_key != normalized:
+            trace.append(
+                {
+                    "raw_key": str(raw_key),
+                    "normalized_key": normalized,
+                    "value": number,
+                    "action": "accepted_alias",
+                }
+            )
+    return values, trace
+
+
+def normalized_values_from_text(text: str) -> tuple[dict[str, float], list[dict[str, Any]]]:
+    values: dict[str, float] = {}
+    trace: list[dict[str, Any]] = []
+    for raw_key, raw_value in RAW_VALUE_PAIR_RE.findall(text):
+        normalized = normalize_value_key(raw_key)
+        number = numeric_value(raw_value)
+        if not normalized or number is None:
+            continue
+        if normalized in values and values[normalized] != number:
+            trace.append(
+                {
+                    "raw_key": raw_key,
+                    "normalized_key": normalized,
+                    "value": number,
+                    "action": "ignored_conflicting_duplicate",
+                    "source": "raw_text",
+                }
+            )
+            continue
+        values[normalized] = number
+        trace.append(
+            {
+                "raw_key": raw_key,
+                "normalized_key": normalized,
+                "value": number,
+                "action": "accepted_raw_text",
+                "source": "raw_text",
+            }
+        )
+    return values, trace
+
+
+def recover_readout_values(item: dict[str, Any]) -> tuple[dict[str, float], list[dict[str, Any]]]:
+    values, trace = normalized_values_from_mapping(item.get("values"))
+    if all(key in values for key in VALUE_KEYS):
+        return values, trace
+    raw_values, raw_trace = normalized_values_from_text(str(item.get("raw_text", "")))
+    for key, number in raw_values.items():
+        if key not in values:
+            values[key] = number
+    return values, trace + raw_trace
 
 
 def marker_present(text: str, markers: tuple[str, ...]) -> bool:
@@ -380,10 +527,55 @@ def readouts_by_agent_turn(items: list[dict[str, Any]]) -> dict[tuple[str, int],
             turn = int(item.get("turn", 0))
         except (TypeError, ValueError):
             continue
-        values = item.get("values")
-        if agent and isinstance(values, dict):
+        values, _trace = recover_readout_values(item)
+        if agent and values:
             result[(agent, turn)] = values
     return result
+
+
+def readout_normalization_audit(data: dict[str, Any]) -> dict[str, Any]:
+    sections = {
+        "private_probes": data.get("private_probes") or [],
+        "observer_readouts": data.get("observer_readouts") or [],
+    }
+    report: dict[str, Any] = {}
+    for section, items in sections.items():
+        total = 0
+        complete_raw = 0
+        complete_after_recovery = 0
+        recovered_with_raw_text = 0
+        events = []
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            total += 1
+            raw_values = item.get("values") if isinstance(item.get("values"), dict) else {}
+            raw_complete = all(key in raw_values and numeric_value(raw_values.get(key)) is not None for key in VALUE_KEYS)
+            complete_raw += int(raw_complete)
+            recovered, trace = recover_readout_values(item)
+            recovered_complete = all(key in recovered for key in VALUE_KEYS)
+            complete_after_recovery += int(recovered_complete)
+            raw_text_events = [event for event in trace if event.get("source") == "raw_text"]
+            if raw_text_events:
+                recovered_with_raw_text += 1
+                events.append(
+                    {
+                        "agent_id": item.get("agent_id"),
+                        "turn": item.get("turn"),
+                        "complete_after_recovery": recovered_complete,
+                        "missing_after_recovery": [key for key in VALUE_KEYS if key not in recovered],
+                        "raw_text_alias_count": len(raw_text_events),
+                    }
+                )
+        report[section] = {
+            "items": total,
+            "complete_raw_values": complete_raw,
+            "complete_after_recovery": complete_after_recovery,
+            "items_recovered_from_raw_text": recovered_with_raw_text,
+            "events": events,
+            "note": "Recovery uses only numeric 1-7 values already emitted by the model under unambiguous key aliases.",
+        }
+    return report
 
 
 def divergence_audit(data: dict[str, Any], threshold: float) -> dict[str, Any]:
@@ -471,6 +663,13 @@ def audit_artifact(path: Path, data: dict[str, Any], args: argparse.Namespace) -
     synthetic = is_synthetic_artifact(data)
     if synthetic:
         notes.append("Synthetic fixture or placeholder; do not report as empirical evidence.")
+    readout_normalization = readout_normalization_audit(data)
+    recovered_private = readout_normalization["private_probes"]["complete_after_recovery"]
+    recovered_observer = readout_normalization["observer_readouts"]["complete_after_recovery"]
+    if recovered_private or recovered_observer:
+        notes.append(
+            "Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing."
+        )
     return ArtifactAudit(
         path=str(path),
         run_id=str(data.get("run_id") or path.stem),
@@ -484,6 +683,7 @@ def audit_artifact(path: Path, data: dict[str, Any], args: argparse.Namespace) -
         debate_quality=score_debate_quality(transcript, args.min_debate_quality),
         language_compliance=compliance_audit(data),
         screening=screening,
+        readout_normalization=readout_normalization,
         private_public_divergence=divergence_audit(data, args.divergence_threshold),
         translated_relay_ready=str(data.get("condition") or "").lower() == "translated-relay",
         notes=notes,
@@ -620,6 +820,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         dq = artifact["debate_quality"]
         compliance = artifact["language_compliance"]
         div = artifact["private_public_divergence"]
+        norm = artifact["readout_normalization"]
         lines.extend(
             [
                 f"### `{artifact['run_id']}`",
@@ -630,6 +831,8 @@ def render_markdown(report: dict[str, Any]) -> str:
                 f"- Topic: `{artifact['topic']}`",
                 f"- Debate quality adequate rate: `{dq['adequate_rate']}` over `{dq['audited_response_turns']}` response turn(s)",
                 f"- Declared language compliance rate: `{compliance['declared_compliance_rate']}`",
+                f"- Complete private readouts after key recovery: `{norm['private_probes']['complete_after_recovery']}/{norm['private_probes']['items']}`",
+                f"- Complete observer readouts after key recovery: `{norm['observer_readouts']['complete_after_recovery']}/{norm['observer_readouts']['items']}`",
                 f"- Flagged private-public gaps: `{len(div['flagged_private_public_gaps'])}`",
                 f"- Notes: `{'; '.join(artifact['notes']) if artifact['notes'] else 'none'}`",
                 "",

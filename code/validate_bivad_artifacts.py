@@ -20,6 +20,7 @@ from audit_bivad_evidence import (
     discover_json_files,
     load_json,
     paired_condition_audit,
+    recover_readout_values,
 )
 
 
@@ -52,9 +53,7 @@ def value_readout_complete(items: Any) -> bool:
     for item in items:
         if not isinstance(item, dict):
             return False
-        values = item.get("values")
-        if not isinstance(values, dict):
-            return False
+        values, _trace = recover_readout_values(item)
         if not all(isinstance(values.get(key), (int, float)) for key in VALUE_KEYS):
             return False
     return True
@@ -190,6 +189,7 @@ def main() -> int:
                 "seed": audit["seed"],
                 "agent_prior_hash": audit["agent_prior_hash"],
                 "synthetic": audit["synthetic"],
+                "readout_normalization": audit["readout_normalization"],
                 "citable_candidate": not blockers,
                 "blockers": blockers,
             }

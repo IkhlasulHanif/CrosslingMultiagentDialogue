@@ -242,6 +242,32 @@ def test_validation_rejects_synthetic_schema_checks() -> None:
     )
 
 
+def test_readout_key_normalization_recovers_unambiguous_aliases() -> None:
+    from audit_bivad_evidence import VALUE_KEYS, recover_readout_values
+
+    item = {
+        "agent_id": "A",
+        "turn": 4,
+        "values": {"Universalism": 5, "security ": "4", "Conformation": 3},
+        "raw_text": (
+            '{"Benevolence ":5,"%self_direction%":4,!tradition! : 3,'
+            '#achievement#: 2,&power& : 1,"evidence":"raw model text"}'
+        ),
+    }
+    values, trace = recover_readout_values(item)
+
+    assert all(key in values for key in VALUE_KEYS)
+    assert values["universalism"] == 5
+    assert values["security"] == 4
+    assert values["conformity"] == 3
+    assert values["benevolence"] == 5
+    assert values["self_direction"] == 4
+    assert values["tradition"] == 3
+    assert values["achievement"] == 2
+    assert values["power"] == 1
+    assert any(event.get("source") == "raw_text" for event in trace)
+
+
 def main() -> int:
     test_synthetic_fixtures_do_not_count_as_results()
     test_dry_run_manifest_does_not_count_as_result()
@@ -249,6 +275,7 @@ def main() -> int:
     test_local_lm_preflight_does_not_count_as_result()
     test_local_torch_schema_checks_do_not_count_as_results()
     test_validation_rejects_synthetic_schema_checks()
+    test_readout_key_normalization_recovers_unambiguous_aliases()
     print("bivad audit regression checks passed")
     return 0
 

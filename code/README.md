@@ -64,6 +64,8 @@ python3 code/validate_bivad_artifacts.py path/to/run-artifacts --out-dir code/bi
 
 The validator returns a non-zero status when artifacts are synthetic, incomplete, missing paired conditions, missing probe/readout values, rejected by screening, or failing debate/language compliance gates. This is expected for `code/fixtures/bivad-local-torch`; those artifacts exercise schema paths only.
 
+Readout validation uses audited key normalization for unambiguous local-model aliases such as `Self-direction` or `Beneficence`. It accepts only numeric 1-7 values already emitted by the model and records recovery counts/events under `readout_normalization` in the audit and validation outputs.
+
 Run a real minimal pilot when API credentials are available:
 
 ```sh
