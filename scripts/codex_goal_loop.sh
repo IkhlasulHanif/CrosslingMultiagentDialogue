@@ -55,6 +55,8 @@ Important:
   the loop environment.
 - This is a Mac. If adding local ML/PyTorch code, prefer Apple MPS when available
   (for example, check torch.backends.mps.is_available()) and do not assume CUDA.
+- Put experiment implementation and experiment harness code under code/. Keep scripts/
+  for repo/agent operations only, such as this Codex loop launcher.
 - The user has instructed this loop to push. If you make meaningful source/doc changes,
   inspect git status, stage only the files relevant to your work, commit them with a
   concise message, and push the current branch. Do not stage unrelated pre-existing

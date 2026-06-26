@@ -1,23 +1,23 @@
 # BiVaD Evidence Audit Scaffold
 
-`scripts/audit_bivad_evidence.py` audits JSON run artifacts for the empirical checks in `GOALS.md`. It is API-free and does not create model results.
+`code/audit_bivad_evidence.py` audits JSON run artifacts for the empirical checks in `GOALS.md`. It is API-free and does not create model results.
 
 Run it on the default `runs/` tree:
 
 ```sh
-python3 scripts/audit_bivad_evidence.py
+python3 code/audit_bivad_evidence.py
 ```
 
 Run it on a specific directory or file:
 
 ```sh
-python3 scripts/audit_bivad_evidence.py path/to/run-artifacts
+python3 code/audit_bivad_evidence.py path/to/run-artifacts
 ```
 
 Outputs:
 
-- `runs/bivad-evidence-audit/audit.json`
-- `runs/bivad-evidence-audit/audit.md`
+- `code/bivad-evidence-audit/audit.json`
+- `code/bivad-evidence-audit/audit.md`
 
 The audit currently checks:
 

@@ -1,12 +1,12 @@
 # BiVaD Evidence Audit
 
-Created at: `2026-06-26T16:29:09.156065+00:00`
+Created at: `2026-06-26T16:31:03.117401+00:00`
 
 ## Status
 
 No JSON run artifacts were found in the requested inputs.
 
-Smallest next action: run model-backed or deterministic trial artifacts through `python3 scripts/audit_bivad_evidence.py <artifact-dir>`.
+Smallest next action: run model-backed or deterministic trial artifacts through `python3 code/audit_bivad_evidence.py <artifact-dir>`.
 
 ## Paired Conditions
 

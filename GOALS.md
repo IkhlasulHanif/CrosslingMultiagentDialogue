@@ -1,10 +1,10 @@
 # Next Loop Goals
 
-Use `draft/multilingual_value_drift_neurips.tex` as the paper target. Focus on empirical checks and small experiment scaffolding, not prose polish.
+Use `draft/multilingual_value_drift_neurips.tex` as the paper target. Focus on empirical checks and small experiment scaffolding, not prose polish. Keep experiment implementation and harness code under `code/`; keep `scripts/` only for repo/agent operations such as the Codex loop.
 
 ## Checklist
 
-- [ ] Verify the two agents are actually debating, not only alternating monologues. Progress: added `scripts/audit_bivad_evidence.py` to audit transcript turns for opponent-point addressing, counterargument, and stated change/non-change; current working tree has no run artifacts to audit.
+- [ ] Verify the two agents are actually debating, not only alternating monologues. Progress: added `code/audit_bivad_evidence.py` to audit transcript turns for opponent-point addressing, counterargument, and stated change/non-change; current working tree has no run artifacts to audit.
   - Add or run a debate-quality audit for each transcript.
   - Check whether each turn addresses the opponent's strongest point, gives a counterargument, and states whether the agent changed view.
 
@@ -35,6 +35,6 @@ Use `draft/multilingual_value_drift_neurips.tex` as the paper target. Focus on e
   - Detect wrong-language replies, code-switching, and copying the opponent's language.
   - Report compliance rates by language and condition.
 
-- [ ] Produce a small evidence package for the draft. Progress: added an evidence package generator that writes `runs/bivad-evidence-audit/audit.json` and `.md`; current package records absence of artifacts rather than empirical results.
+- [ ] Produce a small evidence package for the draft. Progress: added an evidence package generator that writes `code/bivad-evidence-audit/audit.json` and `.md`; current package records absence of artifacts rather than empirical results.
   - Include metrics tables, representative transcript snippets, probe outputs, judge outputs, seeds, and failed assumptions.
   - Clearly separate real executed results from synthetic placeholder numbers.

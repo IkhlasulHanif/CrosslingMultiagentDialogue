@@ -146,7 +146,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--out-dir",
-        default="runs/bivad-evidence-audit",
+        default="code/bivad-evidence-audit",
         help="Directory for audit JSON and Markdown outputs.",
     )
     parser.add_argument(
@@ -552,7 +552,7 @@ def render_markdown(report: dict[str, Any]) -> str:
                 "No JSON run artifacts were found in the requested inputs.",
                 "",
                 "Smallest next action: run model-backed or deterministic trial artifacts through "
-                "`python3 scripts/audit_bivad_evidence.py <artifact-dir>`.",
+                "`python3 code/audit_bivad_evidence.py <artifact-dir>`.",
                 "",
             ]
         )
