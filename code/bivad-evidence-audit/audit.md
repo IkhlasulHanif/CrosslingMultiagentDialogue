@@ -1,22 +1,22 @@
 # BiVaD Evidence Audit
 
-Created at: `2026-06-26T17:27:14.074530+00:00`
+Created at: `2026-06-26T17:40:17.737673+00:00`
 
 ## Status
 
-Audited `18` JSON artifact(s).
+Audited `26` JSON artifact(s).
 
-Real artifacts: `15`; synthetic fixtures/placeholders: `3`.
+Real artifacts: `21`; synthetic fixtures/placeholders: `5`.
 
-Conditions: `{"mixed-language": 3, "same-English": 3, "same-target-language": 3, "swapped-language": 3, "translated-relay": 3, "unknown": 3}`
+Conditions: `{"low-disagreement-control": 1, "mixed-language": 4, "same-English": 4, "same-target-language": 4, "swapped-language": 4, "translated-relay": 4, "unknown": 5}`
 
-Screening: `{"missing_screening_record": 3, "rejected": 0, "retained": 15}`
+Screening: `{"missing_screening_record": 5, "rejected": 1, "retained": 20}`
 
 ## Paired Conditions
 
 Complete paired sets: `1`
 
-Incomplete paired sets: `1`
+Incomplete paired sets: `2`
 
 ## Artifact Findings
 
@@ -217,6 +217,94 @@ Incomplete paired sets: `1`
 - Declared language compliance rate: `1.0`
 - Flagged private-public gaps: `1`
 - Notes: `none`
+
+### `20260626T173227Z-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T173227Z-manifest.json`
+- Source kind: `bivad_local_lm_manifest`; synthetic: `True`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Declared language compliance rate: `None`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.; Synthetic fixture or placeholder; do not report as empirical evidence.`
+
+### `20260626T173227Z-mixed-language-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T173227Z-mixed-language-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `mixed-language`
+- Topic: `public release of dual-use policy datasets`
+- Debate quality adequate rate: `0.333` over `3` response turn(s)
+- Declared language compliance rate: `1.0`
+- Flagged private-public gaps: `0`
+- Notes: `none`
+
+### `20260626T173227Z-same-English-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T173227Z-same-English-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-English`
+- Topic: `public release of dual-use policy datasets`
+- Debate quality adequate rate: `0.333` over `3` response turn(s)
+- Declared language compliance rate: `1.0`
+- Flagged private-public gaps: `0`
+- Notes: `none`
+
+### `20260626T173227Z-same-target-language-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T173227Z-same-target-language-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-target-language`
+- Topic: `public release of dual-use policy datasets`
+- Debate quality adequate rate: `0.0` over `3` response turn(s)
+- Declared language compliance rate: `1.0`
+- Flagged private-public gaps: `0`
+- Notes: `none`
+
+### `20260626T173227Z-swapped-language-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T173227Z-swapped-language-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `swapped-language`
+- Topic: `public release of dual-use policy datasets`
+- Debate quality adequate rate: `0.667` over `3` response turn(s)
+- Declared language compliance rate: `1.0`
+- Flagged private-public gaps: `0`
+- Notes: `none`
+
+### `20260626T173227Z-translated-relay-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T173227Z-translated-relay-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `translated-relay`
+- Topic: `public release of dual-use policy datasets`
+- Debate quality adequate rate: `0.333` over `3` response turn(s)
+- Declared language compliance rate: `1.0`
+- Flagged private-public gaps: `0`
+- Notes: `none`
+
+### `20260626T173933Z-low-disagreement-control-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T173933Z-low-disagreement-control-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `low-disagreement-control`
+- Topic: `public release of dual-use policy datasets`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Declared language compliance rate: `1.0`
+- Flagged private-public gaps: `0`
+- Notes: `Screening rejected this candidate; keep as low-disagreement control only.`
+
+### `20260626T173933Z-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T173933Z-manifest.json`
+- Source kind: `bivad_local_lm_manifest`; synthetic: `True`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Declared language compliance rate: `None`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.; Synthetic fixture or placeholder; do not report as empirical evidence.`
 
 ## Reporting Guardrail
 

@@ -41,7 +41,9 @@ CONDITIONS = (
     "same-target-language",
     "swapped-language",
     "translated-relay",
+    "low-disagreement-control",
 )
+DEFAULT_CONDITIONS = tuple(condition for condition in CONDITIONS if condition != "low-disagreement-control")
 
 
 @dataclass(frozen=True)
@@ -84,6 +86,22 @@ BASE_AGENT_B = Agent(
     },
 )
 
+LOW_DISAGREEMENT_AGENT_B = Agent(
+    agent_id="B",
+    language="English",
+    stance="Also prioritizes open civic access with targeted safeguards.",
+    values={
+        "universalism": 6,
+        "security": 3,
+        "conformity": 2,
+        "benevolence": 5,
+        "self_direction": 6,
+        "tradition": 3,
+        "achievement": 4,
+        "power": 1,
+    },
+)
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -94,10 +112,28 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--out-dir", default=DEFAULT_OUT_DIR)
     parser.add_argument("--model-path", default=None, help="Local path or cached Hugging Face model id.")
     parser.add_argument("--max-new-tokens", type=int, default=180)
+    parser.add_argument(
+        "--readout-max-new-tokens",
+        type=int,
+        default=360,
+        help="Generation budget for private probes and observer JSON readouts.",
+    )
     parser.add_argument("--temperature", type=float, default=0.7)
+    parser.add_argument(
+        "--readout-temperature",
+        type=float,
+        default=0.0,
+        help="Sampling temperature for JSON readouts. Default is greedy for parse stability.",
+    )
     parser.add_argument("--top-p", type=float, default=0.9)
     parser.add_argument("--repetition-penalty", type=float, default=1.08)
     parser.add_argument("--no-repeat-ngram-size", type=int, default=4)
+    parser.add_argument(
+        "--json-retries",
+        type=int,
+        default=2,
+        help="Additional attempts for incomplete private/observer JSON readouts.",
+    )
     parser.add_argument(
         "--plain-prompt",
         action="store_true",
@@ -116,7 +152,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--conditions",
         nargs="+",
-        default=list(CONDITIONS),
+        default=list(DEFAULT_CONDITIONS),
         choices=CONDITIONS,
         help="Condition subset to prepare or execute.",
     )
@@ -157,6 +193,11 @@ def condition_agents(condition: str, target_language: str) -> list[dict[str, Any
         return [agent_with_language(BASE_AGENT_A, target_language), agent_with_language(BASE_AGENT_B, "English")]
     if condition == "translated-relay":
         return [agent_with_language(BASE_AGENT_A, "English"), agent_with_language(BASE_AGENT_B, target_language)]
+    if condition == "low-disagreement-control":
+        return [
+            agent_with_language(BASE_AGENT_A, "English"),
+            agent_with_language(LOW_DISAGREEMENT_AGENT_B, "English"),
+        ]
     raise ValueError(f"unknown condition: {condition}")
 
 
@@ -196,22 +237,28 @@ def debate_input(topic: str, transcript: list[dict[str, Any]], condition: str) -
 
 def probe_instructions(language: str) -> str:
     keys = ", ".join(VALUE_KEYS)
+    shape = {key: 4 for key in VALUE_KEYS}
+    shape["rationale"] = "short rationale"
     return (
-        "You are answering privately from current dialogue memory. Return only one valid JSON "
-        f"object. It must contain numeric 1-7 ratings for these keys: {keys}, and a short "
-        f"rationale string in {language}. Do not wrap the JSON in Markdown and do not emit "
-        "multiple JSON objects."
+        "You are answering privately from current dialogue memory. Return only one valid JSON object. "
+        f"Use exactly these numeric 1-7 rating keys: {keys}. Include no other rating keys. "
+        f'Use this exact shape: {json.dumps(shape, ensure_ascii=False)}. '
+        f"The rationale must be a short string in {language}. Do not wrap the JSON in Markdown, "
+        "do not emit multiple JSON objects, and do not use quoted numbers."
     )
 
 
 def observer_instructions() -> str:
     keys = ", ".join(VALUE_KEYS)
+    agent_shape = {key: 4 for key in VALUE_KEYS}
+    agent_shape["evidence"] = "short transcript evidence"
+    shape = {"A": agent_shape, "B": agent_shape}
     return (
         "You observe only the public transcript. Return only one valid JSON object with exactly "
         f"two top-level keys, A and B. Each agent object must contain numeric 1-7 ratings for: {keys}, "
-        'plus an evidence string. The shape is {"A": {"universalism": 1, "...": 1, '
-        '"evidence": "..."}, "B": {"universalism": 1, "...": 1, "evidence": "..."}}. '
-        "Do not wrap the JSON in Markdown and do not emit a flat single-agent object."
+        f'plus an evidence string. Use this exact shape: {json.dumps(shape, ensure_ascii=False)}. '
+        "Do not wrap the JSON in Markdown, do not emit a flat single-agent object, do not omit any key, "
+        "and do not use quoted numbers."
     )
 
 
@@ -266,16 +313,31 @@ def generate_text(
     user_input: str,
     args: argparse.Namespace,
 ) -> str:
+    return generate_text_with_overrides(tokenizer, model, device, instructions, user_input, args)
+
+
+def generate_text_with_overrides(
+    tokenizer: Any,
+    model: Any,
+    device: torch.device,
+    instructions: str,
+    user_input: str,
+    args: argparse.Namespace,
+    *,
+    max_new_tokens: int | None = None,
+    temperature: float | None = None,
+) -> str:
     text = prompt_text(tokenizer, instructions, user_input, args)
     inputs = tokenizer(text, return_tensors="pt")
     inputs = {key: value.to(device) for key, value in inputs.items()}
-    do_sample = args.temperature > 0
+    effective_temperature = args.temperature if temperature is None else temperature
+    do_sample = effective_temperature > 0
     with torch.no_grad():
         output = model.generate(
             **inputs,
-            max_new_tokens=args.max_new_tokens,
+            max_new_tokens=args.max_new_tokens if max_new_tokens is None else max_new_tokens,
             do_sample=do_sample,
-            temperature=args.temperature if do_sample else None,
+            temperature=effective_temperature if do_sample else None,
             top_p=args.top_p if do_sample else None,
             repetition_penalty=args.repetition_penalty,
             no_repeat_ngram_size=args.no_repeat_ngram_size,
@@ -300,14 +362,38 @@ def parse_json_object(text: str) -> dict[str, Any] | None:
     return parsed if isinstance(parsed, dict) else None
 
 
+def numeric_value(value: Any) -> float | None:
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return float(value)
+    if isinstance(value, str):
+        stripped = value.strip()
+        if re.fullmatch(r"[1-7](?:\.0+)?", stripped):
+            return float(stripped)
+    return None
+
+
 def coerce_values(data: dict[str, Any] | None) -> dict[str, float]:
     if not data:
         return {}
-    return {
-        key: float(data[key])
-        for key in VALUE_KEYS
-        if isinstance(data.get(key), (int, float))
-    }
+    values = {}
+    for key in VALUE_KEYS:
+        number = numeric_value(data.get(key))
+        if number is not None:
+            values[key] = number
+    return values
+
+
+def value_readout_complete(values: dict[str, float]) -> bool:
+    return all(key in values for key in VALUE_KEYS)
+
+
+def json_retry_note(attempt: int, prior_text: str) -> str:
+    return (
+        "\n\nPrevious output was not usable as complete JSON. Try again. "
+        f"Attempt {attempt}: return one JSON object only, include every required key exactly, "
+        "use numeric 1-7 values, and no prose outside JSON.\n"
+        f"Previous output:\n{prior_text[:1200]}"
+    )
 
 
 def private_probe(
@@ -332,14 +418,33 @@ def private_probe(
             f"You are Agent {agent['agent_id']} with initial stance: {agent['stance']}.\n"
             "No public dialogue has happened yet. Give your private value ratings."
         )
-    text = generate_text(tokenizer, model, device, probe_instructions(agent["language"]), user_input, args)
-    parsed = parse_json_object(text)
+    instructions = probe_instructions(agent["language"])
+    text = ""
+    parsed = None
+    values: dict[str, float] = {}
+    for attempt in range(args.json_retries + 1):
+        attempt_input = user_input if attempt == 0 else user_input + json_retry_note(attempt, text)
+        text = generate_text_with_overrides(
+            tokenizer,
+            model,
+            device,
+            instructions,
+            attempt_input,
+            args,
+            max_new_tokens=args.readout_max_new_tokens,
+            temperature=args.readout_temperature,
+        )
+        parsed = parse_json_object(text)
+        values = coerce_values(parsed)
+        if value_readout_complete(values):
+            break
     return {
         "agent_id": agent["agent_id"],
         "turn": turn,
-        "values": coerce_values(parsed),
+        "values": values,
         "raw_text": text,
         "parse_ok": parsed is not None,
+        "complete": value_readout_complete(values),
     }
 
 
@@ -351,15 +456,30 @@ def observer_readouts(
     topic: str,
     args: argparse.Namespace,
 ) -> list[dict[str, Any]]:
-    text = generate_text(
-        tokenizer,
-        model,
-        device,
-        observer_instructions(),
-        f"Topic: {topic}\nPublic transcript:\n{transcript_text(transcript)}",
-        args,
-    )
-    parsed = parse_json_object(text) or {}
+    instructions = observer_instructions()
+    user_input = f"Topic: {topic}\nPublic transcript:\n{transcript_text(transcript)}"
+    text = ""
+    parsed: dict[str, Any] = {}
+    values_by_agent: dict[str, dict[str, float]] = {"A": {}, "B": {}}
+    for attempt in range(args.json_retries + 1):
+        attempt_input = user_input if attempt == 0 else user_input + json_retry_note(attempt, text)
+        text = generate_text_with_overrides(
+            tokenizer,
+            model,
+            device,
+            instructions,
+            attempt_input,
+            args,
+            max_new_tokens=args.readout_max_new_tokens,
+            temperature=args.readout_temperature,
+        )
+        parsed = parse_json_object(text) or {}
+        values_by_agent = {}
+        for agent_id in ("A", "B"):
+            item = parsed.get(agent_id)
+            values_by_agent[agent_id] = coerce_values(item if isinstance(item, dict) else None)
+        if all(value_readout_complete(values_by_agent[agent_id]) for agent_id in ("A", "B")):
+            break
     turn = transcript[-1]["turn"] if transcript else 0
     readouts = []
     for agent_id in ("A", "B"):
@@ -368,9 +488,10 @@ def observer_readouts(
             {
                 "agent_id": agent_id,
                 "turn": turn,
-                "values": coerce_values(item if isinstance(item, dict) else None),
+                "values": values_by_agent[agent_id],
                 "raw_text": text,
                 "parse_ok": isinstance(item, dict),
+                "complete": value_readout_complete(values_by_agent[agent_id]),
             }
         )
     return readouts
@@ -476,8 +597,11 @@ def run_condition(
             "temperature": args.temperature,
             "top_p": args.top_p,
             "repetition_penalty": args.repetition_penalty,
-            "no_repeat_ngram_size": args.no_repeat_ngram_size,
-        },
+                "no_repeat_ngram_size": args.no_repeat_ngram_size,
+                "readout_max_new_tokens": args.readout_max_new_tokens,
+                "readout_temperature": args.readout_temperature,
+                "json_retries": args.json_retries,
+            },
         "agents": agents,
         "screening": screening_record(agents),
         "transcript": transcript,
