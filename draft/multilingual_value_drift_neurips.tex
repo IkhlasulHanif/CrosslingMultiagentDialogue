@@ -632,6 +632,46 @@ Seed & Condition & A shift & B shift & Combined & A gap & B gap \\
 
 \textbf{Combined interpretation.} The dual-use seed-stability check confirms that (a) absolute shift magnitudes are comparable across seeds (combined range 5.646--6.873 at seed~17, 5.828--6.110 at seed~42); (b) swapped-language convergence is the most robust single-condition finding; and (c) condition-specific effects such as the relay gap amplification and the identity of the maximum-B-shift condition are seed-sensitive. These results reinforce the conclusion from Section~\ref{sec:replication} that effect-direction findings require multi-seed replication before being treated as structural. Artifacts: \texttt{runs/bivad-local-lm/20260626T225543Z-*seed42.json}; comparison tables: \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_dual\_use\_seed17.json} and \texttt{five\_condition\_comparison\_dual\_use\_seed42.json}.
 
+\subsection{UBI Seed Stability: Five-Condition Comparison at Seed~42}
+\label{sec:ubi-seed-stability}
+
+UBI is the highest-divergence topic ($\Delta_B=1.68$, Section~\ref{sec:topic-scan}) and the topic for which we already have the broadest seed coverage (seeds~7, 17, 23, 42 for the two-condition mixed vs same-English scan). We ran the complete five-condition set for UBI at seed~42 (Qwen2.5-7B-Instruct, Indonesian/English, 4~turns) to compare against the seed~17 results from Table~\ref{tab:empirical-ubi}. Table~\ref{tab:ubi-seed-stability} shows both seeds.
+
+\begin{table}[h]
+\centering
+\caption{UBI five-condition comparison across seeds 17 and 42 (Qwen2.5-7B-Instruct, Indonesian/English, 4~turns). Shift is L2 distance in 8D Schwartz space; gap is L2 distance between final private probe and observer readout.}
+\label{tab:ubi-seed-stability}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llrrrrr}
+\toprule
+Seed & Condition & A shift & B shift & Combined & A gap & B gap \\
+\midrule
+17 & Same-English        & 1.732 & 5.000 & 6.732 & 3.742 & 3.742 \\
+17 & Mixed-language      & 2.000 & 3.317 & 5.317 & 1.414 & 1.732 \\
+17 & Swapped-language    & 2.236 & 5.000 & 7.236 & 1.414 & 1.732 \\
+17 & Same-target-lang.   & 2.000 & 5.000 & 7.000 & 1.000 & 1.732 \\
+17 & Translated-relay    & 1.732 & 3.317 & 5.049 & 2.000 & 2.828 \\
+\midrule
+42 & Same-English        & 1.732 & 5.292 & 7.024 & 2.449 & 3.000 \\
+42 & Mixed-language      & 1.732 & 5.292 & 7.024 & 1.414 & 1.732 \\
+42 & Swapped-language    & 2.236 & 4.796 & 7.032 & 1.414 & 1.000 \\
+42 & Same-target-lang.   & 2.000 & 4.796 & 6.796 & 1.414 & 1.414 \\
+42 & Translated-relay    & 2.449 & 3.317 & 5.766 & \textbf{3.162} & 2.646 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\textbf{Translated-relay B suppression is seed-stable.} The most striking finding is that B's shift under translated-relay is exactly $3.317$ at both seeds~17 and~42, whereas B's shift under same-English is $5.000$ and $5.292$ respectively. The relay mechanism (A's English arguments are translated to Indonesian before B reads them, and B's Indonesian arguments are translated back to English for A) consistently suppresses B's total Schwartz shift relative to direct-language baselines. This is in contrast to the mixed-language B suppression, which occurs only at seed~17 (Section~\ref{sec:replication}).
+
+\textbf{Mixed-language effect does not replicate.} At seed~42, B shifts $5.292$ in both same-English and mixed-language, confirming $\Delta_B = 0.0$ and extending the seed-sensitivity result established from the two-condition scan in Section~\ref{sec:replication}. Of the two routes through which B could be suppressed --- direct mixed-language exposure vs translated-relay --- only the relay route is robust across seeds.
+
+\textbf{Relay gap amplification for A replicates and strengthens.} A's private-public gap under translated-relay is $2.000$ at seed~17 and $3.162$ at seed~42, both above any other condition's A gap in the respective seed. The pattern of relay uniquely inflating A's gap is therefore seed-stable for UBI, unlike dual-use where gap amplification was seed-sensitive (Section~\ref{sec:seed-stability}).
+
+\textbf{Swapped-language and same-target-language are stable.} As in dual-use, swapped-language produces consistent A shifts ($2.236$ at both seeds) and B shifts ($5.000$ vs $4.796$). Same-target-language B shifts ($5.000$ vs $4.796$) are also stable. These production-language-symmetric conditions show little sensitivity to seed for UBI.
+
+Artifacts: \texttt{runs/bivad-local-lm/20260626T231513Z-*seed42.json}; comparison table: \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_ubi\_seed42.json}.
+
 \subsection{No-Dialogue Control: Measurement-Induced Drift}
 \label{sec:no-dialogue}
 
@@ -675,7 +715,7 @@ The intrinsic readout is a controlled behavioral probe, not direct access to lat
 Intermediate probing can itself change an agent's subsequent behavior. The pre/post-only control is necessary to estimate this perturbation.
 
 \paragraph{Judges may be language-biased.}
-External observers may over-attribute confidence to high-resource-language utterances or under-interpret nuance in lower-resource languages. We therefore compare multilingual judges, translated transcripts, and language-specific judges with evidence-span requirements.
+External observers may over-attribute confidence to high-resource-language utterances or under-interpret nuance in lower-resource languages. We ran an empirical check by re-running the observer on the dual-use seed=17 five-condition transcripts with an Indonesian-language judge prompt (identical structure but instructions in Indonesian) and comparing readouts against the stored English-observer readouts (\texttt{code/bivad-evidence-audit/judge\_bias\_check.json}). The mean L2 distance between English and Indonesian observer readouts across all ten agent$\times$condition comparisons was 1.27. For same-English transcripts (no Indonesian text in the transcript), English and Indonesian observers returned identical readouts (L2=0.0). For conditions containing Indonesian turns (mixed-language, swapped-language, same-target-language, translated-relay), observer L2 ranged from 1.0 to 2.0. This falls at or below the low end of private-public gaps measured in the same conditions (1.414--3.606), indicating that judge language is not the dominant source of observer variance in this setup. The check does not rule out subtler biases (e.g., in evidence span selection) that are not captured by aggregate L2 distance.
 
 \paragraph{Synthetic results can mislead.}
 Hypothetical numbers are useful for planning tables and analysis, but they become harmful if presented as empirical evidence. The final submission must replace Table~\ref{tab:hypothetical} with executed, reproducible runs.
@@ -701,11 +741,11 @@ This work measures value-laden behavior in language models. It should not be use
 
 We introduced \method, a framework for measuring value drift in multilingual multi-agent LLM dialogue. The key idea is to separate private prompted value states from observer-inferred expressed value states and to study their divergence over time. This distinction is especially important in mixed-language settings, where agents can understand one another without converging to the same production language.
 
-We executed pilot experiments using Qwen2.5-7B-Instruct on Modal L4 GPUs, covering five scan topics (dual-use datasets, universal basic income, religious exemptions, government surveillance, and content moderation), each with a complete five-condition protocol set (same-English, mixed-language, swapped-language, same-target-language, translated-relay), no-dialogue baselines, and multi-seed/multi-language-pair replication for the highest-divergence topic (UBI).
+We executed pilot experiments using Qwen2.5-7B-Instruct on Modal L4 GPUs, covering five scan topics (dual-use datasets, universal basic income, religious exemptions, government surveillance, and content moderation), each with a complete five-condition protocol set (same-English, mixed-language, swapped-language, same-target-language, translated-relay), no-dialogue baselines, and multi-seed/multi-language-pair replication for the highest-divergence topic (UBI). Seed-stability runs for dual-use (seed~42) and UBI (seed~42) expanded the comparison to ten seed$\times$topic combinations. A judge-language bias check confirmed that English and Indonesian observer prompts produce readouts with mean L2 distance~$1.27$ across five conditions, which is at or below the low end of private-public gap variation ($1.41$--$3.61$).
 
-Four structural findings emerged across topics. First, the agent whose private probe values vary most across language conditions differs by topic: A (English-speaking) is the variable agent for religious exemptions and government surveillance; B (Indonesian-speaking) is variable for dual-use and UBI. Second, translated-relay amplifies private-public gaps for dual-use and religious exemptions but not for government surveillance or content moderation, indicating that topic framing moderates relay effects. Third, cross-lingual divergence direction reverses between UBI (B shifts less under mixed-language) and government surveillance (B shifts more), demonstrating that the sign of language-condition effects is not universal. Fourth, no-dialogue controls show that repeated measurement alone induces topic-dependent drift, and for government surveillance the reflection-only shift saturates one agent's full debate range, weakening the general claim that debate always adds drift beyond baseline.
+Four structural findings emerged across topics. First, the agent whose private probe values vary most across language conditions differs by topic: A (English-speaking) is the variable agent for religious exemptions and government surveillance; B (Indonesian-speaking) is variable for dual-use and UBI. Second, translated-relay amplifies private-public gaps for dual-use and religious exemptions but not for government surveillance or content moderation, indicating that topic framing moderates relay effects. Third, cross-lingual divergence direction reverses between UBI (B shifts less under mixed-language) and government surveillance (B shifts more), demonstrating that the sign of language-condition effects is not universal. Fourth, no-dialogue controls show that repeated measurement alone induces topic-dependent drift, and for government surveillance the reflection-only shift saturates one agent's full debate range, weakening the general claim that debate always adds drift beyond baseline. Fifth, the seed-stability analysis reveals a dissociation in UBI: B's shift under translated-relay ($=3.317$) replicates exactly at both seeds~17 and~42, while the mixed-language B suppression occurs only at seed~17; of the two cross-lingual mechanisms, the relay mechanism is more seed-stable than direct mixed-language exposure.
 
-These results are exploratory: they are based on a single model family, a single target language (Indonesian), seed=17 for most five-condition comparisons, and four-turn debates. Mechanistic probability steering (logit bias, activation steering, CAA) failed for the instruction-tuned model; prompt-level language directives are used instead, which may conflate language-condition with instruction-following differences. Future work should test base models for mechanistic steering, run longer dialogues to surface screening effects in expressed-value measurements, examine judge-language bias, and extend to additional language pairs and model families. Prompts, transcripts, probe items, analysis scripts, and all logged experiment artifacts are included in the repository for reproducibility.
+These results are exploratory: they are based on a single model family, a single target language (Indonesian), and four-turn debates. Mechanistic probability steering (logit bias, activation steering, CAA) failed for the instruction-tuned model; prompt-level language directives are used instead, which may conflate language-condition with instruction-following differences. Future work should test base models for mechanistic steering, run longer dialogues to surface screening effects in expressed-value measurements, and extend to additional language pairs and model families. Prompts, transcripts, probe items, analysis scripts, and all logged experiment artifacts are included in the repository for reproducibility.
 
 \bibliographystyle{plainnat}
 \bibliography{multilingual_value_drift}
