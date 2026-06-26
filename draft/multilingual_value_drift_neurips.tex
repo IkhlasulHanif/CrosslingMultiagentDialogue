@@ -93,6 +93,7 @@ with a smaller negative penalty for English-dominant tokens. At $\beta \in [3,12
 \textbf{Conclusion.} All three mechanistic approaches fail to produce fluent target-language generation without prompt-level instructions from Qwen2.5-1.5B-Instruct. The instruction-tuning alignment enforces English generation strongly enough to defeat logit-level and residual-stream-level interventions at the scales we tested. We therefore adopt \textbf{prompt-level language conditioning} for the debate protocol: each agent's system prompt includes its assigned output language. Prompt-conditioned runs conflate language choice with instruction-following compliance, which is a limitation we note in the threats section. We retain the mechanistic steering code (\texttt{code/steer\_language.py}, \texttt{code/steer\_language\_activation.py}, \texttt{code/steer\_language\_caa.py}) for future experiments with base models or stronger interventions (e.g., fine-tuned steering vectors or chat-template direction vectors). Scan artifacts for divergence seeding are deferred until fluent mechanistic steering is achieved.
 
 \subsection{Value-Disagreement Screening}
+\label{sec:screening}
 
 Debate is only informative if the agents begin with different value or stance states. If both agents already assign similar priorities to the relevant values, a dialogue can appear stable simply because there is nothing substantive to resolve. We therefore add a screening stage before debate. For every candidate topic $\tau$, candidate language pair $(\ell_A,\ell_B)$, and candidate agent prior pair $(p_A,p_B)$, both agents independently answer the same private value and stance battery without seeing each other. This yields baseline vectors $v_{A,0}^{\mathrm{screen}}$ and $v_{B,0}^{\mathrm{screen}}$.
 
@@ -597,7 +598,7 @@ The zero-divergence seeds also have higher absolute B shifts ($D_B \in \{4.47, 5
 \subsection{Seed Stability: Dual-Use Five-Condition Comparison at Seed~42}
 \label{sec:seed-stability}
 
-The five-condition tables in Sections~\ref{sec:empirical}--\ref{sec:content-five-conditions} all use seed~17. To assess whether the structural patterns in those tables are seed-stable, we ran the full five-condition set for the primary dual-use topic at seed~42 (Qwen2.5-7B-Instruct, Indonesian/English, 4~turns). Table~\ref{tab:seed-stability} compares the two seeds side by side.
+The five-condition tables in Sections~\ref{sec:empirical}--\ref{sec:content-moderation-five-conditions} all use seed~17. To assess whether the structural patterns in those tables are seed-stable, we ran the full five-condition set for the primary dual-use topic at seed~42 (Qwen2.5-7B-Instruct, Indonesian/English, 4~turns). Table~\ref{tab:seed-stability} compares the two seeds side by side.
 
 \begin{table}[h]
 \centering

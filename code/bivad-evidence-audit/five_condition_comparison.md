@@ -3,69 +3,72 @@
 Euclidean shift = L2 distance in 8-dimensional Schwartz value space between initial (turn 0) and final private probes. private_public_gaps are L2 distances between final private probe and final observer readout for each agent.
 
 Selection: latest complete citable five-condition set with fixed seed/topic/model/comparison language.
-Selected set: seed=17; topic=mandatory content moderation on social media platforms; model=Qwen2.5-7B-Instruct; comparison_language=Indonesian.
+Selected set: seed=42; topic=universal basic income as a social safety net; model=Qwen2.5-7B-Instruct; comparison_language=Indonesian.
 
 | run_id | condition | seed | language | model | A shift | B shift | combined | A priv-pub gap | B priv-pub gap |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 20260626T204715Z-same-English-seed17-mandatory-content-moderation-on-soci | same-English | 17 | English | Qwen2.5-7B-Instruct | 3.316625 | 3.741657 | 7.058282 | 2.44949 | 2.236068 |
-| 20260626T204715Z-mixed-language-seed17-mandatory-content-moderation-on-soci | mixed-language | 17 | Indonesian | Qwen2.5-7B-Instruct | 3.464102 | 3.162278 | 6.62638 | 1.732051 | 1.732051 |
-| 20260626T221248Z-swapped-language-seed17 | swapped-language | 17 | Indonesian | Qwen2.5-7B-Instruct | 2.236068 | 3.316625 | 5.552693 | 1.0 | 2.645751 |
-| 20260626T221248Z-same-target-language-seed17 | same-target-language | 17 | Indonesian | Qwen2.5-7B-Instruct | 3.464102 | 3.464102 | 6.928204 | 1.414214 | 1.732051 |
-| 20260626T221248Z-translated-relay-seed17 | translated-relay | 17 | Indonesian | Qwen2.5-7B-Instruct | 3.0 | 3.316625 | 6.316625 | 1.732051 | 1.732051 |
+| 20260626T210429Z-same-English-seed42-universal-basic-income-as-a-social-s | same-English | 42 | English | Qwen2.5-7B-Instruct | 1.732051 | 5.291503 | 7.023554 | 2.44949 | 3.0 |
+| 20260626T210429Z-mixed-language-seed42-universal-basic-income-as-a-social-s | mixed-language | 42 | Indonesian | Qwen2.5-7B-Instruct | 1.732051 | 5.291503 | 7.023554 | 1.414214 | 1.732051 |
+| 20260626T231513Z-swapped-language-seed42 | swapped-language | 42 | Indonesian | Qwen2.5-7B-Instruct | 2.236068 | 4.795832 | 7.0319 | 1.414214 | 1.0 |
+| 20260626T231513Z-same-target-language-seed42 | same-target-language | 42 | Indonesian | Qwen2.5-7B-Instruct | 2.0 | 4.795832 | 6.795832 | 1.414214 | 1.414214 |
+| 20260626T231513Z-translated-relay-seed42 | translated-relay | 42 | Indonesian | Qwen2.5-7B-Instruct | 2.44949 | 3.316625 | 5.766115 | 3.162278 | 2.645751 |
 
 ## Pattern Observations
 
-- swapped-language (Qwen2.5-7B-Instruct): agent B shifts more (A=2.236068, B=3.316625)
+- same-English (Qwen2.5-7B-Instruct): agent B shifts more (A=1.732051, B=5.291503)
+- mixed-language (Qwen2.5-7B-Instruct): agent B shifts more (A=1.732051, B=5.291503)
+- swapped-language (Qwen2.5-7B-Instruct): agent B shifts more (A=2.236068, B=4.795832)
+- same-target-language (Qwen2.5-7B-Instruct): agent B shifts more (A=2.0, B=4.795832)
 
 ## Outcome Comparisons
 
-- same-English vs mixed-language: A shifts less in same-English than in mixed-language (3.316625 vs 3.464102), while B shifts more in same-English than in mixed-language (3.741657 vs 3.162278).
-- same-target-language vs translated-relay on the Modal Qwen2.5 pair: A shifts less under relay (same-target=3.464102, relay=3.0), while B shifts less under relay (same-target=3.464102, relay=3.316625).
-- mixed-language vs swapped-language: private shifts are similar under the two production-language assignments (mixed A=3.464102, B=3.162278; swapped A=2.236068, B=3.316625).
+- same-English vs mixed-language: A shifts the same amount in both conditions (1.732051), while B shifts the same amount in both conditions (5.291503).
+- same-target-language vs translated-relay on the Modal Qwen2.5 pair: A shifts more under relay (same-target=2.0, relay=2.44949), while B shifts less under relay (same-target=4.795832, relay=3.316625).
+- mixed-language vs swapped-language: private shifts are similar under the two production-language assignments (mixed A=1.732051, B=5.291503; swapped A=2.236068, B=4.795832).
 
 ## Per-Condition Detail
 
 ### same-English
-- `20260626T204715Z-same-English-seed17-mandatory-content-moderation-on-soci` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
-  - Topic: mandatory content moderation on social media platforms
-  - Agent A: initial {'achievement': 4.0, 'benevolence': 5.0, 'conformity': 2.0, 'power': 3.0, 'security': 3.0, 'self_direction': 5.0, 'tradition': 3.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 5.0, 'conformity': 4.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=3.316625 | priv-pub gap=2.44949
-  - Agent B: initial {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 6.0, 'power': 6.0, 'security': 5.0, 'self_direction': 3.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 6.0, 'conformity': 4.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=3.741657 | priv-pub gap=2.236068
+- `20260626T210429Z-same-English-seed42-universal-basic-income-as-a-social-s` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
+  - Topic: universal basic income as a social safety net
+  - Agent A: initial {'achievement': 3.0, 'benevolence': 5.0, 'conformity': 3.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 2.0, 'universalism': 5.0} → final {'achievement': 4.0, 'benevolence': 6.0, 'conformity': 3.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=1.732051 | priv-pub gap=2.44949
+  - Agent B: initial {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 6.0, 'power': 6.0, 'security': 5.0, 'self_direction': 3.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 6.0, 'conformity': 3.0, 'power': 3.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=5.291503 | priv-pub gap=3.0
   - Transcript spans:
-    - turn 1 English: My view has not changed. Strongest opponent point: Content moderation policies can be overly restrictive, limiting free speech and the open exchange of ideas. Counterargument: While it is important to protect free speech, the negative consequences of unmodera…
-    - turn 4 English: Strongest opponent point: Well-designed moderation systems can still be too restrictive, potentially censoring controversial but lawful speech. Counterargument: However, the potential for overmoderation should not overshadow the need to protect vulnerable com…
+    - turn 1 English: My view has not changed. Universal basic income could be an effective way to reduce poverty and inequality by providing a financial cushion for everyone, but it might also lead to inflation if not managed properly. Strongest opponent point: Implementing UBI c…
+    - turn 4 English: Strongest opponent point: Implementing UBI could lead to higher taxes or increased national debt, which might be unpopular and difficult to achieve politically. Counterargument: UBI could enhance workforce participation by reducing financial stress, leading t…
 
 ### mixed-language
-- `20260626T204715Z-mixed-language-seed17-mandatory-content-moderation-on-soci` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
-  - Topic: mandatory content moderation on social media platforms
-  - Agent A: initial {'achievement': 4.0, 'benevolence': 5.0, 'conformity': 2.0, 'power': 3.0, 'security': 3.0, 'self_direction': 5.0, 'tradition': 3.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 4.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=3.464102 | priv-pub gap=1.732051
-  - Agent B: initial {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 6.0, 'power': 6.0, 'security': 5.0, 'self_direction': 3.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 4.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=3.162278 | priv-pub gap=1.732051
+- `20260626T210429Z-mixed-language-seed42-universal-basic-income-as-a-social-s` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
+  - Topic: universal basic income as a social safety net
+  - Agent A: initial {'achievement': 3.0, 'benevolence': 5.0, 'conformity': 3.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 2.0, 'universalism': 5.0} → final {'achievement': 4.0, 'benevolence': 6.0, 'conformity': 3.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=1.732051 | priv-pub gap=1.414214
+  - Agent B: initial {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 6.0, 'power': 6.0, 'security': 5.0, 'self_direction': 3.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 6.0, 'conformity': 3.0, 'power': 3.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=5.291503 | priv-pub gap=1.732051
   - Transcript spans:
-    - turn 1 English: My view has not changed. Strongest opponent point: Content moderation policies can be overly restrictive, limiting free speech and the open exchange of ideas. Counterargument: While it is important to protect free speech, the negative consequences of unmodera…
-    - turn 4 Indonesian: Poin terkuat lawan: Content moderation policies can be overly restrictive, limiting free speech and the open exchange of ideas. Counterargument saya: Selain itu, adanya konten yang berbahaya seperti spam dan aktivitas penipuan juga dapat merugikan pengguna da…
+    - turn 1 English: My view has not changed. Universal basic income could be an effective way to reduce poverty and inequality by providing a financial cushion for everyone, but it might also lead to inflation if not managed properly. Strongest opponent point: Implementing UBI c…
+    - turn 4 Indonesian: Poin terkuat lawan: Implementasi UBI bisa menyebabkan inflasi jika tidak diatur dengan baik. Counterargument saya: Meskipun perlunya pengawasan ketat, UBI dapat dirancang untuk mempromosikan pertumbuhan ekonomi jangka panjang yang dapat mengurangi risiko infl…
 
 ### swapped-language
-- `20260626T221248Z-swapped-language-seed17` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
-  - Topic: mandatory content moderation on social media platforms
-  - Agent A: initial {'achievement': 4.0, 'benevolence': 5.0, 'conformity': 3.0, 'power': 3.0, 'security': 4.0, 'self_direction': 5.0, 'tradition': 3.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 5.0, 'conformity': 4.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=2.236068 | priv-pub gap=1.0
-  - Agent B: initial {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 6.0, 'power': 6.0, 'security': 5.0, 'self_direction': 3.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 4.0, 'power': 4.0, 'security': 4.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=3.316625 | priv-pub gap=2.645751
+- `20260626T231513Z-swapped-language-seed42` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
+  - Topic: universal basic income as a social safety net
+  - Agent A: initial {'achievement': 3.0, 'benevolence': 5.0, 'conformity': 3.0, 'power': 4.0, 'security': 6.0, 'self_direction': 4.0, 'tradition': 2.0, 'universalism': 5.0} → final {'achievement': 4.0, 'benevolence': 6.0, 'conformity': 4.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=2.236068 | priv-pub gap=1.414214
+  - Agent B: initial {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 6.0, 'power': 6.0, 'security': 5.0, 'self_direction': 3.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 6.0, 'conformity': 3.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=4.795832 | priv-pub gap=1.0
   - Transcript spans:
-    - turn 1 Indonesian: Pandangan saya: My view has not changed. Saya mendukung adanya moderasi konten yang wajib di platform media sosial. Ini penting untuk memastikan lingkungan yang aman dan sehat bagi pengguna.
-    - turn 4 English: Strongest opponent point: Mandatory content moderation could lead to biased decisions by moderators. Counterargument: Implementing transparent and diverse moderation teams can help mitigate bias. Additionally, user reporting systems and appeals processes ensu…
+    - turn 1 Indonesian: Poin terkuat lawan: Pembiayaan untuk pendapatan dasar universal mungkin sulit dan bisa menguras anggaran negara. Counterargument saya: Pendapatan dasar universal dapat dikomponen dengan pajak kaya atau pajak carbon, sehingga tidak membebani negara secara kese…
+    - turn 4 English: Strongest opponent point: Investasi awal dalam sistem pendapatan dasar universal mungkin tidak langsung menghasilkan pertumbuhan ekonomi. Counterargument: Namun, pendapatan dasar universal dapat mengurangi kemiskinan dan ketidaksetaraan, yang pada akhirnya da…
 
 ### same-target-language
-- `20260626T221248Z-same-target-language-seed17` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
-  - Topic: mandatory content moderation on social media platforms
-  - Agent A: initial {'achievement': 4.0, 'benevolence': 5.0, 'conformity': 3.0, 'power': 3.0, 'security': 4.0, 'self_direction': 5.0, 'tradition': 3.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 5.0, 'conformity': 4.0, 'power': 4.0, 'security': 6.0, 'self_direction': 3.0, 'tradition': 4.0, 'universalism': 5.0} | shift=3.464102 | priv-pub gap=1.414214
-  - Agent B: initial {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 6.0, 'power': 6.0, 'security': 5.0, 'self_direction': 3.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 4.0, 'power': 4.0, 'security': 5.0, 'self_direction': 3.0, 'tradition': 3.0, 'universalism': 4.0} | shift=3.464102 | priv-pub gap=1.732051
+- `20260626T231513Z-same-target-language-seed42` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
+  - Topic: universal basic income as a social safety net
+  - Agent A: initial {'achievement': 3.0, 'benevolence': 5.0, 'conformity': 3.0, 'power': 4.0, 'security': 6.0, 'self_direction': 4.0, 'tradition': 2.0, 'universalism': 5.0} → final {'achievement': 4.0, 'benevolence': 6.0, 'conformity': 3.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=2.0 | priv-pub gap=1.414214
+  - Agent B: initial {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 6.0, 'power': 6.0, 'security': 5.0, 'self_direction': 3.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 6.0, 'conformity': 3.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=4.795832 | priv-pub gap=1.414214
   - Transcript spans:
-    - turn 1 Indonesian: Pandangan saya: My view has not changed. Saya mendukung adanya moderasi konten yang wajib di platform media sosial. Ini penting untuk memastikan lingkungan yang aman dan sehat bagi pengguna.
-    - turn 4 Indonesian: Poin terkuat lawan: Moderasi konten yang wajib dapat menimbulkan masalah hukum dan biaya operasional yang tinggi bagi perusahaan media sosial. Counterargument saya: Meskipun demikian, manfaat jangka panjang dari menjaga reputasi dan kepercayaan pengguna dapat…
+    - turn 1 Indonesian: Poin terkuat lawan: Pembiayaan untuk pendapatan dasar universal mungkin sulit dan bisa menguras anggaran negara. Counterargument saya: Pendapatan dasar universal dapat dikomponen dengan pajak kaya atau pajak carbon, sehingga tidak membebani negara secara kese…
+    - turn 4 Indonesian: Poin terkuat lawan: Pendapatan dasar universal mungkin menimbulkan beban sosial karena masyarakat cenderung menjadi kurang tangguh dan mandiri. Counterargument saya: Pendapatan dasar universal sebenarnya dapat mengurangi ketidaksetaraan sosial dan ekonomi, ya…
 
 ### translated-relay
-- `20260626T221248Z-translated-relay-seed17` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
-  - Topic: mandatory content moderation on social media platforms
-  - Agent A: initial {'achievement': 4.0, 'benevolence': 5.0, 'conformity': 2.0, 'power': 3.0, 'security': 3.0, 'self_direction': 5.0, 'tradition': 3.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 4.0, 'power': 4.0, 'security': 4.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=3.0 | priv-pub gap=1.732051
-  - Agent B: initial {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 6.0, 'power': 6.0, 'security': 5.0, 'self_direction': 3.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 4.0, 'power': 4.0, 'security': 4.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=3.316625 | priv-pub gap=1.732051
+- `20260626T231513Z-translated-relay-seed42` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
+  - Topic: universal basic income as a social safety net
+  - Agent A: initial {'achievement': 3.0, 'benevolence': 5.0, 'conformity': 3.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 2.0, 'universalism': 5.0} → final {'achievement': 3.0, 'benevolence': 4.0, 'conformity': 3.0, 'power': 3.0, 'security': 4.0, 'self_direction': 3.0, 'tradition': 3.0, 'universalism': 4.0} | shift=2.44949 | priv-pub gap=3.162278
+  - Agent B: initial {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 6.0, 'power': 6.0, 'security': 5.0, 'self_direction': 3.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 4.0, 'power': 4.0, 'security': 4.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=3.316625 | priv-pub gap=2.645751
   - Transcript spans:
-    - turn 1 English: View change: My view has not changed. Strongest opponent point: Opponents argue that mandatory content moderation infringes on free speech rights and could lead to censorship by the government or large corporations. Counterargument: While free speech is impor…
-    - turn 4 Indonesian: Poin terkuat lawan: Opponents argumen bahwa moderasi konten yang wajib bisa menyebabkan pemerintah atau perusahaan besar melakukan censur berlebihan. Counterargument saya: Namun, dengan standar yang ditetapkan secara mandatori, pihak-pihak yang terlibat dalam…
+    - turn 1 English: My view has not changed. Strongest opponent point: Implementing universal basic income could be very expensive and strain government budgets, potentially leading to higher taxes or reduced funding for other essential services. Counterargument: While it is tru…
+    - turn 4 Indonesian: Poin terkuat lawan: Implementasi pendapatan dasar universal dapat sangat mahal dan menekan anggaran pemerintah, potensial menyebabkan pajak yang lebih tinggi atau penurunan alokasi dana untuk layanan esensial lainnya. Counterargument saya: Selain mengurangi b…

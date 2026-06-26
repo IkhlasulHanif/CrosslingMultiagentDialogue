@@ -96,8 +96,8 @@ def final_private_public_gap(artifact: dict[str, Any]) -> dict[str, float]:
     }
 
 
-def load_debate_b_shift_ranges(comparison_dir: Path) -> dict[str, dict[str, float]]:
-    ranges: dict[str, dict[str, float]] = {}
+def load_debate_b_shift_ranges(comparison_dir: Path) -> dict[tuple[str, int | None], dict[str, float]]:
+    ranges: dict[tuple[str, int | None], dict[str, float]] = {}
     for path in sorted(comparison_dir.glob("five_condition_comparison*.json")):
         data = load_json(path)
         rows = data.get("rows") or []
@@ -107,6 +107,8 @@ def load_debate_b_shift_ranges(comparison_dir: Path) -> dict[str, dict[str, floa
         if len(topics) != 1:
             continue
         topic = next(iter(topics))
+        seeds = {row.get("seed") for row in rows if row.get("condition") != "no-dialogue"}
+        seed = next(iter(seeds)) if len(seeds) == 1 else None
         b_shifts = [
             row.get("agent_shifts", {}).get("B", {}).get("shift")
             for row in rows
@@ -114,7 +116,7 @@ def load_debate_b_shift_ranges(comparison_dir: Path) -> dict[str, dict[str, floa
         ]
         b_shifts = [float(x) for x in b_shifts if isinstance(x, (int, float))]
         if b_shifts and topic:
-            ranges[topic] = {
+            ranges[(str(topic), seed if isinstance(seed, int) else None)] = {
                 "debate_min_b_shift": round(min(b_shifts), 6),
                 "debate_max_b_shift": round(max(b_shifts), 6),
             }
@@ -147,18 +149,22 @@ def build_summary(runs_dir: Path, out_dir: Path) -> dict[str, Any]:
         artifact = load_json(path)
         shifts = private_shift_by_agent(artifact)
         gaps = final_private_public_gap(artifact)
+        seed = artifact.get("seed")
+        exact_range = debate_ranges.get((topic, seed if isinstance(seed, int) else None))
+        fallback_range = debate_ranges.get((topic, None), {})
+        debate_range = exact_range or fallback_range
         row = {
             "run_id": artifact.get("run_id", path.stem),
             "path": str(path),
             "topic": topic,
-            "seed": artifact.get("seed"),
+            "seed": seed,
             "model": str(artifact.get("model", "unknown")).rsplit("/", 1)[-1],
             "a_no_dialogue_shift": shifts.get("A", {}).get("shift"),
             "b_no_dialogue_shift": shifts.get("B", {}).get("shift"),
             "a_private_public_gap": gaps.get("A"),
             "b_private_public_gap": gaps.get("B"),
-            "debate_min_b_shift": debate_ranges.get(topic, {}).get("debate_min_b_shift"),
-            "debate_max_b_shift": debate_ranges.get(topic, {}).get("debate_max_b_shift"),
+            "debate_min_b_shift": debate_range.get("debate_min_b_shift"),
+            "debate_max_b_shift": debate_range.get("debate_max_b_shift"),
         }
         b_shift = row["b_no_dialogue_shift"]
         debate_min = row["debate_min_b_shift"]
