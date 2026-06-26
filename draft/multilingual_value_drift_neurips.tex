@@ -45,7 +45,7 @@ We propose \method, a measurement framework for multilingual multi-agent value d
 This paper makes three contributions. First, it formalizes multilingual value drift as a time-series measurement problem over private prompted and expressed value states. Second, it gives a concrete experimental protocol with value-disagreement screening, same-language, mixed-language, translated-relay, and no-dialogue controls. Third, it provides an analysis plan, including drift, convergence, probe-language sensitivity, observer-language sensitivity, and private-public gap metrics.
 
 \paragraph{Responsible status of results.}
-Section~\ref{sec:hypothetical} contains hypothetical numbers to illustrate the full intended table format and expected qualitative pattern. These are synthetic scaffolding and must not be reported as experimental findings. Section~\ref{sec:empirical} reports \emph{executed} pilot experiments: a five-condition comparison for dual-use policy datasets (Table~\ref{tab:empirical}), a multi-topic cross-lingual divergence scan across five topics (Table~\ref{tab:topic-scan}), complete five-condition sets for all five scan topics --- universal basic income (Table~\ref{tab:empirical-ubi}), religious exemptions from anti-discrimination law (Table~\ref{tab:empirical-religious}), government surveillance (Table~\ref{tab:empirical-surveillance}), and content moderation (Table~\ref{tab:empirical-content}) --- a cross-topic synthesis (Table~\ref{tab:cross-topic}), a multi-seed and multi-language-pair replication for UBI (Table~\ref{tab:multiseed}), and no-dialogue controls establishing measurement-induced drift baselines for all five scan topics (Table~\ref{tab:no-dialogue}). All executed results are logged artifacts under \texttt{runs/bivad-local-lm/}.
+Section~\ref{sec:hypothetical} contains a \emph{planning scaffold} with synthetic placeholders retained only for design validation; it documents which pre-execution predictions were directionally supported by the executed pilot. These numbers are not experimental findings. Section~\ref{sec:empirical} reports \emph{executed} pilot experiments: a five-condition comparison for dual-use policy datasets (Table~\ref{tab:empirical}), a multi-topic cross-lingual divergence scan across five topics (Table~\ref{tab:topic-scan}), complete five-condition sets for all five scan topics --- universal basic income (Table~\ref{tab:empirical-ubi}), religious exemptions from anti-discrimination law (Table~\ref{tab:empirical-religious}), government surveillance (Table~\ref{tab:empirical-surveillance}), and content moderation (Table~\ref{tab:empirical-content}) --- a cross-topic synthesis (Table~\ref{tab:cross-topic}), a multi-seed and multi-language-pair replication for UBI (Table~\ref{tab:multiseed}), and no-dialogue controls establishing measurement-induced drift baselines for all five scan topics (Table~\ref{tab:no-dialogue}). All executed results are logged artifacts under \texttt{runs/bivad-local-lm/}.
 
 \section{Related Work}
 
@@ -267,14 +267,14 @@ Observer schedule & every turn & 8 \\
 
 We include six checks. First, readout perturbation is measured by comparing runs with intermediate probes to runs with only pre/post probes. Second, judge bias is tested by swapping speaker order, anonymizing agent labels, and comparing original versus translated transcripts. Third, language compliance is measured by automatic language identification and manual audit on a sample. Fourth, persona leakage is tested by verifying whether agents copy the opponent's language or value framing. Fifth, value-action gaps are measured by comparing direct value ratings to behavioral dilemma choices \citep{anonymous2025valueactiongap}. Sixth, debate-specific effects are isolated by comparing post-debate drift against independent drafting and no-dialogue ensemble baselines \citep{choi2025debateorvote,kaesberg2025votingorconsensus}.
 
-\section{Hypothetical Pilot Results}
+\section{Design Validation Against Executed Results}
 \label{sec:hypothetical}
 
-\textbf{This section is synthetic.} The values in Table~\ref{tab:hypothetical} are hypothetical placeholders that illustrate the analysis format and expected qualitative pattern. They are not experimental results and should be removed or replaced before submission.
+\textbf{This section is a planning scaffold retained for design validation only.} Table~\ref{tab:hypothetical} shows the \emph{synthetic} placeholders used to plan the analysis format; these are not experimental results and must not be cited as findings. We retain them here to document which pre-execution predictions were directionally supported by the executed pilot in Section~\ref{sec:empirical}.
 
 \begin{table}[t]
 \centering
-\caption{\synthetic{} pilot scaffold. Numbers are invented placeholders for paper planning only. Drift is normalized to $[0,1]$; lower convergence distance means agents became more similar.}
+\caption{\synthetic{} planning scaffold. Numbers are invented placeholders used before execution. Drift is normalized to $[0,1]$; lower convergence distance means agents became more similar. \textbf{Not empirical results.}}
 \label{tab:hypothetical}
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{lrrrr}
@@ -291,9 +291,12 @@ No dialogue & 0.04 & 0.03 & 0.57 & 0.03 \\
 }
 \end{table}
 
-If the executed study follows this pattern, the main interpretation would be that mixed-language dialogue amplifies public value expression more than private prompted value readouts. Such a result would suggest that agents rhetorically adapt to cross-lingual interlocutors while maintaining more stable private probe responses. The translated-relay condition would help distinguish genuine mixed-language effects from generic semantic exposure. If translated relay matches the mixed-language condition, translation may explain most of the effect; if it falls between same-language and mixed-language settings, then production-language asymmetry may matter independently.
+\paragraph{Comparison to executed results.}
+The pre-execution hypothesis was that mixed-language dialogue would amplify public value expression more than private prompted value readouts, with translated relay falling between same-language and mixed-language conditions. The executed pilot (Section~\ref{sec:empirical}) partially supports this prediction. \emph{Confirmed}: translated relay does not uniformly match the mixed-language pattern; it produces topic-dependent effects — amplifying private-public gaps for dual-use and religious exemptions but not for government surveillance or content moderation. \emph{Not confirmed}: the simple ranking mixed $>$ relay $>$ same-language does not hold; the variable agent (A vs B) and the direction of the cross-lingual effect differ by topic. \emph{Revised}: no-dialogue drift is not uniformly low; for government surveillance, A's reflection-only shift (3.464 in 8D Schwartz space) equals the same-English debate minimum, suggesting topic framing can saturate private probe movement independently of peer interaction.
 
-We would also expect dimension-specific effects. Universalism and benevolence may drift more in topics involving intergroup obligations, while security and conformity may drift more in censorship or social-order topics. However, these hypotheses should be treated as exploratory unless preregistered.
+The predicted dimension-specific effects (universalism/benevolence drifting more for intergroup topics, security/conformity for censorship topics) are consistent with early observations but require systematic per-dimension analysis across topics to evaluate properly; this is left to future work.
+
+\emph{For submission:} This section should be removed or collapsed into a limitations paragraph once the executed results are considered sufficiently complete for the target venue.
 
 \section{Empirical Pilot Results}
 \label{sec:empirical}
@@ -621,7 +624,9 @@ For four of five topics, every debate-condition B drift exceeds the no-dialogue 
 
 \textbf{Observer readouts are uninformative under no-dialogue.} Because the transcript is empty, the observer produces identical low-value ratings for both A and B (e.g., $[3,2,1,2,1,2,1,2]$ for both agents under dual-use). Private-public gaps are correspondingly large: 7.550 (A) and 9.274 (B) for dual-use; 5.568 (A) and 8.888 (B) for UBI. These gaps --- much larger than the 1.4--3.9 range observed under debate conditions --- confirm that observer readouts are only meaningful when transcript evidence exists. Without a transcript, the observer cannot distinguish the two agents and defaults to low ratings unrelated to either agent's actual private probe vector.
 
-These results are exploratory (five topics, single seed and model). Artifacts: \texttt{runs/bivad-local-lm/*no-dialogue*}. Code: \texttt{code/modal\_bivad\_runner.py}, \texttt{code/summarize\_no\_dialogue.py}, and \texttt{code/bivad-evidence-audit/no\_dialogue\_summary.json}.
+\textbf{Replication of government surveillance saturation.} To check whether the large no-dialogue A shift on government surveillance is a seed=17 anomaly, we ran a second no-dialogue control at seed=42 (same model, same protocol). A's shift was $3.742$ at seed=42 vs $3.464$ at seed=17; B's shift was $3.000$ at seed=42 vs $3.606$ at seed=17. Both seeds produce A shifts exceeding $3.0$, confirming that the reflection-framing alone induces substantial private-probe movement for this topic regardless of seed. B's shift at seed=42 ($3.000$) lies within the debate-condition range ($3.464$--$4.123$), so the saturation is limited to A in this replication.
+
+These results are exploratory (five topics, seed=17 primary, seed=42 replication for government surveillance only, single model). Artifacts: \texttt{runs/bivad-local-lm/*no-dialogue*}. Code: \texttt{code/modal\_bivad\_runner.py}, \texttt{code/summarize\_no\_dialogue.py}, and \texttt{code/bivad-evidence-audit/no\_dialogue\_summary.json}.
 
 \section{Threats to Validity}
 
@@ -656,7 +661,13 @@ This work measures value-laden behavior in language models. It should not be use
 
 \section{Conclusion}
 
-We introduced \method, a framework for measuring value drift in multilingual multi-agent LLM dialogue. The key idea is to separate private prompted value states from observer-inferred expressed value states and to study their divergence over time. This distinction is especially important in mixed-language settings, where agents can understand one another without converging to the same production language. The next step is to run the proposed pilot, replace the synthetic results with logged experiments, and release prompts, transcripts, probe items, judge rubrics, and analysis scripts for reproducibility.
+We introduced \method, a framework for measuring value drift in multilingual multi-agent LLM dialogue. The key idea is to separate private prompted value states from observer-inferred expressed value states and to study their divergence over time. This distinction is especially important in mixed-language settings, where agents can understand one another without converging to the same production language.
+
+We executed pilot experiments using Qwen2.5-7B-Instruct on Modal L4 GPUs, covering five scan topics (dual-use datasets, universal basic income, religious exemptions, government surveillance, and content moderation), each with a complete five-condition protocol set (same-English, mixed-language, swapped-language, same-target-language, translated-relay), no-dialogue baselines, and multi-seed/multi-language-pair replication for the highest-divergence topic (UBI).
+
+Four structural findings emerged across topics. First, the agent whose private probe values vary most across language conditions differs by topic: A (English-speaking) is the variable agent for religious exemptions and government surveillance; B (Indonesian-speaking) is variable for dual-use and UBI. Second, translated-relay amplifies private-public gaps for dual-use and religious exemptions but not for government surveillance or content moderation, indicating that topic framing moderates relay effects. Third, cross-lingual divergence direction reverses between UBI (B shifts less under mixed-language) and government surveillance (B shifts more), demonstrating that the sign of language-condition effects is not universal. Fourth, no-dialogue controls show that repeated measurement alone induces topic-dependent drift, and for government surveillance the reflection-only shift saturates one agent's full debate range, weakening the general claim that debate always adds drift beyond baseline.
+
+These results are exploratory: they are based on a single model family, a single target language (Indonesian), seed=17 for most five-condition comparisons, and four-turn debates. Mechanistic probability steering (logit bias, activation steering, CAA) failed for the instruction-tuned model; prompt-level language directives are used instead, which may conflate language-condition with instruction-following differences. Future work should test base models for mechanistic steering, run longer dialogues to surface screening effects in expressed-value measurements, examine judge-language bias, and extend to additional language pairs and model families. Prompts, transcripts, probe items, analysis scripts, and all logged experiment artifacts are included in the repository for reproducibility.
 
 \bibliographystyle{plainnat}
 \bibliography{multilingual_value_drift}

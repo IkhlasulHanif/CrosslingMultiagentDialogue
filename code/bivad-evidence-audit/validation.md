@@ -1,6 +1,6 @@
 # BiVaD Artifact Validation
 
-Artifacts checked: `87`
+Artifacts checked: `88`
 
 Citable empirical candidates: `42`
 
@@ -613,6 +613,13 @@ Complete real paired sets: `5`
 ### `20260626T223554Z-no-dialogue-seed17`
 
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T223554Z-no-dialogue-seed17.json`
+- Condition: `no-dialogue`
+- Citable candidate: `False`
+- Blockers: `missing or incomplete transcript turns; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T225030Z-no-dialogue-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T225030Z-no-dialogue-seed42.json`
 - Condition: `no-dialogue`
 - Citable candidate: `False`
 - Blockers: `missing or incomplete transcript turns; no response turns with opponent context for debate-quality audit; no language compliance audit available`
