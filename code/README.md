@@ -3,6 +3,7 @@
 Keep experiment implementation and experiment harnesses in this directory.
 
 - `audit_bivad_evidence.py`: API-free audit harness for BiVaD-style JSON run artifacts.
+- `validate_bivad_artifacts.py`: stricter API-free gate that reports whether audited artifacts are citable empirical candidates.
 - `run_bivad_pilot.py`: dry-run-capable model runner for a minimal paired BiVaD pilot using the OpenAI Responses API.
 - `run_bivad_local_torch.py`: API-free local Torch/MPS schema-check runner that writes synthetic non-empirical paired artifacts.
 - `make_bivad_audit_fixtures.py`: writes deterministic synthetic audit fixtures that document the expected artifact shape.
@@ -38,6 +39,14 @@ python3 code/audit_bivad_evidence.py code/fixtures/bivad-local-torch --out-dir /
 ```
 
 The local Torch runner uses Apple MPS when `torch.backends.mps.is_available()` is true, otherwise CPU. Its artifacts are deterministic tensor schema checks, not language-model behavior, and are marked `synthetic: true` plus `non_empirical: true`.
+
+Validate whether artifacts can be cited as empirical candidates:
+
+```sh
+python3 code/validate_bivad_artifacts.py path/to/run-artifacts --out-dir code/bivad-evidence-audit
+```
+
+The validator returns a non-zero status when artifacts are synthetic, incomplete, missing paired conditions, missing probe/readout values, rejected by screening, or failing debate/language compliance gates. This is expected for `code/fixtures/bivad-local-torch`; those artifacts exercise schema paths only.
 
 Run a real minimal pilot when API credentials are available:
 

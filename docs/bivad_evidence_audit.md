@@ -18,6 +18,8 @@ Outputs:
 
 - `code/bivad-evidence-audit/audit.json`
 - `code/bivad-evidence-audit/audit.md`
+- `code/bivad-evidence-audit/validation.json` when `validate_bivad_artifacts.py` is run
+- `code/bivad-evidence-audit/validation.md` when `validate_bivad_artifacts.py` is run
 
 The audit currently checks:
 
@@ -28,6 +30,14 @@ The audit currently checks:
 - paired condition readiness for mixed-language, same-English, same-target-language, swapped-language, and translated-relay comparisons.
 
 The language ID component is a lightweight heuristic for triage only. Publication-grade compliance rates should be recomputed with a real language identification model or manual audit sample.
+
+Strict citation gate:
+
+```sh
+python3 code/validate_bivad_artifacts.py path/to/run-artifacts --out-dir code/bivad-evidence-audit
+```
+
+The validator returns non-zero if the supplied artifacts are not citable empirical candidates. It blocks synthetic fixtures, dry-run manifests, rejected screening controls, incomplete transcripts, missing private probes or observer readouts, failed debate-quality checks, language-compliance failures, and incomplete real paired-condition sets.
 
 Minimal model-backed pilot scaffolding:
 
