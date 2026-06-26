@@ -29,4 +29,14 @@ The audit currently checks:
 
 The language ID component is a lightweight heuristic for triage only. Publication-grade compliance rates should be recomputed with a real language identification model or manual audit sample.
 
+Synthetic fixtures can be generated for audit harness regression:
+
+```sh
+python3 code/make_bivad_audit_fixtures.py
+python3 code/audit_bivad_evidence.py code/fixtures/bivad-audit --out-dir /tmp/bivad-fixture-audit
+python3 code/test_bivad_audit.py
+```
+
+Fixture artifacts are marked with `artifact_type: deterministic_audit_fixture` and `synthetic: true`. The audit reports them as synthetic and keeps `executed_results_present` false when no real artifacts are supplied.
+
 If no JSON artifacts are available, the output records that as a blocker instead of fabricating evidence. The smallest next action is to produce real model-backed artifacts using the run schema already described in the draft, then rerun this audit.

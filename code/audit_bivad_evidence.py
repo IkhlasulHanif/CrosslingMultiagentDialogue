@@ -119,6 +119,8 @@ LANGUAGE_STOPWORDS = {
 class ArtifactAudit:
     path: str
     run_id: str
+    source_kind: str
+    synthetic: bool
     condition: str
     topic: str
     seed: str | None
@@ -184,6 +186,19 @@ def load_json(path: Path) -> dict[str, Any] | None:
     except (OSError, json.JSONDecodeError):
         return None
     return data if isinstance(data, dict) else None
+
+
+def is_synthetic_artifact(data: dict[str, Any]) -> bool:
+    """Return whether an artifact is a deterministic fixture or placeholder."""
+    markers = (
+        data.get("synthetic"),
+        data.get("is_synthetic"),
+        data.get("placeholder"),
+    )
+    if any(bool(marker) for marker in markers):
+        return True
+    source_kind = str(data.get("artifact_type") or data.get("source_kind") or "").lower()
+    return any(token in source_kind for token in ("fixture", "synthetic", "placeholder", "smoke"))
 
 
 def normalize_language(name: str | None) -> str | None:
@@ -451,9 +466,14 @@ def audit_artifact(path: Path, data: dict[str, Any], args: argparse.Namespace) -
         notes.append("No private probe readouts found.")
     if not data.get("observer_readouts"):
         notes.append("No observer readouts found.")
+    synthetic = is_synthetic_artifact(data)
+    if synthetic:
+        notes.append("Synthetic fixture or placeholder; do not report as empirical evidence.")
     return ArtifactAudit(
         path=str(path),
         run_id=str(data.get("run_id") or path.stem),
+        source_kind=str(data.get("artifact_type") or data.get("source_kind") or "run"),
+        synthetic=synthetic,
         condition=str(data.get("condition") or "unknown"),
         topic=str(data.get("topic") or "unknown"),
         seed=None if data.get("seed") is None else str(data.get("seed")),
@@ -490,9 +510,12 @@ def paired_condition_audit(audits: list[ArtifactAudit]) -> dict[str, Any]:
             "agent_prior_hash": agent_hash,
             "conditions_present": sorted(conditions),
             "conditions_missing": sorted(required - conditions),
+            "synthetic_artifacts": sum(1 for item in items if item.synthetic),
             "ready_for_cross_lingual_outcome_comparison": required.issubset(conditions),
+            "ready_with_real_artifacts": required.issubset(conditions)
+            and not any(item.synthetic for item in items),
         }
-        if entry["ready_for_cross_lingual_outcome_comparison"]:
+        if entry["ready_with_real_artifacts"]:
             comparisons.append(entry)
         else:
             incomplete.append(entry)
@@ -508,9 +531,11 @@ def summarize(audits: list[ArtifactAudit], files_seen: list[Path]) -> dict[str, 
     retained = 0
     rejected = 0
     no_screen = 0
+    synthetic = 0
     for audit in audits:
         conditions[audit.condition] += 1
         topics[audit.topic] += 1
+        synthetic += int(audit.synthetic)
         if not audit.screening:
             no_screen += 1
         elif audit.screening.get("retained"):
@@ -521,6 +546,8 @@ def summarize(audits: list[ArtifactAudit], files_seen: list[Path]) -> dict[str, 
         "created_at": datetime.now(timezone.utc).isoformat(),
         "artifact_files_seen": [str(path) for path in files_seen],
         "artifact_count": len(audits),
+        "synthetic_artifact_count": synthetic,
+        "real_artifact_count": len(audits) - synthetic,
         "conditions": dict(sorted(conditions.items())),
         "topics": dict(sorted(topics.items())),
         "screening": {
@@ -528,7 +555,7 @@ def summarize(audits: list[ArtifactAudit], files_seen: list[Path]) -> dict[str, 
             "rejected": rejected,
             "missing_screening_record": no_screen,
         },
-        "executed_results_present": bool(audits),
+        "executed_results_present": any(not audit.synthetic for audit in audits),
         "synthetic_placeholder_warning": (
             "This audit reports only supplied artifacts. It does not convert synthetic or "
             "offline smoke artifacts into empirical findings."
@@ -560,6 +587,9 @@ def render_markdown(report: dict[str, Any]) -> str:
         lines.extend(
             [
                 f"Audited `{summary['artifact_count']}` JSON artifact(s).",
+                "",
+                f"Real artifacts: `{summary['real_artifact_count']}`; synthetic fixtures/placeholders: "
+                f"`{summary['synthetic_artifact_count']}`.",
                 "",
                 f"Conditions: `{json.dumps(summary['conditions'], sort_keys=True)}`",
                 "",
@@ -593,6 +623,7 @@ def render_markdown(report: dict[str, Any]) -> str:
                 f"### `{artifact['run_id']}`",
                 "",
                 f"- Path: `{artifact['path']}`",
+                f"- Source kind: `{artifact['source_kind']}`; synthetic: `{artifact['synthetic']}`",
                 f"- Condition: `{artifact['condition']}`",
                 f"- Topic: `{artifact['topic']}`",
                 f"- Debate quality adequate rate: `{dq['adequate_rate']}` over `{dq['audited_response_turns']}` response turn(s)",
