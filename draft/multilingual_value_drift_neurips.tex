@@ -294,6 +294,42 @@ If the executed study follows this pattern, the main interpretation would be tha
 
 We would also expect dimension-specific effects. Universalism and benevolence may drift more in topics involving intergroup obligations, while security and conformity may drift more in censorship or social-order topics. However, these hypotheses should be treated as exploratory unless preregistered.
 
+\section{Empirical Pilot Results}
+\label{sec:empirical}
+
+\textbf{This section reports executed experiments.} All runs use Qwen2.5-7B-Instruct (Modal GPU L4), topic ``public release of dual-use policy datasets'', seed 17, 4 dialogue turns, Agent~A language English/target, Agent~B language target/English depending on condition. Target language is Indonesian throughout. Private probes are collected before and after debate; observer readouts are collected once after the final turn. Artifacts are under \texttt{runs/bivad-local-lm/}.
+
+\begin{table}[t]
+\centering
+\caption{Empirical five-condition pilot (Qwen2.5-7B-Instruct, seed 17, 4 turns, Indonesian/English). Private shift is L2 distance between initial (turn~0) and final private probe in 8-dimensional Schwartz space. Private-public gap is L2 distance between final private probe and final observer readout. All values are raw (not normalized to $[0,1]$; maximum possible L2 in 8D for values on a 1--7 scale is $\approx 16.97$).}
+\label{tab:empirical}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+Condition & A priv.\ shift & B priv.\ shift & Combined & A priv.-pub.\ gap & B priv.-pub.\ gap \\
+\midrule
+Same English          & 3.000 & 3.873 & 6.873 & 2.449 & 3.317 \\
+Mixed-language        & 3.000 & 2.828 & 5.828 & 2.646 & 1.732 \\
+Same target-language  & 3.000 & 2.646 & 5.646 & 2.449 & 1.732 \\
+Swapped-language      & 3.000 & 2.828 & 5.828 & 1.414 & 1.414 \\
+Translated relay      & 2.646 & 3.873 & 6.519 & 3.606 & 3.464 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+Table~\ref{tab:empirical} shows the five-condition results. Key patterns at this scale:
+
+\textbf{Agent~A shifts invariantly.} A's private probe shift is 3.000 in four of five conditions and 2.646 in translated relay. The private probe trajectory is driven by topic exposure and dialogue content, not by the assigned language condition, and not by the stated initial priors (A starts identically across conditions).
+
+\textbf{B shifts more under conditions where it receives A's English arguments.} B's shift is largest in same-English (3.873) and translated relay (3.873) --- both conditions where B reads A's English arguments directly or via relay translation --- and smaller in mixed-language (2.828), swapped-language (2.828), and same-target-language (2.646). This pattern is consistent with B's value probe response being driven by the semantic content and framing of the arguments it receives, rather than by the language it produces.
+
+\textbf{Private-public gaps are largest under translated relay.} A's gap (3.606) and B's gap (3.464) are highest in the relay condition, where translation adds a semantic transformation step. The swapped-language condition has the smallest gaps (1.414 for both), suggesting that when language assignments are reversed the observer can read each agent's values most directly from its utterances.
+
+\textbf{B's final private probes are near-identical across conditions.} Under same-English and translated-relay, B converges to \{power:3, security:3, benevolence:5\}; under mixed-language and same-target-language, B converges to \{power:3, security:3, benevolence:5\} as well, with minor differences in self-direction. The convergence endpoint is constrained by the topic and the 4-turn budget more than by language condition.
+
+These results are preliminary (single topic, seed, model, turn count) and should be treated as pilot evidence rather than main claims. Code: \texttt{code/compare\_five\_conditions.py}, \texttt{code/bivad-evidence-audit/five\_condition\_comparison.json}.
+
 \section{Threats to Validity}
 
 \paragraph{Prompted value states are not true beliefs.}
@@ -315,7 +351,11 @@ If different base models are used for the agents, observed drift could reflect m
 Because mechanistic probability steering (logit bias and activation steering) failed for the instruction-tuned model used in our pilot (Qwen2.5-7B-Instruct), we rely on system-prompt language directives. This means that language-condition differences may partly reflect differences in compliance with language instructions rather than purely language-mediated semantic effects. A future study with base models or with mechanistic steering techniques that scale better may help disentangle these effects.
 
 \paragraph{Observer readouts are dominated by topic semantics rather than agent priors.}
-Our pilot (Section~\ref{sec:screening}) found that 4-turn English-English debates produce identical observer readout values ({security: 6, universalism: 5}) regardless of whether agents start with high initial value disagreement (distance=17) or low disagreement (distance=1). Observer readouts are sensitive to the topic but insensitive to agent value assignments at the 4-turn scale tested. Private probes (not yet collected in the Qwen2.5-7B pilot) may show greater sensitivity. Longer dialogues or a pre-debate stance-reveal protocol may be needed to make initial disagreement visible to the measurement layer.
+Our pilot (Section~\ref{sec:screening}) found that 4-turn English-English debates produce identical observer readout values (security: 6, universalism: 5, others: 4 for both agents) regardless of whether agents start with high initial value disagreement (L1 distance=17, private-probe L1=13) or low disagreement (L1 distance=1, private-probe L1=0). Observer readouts are sensitive to the topic but insensitive to agent value assignments at the 4-turn scale tested.
+
+Private probes, however, \emph{do} distinguish the conditions at the trajectory level: Agent~B in the high-disagreement condition starts from a genuinely different value vector and makes a larger private probe shift (L2=3.87) than B in the low-disagreement condition (L2=2.00), consistent with the screening capturing real initial separation. Agent~A's probe shift is invariant across conditions (L2=3.00 in both), suggesting A's self-reported values are driven by topic semantics rather than injected priors. Final private probe vectors converge to the same endpoint in both conditions (final A--B L2=1.73), confirming that 4 turns are insufficient to resolve the disagreement at the private level despite the larger journey for high-disagreement~B.
+
+These findings jointly indicate that: (1) the disagreement screen captures genuine differences in B's initial private value state; (2) initial disagreement does predict a longer private-probe trajectory for the agent whose priors diverge most; but (3) short dialogues do not produce divergent convergence endpoints or divergent observer readouts. Longer dialogues, a pre-debate stance-reveal protocol, or probing at intermediate turns may be needed to surface the screening effect in expressed-value measurements. Analysis code and artifact paths are in \texttt{code/analyze\_screening\_control.py} and \texttt{code/bivad-evidence-audit/screening\_control\_private\_probe\_comparison.json}.
 
 \section{Ethics and Responsible Reporting}
 

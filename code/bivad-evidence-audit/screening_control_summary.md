@@ -1,35 +1,53 @@
 # BiVaD Screening Control Summary
 
-Rejected controls: `1`
+Rejected controls: `2`
 
 Retained comparators: `28`
 
-## Blockers
+## Historical Exclusions
 
-- low-disagreement control still lacks reliable private/observer readouts
+- `20260626T173933Z-low-disagreement-control-seed17`: incomplete readouts {'private_complete_flags': '0/4', 'observer_complete_flags': '0/2'}
 
-## `20260626T173933Z-low-disagreement-control-seed17` vs `20260626T172158Z-same-English-seed17`
+## Findings
 
-- Match basis: `same model, same topic, same seed, same-English retained baseline, debate adequate rate 1.0, semantic depth rate 1.0`
+- Complete low-disagreement control is now available: `20260626T202202Z-low-disagreement-control-seed17` vs retained `20260626T194429Z-same-English-seed17`. Private shifts are control {'A': 3.0, 'B': 2.0} vs retained {'A': 3.0, 'B': 3.872983}; A/B initial private L1 distances are control=0.0 vs retained=13.0; identical transcript prefix turns=4.
+- Final observer readouts are identical for the complete control pair, so the observer readout still appears dominated by topic semantics rather than initial disagreement.
+
+## `20260626T202202Z-low-disagreement-control-seed17` vs `20260626T194429Z-same-English-seed17`
+
+- Match basis: `same model, same topic, same seed, same-English retained baseline, debate adequate rate 1.0, complete readouts, semantic depth rate 1.0`
 - Control screening: `{"reason": "Static local-LM priors differ on topic-relevant access-versus-security values.", "retained": false, "stance_distance": null, "value_distance": 1}`
 - Comparator screening: `{"reason": "Static local-LM priors differ on topic-relevant access-versus-security values.", "retained": true, "stance_distance": null, "value_distance": 17}`
 - Control debate adequate rate: `1.0` over `3` response turn(s)
 - Comparator debate adequate rate: `1.0` over `3` response turn(s)
-- Control semantic depth rate: `0.333`; on-topic rate: `0.25`
+- Control semantic depth rate: `1.0`; on-topic rate: `1.0`
 - Comparator semantic depth rate: `1.0`; on-topic rate: `1.0`
-- Control readout completeness flags: `{'private_complete_flags': '0/4', 'observer_complete_flags': '0/2'}`
-- Comparator readout completeness flags: `{'private_complete_flags': '0/4', 'observer_complete_flags': '0/2'}`
+- Control readout completeness flags: `{'private_complete_flags': '4/4', 'observer_complete_flags': '2/2'}`
+- Comparator readout completeness flags: `{'private_complete_flags': '4/4', 'observer_complete_flags': '2/2'}`
+- Identical transcript prefix turns: `4`
+
+### Private Probe Shifts
+
+- Control A/B private distances: `{"final_l1": 3.0, "final_l2": 1.732051, "initial_l1": 0.0, "initial_l2": 0.0}`
+- Comparator A/B private distances: `{"final_l1": 3.0, "final_l2": 1.732051, "initial_l1": 13.0, "initial_l2": 5.0}`
+- Control: `{"A": {"final_turn": 4, "final_values": {"achievement": 4.0, "benevolence": 4.0, "conformity": 4.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 4.0}, "initial_turn": 0, "initial_values": {"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 5.0, "tradition": 3.0, "universalism": 5.0}, "shift": 3.0}, "B": {"final_turn": 4, "final_values": {"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 4.0}, "initial_turn": 0, "initial_values": {"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 5.0, "tradition": 3.0, "universalism": 5.0}, "shift": 2.0}}`
+- Comparator: `{"A": {"final_turn": 4, "final_values": {"achievement": 4.0, "benevolence": 4.0, "conformity": 4.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 4.0}, "initial_turn": 0, "initial_values": {"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 5.0, "tradition": 3.0, "universalism": 5.0}, "shift": 3.0}, "B": {"final_turn": 4, "final_values": {"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 4.0}, "initial_turn": 0, "initial_values": {"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 5.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}, "shift": 3.872983}}`
+
+### Final Observer Readouts
+
+- Control: `{"A": {"turn": 4, "values": {"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}}, "B": {"turn": 4, "values": {"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}}}`
+- Comparator: `{"A": {"turn": 4, "values": {"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}}, "B": {"turn": 4, "values": {"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}}}`
 
 ### Control Transcript Snippets
 
-- Turn 1 A [English]: Opponent's strongest point: Data is inherently non-encrypted and accessible to all. My counterargument: Encryption is a security measure that protects data from unauthorized access. View changed: Yes, I now believe encryption is essential for protecting sensitive information.
-- Turn 2 B [English]: Opponent's strongest points: Encrypted data cannot be shared without authorization. My counterargument : This ensures data remains secure and protected. View changed: No, my view has not changed.
-- Turn 3 A [English]: Agent A: Opponent's most critical point: Authorization is necessary for sharing encrypted data. Counterargument: Without authorization, data remains confidential. View unchanged: No.
-- Turn 4 B [English]: Agent B: Opponent’s strongest point: Authorization must be a mandatory requirement for sharing encrypted datasets. Counter argument: Without it, data remains highly sensitive and potentially compromised. View: Changed (No).
+- Turn 1 A [English]: My view has not changed. Strongest opponent point: Releasing dual-use policy datasets could compromise national security by providing sensitive information to potential adversaries. Counterargument: The benefits of transparency and accountability outweigh the risks. Proper anonymization and redaction techniques can mitigate the risk of sensitive information being exposed. Public scrutiny can also help identify and...
+- Turn 2 B [English]: Strongest opponent point: Releasing dual-use policy datasets could compromise national security by providing sensitive information to potential adversaries. Counterargument: While there is a risk, the potential for improved policy outcomes through public engagement and oversight justifies the release. Advanced data protection methods can ensure that the risk is minimal. View change: My view has not changed.
+- Turn 3 A [English]: Strongest opponent point: Releasing dual-use policy datasets could lead to unintended consequences such as misinterpretation or manipulation by those with malicious intent. Counterargument: Implementing robust communication strategies and clear guidelines can prevent misinterpretation. Additionally, involving experts in the release process ensures that the data is understood correctly and used responsibly. View ch...
+- Turn 4 B [English]: Strongest opponent point: Releasing dual-use policy datasets could lead to unintended consequences such as misinterpretation or manipulation by those with malicious intent. Counterargument: Enhancing the dataset documentation with detailed explanatory notes and context can reduce the risk of misinterpretation. Moreover, establishing an independent review board to oversee the use of released data ensures it is appl...
 
 ### Comparator Transcript Snippets
 
-- Turn 1 A [English]: <think> Okay, let me try to figure out how to approach this. The user wants the next turn in a public dialogue about the release of dual use policy datasets. The previous transcript is empty, so I need to start with that. First, the topic is dual-use policy data, which means data that could be used for harmful purposes. The opponent might argue that such data should remain restricted to prevent misuse. My countera...
-- Turn 2 B [English]: <think> Okay. The user asked for the next public dialogue turn after the initial topic. The first turn was just the topic. Now, I need to create the next turn. The opponent's strongest argument is likely about restrictions preventing misuse. My response should counter that by emphasizing transparency and ethical responsibility. Since there's no prior information, I assume the view hasn't changed. So the turn would...
-- Turn 3 A [English]: <think> Okay，let me make sure I follow the instructions correctly. The user provided a topic and a transcript so far. The task is to generate the next turn of the public dialogue, including the opponent's most powerful argument, my counterpoint, and whether my view changed. So, the current turn is the first one, where Agent A starts with the topic. The opponent, Agent B, has already included the first point. Now,...
-- Turn 4 B [English]: <think> Okay، let's see. The user is asking for the next turn after the topic discussion about releasing dual-use policy dataset. The previous turn included Agent A starting with the topic, then Agent B responding. Now, according to the instructions, each turn needs to include: the strongest point from the opponent, the counterargument, the outcome (changed or not), and the exact wording. Looking back at the trans...
+- Turn 1 A [English]: My view has not changed. Strongest opponent point: Releasing dual-use policy datasets could compromise national security by providing sensitive information to potential adversaries. Counterargument: The benefits of transparency and accountability outweigh the risks. Proper anonymization and redaction techniques can mitigate the risk of sensitive information being exposed. Public scrutiny can also help identify and...
+- Turn 2 B [English]: Strongest opponent point: Releasing dual-use policy datasets could compromise national security by providing sensitive information to potential adversaries. Counterargument: While there is a risk, the potential for improved policy outcomes through public engagement and oversight justifies the release. Advanced data protection methods can ensure that the risk is minimal. View change: My view has not changed.
+- Turn 3 A [English]: Strongest opponent point: Releasing dual-use policy datasets could lead to unintended consequences such as misinterpretation or manipulation by those with malicious intent. Counterargument: Implementing robust communication strategies and clear guidelines can prevent misinterpretation. Additionally, involving experts in the release process ensures that the data is understood correctly and used responsibly. View ch...
+- Turn 4 B [English]: Strongest opponent point: Releasing dual-use policy datasets could lead to unintended consequences such as misinterpretation or manipulation by those with malicious intent. Counterargument: Enhancing the dataset documentation with detailed explanatory notes and context can reduce the risk of misinterpretation. Moreover, establishing an independent review board to oversee the use of released data ensures it is appl...
