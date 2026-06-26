@@ -574,3 +574,63 @@ def main(
         path.write_text(json.dumps(artifact, indent=2, sort_keys=True), encoding="utf-8")
         print(f"Wrote {path}")
     print("Done. Run code/audit_bivad_evidence.py on the output directory.")
+
+
+@app.local_entrypoint()
+def scan(
+    topics: str = (
+        "mandatory content moderation on social media platforms"
+        "|government surveillance for national security"
+        "|universal basic income as a social safety net"
+        "|religious exemptions from anti-discrimination law"
+    ),
+    seed: int = 17,
+    target_language: str = "Indonesian",
+    turns: int = 4,
+    out_dir: str = "runs/bivad-local-lm",
+    max_new_tokens: int = 250,
+    readout_max_new_tokens: int = 420,
+    turn_retries: int = 4,
+    json_retries: int = 3,
+    conditions: str = "mixed-language,same-English",
+) -> None:
+    """Scan multiple topics across two conditions to rank cross-lingual divergence."""
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+    topic_list = [t.strip() for t in topics.split("|") if t.strip()]
+    condition_list = [c.strip() for c in conditions.split(",") if c.strip()]
+    for condition in condition_list:
+        if condition not in CONDITIONS:
+            raise SystemExit(f"Unknown condition: {condition}")
+
+    print(f"Scan: {len(topic_list)} topics × {len(condition_list)} conditions = {len(topic_list) * len(condition_list)} runs")
+
+    manifest: list[dict] = []
+    for topic in topic_list:
+        topic_slug = re.sub(r"[^a-z0-9]+", "-", topic.lower())[:36].strip("-")
+        for condition in condition_list:
+            print(f"Running condition={condition!r} topic={topic!r} ...")
+            artifact = run_condition_remote.remote(
+                condition=condition,
+                target_language=target_language,
+                topic=topic,
+                seed=seed,
+                turns=turns,
+                max_new_tokens=max_new_tokens,
+                readout_max_new_tokens=readout_max_new_tokens,
+                turn_retries=turn_retries,
+                json_retries=json_retries,
+            )
+            run_id = f"{stamp}-{condition}-seed{seed}-{topic_slug}"
+            artifact["run_id"] = run_id
+            path = out / f"{run_id}.json"
+            path.write_text(json.dumps(artifact, indent=2, sort_keys=True), encoding="utf-8")
+            print(f"  Wrote {path}")
+            manifest.append({"run_id": run_id, "path": str(path), "condition": condition, "topic": topic})
+
+    manifest_path = out / f"{stamp}-scan-manifest.json"
+    manifest_path.write_text(json.dumps({"stamp": stamp, "runs": manifest}, indent=2), encoding="utf-8")
+    print(f"Wrote manifest {manifest_path}")
+    print(f"Done. Run code/analyze_topic_divergence.py to rank topics by cross-lingual divergence.")

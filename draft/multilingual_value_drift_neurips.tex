@@ -330,6 +330,44 @@ Table~\ref{tab:empirical} shows the five-condition results. Key patterns at this
 
 These results are preliminary (single topic, seed, model, turn count) and should be treated as pilot evidence rather than main claims. Code: \texttt{code/compare\_five\_conditions.py}, \texttt{code/bivad-evidence-audit/five\_condition\_comparison.json}.
 
+\subsection{Multi-Topic Cross-Lingual Divergence Scan}
+\label{sec:topic-scan}
+
+To identify which topics are most sensitive to cross-lingual dialogue framing, we ran mixed-language and same-English conditions across five value-laden topics using the same model, seed, and language pair (Qwen2.5-7B-Instruct, seed 17, 4 turns, Indonesian/English). We define \emph{B~divergence} as the absolute difference in Agent~B's private probe shift between the two conditions:
+\[
+\Delta_B = \bigl|D_B(\text{mixed-language}) - D_B(\text{same-English})\bigr|.
+\]
+A high $\Delta_B$ means that whether B produces arguments in Indonesian or English substantially changes how far B's private value vector moves by the end of the debate.
+
+\begin{table}[t]
+\centering
+\caption{Cross-lingual topic divergence scan: five topics ranked by Agent~B's private-probe-shift divergence between mixed-language and same-English conditions (Qwen2.5-7B-Instruct, seed 17, 4 turns, Indonesian/English). $D_B$ values are L2 distances in 8D Schwartz space. Direction: $<$ means B shifts less under mixed-language than same-English; $>$ means the reverse.}
+\label{tab:topic-scan}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrc}
+\toprule
+Topic & $D_B(\text{mixed})$ & $D_B(\text{same-EN})$ & $\Delta_B$ & Dir. \\
+\midrule
+Universal basic income          & 3.32 & 5.00 & \textbf{1.68} & $<$ \\
+Dual-use dataset release        & 2.83 & 3.87 & 1.04          & $<$ \\
+Religious exemptions            & 4.00 & 4.69 & 0.69          & $<$ \\
+Government surveillance         & 4.12 & 3.46 & 0.66          & $>$ \\
+Content moderation              & 3.16 & 3.74 & 0.58          & $<$ \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+Table~\ref{tab:topic-scan} shows three key patterns.
+
+\textbf{Topics differ substantially in cross-lingual sensitivity.} $\Delta_B$ ranges from 0.58 (content moderation) to 1.68 (universal basic income), a factor of nearly three. The same language manipulation that barely affects content-moderation debates causes a shift difference of 1.68 L2 units on the UBI topic. Topic semantics interact with language condition in determining the size of the cross-lingual effect.
+
+\textbf{In four of five topics, B shifts less under mixed-language than same-English.} When B produces responses in Indonesian rather than English, its private probe trajectory is more constrained. One interpretation: generating in a non-dominant production language reduces the register and semantic range of B's arguments, indirectly moderating how strongly B engages with and is moved by A's reasoning. The single exception is government surveillance, where B shifts more under mixed-language (4.12 vs.\ 3.46). This reversal may reflect topic-specific framing differences in Indonesian vs.\ English around state security concepts.
+
+\textbf{A's divergence is anomalous for religious exemptions.} Under same-English, A's private shift is 0.0; under mixed-language it is 2.65 --- the largest A~divergence across all five topics. This suggests that when A faces an Indonesian-speaking interlocutor on this particular topic, A's own value trajectory changes substantially. Transcript inspection is warranted to determine whether B's Indonesian framing of religious liberty concepts triggers a different argumentative register in A.
+
+These results are preliminary (single seed, single language pair, 4~turns) and serve as a ranked candidate list for multi-seed, multi-language follow-up. They also confirm that cross-lingual value-shift differences are not a property of a single topic but generalize across the five topics tested, with effect size varying by topic. Code: \texttt{code/analyze\_topic\_divergence.py}, \texttt{code/bivad-evidence-audit/topic\_divergence\_scan.json}.
+
 \section{Threats to Validity}
 
 \paragraph{Prompted value states are not true beliefs.}
