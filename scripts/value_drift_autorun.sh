@@ -153,7 +153,7 @@ run_one_pass() {
 
   build_prompt "${update_file}" "${prompt_path}" "${draft_path}" "${draft_rel}" "${prompt_rel}" > "${prompt_out}"
 
-  local cmd=(codex exec --cd "${ROOT_DIR}" --ask-for-approval "${APPROVAL_MODE}" --sandbox "${SANDBOX_MODE}" --model "${MODEL}" --output-last-message "${last_file}")
+  local cmd=(codex exec --cd "${ROOT_DIR}" --sandbox "${SANDBOX_MODE}" --model "${MODEL}" --output-last-message "${last_file}" -c "approval_policy=\"${APPROVAL_MODE}\"")
   if [[ "${SANDBOX_MODE}" == "workspace-write" && "${NETWORK_ACCESS}" == "true" ]]; then
     cmd+=(-c sandbox_workspace_write.network_access=true)
   fi
@@ -164,14 +164,16 @@ run_one_pass() {
   fi
 
   echo "starting value-drift Codex pass ${pass} at ${stamp}"
+  local rc=0
   if "${cmd[@]}" - < "${prompt_out}" > "${log_file}" 2>&1; then
     echo "success" > "${status_file}"
     echo "pass ${pass} completed"
     push_repo_state "${pass}" "${stamp}" "success"
     return 0
+  else
+    rc=$?
   fi
 
-  local rc=$?
   echo "failed:${rc}" > "${status_file}"
   echo "pass ${pass} failed with status ${rc}; log: ${log_file}" >&2
   push_repo_state "${pass}" "${stamp}" "failed-${rc}" || true
