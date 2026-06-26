@@ -29,6 +29,16 @@ The audit currently checks:
 
 The language ID component is a lightweight heuristic for triage only. Publication-grade compliance rates should be recomputed with a real language identification model or manual audit sample.
 
+Minimal model-backed pilot scaffolding:
+
+```sh
+python3 code/run_bivad_pilot.py --out-dir runs/bivad-pilot
+OPENAI_API_KEY=... python3 code/run_bivad_pilot.py --execute --out-dir runs/bivad-pilot
+python3 code/audit_bivad_evidence.py runs/bivad-pilot
+```
+
+The first command is a dry run and writes prompt manifests only. It does not create empirical evidence. The `--execute` command uses the OpenAI Responses API with `gpt-5.5` and `reasoning.effort=medium` by default, then writes per-condition JSON artifacts that the audit can score. The `seed` is recorded as a paired-run grouping key, not as a guarantee of deterministic API sampling. If credentials are missing, do not mark any checklist item as empirically handled.
+
 Synthetic fixtures can be generated for audit harness regression:
 
 ```sh

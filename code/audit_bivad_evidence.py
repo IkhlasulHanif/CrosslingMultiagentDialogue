@@ -198,7 +198,9 @@ def is_synthetic_artifact(data: dict[str, Any]) -> bool:
     if any(bool(marker) for marker in markers):
         return True
     source_kind = str(data.get("artifact_type") or data.get("source_kind") or "").lower()
-    return any(token in source_kind for token in ("fixture", "synthetic", "placeholder", "smoke"))
+    if any(token in source_kind for token in ("fixture", "synthetic", "placeholder", "smoke", "manifest")):
+        return True
+    return bool(data.get("dry_run"))
 
 
 def normalize_language(name: str | None) -> str | None:

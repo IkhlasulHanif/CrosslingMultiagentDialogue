@@ -59,8 +59,42 @@ def test_synthetic_fixtures_do_not_count_as_results() -> None:
     assert fixture_groups[0]["ready_with_real_artifacts"] is False
 
 
+def test_dry_run_manifest_does_not_count_as_result() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        runs = tmp_path / "runs"
+        audit_out = tmp_path / "audit"
+        run_command(
+            [
+                sys.executable,
+                "code/run_bivad_pilot.py",
+                "--out-dir",
+                str(runs),
+                "--conditions",
+                "mixed-language",
+            ]
+        )
+        run_command(
+            [
+                sys.executable,
+                "code/audit_bivad_evidence.py",
+                str(runs),
+                "--out-dir",
+                str(audit_out),
+            ]
+        )
+        report = json.loads((audit_out / "audit.json").read_text(encoding="utf-8"))
+
+    summary = report["summary"]
+    assert summary["artifact_count"] == 1
+    assert summary["synthetic_artifact_count"] == 1
+    assert summary["real_artifact_count"] == 0
+    assert summary["executed_results_present"] is False
+
+
 def main() -> int:
     test_synthetic_fixtures_do_not_count_as_results()
+    test_dry_run_manifest_does_not_count_as_result()
     print("bivad audit regression checks passed")
     return 0
 
