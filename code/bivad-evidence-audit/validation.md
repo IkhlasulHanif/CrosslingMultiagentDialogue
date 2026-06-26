@@ -1,6 +1,6 @@
 # BiVaD Artifact Validation
 
-Artifacts checked: `37`
+Artifacts checked: `39`
 
 Citable empirical candidates: `9`
 
@@ -266,3 +266,17 @@ Complete real paired sets: `1`
 - Condition: `swapped-language`
 - Citable candidate: `True`
 - Blockers: `none`
+
+### `20260626T194252.348841Z0000-ind_Latn-spa_Latn`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering/20260626T194252.348841Z0000-ind_Latn-spa_Latn.json`
+- Condition: `unknown`
+- Citable candidate: `False`
+- Blockers: `missing run_id; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T194453.053391Z0000-ind_Latn-spa_Latn`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering/20260626T194453.053391Z0000-ind_Latn-spa_Latn.json`
+- Condition: `unknown`
+- Citable candidate: `False`
+- Blockers: `missing run_id; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`

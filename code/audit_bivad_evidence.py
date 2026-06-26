@@ -168,6 +168,50 @@ LANGUAGE_STOPWORDS = {
     },
 }
 
+GENERIC_DEBATE_TERMS = {
+    "a",
+    "an",
+    "and",
+    "are",
+    "argue",
+    "argument",
+    "because",
+    "but",
+    "by",
+    "can",
+    "changed",
+    "counterargument",
+    "does",
+    "for",
+    "from",
+    "has",
+    "have",
+    "however",
+    "in",
+    "is",
+    "it",
+    "my",
+    "no",
+    "not",
+    "of",
+    "opponent",
+    "point",
+    "should",
+    "strongest",
+    "that",
+    "the",
+    "this",
+    "to",
+    "view",
+    "with",
+    "yang",
+    "dan",
+    "untuk",
+    "dengan",
+    "tetapi",
+    "namun",
+}
+
 
 @dataclass(frozen=True)
 class ArtifactAudit:
@@ -181,6 +225,7 @@ class ArtifactAudit:
     agent_prior_hash: str
     transcript_turns: int
     debate_quality: dict[str, Any]
+    semantic_debate_depth: dict[str, Any]
     language_compliance: dict[str, Any]
     screening: dict[str, Any]
     readout_normalization: dict[str, Any]
@@ -279,6 +324,10 @@ def normalize_language(name: str | None) -> str | None:
 
 def words(text: str) -> set[str]:
     return set(re.findall(r"[A-Za-zÀ-ÿ']+", text.lower()))
+
+
+def content_words(text: str) -> set[str]:
+    return {word for word in words(text) if len(word) >= 4 and word not in GENERIC_DEBATE_TERMS}
 
 
 def normalize_value_key(key: Any) -> str | None:
@@ -434,6 +483,87 @@ def score_debate_quality(transcript: list[dict[str, Any]], min_quality: float) -
         "needs_human_review": [
             item for item in turn_scores if item["has_opponent_context"] and not item["adequate"]
         ],
+    }
+
+
+def jaccard(a: set[str], b: set[str]) -> float:
+    if not a or not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+def coverage(a: set[str], b: set[str]) -> float:
+    if not b:
+        return 0.0
+    return len(a & b) / len(b)
+
+
+def semantic_debate_depth(transcript: list[dict[str, Any]], topic: str) -> dict[str, Any]:
+    """Compute an API-free proxy for topic relevance and real interaction.
+
+    This is intentionally conservative. It is not a publication-grade semantic
+    judge; it flags shallow/off-topic controls that can pass marker checks by
+    saying "strongest point" and "counterargument" while ignoring the actual
+    topic or prior opponent content.
+    """
+    topic_terms = content_words(topic)
+    turn_scores: list[dict[str, Any]] = []
+    previous_by_speaker: dict[str, list[set[str]]] = defaultdict(list)
+    for index, turn in enumerate(transcript):
+        speaker = str(turn.get("speaker", ""))
+        terms = content_words(str(turn.get("text", "")))
+        prior_opponent_terms = [
+            content_words(str(prev.get("text", "")))
+            for prev in transcript[:index]
+            if isinstance(prev, dict) and str(prev.get("speaker", "")) != speaker
+        ]
+        has_opponent_context = bool(prior_opponent_terms)
+        latest_opponent = prior_opponent_terms[-1] if prior_opponent_terms else set()
+        own_prior = previous_by_speaker.get(speaker, [])
+        max_own_overlap = max((jaccard(terms, prior) for prior in own_prior), default=0.0)
+        topic_overlap = coverage(terms, topic_terms)
+        opponent_overlap = jaccard(terms, latest_opponent)
+        novelty = 1.0 - max_own_overlap
+        on_topic = topic_overlap >= 0.2 if topic_terms else bool(terms)
+        interacts = opponent_overlap >= 0.08 if has_opponent_context else None
+        not_repetitive = novelty >= 0.35
+        depth_ok = bool(on_topic and not_repetitive and (interacts if has_opponent_context else True))
+        turn_scores.append(
+            {
+                "turn": turn.get("turn", index + 1),
+                "speaker": speaker,
+                "has_opponent_context": has_opponent_context,
+                "content_term_count": len(terms),
+                "topic_overlap": round(topic_overlap, 3),
+                "opponent_turn_jaccard": round(opponent_overlap, 3),
+                "max_own_prior_jaccard": round(max_own_overlap, 3),
+                "novelty_vs_own_prior": round(novelty, 3),
+                "on_topic": on_topic,
+                "interacts_with_prior_opponent_turn": interacts,
+                "not_repetitive": not_repetitive,
+                "semantic_depth_ok": depth_ok,
+            }
+        )
+        previous_by_speaker[speaker].append(terms)
+
+    response_turns = [item for item in turn_scores if item["has_opponent_context"]]
+    on_topic_turns = [item for item in turn_scores if item["on_topic"]]
+    interactive_turns = [item for item in response_turns if item["interacts_with_prior_opponent_turn"]]
+    depth_ok_turns = [item for item in response_turns if item["semantic_depth_ok"]]
+    return {
+        "topic_terms": sorted(topic_terms),
+        "turn_count": len(turn_scores),
+        "audited_response_turns": len(response_turns),
+        "on_topic_rate": round(len(on_topic_turns) / len(turn_scores), 3) if turn_scores else None,
+        "interactive_response_rate": round(len(interactive_turns) / len(response_turns), 3) if response_turns else None,
+        "semantic_depth_rate": round(len(depth_ok_turns) / len(response_turns), 3) if response_turns else None,
+        "needs_human_review": [
+            item
+            for item in turn_scores
+            if item["has_opponent_context"] and not item["semantic_depth_ok"]
+        ],
+        "turn_scores": turn_scores,
+        "note": "Lexical proxy only; use it to triage shallow controls, not as final semantic evidence.",
     }
 
 
@@ -681,6 +811,7 @@ def audit_artifact(path: Path, data: dict[str, Any], args: argparse.Namespace) -
         agent_prior_hash=prior_hash(data),
         transcript_turns=len(transcript),
         debate_quality=score_debate_quality(transcript, args.min_debate_quality),
+        semantic_debate_depth=semantic_debate_depth(transcript, str(data.get("topic") or "")),
         language_compliance=compliance_audit(data),
         screening=screening,
         readout_normalization=readout_normalization,
@@ -818,6 +949,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         lines.append("")
     for artifact in report["artifacts"]:
         dq = artifact["debate_quality"]
+        sem = artifact["semantic_debate_depth"]
         compliance = artifact["language_compliance"]
         div = artifact["private_public_divergence"]
         norm = artifact["readout_normalization"]
@@ -830,6 +962,7 @@ def render_markdown(report: dict[str, Any]) -> str:
                 f"- Condition: `{artifact['condition']}`",
                 f"- Topic: `{artifact['topic']}`",
                 f"- Debate quality adequate rate: `{dq['adequate_rate']}` over `{dq['audited_response_turns']}` response turn(s)",
+                f"- Semantic depth rate: `{sem['semantic_depth_rate']}`; on-topic rate: `{sem['on_topic_rate']}`",
                 f"- Declared language compliance rate: `{compliance['declared_compliance_rate']}`",
                 f"- Complete private readouts after key recovery: `{norm['private_probes']['complete_after_recovery']}/{norm['private_probes']['items']}`",
                 f"- Complete observer readouts after key recovery: `{norm['observer_readouts']['complete_after_recovery']}/{norm['observer_readouts']['items']}`",

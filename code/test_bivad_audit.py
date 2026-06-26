@@ -268,6 +268,58 @@ def test_readout_key_normalization_recovers_unambiguous_aliases() -> None:
     assert any(event.get("source") == "raw_text" for event in trace)
 
 
+def test_semantic_debate_depth_flags_off_topic_marker_compliance() -> None:
+    from audit_bivad_evidence import semantic_debate_depth
+
+    topic = "public release of dual-use policy datasets"
+    shallow_transcript = [
+        {
+            "turn": 1,
+            "speaker": "A",
+            "text": (
+                "Opponent's strongest point: Data is not encrypted. "
+                "My counterargument: Encryption protects private passwords. "
+                "View changed: Yes."
+            ),
+        },
+        {
+            "turn": 2,
+            "speaker": "B",
+            "text": (
+                "Opponent's strongest point: Encrypted data needs authorization. "
+                "My counterargument: Authorization keeps records protected. "
+                "View changed: No."
+            ),
+        },
+    ]
+    topical_transcript = [
+        {
+            "turn": 1,
+            "speaker": "A",
+            "text": (
+                "Public release of dual-use policy datasets improves oversight, "
+                "but sensitive fields need redaction."
+            ),
+        },
+        {
+            "turn": 2,
+            "speaker": "B",
+            "text": (
+                "Your point about public oversight matters. However, dual-use policy "
+                "datasets can expose security-sensitive patterns, so staged release is safer."
+            ),
+        },
+    ]
+
+    shallow = semantic_debate_depth(shallow_transcript, topic)
+    topical = semantic_debate_depth(topical_transcript, topic)
+
+    assert shallow["on_topic_rate"] == 0.0
+    assert shallow["semantic_depth_rate"] == 0.0
+    assert topical["on_topic_rate"] == 1.0
+    assert topical["semantic_depth_rate"] == 1.0
+
+
 def test_evidence_package_includes_only_validated_candidates() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         tmp_path = Path(tmp)
@@ -333,6 +385,7 @@ def main() -> int:
     test_local_torch_schema_checks_do_not_count_as_results()
     test_validation_rejects_synthetic_schema_checks()
     test_readout_key_normalization_recovers_unambiguous_aliases()
+    test_semantic_debate_depth_flags_off_topic_marker_compliance()
     test_evidence_package_includes_only_validated_candidates()
     print("bivad audit regression checks passed")
     return 0

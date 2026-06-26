@@ -1,16 +1,16 @@
 # BiVaD Evidence Audit
 
-Created at: `2026-06-26T19:49:11.111488+00:00`
+Created at: `2026-06-26T20:15:56.042124+00:00`
 
 ## Status
 
-Audited `37` JSON artifact(s).
+Audited `39` JSON artifact(s).
 
-Real artifacts: `29`; synthetic fixtures/placeholders: `8`.
+Real artifacts: `31`; synthetic fixtures/placeholders: `8`.
 
-Conditions: `{"low-disagreement-control": 1, "mixed-language": 5, "same-English": 5, "same-target-language": 7, "swapped-language": 5, "translated-relay": 6, "unknown": 8}`
+Conditions: `{"low-disagreement-control": 1, "mixed-language": 5, "same-English": 5, "same-target-language": 7, "swapped-language": 5, "translated-relay": 6, "unknown": 10}`
 
-Screening: `{"missing_screening_record": 8, "rejected": 1, "retained": 28}`
+Screening: `{"missing_screening_record": 10, "rejected": 1, "retained": 28}`
 
 ## Paired Conditions
 
@@ -27,6 +27,7 @@ Incomplete paired sets: `2`
 - Condition: `unknown`
 - Topic: `unknown`
 - Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
 - Declared language compliance rate: `None`
 - Complete private readouts after key recovery: `0/0`
 - Complete observer readouts after key recovery: `0/0`
@@ -40,6 +41,7 @@ Incomplete paired sets: `2`
 - Condition: `mixed-language`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.25`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `3/4`
 - Complete observer readouts after key recovery: `0/2`
@@ -53,6 +55,7 @@ Incomplete paired sets: `2`
 - Condition: `same-English`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.0` over `3` response turn(s)
+- Semantic depth rate: `0.667`; on-topic rate: `0.75`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `0/2`
@@ -66,6 +69,7 @@ Incomplete paired sets: `2`
 - Condition: `same-target-language`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.0`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
@@ -79,6 +83,7 @@ Incomplete paired sets: `2`
 - Condition: `swapped-language`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.0` over `3` response turn(s)
+- Semantic depth rate: `0.333`; on-topic rate: `1.0`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `0/2`
@@ -92,6 +97,7 @@ Incomplete paired sets: `2`
 - Condition: `translated-relay`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.0` over `3` response turn(s)
+- Semantic depth rate: `1.0`; on-topic rate: `1.0`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `3/4`
 - Complete observer readouts after key recovery: `2/2`
@@ -105,6 +111,7 @@ Incomplete paired sets: `2`
 - Condition: `unknown`
 - Topic: `unknown`
 - Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
 - Declared language compliance rate: `None`
 - Complete private readouts after key recovery: `0/0`
 - Complete observer readouts after key recovery: `0/0`
@@ -118,6 +125,7 @@ Incomplete paired sets: `2`
 - Condition: `mixed-language`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.667` over `3` response turn(s)
+- Semantic depth rate: `1.0`; on-topic rate: `1.0`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `0/4`
 - Complete observer readouts after key recovery: `0/2`
@@ -131,6 +139,7 @@ Incomplete paired sets: `2`
 - Condition: `same-English`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `1.0`; on-topic rate: `1.0`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `0/4`
 - Complete observer readouts after key recovery: `0/2`
@@ -144,6 +153,7 @@ Incomplete paired sets: `2`
 - Condition: `same-target-language`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.667` over `3` response turn(s)
+- Semantic depth rate: `0.667`; on-topic rate: `0.75`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `0/4`
 - Complete observer readouts after key recovery: `0/2`
@@ -157,6 +167,7 @@ Incomplete paired sets: `2`
 - Condition: `swapped-language`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.667` over `3` response turn(s)
+- Semantic depth rate: `1.0`; on-topic rate: `1.0`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `0/4`
 - Complete observer readouts after key recovery: `0/2`
@@ -170,6 +181,7 @@ Incomplete paired sets: `2`
 - Condition: `translated-relay`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `1.0`; on-topic rate: `1.0`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `0/4`
 - Complete observer readouts after key recovery: `0/2`
@@ -183,6 +195,7 @@ Incomplete paired sets: `2`
 - Condition: `unknown`
 - Topic: `unknown`
 - Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
 - Declared language compliance rate: `None`
 - Complete private readouts after key recovery: `0/0`
 - Complete observer readouts after key recovery: `0/0`
@@ -196,6 +209,7 @@ Incomplete paired sets: `2`
 - Condition: `mixed-language`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.667` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.25`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `1/4`
 - Complete observer readouts after key recovery: `0/2`
@@ -209,6 +223,7 @@ Incomplete paired sets: `2`
 - Condition: `same-English`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.25`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `1/4`
 - Complete observer readouts after key recovery: `0/2`
@@ -222,6 +237,7 @@ Incomplete paired sets: `2`
 - Condition: `same-target-language`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.333`; on-topic rate: `0.75`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `1/4`
 - Complete observer readouts after key recovery: `0/2`
@@ -235,6 +251,7 @@ Incomplete paired sets: `2`
 - Condition: `swapped-language`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `1.0`; on-topic rate: `0.75`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `1/4`
 - Complete observer readouts after key recovery: `0/2`
@@ -248,6 +265,7 @@ Incomplete paired sets: `2`
 - Condition: `translated-relay`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.333`; on-topic rate: `0.5`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `3/4`
 - Complete observer readouts after key recovery: `0/2`
@@ -261,6 +279,7 @@ Incomplete paired sets: `2`
 - Condition: `unknown`
 - Topic: `unknown`
 - Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
 - Declared language compliance rate: `None`
 - Complete private readouts after key recovery: `0/0`
 - Complete observer readouts after key recovery: `0/0`
@@ -274,6 +293,7 @@ Incomplete paired sets: `2`
 - Condition: `mixed-language`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.0`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
@@ -287,6 +307,7 @@ Incomplete paired sets: `2`
 - Condition: `same-English`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.333`; on-topic rate: `0.75`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
@@ -300,6 +321,7 @@ Incomplete paired sets: `2`
 - Condition: `same-target-language`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.333` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.0`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
@@ -313,6 +335,7 @@ Incomplete paired sets: `2`
 - Condition: `swapped-language`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
@@ -326,6 +349,7 @@ Incomplete paired sets: `2`
 - Condition: `translated-relay`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.667` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.25`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
@@ -339,6 +363,7 @@ Incomplete paired sets: `2`
 - Condition: `low-disagreement-control`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.333`; on-topic rate: `0.25`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `2/4`
 - Complete observer readouts after key recovery: `0/2`
@@ -352,6 +377,7 @@ Incomplete paired sets: `2`
 - Condition: `unknown`
 - Topic: `unknown`
 - Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
 - Declared language compliance rate: `None`
 - Complete private readouts after key recovery: `0/0`
 - Complete observer readouts after key recovery: `0/0`
@@ -365,6 +391,7 @@ Incomplete paired sets: `2`
 - Condition: `unknown`
 - Topic: `unknown`
 - Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
 - Declared language compliance rate: `None`
 - Complete private readouts after key recovery: `0/0`
 - Complete observer readouts after key recovery: `0/0`
@@ -378,6 +405,7 @@ Incomplete paired sets: `2`
 - Condition: `same-target-language`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.0` over `3` response turn(s)
+- Semantic depth rate: `0.667`; on-topic rate: `0.75`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
@@ -391,6 +419,7 @@ Incomplete paired sets: `2`
 - Condition: `translated-relay`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `0.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.75`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
@@ -404,6 +433,7 @@ Incomplete paired sets: `2`
 - Condition: `unknown`
 - Topic: `unknown`
 - Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
 - Declared language compliance rate: `None`
 - Complete private readouts after key recovery: `0/0`
 - Complete observer readouts after key recovery: `0/0`
@@ -417,6 +447,7 @@ Incomplete paired sets: `2`
 - Condition: `unknown`
 - Topic: `unknown`
 - Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
 - Declared language compliance rate: `None`
 - Complete private readouts after key recovery: `0/0`
 - Complete observer readouts after key recovery: `0/0`
@@ -430,6 +461,7 @@ Incomplete paired sets: `2`
 - Condition: `same-target-language`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.667`; on-topic rate: `1.0`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
@@ -443,6 +475,7 @@ Incomplete paired sets: `2`
 - Condition: `same-target-language`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.0`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
@@ -456,6 +489,7 @@ Incomplete paired sets: `2`
 - Condition: `translated-relay`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.667`; on-topic rate: `1.0`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
@@ -469,6 +503,7 @@ Incomplete paired sets: `2`
 - Condition: `mixed-language`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `1.0`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
@@ -482,6 +517,7 @@ Incomplete paired sets: `2`
 - Condition: `same-English`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `1.0`; on-topic rate: `1.0`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
@@ -495,11 +531,40 @@ Incomplete paired sets: `2`
 - Condition: `swapped-language`
 - Topic: `public release of dual-use policy datasets`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.0`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
 - Flagged private-public gaps: `2`
 - Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T194252.348841Z0000-ind_Latn-spa_Latn`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering/20260626T194252.348841Z0000-ind_Latn-spa_Latn.json`
+- Source kind: `language_probability_steering_probe`; synthetic: `False`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
+
+### `20260626T194453.053391Z0000-ind_Latn-spa_Latn`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering/20260626T194453.053391Z0000-ind_Latn-spa_Latn.json`
+- Source kind: `language_probability_steering_probe`; synthetic: `False`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
 
 ## Reporting Guardrail
 

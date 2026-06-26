@@ -68,6 +68,7 @@ def artifact_row(path: Path, data: dict[str, Any], audit: dict[str, Any], snippe
         "seed": audit["seed"],
         "screening": audit["screening"],
         "debate_quality": audit["debate_quality"],
+        "semantic_debate_depth": audit["semantic_debate_depth"],
         "language_compliance": audit["language_compliance"],
         "readout_completeness": readout_counts(data),
         "transcript_snippets": snippets,
@@ -98,6 +99,10 @@ def retained_match_score(control: dict[str, Any], candidate: dict[str, Any]) -> 
     if private_flags.startswith("4/") and observer_flags.startswith("2/"):
         score += 1
         reasons.append("complete readouts")
+    depth_rate = candidate["semantic_debate_depth"].get("semantic_depth_rate")
+    if isinstance(depth_rate, (int, float)):
+        score += depth_rate * 2
+        reasons.append(f"semantic depth rate {depth_rate}")
     return score, ", ".join(reasons) or "fallback retained artifact"
 
 
@@ -128,6 +133,8 @@ def render_markdown(report: dict[str, Any]) -> str:
                 f"- Comparator screening: `{json.dumps(comparator['screening'], sort_keys=True)}`",
                 f"- Control debate adequate rate: `{control['debate_quality']['adequate_rate']}` over `{control['debate_quality']['audited_response_turns']}` response turn(s)",
                 f"- Comparator debate adequate rate: `{comparator['debate_quality']['adequate_rate']}` over `{comparator['debate_quality']['audited_response_turns']}` response turn(s)",
+                f"- Control semantic depth rate: `{control['semantic_debate_depth']['semantic_depth_rate']}`; on-topic rate: `{control['semantic_debate_depth']['on_topic_rate']}`",
+                f"- Comparator semantic depth rate: `{comparator['semantic_debate_depth']['semantic_depth_rate']}`; on-topic rate: `{comparator['semantic_debate_depth']['on_topic_rate']}`",
                 f"- Control readout completeness flags: `{control['readout_completeness']}`",
                 f"- Comparator readout completeness flags: `{comparator['readout_completeness']}`",
                 "",
@@ -206,6 +213,18 @@ def main() -> int:
         blockers.append("no retained real comparator artifact found")
     if rejected_controls and retained and not comparisons:
         blockers.append("could not pair rejected controls with retained comparators")
+    if comparisons:
+        if any(
+            pair["control"]["readout_completeness"]["private_complete_flags"].startswith("0/")
+            or pair["control"]["readout_completeness"]["observer_complete_flags"].startswith("0/")
+            for pair in comparisons
+        ):
+            blockers.append("low-disagreement control still lacks reliable private/observer readouts")
+        if any(
+            pair["control"]["semantic_debate_depth"].get("semantic_depth_rate") is None
+            for pair in comparisons
+        ):
+            blockers.append("low-disagreement control has too few response turns for semantic depth scoring")
 
     report = {
         "rejected_control_count": len(rejected_controls),

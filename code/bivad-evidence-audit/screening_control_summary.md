@@ -2,15 +2,21 @@
 
 Rejected controls: `1`
 
-Retained comparators: `22`
+Retained comparators: `28`
+
+## Blockers
+
+- low-disagreement control still lacks reliable private/observer readouts
 
 ## `20260626T173933Z-low-disagreement-control-seed17` vs `20260626T172158Z-same-English-seed17`
 
-- Match basis: `same model, same topic, same seed, same-English retained baseline, debate adequate rate 1.0`
+- Match basis: `same model, same topic, same seed, same-English retained baseline, debate adequate rate 1.0, semantic depth rate 1.0`
 - Control screening: `{"reason": "Static local-LM priors differ on topic-relevant access-versus-security values.", "retained": false, "stance_distance": null, "value_distance": 1}`
 - Comparator screening: `{"reason": "Static local-LM priors differ on topic-relevant access-versus-security values.", "retained": true, "stance_distance": null, "value_distance": 17}`
 - Control debate adequate rate: `1.0` over `3` response turn(s)
 - Comparator debate adequate rate: `1.0` over `3` response turn(s)
+- Control semantic depth rate: `0.333`; on-topic rate: `0.25`
+- Comparator semantic depth rate: `1.0`; on-topic rate: `1.0`
 - Control readout completeness flags: `{'private_complete_flags': '0/4', 'observer_complete_flags': '0/2'}`
 - Comparator readout completeness flags: `{'private_complete_flags': '0/4', 'observer_complete_flags': '0/2'}`
 
