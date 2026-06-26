@@ -1,16 +1,16 @@
 # BiVaD Evidence Audit
 
-Created at: `2026-06-26T22:17:19.571208+00:00`
+Created at: `2026-06-26T22:39:21.091251+00:00`
 
 ## Status
 
-Audited `78` JSON artifact(s).
+Audited `87` JSON artifact(s).
 
-Real artifacts: `70`; synthetic fixtures/placeholders: `8`.
+Real artifacts: `79`; synthetic fixtures/placeholders: `8`.
 
-Conditions: `{"low-disagreement-control": 2, "mixed-language": 14, "same-English": 15, "same-target-language": 12, "swapped-language": 9, "translated-relay": 11, "unknown": 15}`
+Conditions: `{"low-disagreement-control": 2, "mixed-language": 14, "no-dialogue": 8, "same-English": 15, "same-target-language": 12, "swapped-language": 9, "translated-relay": 11, "unknown": 16}`
 
-Screening: `{"missing_screening_record": 15, "rejected": 2, "retained": 61}`
+Screening: `{"missing_screening_record": 16, "rejected": 2, "retained": 69}`
 
 ## Paired Conditions
 
@@ -1107,6 +1107,132 @@ Incomplete paired sets: `6`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
 - Semantic depth rate: `0.0`; on-topic rate: `0.5`
 - Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T222507Z-no-dialogue-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T222507Z-no-dialogue-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `no-dialogue`
+- Topic: `public release of dual-use policy datasets`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T222616Z-no-dialogue-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T222616Z-no-dialogue-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `no-dialogue`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T223334Z-no-dialogue-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T223334Z-no-dialogue-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `no-dialogue`
+- Topic: `religious exemptions from anti-discrimination law`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T223406Z-no-dialogue-seed17-government-surveillance-for-national`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T223406Z-no-dialogue-seed17-government-surveillance-for-national.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `no-dialogue`
+- Topic: `government surveillance for national security`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T223406Z-no-dialogue-seed17-mandatory-content-moderation-on-soci`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T223406Z-no-dialogue-seed17-mandatory-content-moderation-on-soci.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `no-dialogue`
+- Topic: `mandatory content moderation on social media platforms`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T223406Z-no-dialogue-seed17-religious-exemptions-from-anti-discr`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T223406Z-no-dialogue-seed17-religious-exemptions-from-anti-discr.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `no-dialogue`
+- Topic: `religious exemptions from anti-discrimination law`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T223406Z-scan-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T223406Z-scan-manifest.json`
+- Source kind: `run`; synthetic: `False`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
+
+### `20260626T223446Z-no-dialogue-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T223446Z-no-dialogue-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `no-dialogue`
+- Topic: `government surveillance for national security`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T223554Z-no-dialogue-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T223554Z-no-dialogue-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `no-dialogue`
+- Topic: `mandatory content moderation on social media platforms`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
 - Flagged private-public gaps: `2`

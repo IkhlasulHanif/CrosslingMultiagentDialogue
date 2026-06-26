@@ -1,6 +1,6 @@
 # BiVaD Artifact Validation
 
-Artifacts checked: `78`
+Artifacts checked: `87`
 
 Citable empirical candidates: `42`
 
@@ -553,3 +553,66 @@ Complete real paired sets: `5`
 - Condition: `translated-relay`
 - Citable candidate: `True`
 - Blockers: `none`
+
+### `20260626T222507Z-no-dialogue-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T222507Z-no-dialogue-seed17.json`
+- Condition: `no-dialogue`
+- Citable candidate: `False`
+- Blockers: `missing or incomplete transcript turns; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T222616Z-no-dialogue-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T222616Z-no-dialogue-seed17.json`
+- Condition: `no-dialogue`
+- Citable candidate: `False`
+- Blockers: `missing or incomplete transcript turns; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T223334Z-no-dialogue-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T223334Z-no-dialogue-seed17.json`
+- Condition: `no-dialogue`
+- Citable candidate: `False`
+- Blockers: `missing or incomplete transcript turns; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T223406Z-no-dialogue-seed17-government-surveillance-for-national`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T223406Z-no-dialogue-seed17-government-surveillance-for-national.json`
+- Condition: `no-dialogue`
+- Citable candidate: `False`
+- Blockers: `missing or incomplete transcript turns; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T223406Z-no-dialogue-seed17-mandatory-content-moderation-on-soci`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T223406Z-no-dialogue-seed17-mandatory-content-moderation-on-soci.json`
+- Condition: `no-dialogue`
+- Citable candidate: `False`
+- Blockers: `missing or incomplete transcript turns; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T223406Z-no-dialogue-seed17-religious-exemptions-from-anti-discr`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T223406Z-no-dialogue-seed17-religious-exemptions-from-anti-discr.json`
+- Condition: `no-dialogue`
+- Citable candidate: `False`
+- Blockers: `missing or incomplete transcript turns; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T223406Z-scan-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T223406Z-scan-manifest.json`
+- Condition: `unknown`
+- Citable candidate: `False`
+- Blockers: `missing run_id; missing created_at; missing model or backend identifier; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T223446Z-no-dialogue-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T223446Z-no-dialogue-seed17.json`
+- Condition: `no-dialogue`
+- Citable candidate: `False`
+- Blockers: `missing or incomplete transcript turns; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T223554Z-no-dialogue-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T223554Z-no-dialogue-seed17.json`
+- Condition: `no-dialogue`
+- Citable candidate: `False`
+- Blockers: `missing or incomplete transcript turns; no response turns with opponent context for debate-quality audit; no language compliance audit available`

@@ -5,6 +5,7 @@ Keep experiment implementation and experiment harnesses in this directory.
 - `audit_bivad_evidence.py`: API-free audit harness for BiVaD-style JSON run artifacts.
 - `validate_bivad_artifacts.py`: stricter API-free gate that reports whether audited artifacts are citable empirical candidates.
 - `make_bivad_evidence_package.py`: API-free package builder that extracts only validated citable candidates into compact JSON/Markdown tables and snippets.
+- `summarize_no_dialogue.py`: summarizes no-dialogue measurement-drift baselines and joins them to topic-specific five-condition debate ranges.
 - `run_bivad_pilot.py`: dry-run-capable model runner for a minimal paired BiVaD pilot using the OpenAI Responses API.
 - `run_bivad_local_lm.py`: dry-run-capable CPU local Hugging Face causal-LM runner for legacy API-free paired pilots.
 - `modal_steer_language.py`: Modal GPU entrypoint for FLORES-derived probability steering probes.
@@ -87,6 +88,15 @@ python3 code/make_bivad_evidence_package.py --out-dir code/bivad-evidence-audit
 ```
 
 The package builder does not rerun models or reinterpret failed artifacts. It includes only rows that already pass `validate_bivad_artifacts.py`, records representative transcript/probe/readout snippets, and lists excluded latest paired conditions with their blockers.
+
+Summarize no-dialogue measurement-induced drift baselines:
+
+```sh
+python3 code/compare_five_conditions.py --topic-filter "public release of dual-use policy datasets" --out-suffix _dual_use
+python3 code/summarize_no_dialogue.py
+```
+
+The no-dialogue summarizer selects the newest no-dialogue artifact per topic, computes repeated-probe drift and empty-transcript observer gaps, and joins B's debate-shift range from topic-specific five-condition comparison files.
 
 Run a real minimal pilot when API credentials are available:
 
