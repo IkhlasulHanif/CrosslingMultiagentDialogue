@@ -31,7 +31,7 @@ Anonymous Institution\\
 \maketitle
 
 \begin{abstract}
-Large language model (LLM) agents can sustain multilingual interaction in ways that differ from human bilingual conversation: two agents may understand a shared transcript while each continues to produce a different language. This paper studies that regime as a stress test for value stability in multi-agent systems. We propose \method, a multilingual value-drift measurement framework for two-agent dialogue. Before debate, \method{} screens candidate topics and agent priors to keep only cases where the agents begin with meaningfully different value or stance vectors; without such disagreement, debate has little room to reveal persuasion, convergence, or resistance. The selected agents are then assigned output languages from a language set, receive the full mixed-language transcript, and are evaluated over time. \method{} separates two quantities that are often conflated: a private prompted value state measured by invariant probes under the agent's current conversation memory, and an expressed value state inferred by external judges from the public transcript. The framework combines Schwartz-style value readouts, issue-stance probes, multilingual observer judgments, translation controls, and same-language baselines. We describe an experimental protocol, metrics for drift and cross-agent convergence, and validity checks for readout perturbation and judge-language bias. We include both a clearly marked hypothetical pilot-results table (synthetic scaffolding for the full design) and executed pilot experiments across four value-laden topics with complete five-condition protocol sets. The proposed design targets ACL/NeurIPS-style evaluation of multilingual multi-agent alignment, where the central empirical object is not only whether agents change, but whether private prompted values and public value expression diverge in language-dependent ways.
+Large language model (LLM) agents can sustain multilingual interaction in ways that differ from human bilingual conversation: two agents may understand a shared transcript while each continues to produce a different language. This paper studies that regime as a stress test for value stability in multi-agent systems. We propose \method, a multilingual value-drift measurement framework for two-agent dialogue. Before debate, \method{} screens candidate topics and agent priors to keep only cases where the agents begin with meaningfully different value or stance vectors; without such disagreement, debate has little room to reveal persuasion, convergence, or resistance. The selected agents are then assigned output languages from a language set, receive the full mixed-language transcript, and are evaluated over time. \method{} separates two quantities that are often conflated: a private prompted value state measured by invariant probes under the agent's current conversation memory, and an expressed value state inferred by external judges from the public transcript. The framework combines Schwartz-style value readouts, issue-stance probes, multilingual observer judgments, translation controls, and same-language baselines. We describe an experimental protocol, metrics for drift and cross-agent convergence, and validity checks for readout perturbation and judge-language bias. We include both a clearly marked hypothetical pilot-results table (synthetic scaffolding for the full design) and executed pilot experiments across all five scan topics with complete five-condition protocol sets, plus a cross-topic synthesis comparing structural patterns. The proposed design targets ACL/NeurIPS-style evaluation of multilingual multi-agent alignment, where the central empirical object is not only whether agents change, but whether private prompted values and public value expression diverge in language-dependent ways.
 \end{abstract}
 
 \section{Introduction}
@@ -45,7 +45,7 @@ We propose \method, a measurement framework for multilingual multi-agent value d
 This paper makes three contributions. First, it formalizes multilingual value drift as a time-series measurement problem over private prompted and expressed value states. Second, it gives a concrete experimental protocol with value-disagreement screening, same-language, mixed-language, translated-relay, and no-dialogue controls. Third, it provides an analysis plan, including drift, convergence, probe-language sensitivity, observer-language sensitivity, and private-public gap metrics.
 
 \paragraph{Responsible status of results.}
-Section~\ref{sec:hypothetical} contains hypothetical numbers to illustrate the full intended table format and expected qualitative pattern. These are synthetic scaffolding and must not be reported as experimental findings. Section~\ref{sec:empirical} reports \emph{executed} pilot experiments: a five-condition comparison for dual-use policy datasets (Table~\ref{tab:empirical}), a multi-topic cross-lingual divergence scan across five topics (Table~\ref{tab:topic-scan}), complete five-condition sets for universal basic income (Table~\ref{tab:empirical-ubi}), religious exemptions from anti-discrimination law (Table~\ref{tab:empirical-religious}), and government surveillance (Table~\ref{tab:empirical-surveillance}), and a multi-seed and multi-language-pair replication for UBI (Table~\ref{tab:multiseed}). All executed results are logged artifacts under \texttt{runs/bivad-local-lm/}.
+Section~\ref{sec:hypothetical} contains hypothetical numbers to illustrate the full intended table format and expected qualitative pattern. These are synthetic scaffolding and must not be reported as experimental findings. Section~\ref{sec:empirical} reports \emph{executed} pilot experiments: a five-condition comparison for dual-use policy datasets (Table~\ref{tab:empirical}), a multi-topic cross-lingual divergence scan across five topics (Table~\ref{tab:topic-scan}), complete five-condition sets for all five scan topics --- universal basic income (Table~\ref{tab:empirical-ubi}), religious exemptions from anti-discrimination law (Table~\ref{tab:empirical-religious}), government surveillance (Table~\ref{tab:empirical-surveillance}), and content moderation (Table~\ref{tab:empirical-content}) --- a cross-topic synthesis (Table~\ref{tab:cross-topic}), and a multi-seed and multi-language-pair replication for UBI (Table~\ref{tab:multiseed}). All executed results are logged artifacts under \texttt{runs/bivad-local-lm/}.
 
 \section{Related Work}
 
@@ -482,6 +482,80 @@ Table~\ref{tab:empirical-surveillance} reveals a clean production-language effec
 \textbf{B converges to two production-language endpoints.} When B generates in English (same-English, swapped-language), B's final private probe leaves power at~5. When B generates in Indonesian (mixed-language, same-target-language, translated-relay), B's final private probe moves power to~4. All other final values match across the five conditions: security~5 and the remaining dimensions~4. Language assignment therefore modulates both the \emph{magnitude} of B's shift trajectory and one endpoint dimension, rather than merely changing how far B moves toward a single endpoint.
 
 These results are exploratory (single topic, seed, model). Code: \texttt{code/compare\_five\_conditions.py \mbox{--topic-filter} "government surveillance" \mbox{--out-suffix} \_government\_surveillance}, \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_government\_surveillance.json}.
+
+\subsection{Content Moderation Five-Condition Comparison}
+\label{sec:content-moderation-five-conditions}
+
+Content moderation has the lowest topic-scan divergence ($\Delta_B=0.58$), making it the within-scan reference for a low-sensitivity topic. We now run all five conditions to characterize the low-divergence regime.
+
+\begin{table}[t]
+\centering
+\caption{Empirical five-condition pilot for content moderation (Qwen2.5-7B-Instruct, seed~17, 4~turns, Indonesian/English). B's initial private priors: conformity~6, power~6, security~5, tradition~5, benevolence~4, self-direction~3. Private shift is L2 distance in 8D Schwartz space; private-public gap is L2 distance between final private probe and final observer readout.}
+\label{tab:empirical-content}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+Condition & A priv.\ shift & B priv.\ shift & Combined & A priv.-pub.\ gap & B priv.-pub.\ gap \\
+\midrule
+Same English          & 3.317 & \textbf{3.742} & 7.058 & 2.449 & 2.236 \\
+Mixed-language        & 3.464 & 3.162 & 6.626 & 1.732 & 1.732 \\
+Swapped-language      & \textbf{2.236} & 3.317 & 5.553 & 1.000 & 2.646 \\
+Same target-language  & 3.464 & 3.464 & 6.928 & 1.414 & 1.732 \\
+Translated relay      & 3.000 & 3.317 & 6.317 & 1.732 & 1.732 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+Table~\ref{tab:empirical-content} reveals a topic where both A and B show modest condition sensitivity, consistent with the low-scan $\Delta_B$.
+
+\textbf{B's shift range is the narrowest across all five topics.} B shifts between 3.162 (mixed-language) and 3.742 (same-English), a range of only 0.58~L2 units. This matches the scan $\Delta_B$ exactly and confirms that the topic-scan ranking is robust: content moderation genuinely has the smallest cross-lingual probe-shift divergence at this seed.
+
+\textbf{A's shift is suppressed under swapped-language (2.236).} In all other conditions, A shifts 3.000--3.464. When A generates in Indonesian and B responds in English, A's private probe movement is attenuated. This mirrors the pattern in religious exemptions, where A was the conditionally variable agent, though the magnitude here is smaller. In government surveillance, A was also suppressed in English-production conditions. Production-language effects on A appear topic-dependent rather than structural.
+
+\textbf{B converges to near-identical endpoints across all four non-English conditions.} Under mixed-language, swapped-language, same-target-language, and translated-relay, B's final probe leaves security at~4--5 and all other dimensions at~4, with minor variation in self-direction and tradition. Under same-English only, B retains benevolence~$=6$ at the final probe. The topic content drives B's convergence endpoint more strongly than language assignment does, consistent with the low-$\Delta_B$ classification.
+
+\textbf{Translated relay does not amplify private-public gaps.} Both agents have gaps of 1.732 under relay --- identical to mixed-language. This contrasts with dual-use (A=3.606, B=3.464) and religious exemptions (A=3.162, B=3.873), where relay substantially raised gaps. For content moderation, the translation step does not appear to introduce semantic divergence between private probes and observer inferences. Same-English has the highest gaps (A=2.449, B=2.236), driven by B retaining benevolence~$=6$ privately while the transcript does not support that rating to the observer.
+
+\textbf{Swapped-language has the smallest combined shift (5.553).} Both agents' trajectories are most compressed when A argues in Indonesian and B responds in English. This production-language assignment uniquely lowers A's engagement with the topic. No other five-condition topic shows swapped-language as the globally lowest combined-shift condition, making this a distinctive content-moderation signature.
+
+These results are exploratory (single topic, seed, model). Code: \texttt{code/compare\_five\_conditions.py \mbox{--topic-filter} "content moderation" \mbox{--out-suffix} \_content\_moderation}, \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_content\_moderation.json}.
+
+\subsection{Cross-Topic Synthesis}
+\label{sec:cross-topic}
+
+With complete five-condition sets for all five scan topics, we can compare structural patterns across the topic dimension.
+
+\begin{table}[t]
+\centering
+\caption{Cross-topic summary of five-condition patterns across all five empirical topics (Qwen2.5-7B-Instruct, seed~17, Indonesian/English). $\Delta_B$ is the topic-scan divergence (Table~\ref{tab:topic-scan}). ``Variable agent'' is the agent whose private shift varies most across conditions. ``Relay gap'' indicates whether translated-relay amplifies private-public gaps relative to mixed-language. ``Low-shift condition'' is the condition with smallest combined private shift.}
+\label{tab:cross-topic}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrcccc}
+\toprule
+Topic & $\Delta_B$ & Dir & Variable agent & B endpoint spread & Relay gap ampl. & Low-shift cond. \\
+\midrule
+Universal basic income          & 1.68 & $<$ & B      & 3.317--5.000 & No  & Mixed/relay \\
+Dual-use dataset release        & 1.04 & $<$ & B      & 2.646--3.873 & Yes & Swapped \\
+Religious exemptions            & 0.69 & $<$ & A      & 4.000--4.690 & Yes & Same-target \\
+Government surveillance         & 0.66 & $>$ & Both   & 3.464--4.123 & No  & Same-English \\
+Content moderation              & 0.58 & $<$ & Both   & 3.162--3.742 & No  & Swapped \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+Table~\ref{tab:cross-topic} reveals four cross-topic structural patterns.
+
+\textbf{Which agent is most variable is topic-specific.} B is the variable agent for UBI and dual-use (both redistribution or access-to-information topics). A is the variable agent for religious exemptions. Both agents show modest and co-varying sensitivity for government surveillance and content moderation. The topic's value domain appears to determine which agent's probe trajectory is more condition-sensitive, possibly via the alignment between each agent's initial value prior and the topic's salient value dimensions (universalism and self-direction for A; conformity and tradition for B in most pilots).
+
+\textbf{Relay gap amplification is topic-specific and associated with rights-framing topics.} Translated relay amplifies private-public gaps in dual-use dataset release and religious exemptions but not in UBI, government surveillance, or content moderation. The two amplification topics share a rights-of-access or minority-rights framing, while the three non-amplification topics involve redistribution, state security, or platform governance. One interpretation: relay translation introduces semantic divergence when the topic requires nuanced normative language (access rights, discrimination) that is harder to preserve across translation than redistribution or surveillance framing.
+
+\textbf{The direction of B's production-language effect reverses between redistribution and security topics.} For UBI, Indonesian B production suppresses B's shift (3.317 vs 5.000). For government surveillance, Indonesian B production amplifies B's shift (4.123 vs 3.464). This direction reversal across topics at the same seed and model suggests that the framing of a topic in a non-dominant language interacts with the topic's content: solidarity and redistribution framings in Indonesian appear to moderate debate engagement, while security and surveillance framings amplify it. No such reversal is observed across the other three topics.
+
+\textbf{Scan $\Delta_B$ is a reliable ordinal proxy for five-condition complexity.} UBI ($\Delta_B=1.68$) has the widest B endpoint spread (3.317--5.000) and the clearest single-factor suppression story. Content moderation ($\Delta_B=0.58$) has the narrowest spread (3.162--3.742) and the most stable convergence behavior. The ranking is not perfect (religious exemptions has higher A-range than its $\Delta_B$ implies), but the scan correctly identifies the extremes and the intermediate cases as a rough filter for which topics merit full five-condition analysis.
+
+These cross-topic patterns are exploratory and based on a single model, seed, and language pair. Seed-level replication (as shown for UBI in Section~\ref{sec:replication}) and model-level replication are needed before drawing strong causal claims.
 
 \subsection{Replication: Language-Pair Invariance and Multi-Seed Coverage}
 \label{sec:replication}

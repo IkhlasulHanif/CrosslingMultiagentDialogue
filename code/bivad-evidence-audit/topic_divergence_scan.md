@@ -1,6 +1,6 @@
 # Topic Divergence Scan: Cross-Lingual Value-Shift Ranking
 
-Created: `2026-06-26T22:08:15.267447+00:00`
+Created: `2026-06-26T22:19:33.326151+00:00`
 
 **Metric**: `b_divergence` = |B shift(mixed-language) − B shift(same-English)|
 
