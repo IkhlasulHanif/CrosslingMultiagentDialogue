@@ -6,6 +6,7 @@ Keep experiment implementation and experiment harnesses in this directory.
 - `validate_bivad_artifacts.py`: stricter API-free gate that reports whether audited artifacts are citable empirical candidates.
 - `run_bivad_pilot.py`: dry-run-capable model runner for a minimal paired BiVaD pilot using the OpenAI Responses API.
 - `run_bivad_local_lm.py`: dry-run-capable local Hugging Face causal-LM runner for API-free paired pilots.
+- `preflight_bivad_local_lm.py`: offline readiness check for Torch/MPS, transformers, and complete local model directories.
 - `run_bivad_local_torch.py`: API-free local Torch/MPS schema-check runner that writes synthetic non-empirical paired artifacts.
 - `make_bivad_audit_fixtures.py`: writes deterministic synthetic audit fixtures that document the expected artifact shape.
 - `test_bivad_audit.py`: regression check that synthetic fixtures do not count as executed empirical results.
@@ -44,6 +45,7 @@ The local Torch runner uses Apple MPS when `torch.backends.mps.is_available()` i
 Prepare or run a local language-model pilot without remote APIs:
 
 ```sh
+python3 code/preflight_bivad_local_lm.py
 python3 code/run_bivad_local_lm.py --out-dir runs/bivad-local-lm
 python3 code/run_bivad_local_lm.py --execute --model-path /path/to/local-or-cached-model --out-dir runs/bivad-local-lm
 python3 code/audit_bivad_evidence.py runs/bivad-local-lm
@@ -51,6 +53,8 @@ python3 code/validate_bivad_artifacts.py runs/bivad-local-lm --out-dir code/biva
 ```
 
 `run_bivad_local_lm.py` loads models with `local_files_only=True` by default and uses Apple MPS when available, otherwise CPU. Pass `--allow-download` only when intentionally fetching model files. The runner does not invent missing probe or observer JSON values; malformed local-model outputs remain incomplete and should be rejected by `validate_bivad_artifacts.py`.
+
+`preflight_bivad_local_lm.py` writes `local_model_preflight.json` and `.md` under `code/bivad-evidence-audit/`. It is a blocker report only; it does not load models, generate transcripts, or create empirical evidence.
 
 Validate whether artifacts can be cited as empirical candidates:
 

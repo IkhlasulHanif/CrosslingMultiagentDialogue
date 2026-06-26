@@ -125,6 +125,42 @@ def test_local_lm_dry_run_manifest_does_not_count_as_result() -> None:
     assert summary["executed_results_present"] is False
 
 
+def test_local_lm_preflight_does_not_count_as_result() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        preflight_out = tmp_path / "preflight"
+        audit_out = tmp_path / "audit"
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "code/preflight_bivad_local_lm.py",
+                "--search-root",
+                str(tmp_path / "missing-model-root"),
+                "--out-dir",
+                str(preflight_out),
+            ],
+            cwd=REPO_ROOT,
+            check=False,
+        )
+        run_command(
+            [
+                sys.executable,
+                "code/audit_bivad_evidence.py",
+                str(preflight_out),
+                "--out-dir",
+                str(audit_out),
+            ]
+        )
+        report = json.loads((audit_out / "audit.json").read_text(encoding="utf-8"))
+
+    assert completed.returncode in (0, 1)
+    summary = report["summary"]
+    assert summary["artifact_count"] == 1
+    assert summary["synthetic_artifact_count"] == 1
+    assert summary["real_artifact_count"] == 0
+    assert summary["executed_results_present"] is False
+
+
 def test_local_torch_schema_checks_do_not_count_as_results() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         tmp_path = Path(tmp)
@@ -210,6 +246,7 @@ def main() -> int:
     test_synthetic_fixtures_do_not_count_as_results()
     test_dry_run_manifest_does_not_count_as_result()
     test_local_lm_dry_run_manifest_does_not_count_as_result()
+    test_local_lm_preflight_does_not_count_as_result()
     test_local_torch_schema_checks_do_not_count_as_results()
     test_validation_rejects_synthetic_schema_checks()
     print("bivad audit regression checks passed")

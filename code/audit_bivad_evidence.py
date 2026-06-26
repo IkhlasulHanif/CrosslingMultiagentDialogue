@@ -198,7 +198,7 @@ def is_synthetic_artifact(data: dict[str, Any]) -> bool:
     if any(bool(marker) for marker in markers):
         return True
     source_kind = str(data.get("artifact_type") or data.get("source_kind") or "").lower()
-    if any(token in source_kind for token in ("fixture", "synthetic", "placeholder", "smoke", "manifest")):
+    if any(token in source_kind for token in ("fixture", "synthetic", "placeholder", "smoke", "manifest", "preflight")):
         return True
     return bool(data.get("dry_run"))
 

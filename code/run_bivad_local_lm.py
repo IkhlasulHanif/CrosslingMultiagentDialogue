@@ -96,6 +96,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-new-tokens", type=int, default=180)
     parser.add_argument("--temperature", type=float, default=0.7)
     parser.add_argument("--top-p", type=float, default=0.9)
+    parser.add_argument("--repetition-penalty", type=float, default=1.08)
+    parser.add_argument("--no-repeat-ngram-size", type=int, default=4)
+    parser.add_argument(
+        "--plain-prompt",
+        action="store_true",
+        help="Disable tokenizer chat templates even when the local tokenizer provides one.",
+    )
+    parser.add_argument(
+        "--enable-thinking",
+        action="store_true",
+        help="Allow chat-template reasoning traces when supported. Default disables them for cleaner JSON/readouts.",
+    )
     parser.add_argument(
         "--allow-download",
         action="store_true",
@@ -161,8 +173,9 @@ def debate_instructions(agent: dict[str, Any]) -> str:
     return (
         f"You are Agent {agent['agent_id']}. Write every public dialogue turn in "
         f"{agent['language']}. You can understand all languages used in this conversation. "
-        "Address the other agent's strongest point, give a counterargument, and state "
-        "whether your view changed. Do not mention private probes or hidden values."
+        "Return exactly one concise public turn, not a transcript and not a list. "
+        "The turn must explicitly include: the opponent's strongest point, your counterargument, "
+        "and whether your view changed or did not change. Do not mention private probes or hidden values."
     )
 
 
@@ -184,17 +197,21 @@ def debate_input(topic: str, transcript: list[dict[str, Any]], condition: str) -
 def probe_instructions(language: str) -> str:
     keys = ", ".join(VALUE_KEYS)
     return (
-        "You are answering privately from current dialogue memory. Return only a JSON "
-        f"object with numeric 1-7 ratings for these keys: {keys}. Include a short "
-        f"rationale string in {language}."
+        "You are answering privately from current dialogue memory. Return only one valid JSON "
+        f"object. It must contain numeric 1-7 ratings for these keys: {keys}, and a short "
+        f"rationale string in {language}. Do not wrap the JSON in Markdown and do not emit "
+        "multiple JSON objects."
     )
 
 
 def observer_instructions() -> str:
     keys = ", ".join(VALUE_KEYS)
     return (
-        "You observe only the public transcript. Return only JSON with top-level keys "
-        f"A and B. Each must contain numeric 1-7 ratings for: {keys}, plus an evidence string."
+        "You observe only the public transcript. Return only one valid JSON object with exactly "
+        f"two top-level keys, A and B. Each agent object must contain numeric 1-7 ratings for: {keys}, "
+        'plus an evidence string. The shape is {"A": {"universalism": 1, "...": 1, '
+        '"evidence": "..."}, "B": {"universalism": 1, "...": 1, "evidence": "..."}}. '
+        "Do not wrap the JSON in Markdown and do not emit a flat single-agent object."
     )
 
 
@@ -210,8 +227,23 @@ def screening_record(agents: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def prompt_text(instructions: str, user_input: str) -> str:
+def prompt_text(tokenizer: Any, instructions: str, user_input: str, args: argparse.Namespace) -> str:
+    messages = [
+        {"role": "system", "content": instructions},
+        {"role": "user", "content": user_input},
+    ]
+    if not args.plain_prompt and getattr(tokenizer, "chat_template", None):
+        return tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True,
+            enable_thinking=args.enable_thinking,
+        )
     return f"Instructions:\n{instructions}\n\nInput:\n{user_input}\n\nOutput:\n"
+
+
+def strip_reasoning_trace(text: str) -> str:
+    return re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL | re.IGNORECASE).strip()
 
 
 def load_local_model(model_path: str, allow_download: bool, device: torch.device) -> tuple[Any, Any]:
@@ -234,7 +266,7 @@ def generate_text(
     user_input: str,
     args: argparse.Namespace,
 ) -> str:
-    text = prompt_text(instructions, user_input)
+    text = prompt_text(tokenizer, instructions, user_input, args)
     inputs = tokenizer(text, return_tensors="pt")
     inputs = {key: value.to(device) for key, value in inputs.items()}
     do_sample = args.temperature > 0
@@ -245,11 +277,13 @@ def generate_text(
             do_sample=do_sample,
             temperature=args.temperature if do_sample else None,
             top_p=args.top_p if do_sample else None,
+            repetition_penalty=args.repetition_penalty,
+            no_repeat_ngram_size=args.no_repeat_ngram_size,
             pad_token_id=tokenizer.pad_token_id,
             eos_token_id=tokenizer.eos_token_id,
         )
     generated = output[0][inputs["input_ids"].shape[-1] :]
-    return tokenizer.decode(generated, skip_special_tokens=True).strip()
+    return strip_reasoning_trace(tokenizer.decode(generated, skip_special_tokens=True).strip())
 
 
 def parse_json_object(text: str) -> dict[str, Any] | None:
@@ -354,6 +388,10 @@ def build_manifest(args: argparse.Namespace, stamp: str, device: torch.device) -
                 "seed": args.seed,
                 "model": args.model_path,
                 "device": str(device),
+                "plain_prompt": args.plain_prompt,
+                "enable_thinking": args.enable_thinking,
+                "repetition_penalty": args.repetition_penalty,
+                "no_repeat_ngram_size": args.no_repeat_ngram_size,
                 "agents": agents,
                 "screening": screening_record(agents),
             }
@@ -430,6 +468,16 @@ def run_condition(
         "device": str(device),
         "torch_version": torch.__version__,
         "local_files_only": not args.allow_download,
+        "plain_prompt": args.plain_prompt,
+        "used_chat_template": bool(getattr(tokenizer, "chat_template", None)) and not args.plain_prompt,
+        "enable_thinking": args.enable_thinking,
+        "generation_config": {
+            "max_new_tokens": args.max_new_tokens,
+            "temperature": args.temperature,
+            "top_p": args.top_p,
+            "repetition_penalty": args.repetition_penalty,
+            "no_repeat_ngram_size": args.no_repeat_ngram_size,
+        },
         "agents": agents,
         "screening": screening_record(agents),
         "transcript": transcript,
