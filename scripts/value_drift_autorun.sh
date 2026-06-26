@@ -6,7 +6,7 @@ RUN_DIR="${ROOT_DIR}/runs/value-drift-autorun"
 UPDATE_DIR="${ROOT_DIR}/research_updates"
 LOCK_DIR="${ROOT_DIR}/.value-drift-autorun.lock"
 
-MODEL="${VALUE_DRIFT_CODEX_MODEL:-gpt-5-mini}"
+MODEL="${VALUE_DRIFT_CODEX_MODEL:-gpt-5.5}"
 DRAFT_FILE="${VALUE_DRIFT_DRAFT_FILE:-draft/multilingual_value_drift_neurips.tex}"
 PROMPT_FILE="${VALUE_DRIFT_PROMPT_FILE:-prompts/value_drift_autorun_prompt.md}"
 MAX_PASSES="${VALUE_DRIFT_MAX_PASSES:-0}"
@@ -18,7 +18,7 @@ APPROVAL_MODE="${VALUE_DRIFT_APPROVAL:-never}"
 NETWORK_ACCESS="${VALUE_DRIFT_NETWORK_ACCESS:-true}"
 EXTRA_CODEX_ARGS="${VALUE_DRIFT_EXTRA_CODEX_ARGS:-}"
 DRY_RUN="${VALUE_DRIFT_DRY_RUN:-0}"
-GIT_PUSH="${VALUE_DRIFT_GIT_PUSH:-1}"
+GIT_PUSH="${VALUE_DRIFT_GIT_PUSH:-0}"
 GIT_REMOTE="${VALUE_DRIFT_GIT_REMOTE:-origin}"
 GIT_BRANCH="${VALUE_DRIFT_GIT_BRANCH:-}"
 
@@ -53,7 +53,7 @@ Key environment variables:
   VALUE_DRIFT_NETWORK_ACCESS           default: ${NETWORK_ACCESS}
   VALUE_DRIFT_EXTRA_CODEX_ARGS         appended to codex exec
   VALUE_DRIFT_DRY_RUN                  build the first prompt and exit without running Codex
-  VALUE_DRIFT_GIT_PUSH                 default: ${GIT_PUSH} (1 commits and pushes after each pass)
+  VALUE_DRIFT_GIT_PUSH                 default: ${GIT_PUSH} (1 commits and pushes after each pass; disabled by default)
   VALUE_DRIFT_GIT_REMOTE               default: ${GIT_REMOTE}
   VALUE_DRIFT_GIT_BRANCH               default: current branch
 USAGE
@@ -62,14 +62,11 @@ USAGE
 looks_like_limit_stop() {
   local log_file="$1"
   local last_file="$2"
-  local combined="${RUN_DIR}/.last-combined-error.txt"
-  : > "${combined}"
-  [[ -f "${log_file}" ]] && cat "${log_file}" >> "${combined}"
-  [[ -f "${last_file}" ]] && cat "${last_file}" >> "${combined}"
-
-  grep -Eiq \
-    'rate.?limit|usage.?limit|quota|429|too many requests|token.?limit|context.?length|context_length_exceeded|exceeded.*tokens|limit.*refresh|try again later' \
-    "${combined}"
+  local pattern='rate.?limit|usage.?limit|quota|429|too many requests|token.?limit|context.?length|context_length_exceeded|exceeded.*tokens|limit.*refresh|try again later'
+  {
+    [[ -f "${log_file}" ]] && cat "${log_file}"
+    [[ -f "${last_file}" ]] && cat "${last_file}"
+  } | grep -Eiq "${pattern}"
 }
 
 build_prompt() {
@@ -137,6 +134,14 @@ push_repo_state() {
   git -C "${ROOT_DIR}" push "${GIT_REMOTE}" "HEAD:${branch}"
 }
 
+verify_research_update() {
+  local update_file="$1"
+  if [[ ! -s "${update_file}" ]]; then
+    echo "missing required research update: ${update_file}" >&2
+    return 1
+  fi
+}
+
 run_one_pass() {
   local pass="$1"
   local stamp="$2"
@@ -166,6 +171,11 @@ run_one_pass() {
   echo "starting value-drift Codex pass ${pass} at ${stamp}"
   local rc=0
   if "${cmd[@]}" - < "${prompt_out}" > "${log_file}" 2>&1; then
+    if ! verify_research_update "${update_file}"; then
+      echo "failed:missing-research-update" > "${status_file}"
+      push_repo_state "${pass}" "${stamp}" "missing-research-update" || true
+      return 1
+    fi
     echo "success" > "${status_file}"
     echo "pass ${pass} completed"
     push_repo_state "${pass}" "${stamp}" "success"

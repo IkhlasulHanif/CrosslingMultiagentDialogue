@@ -28,7 +28,7 @@ Install a cron retry. The default schedule starts the harness every 30 minutes, 
 
 Useful environment variables:
 
-- `VALUE_DRIFT_CODEX_MODEL`, default `gpt-5-mini`.
+- `VALUE_DRIFT_CODEX_MODEL`, default `gpt-5.5`.
 - `VALUE_DRIFT_MAX_PASSES`, default `0`, meaning unlimited.
 - `VALUE_DRIFT_DRAFT_FILE`, default `draft/multilingual_value_drift_neurips.tex`.
 - `VALUE_DRIFT_PROMPT_FILE`, default `prompts/value_drift_autorun_prompt.md`.
@@ -37,7 +37,7 @@ Useful environment variables:
 - `VALUE_DRIFT_CONTINUE_ON_ERROR`, default `0`.
 - `VALUE_DRIFT_NETWORK_ACCESS`, default `true`.
 - `VALUE_DRIFT_EXTRA_CODEX_ARGS`, appended to `codex exec`.
-- `VALUE_DRIFT_GIT_PUSH`, default `1`, commits and pushes the repo state after each pass attempt.
+- `VALUE_DRIFT_GIT_PUSH`, default `0`, keeps the repo local. Set to `1` to commit and push after each pass attempt.
 - `VALUE_DRIFT_GIT_REMOTE`, default `origin`.
 - `VALUE_DRIFT_GIT_BRANCH`, default current branch.
 
@@ -47,6 +47,10 @@ Outputs:
 - `runs/value-drift-autorun/*.log` contains the Codex CLI log.
 - `runs/value-drift-autorun/*.last.md` contains the final agent message.
 - `research_updates/*-value-drift-pass-*.md` should contain the worker's experiment note for that pass.
+
+Successful passes are required to create a non-empty research update. If Codex exits
+successfully but the update is missing, the harness marks that pass as failed so the
+missing BiVaD trial note is visible in review.
 
 Verify prompt construction without launching Codex:
 
