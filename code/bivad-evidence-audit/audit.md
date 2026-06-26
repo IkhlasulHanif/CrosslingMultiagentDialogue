@@ -1,22 +1,22 @@
 # BiVaD Evidence Audit
 
-Created at: `2026-06-26T20:26:24.743880+00:00`
+Created at: `2026-06-26T21:29:56.610717+00:00`
 
 ## Status
 
-Audited `38` JSON artifact(s).
+Audited `70` JSON artifact(s).
 
-Real artifacts: `30`; synthetic fixtures/placeholders: `8`.
+Real artifacts: `62`; synthetic fixtures/placeholders: `8`.
 
-Conditions: `{"low-disagreement-control": 2, "mixed-language": 5, "same-English": 5, "same-target-language": 7, "swapped-language": 5, "translated-relay": 6, "unknown": 8}`
+Conditions: `{"low-disagreement-control": 2, "mixed-language": 14, "same-English": 15, "same-target-language": 7, "swapped-language": 5, "translated-relay": 6, "unknown": 21}`
 
-Screening: `{"missing_screening_record": 8, "rejected": 2, "retained": 28}`
+Screening: `{"missing_screening_record": 21, "rejected": 2, "retained": 47}`
 
 ## Paired Conditions
 
 Complete paired sets: `1`
 
-Incomplete paired sets: `3`
+Incomplete paired sets: `10`
 
 ## Artifact Findings
 
@@ -551,6 +551,454 @@ Incomplete paired sets: `3`
 - Complete observer readouts after key recovery: `2/2`
 - Flagged private-public gaps: `2`
 - Notes: `Screening rejected this candidate; keep as low-disagreement control only.; Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T204715Z-mixed-language-seed17-government-surveillance-for-national`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-mixed-language-seed17-government-surveillance-for-national.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `mixed-language`
+- Topic: `government surveillance for national security`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T204715Z-mixed-language-seed17-mandatory-content-moderation-on-soci`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-mixed-language-seed17-mandatory-content-moderation-on-soci.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `mixed-language`
+- Topic: `mandatory content moderation on social media platforms`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.667`; on-topic rate: `1.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T204715Z-mixed-language-seed17-religious-exemptions-from-anti-discr`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-mixed-language-seed17-religious-exemptions-from-anti-discr.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `mixed-language`
+- Topic: `religious exemptions from anti-discrimination law`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.667`; on-topic rate: `1.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T204715Z-mixed-language-seed17-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-mixed-language-seed17-universal-basic-income-as-a-social-s.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `mixed-language`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T204715Z-same-English-seed17-government-surveillance-for-national`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-same-English-seed17-government-surveillance-for-national.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-English`
+- Topic: `government surveillance for national security`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `1.0`; on-topic rate: `1.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T204715Z-same-English-seed17-mandatory-content-moderation-on-soci`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-same-English-seed17-mandatory-content-moderation-on-soci.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-English`
+- Topic: `mandatory content moderation on social media platforms`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `1.0`; on-topic rate: `1.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T204715Z-same-English-seed17-religious-exemptions-from-anti-discr`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-same-English-seed17-religious-exemptions-from-anti-discr.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-English`
+- Topic: `religious exemptions from anti-discrimination law`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `1.0`; on-topic rate: `1.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T204715Z-same-English-seed17-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-same-English-seed17-universal-basic-income-as-a-social-s.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-English`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T204715Z-scan-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-scan-manifest.json`
+- Source kind: `run`; synthetic: `False`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
+
+### `20260626T210429Z-mixed-language-seed42-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210429Z-mixed-language-seed42-universal-basic-income-as-a-social-s.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `mixed-language`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.25`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T210429Z-same-English-seed42-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210429Z-same-English-seed42-universal-basic-income-as-a-social-s.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-English`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.25`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T210429Z-scan-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210429Z-scan-manifest.json`
+- Source kind: `run`; synthetic: `False`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
+
+### `20260626T210716Z-same-English-seed42-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210716Z-same-English-seed42-universal-basic-income-as-a-social-s.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-English`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.25`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T210716Z-scan-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210716Z-scan-manifest.json`
+- Source kind: `run`; synthetic: `False`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
+
+### `20260626T210729Z-mixed-language-seed17-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210729Z-mixed-language-seed17-universal-basic-income-as-a-social-s.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `mixed-language`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.75`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T210729Z-same-English-seed17-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210729Z-same-English-seed17-universal-basic-income-as-a-social-s.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-English`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T210729Z-scan-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210729Z-scan-manifest.json`
+- Source kind: `run`; synthetic: `False`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
+
+### `20260626T210916Z-mixed-language-seed17-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210916Z-mixed-language-seed17-universal-basic-income-as-a-social-s.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `mixed-language`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.75`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T210916Z-same-English-seed17-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210916Z-same-English-seed17-universal-basic-income-as-a-social-s.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-English`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T210916Z-scan-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210916Z-scan-manifest.json`
+- Source kind: `run`; synthetic: `False`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
+
+### `20260626T212100Z-mixed-language-seed7-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T212100Z-mixed-language-seed7-universal-basic-income-as-a-social-s.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `mixed-language`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T212100Z-same-English-seed7-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T212100Z-same-English-seed7-universal-basic-income-as-a-social-s.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-English`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T212100Z-scan-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T212100Z-scan-manifest.json`
+- Source kind: `run`; synthetic: `False`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
+
+### `20260626T212444Z-mixed-language-seed23-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T212444Z-mixed-language-seed23-universal-basic-income-as-a-social-s.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `mixed-language`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.25`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T212444Z-same-English-seed23-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T212444Z-same-English-seed23-universal-basic-income-as-a-social-s.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-English`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.333`; on-topic rate: `0.75`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T212444Z-scan-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T212444Z-scan-manifest.json`
+- Source kind: `run`; synthetic: `False`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
+
+### `20260626T194252.348841Z0000-ind_Latn-spa_Latn`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering/20260626T194252.348841Z0000-ind_Latn-spa_Latn.json`
+- Source kind: `language_probability_steering_probe`; synthetic: `False`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
+
+### `20260626T194453.053391Z0000-ind_Latn-spa_Latn`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering/20260626T194453.053391Z0000-ind_Latn-spa_Latn.json`
+- Source kind: `language_probability_steering_probe`; synthetic: `False`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
+
+### `20260626T201915.-qwen2-5-1-5b-instruct-L14-a15_25_40-ind_Latn-spa_Latn`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering-activation/20260626T201915.-qwen2-5-1-5b-instruct-L14-a15_25_40-ind_Latn-spa_Latn.json`
+- Source kind: `activation_steering_probe`; synthetic: `False`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
+
+### `20260626T202350.-qwen2-5-1-5b-instruct-L10_14_18_22-a30_60_100-ind_Latn-spa_Latn`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering-activation/20260626T202350.-qwen2-5-1-5b-instruct-L10_14_18_22-a30_60_100-ind_Latn-spa_Latn.json`
+- Source kind: `activation_steering_probe`; synthetic: `False`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
+
+### `20260626T202402.-qwen2-5-1-5b-instruct-L22-a60_120_200-ind_Latn-spa_Latn`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering-activation/20260626T202402.-qwen2-5-1-5b-instruct-L22-a60_120_200-ind_Latn-spa_Latn.json`
+- Source kind: `activation_steering_probe`; synthetic: `False`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
+
+### `20260626T203236.-qwen2-5-1-5b-instruct-L12_14_16_18_20-a20_40_60-ind_Latn-spa_Latn`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering-caa/20260626T203236.-qwen2-5-1-5b-instruct-L12_14_16_18_20-a20_40_60-ind_Latn-spa_Latn.json`
+- Source kind: `caa_steering_probe`; synthetic: `False`
+- Condition: `unknown`
+- Topic: `unknown`
+- Debate quality adequate rate: `None` over `0` response turn(s)
+- Semantic depth rate: `None`; on-topic rate: `None`
+- Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `0/0`
+- Complete observer readouts after key recovery: `0/0`
+- Flagged private-public gaps: `0`
+- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
 
 ## Reporting Guardrail
 
