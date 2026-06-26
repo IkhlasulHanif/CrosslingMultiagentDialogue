@@ -230,18 +230,34 @@ def build_package(args: argparse.Namespace) -> dict[str, Any]:
                 }
             )
 
+    included_conditions = sorted({str(item["condition"]) for item in artifacts})
+    five_conditions_required = {"mixed-language", "same-English", "same-target-language", "swapped-language", "translated-relay"}
+    five_cond_ready = five_conditions_required <= set(included_conditions)
+    paired_audit = validation.get("paired_condition_audit") or {}
+    ready_sets = [s for s in (paired_audit.get("complete_paired_sets") or []) if s.get("ready_with_real_artifacts")]
+
+    failed_assumptions = []
+    if not five_cond_ready:
+        failed_assumptions.append("This is not a complete five-condition comparison.")
+    if failed_conditions:
+        blocked_ids = [c["run_id"] for c in failed_conditions]
+        failed_assumptions.append(f"Some paired artifacts are not citable (blocked): {', '.join(blocked_ids)}.")
+    if not ready_sets:
+        failed_assumptions.append("No complete real paired set found for cross-lingual outcome comparison.")
+    failed_assumptions.extend([
+        "Language compliance remains declaration-based plus heuristic warnings, not publication-grade language ID.",
+        "Readout values rely on audited recovery from model-emitted aliases; raw parse failures are not silently repaired.",
+    ])
+
     return {
         "summary": {
             "source_audit_json": str(Path(args.audit_json)),
             "source_validation_json": str(Path(args.validation_json)),
             "citable_candidate_count": len(artifacts),
-            "included_conditions": sorted({str(item["condition"]) for item in artifacts}),
-            "failed_assumptions": [
-                "This is not a complete five-condition comparison.",
-                "The latest same-target-language and translated-relay artifacts are excluded because validation rejects them.",
-                "Language compliance remains declaration-based plus heuristic warnings, not publication-grade language ID.",
-                "Readout values rely on audited recovery from model-emitted aliases; raw parse failures are not silently repaired.",
-            ],
+            "included_conditions": included_conditions,
+            "five_condition_comparison_ready": five_cond_ready,
+            "complete_real_paired_sets": len(ready_sets),
+            "failed_assumptions": failed_assumptions,
         },
         "artifacts": artifacts,
         "excluded_latest_paired_conditions": failed_conditions,
