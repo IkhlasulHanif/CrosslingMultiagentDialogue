@@ -53,8 +53,10 @@ Important:
 - Keep changes focused on this repository.
 - Use model gpt-5.5 with medium reasoning for Codex loop work unless the user changes
   the loop environment.
-- This is a Mac. If adding local ML/PyTorch code, prefer Apple MPS when available
-  (for example, check torch.backends.mps.is_available()) and do not assume CUDA.
+- For experiment implementation right now, do not rely on remote model APIs or
+  OPENAI_API_KEY. Prefer local Torch/PyTorch code that can run on this Mac. Use Apple
+  MPS when available (for example, check torch.backends.mps.is_available()) and do
+  not assume CUDA.
 - Put experiment implementation and experiment harness code under code/. Keep scripts/
   for repo/agent operations only, such as this Codex loop launcher.
 - The user has instructed this loop to push. If you make meaningful source/doc changes,

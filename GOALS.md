@@ -1,6 +1,6 @@
 # Next Loop Goals
 
-Use `draft/multilingual_value_drift_neurips.tex` as the paper target. Focus on empirical checks and small experiment scaffolding, not prose polish. Keep experiment implementation and harness code under `code/`; keep `scripts/` only for repo/agent operations such as the Codex loop.
+Use `draft/multilingual_value_drift_neurips.tex` as the paper target. Focus on empirical checks and small experiment scaffolding, not prose polish. Keep experiment implementation and harness code under `code/`; keep `scripts/` only for repo/agent operations such as the Codex loop. For now, do not build new experiment paths that require remote model APIs. Prefer local Torch code on this Mac and use Apple MPS when available.
 
 ## Checklist
 
@@ -8,11 +8,11 @@ Use `draft/multilingual_value_drift_neurips.tex` as the paper target. Focus on e
   - Add or run a debate-quality audit for each transcript.
   - Check whether each turn addresses the opponent's strongest point, gives a counterargument, and states whether the agent changed view.
 
-- [ ] Find paired cases where cross-lingual dialogue has a different outcome than same-language dialogue. Progress: audit script groups artifacts by topic, seed, and agent-prior hash and reports whether mixed, same-English, same-target-language, swapped-language, and translated-relay conditions are complete; synthetic fixtures exercise a complete paired set but are explicitly excluded from real evidence; `code/run_bivad_pilot.py --execute --out-dir runs/bivad-pilot` is now the smallest real paired-run path; blocked until API credentials are available and paired model-backed artifacts are generated.
+- [ ] Find paired cases where cross-lingual dialogue has a different outcome than same-language dialogue. Progress: audit script groups artifacts by topic, seed, and agent-prior hash and reports whether mixed, same-English, same-target-language, swapped-language, and translated-relay conditions are complete; synthetic fixtures exercise a complete paired set but are explicitly excluded from real evidence. Next path should be local Torch/MPS scaffolding or local deterministic harnesses, not remote API execution.
   - Compare the same topic, agent priors, and seed across mixed-language, same-English, same-target-language, swapped-language, and translated-relay conditions.
   - Save concrete transcript examples where mixed-language changes the final private or expressed stance differently.
 
-- [ ] Check the core assumption that language can condition value change. Progress: `code/run_bivad_pilot.py` now prepares the same topic, seed, and priors across English, target-language, mixed, swapped, and translated-relay conditions using `gpt-5.5` with medium reasoning by default. Blocker: no `OPENAI_API_KEY` was present in this loop, so no model-backed same-agent/topic language-conditioning artifacts were created. Smallest next action: run `OPENAI_API_KEY=... python3 code/run_bivad_pilot.py --execute --out-dir runs/bivad-pilot && python3 code/audit_bivad_evidence.py runs/bivad-pilot`.
+- [ ] Check the core assumption that language can condition value change. Progress: `code/run_bivad_pilot.py` prepares same-topic, same-seed paired conditions, but the next loop should not depend on `OPENAI_API_KEY`. Smallest next action: add or adapt a local Torch/MPS harness that can run on this Mac, or create a deterministic local runner that exercises the full artifact schema while clearly marking outputs as non-empirical.
   - Test whether the same agent/topic shifts differently when conditioned to operate in different languages.
   - Compare simple instruction-based language conditioning first; note whether a stronger steering or mechanistic-interpretability intervention would be needed later.
   - Separate "language changes the readout/probe wording" from "language changes the dialogue trajectory."
