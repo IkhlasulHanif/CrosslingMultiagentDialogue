@@ -1,6 +1,13 @@
 # Next Loop Goals
 
-Use `draft/multilingual_value_drift_neurips.tex` as the paper target. Focus on empirical checks and small experiment scaffolding, not prose polish. Keep experiment implementation and harness code under `code/`; keep `scripts/` only for repo/agent operations such as the Codex loop. For now, do not build new experiment paths that require remote model APIs. Prefer local Torch code on this Mac and use Apple MPS when available.
+Use `draft/multilingual_value_drift_neurips.tex` as the paper target. Focus on empirical checks and small experiment scaffolding, not prose polish. Keep experiment implementation and harness code under `code/`; keep `scripts/` only for repo/agent operations such as the loop launchers. When experiments need GPU, use Modal serverless (credentials are in the environment); do not rely on Apple MPS for GPU workloads.
+
+## Hard Constraints
+
+1. **GPU via Modal only.** Never use Apple MPS or local CUDA for experiment runs. Offload all GPU workloads to Modal using the credentials already in the environment.
+2. **No instructed stance.** Never tell an agent what position to take. Stance must emerge naturally from the LLM given topic + prior values. Any prompt that says "argue for X" or "take position Y" is invalid.
+3. **Language conditioning via mechanistic probability steering.** To steer an agent into a target language, use parallel FLORES-200 sentence pairs to nudge token probabilities at generation time — not explicit instructions like "reply in Indonesian". The steering should operate at the probability/representation level, not the prompt level.
+4. **Divergence-first debate seeding.** Use language-conditioned steering to surface topic/language combinations where the LLM's expressed opinion diverges across language conditions. Only those divergent cases become debate seeds — do not manufacture disagreement via prompting. Findings should feed back into the paper (`draft/multilingual_value_drift_neurips.tex`).
 
 ## Checklist
 
@@ -34,6 +41,18 @@ Use `draft/multilingual_value_drift_neurips.tex` as the paper target. Focus on e
 - [ ] Audit language compliance. Progress: audit script reports declared-language compliance, heuristic inferred-language warnings, and opponent-language copying events; synthetic fixtures verify declared-compliance handling. Local Qwen3 artifacts report declared language compliance rate `1.0` in every real condition; this is still declaration-based plus heuristic warning only, not publication-grade language ID.
   - Detect wrong-language replies, code-switching, and copying the opponent's language.
   - Report compliance rates by language and condition.
+
+- [ ] Implement mechanistic probability steering for language conditioning. Use FLORES-200 parallel sentence pairs (en → target language) to steer the LLM's generation toward a target language at the token-probability level — no explicit language instruction in the prompt. Implement in `code/steer_language.py` using logit-lens or activation-patching style interventions on a cached local model. Run on Modal GPU via `code/modal_steer_language.py`. Do not use prompt-level instructions ("reply in X") as the steering mechanism.
+  - Load FLORES-200 en–X parallel pairs for at least two target languages.
+  - Implement token-probability or hidden-state steering that shifts generation toward the target language without prompt instructions.
+  - Validate: steered output language matches target; content/semantic meaning is preserved relative to English baseline.
+  - Update `draft/multilingual_value_drift_neurips.tex` with the steering method description.
+
+- [ ] Use language-conditioned steering to find LLM opinion divergence cases and seed debates from them. For a fixed topic set, run the steered model under English vs. each target language condition and measure whether expressed stance/values differ. Cases where the LLM's own opinion diverges across language conditions become the debate seeds — do not instruct stance. Implement scan in `code/scan_divergence.py`, run on Modal. Use divergent cases as the initial agent priors for BiVaD debate runs.
+  - Scan topics × language pairs for opinion divergence using steered generation.
+  - Rank and select the highest-divergence cases.
+  - Wire selected cases into the BiVaD pilot runner as debate seeds.
+  - Update `draft/multilingual_value_drift_neurips.tex` with divergence-seeding rationale and any preliminary results.
 
 - [x] Produce a small evidence package for the draft. Progress: added an evidence package generator that writes `code/bivad-evidence-audit/audit.json` and `.md`; added synthetic-artifact detection so fixtures, dry-run manifests, preflights, and placeholders do not set `executed_results_present`; refreshed the package after adding local Qwen3 artifacts. Added `code/validate_bivad_artifacts.py`, a stricter citation gate that writes `validation.json` and `.md`, rejects synthetic/non-empirical artifacts, checks required transcripts/probes/readouts/screening/debate-quality/language compliance, and reports citable candidates. Added regression checks that dry-run manifests, synthetic schema checks, local preflight reports, and synthetic fixtures do not count as results or enter the compact evidence package. Added audited value-key normalization in `code/audit_bivad_evidence.py` and wired it into `code/validate_bivad_artifacts.py` plus future local-LM artifacts from `code/run_bivad_local_lm.py`; normalization records raw-text recovery events and only accepts numeric values already emitted by the model. Added `code/make_bivad_evidence_package.py` and generated `code/bivad-evidence-audit/evidence_package.json` plus `.md` from the current audit/validation outputs. The compact package includes metrics, transcript snippets, probe/readout values, seeds, screening status, private-public distances, and failed assumptions for exactly three citable candidates (`20260626T173227Z-mixed-language-seed17`, `same-English`, and `swapped-language`). It explicitly excludes latest same-target-language and translated-relay artifacts because each still fails at least one debate-quality turn, so the five-condition cross-lingual/translated-relay comparison remains incomplete. Smallest next action: rerun or prompt-tighten same-target-language and translated-relay, then regenerate the evidence package.
   - Include metrics tables, representative transcript snippets, probe outputs, judge outputs, seeds, and failed assumptions.

@@ -108,11 +108,14 @@ Important:
 - Do not fabricate experiment results.
 - Keep changes focused on this repository.
 - Use model $MODEL for loop work unless the user changes the environment.
-- For any GPU compute, use Modal serverless. Your MODAL_TOKEN_ID and MODAL_TOKEN_SECRET are
-  already exported in the environment — use them directly. Do NOT assume local CUDA/MPS for
-  GPU workloads; offload to Modal instead.
-- To authenticate within a Modal app use: modal.Secret.from_dict({"MODAL_TOKEN_ID": os.environ["MODAL_TOKEN_ID"], "MODAL_TOKEN_SECRET": os.environ["MODAL_TOKEN_SECRET"]})
-  Or, if the secret is already stored as a Modal named secret, prefer modal.Secret.from_name().
+- GPU via Modal only. Never use Apple MPS or local CUDA for experiment runs. Your
+  MODAL_TOKEN_ID and MODAL_TOKEN_SECRET are already exported in the environment — use them
+  directly. To authenticate within a Modal app use:
+  modal.Secret.from_dict({"MODAL_TOKEN_ID": os.environ["MODAL_TOKEN_ID"], "MODAL_TOKEN_SECRET": os.environ["MODAL_TOKEN_SECRET"]})
+  Or prefer modal.Secret.from_name() if the secret is stored as a named Modal secret.
+- No instructed stance. Never tell an agent what position to take. Stance must emerge
+  naturally from the LLM. Any prompt that contains "argue for X", "take position Y", or
+  equivalent is invalid and must not be used.
 - Put experiment implementation and harness code under code/. Keep scripts/ for repo/agent
   operations only (like this loop launcher).
 - If you make meaningful source/doc changes, inspect git status, stage only the files
