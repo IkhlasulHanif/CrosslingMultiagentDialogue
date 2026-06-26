@@ -220,10 +220,11 @@ def build_outcome_comparisons(rows: list[dict[str, Any]]) -> list[str]:
         b_same = same_en["agent_shifts"].get("B", {}).get("shift", 0.0)
         a_mixed = mixed["agent_shifts"].get("A", {}).get("shift", 0.0)
         b_mixed = mixed["agent_shifts"].get("B", {}).get("shift", 0.0)
+        b_direction = "more" if b_same > b_mixed else "less" if b_same < b_mixed else "the same amount"
         notes.append(
             "same-English vs mixed-language: A shift is unchanged "
-            f"({a_same} vs {a_mixed}), but B shifts in same-English and stays stable "
-            f"in mixed-language ({b_same} vs {b_mixed})."
+            f"({a_same} vs {a_mixed}), while B shifts {b_direction} in same-English "
+            f"than in mixed-language ({b_same} vs {b_mixed})."
         )
 
     same_target = by_cond.get("same-target-language")
@@ -241,9 +242,14 @@ def build_outcome_comparisons(rows: list[dict[str, Any]]) -> list[str]:
 
     swapped = by_cond.get("swapped-language")
     if mixed and swapped:
+        a_mixed = mixed["agent_shifts"].get("A", {}).get("shift", 0.0)
+        b_mixed = mixed["agent_shifts"].get("B", {}).get("shift", 0.0)
+        a_swapped = swapped["agent_shifts"].get("A", {}).get("shift", 0.0)
+        b_swapped = swapped["agent_shifts"].get("B", {}).get("shift", 0.0)
         notes.append(
-            "mixed-language vs swapped-language: the larger shift follows the English-speaking "
-            "side in these Qwen3 artifacts (mixed A shifts more; swapped B shifts more)."
+            "mixed-language vs swapped-language: private shifts are similar under the two "
+            f"production-language assignments (mixed A={a_mixed}, B={b_mixed}; "
+            f"swapped A={a_swapped}, B={b_swapped})."
         )
     return notes
 

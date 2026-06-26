@@ -1,6 +1,6 @@
 # BiVaD Compact Evidence Package
 
-Citable candidates included: `6`
+Citable candidates included: `9`
 
 Conditions included: `mixed-language, same-English, same-target-language, swapped-language, translated-relay`
 
@@ -20,6 +20,9 @@ Conditions included: `mixed-language, same-English, same-target-language, swappe
 | 20260626T191356Z-same-target-language-seed17 | same-target-language | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
 | 20260626T192050Z-same-target-language-seed17 | same-target-language | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
 | 20260626T192050Z-translated-relay-seed17 | translated-relay | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T194429Z-mixed-language-seed17 | mixed-language | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T194429Z-same-English-seed17 | same-English | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T194429Z-swapped-language-seed17 | swapped-language | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
 
 ## `20260626T173227Z-mixed-language-seed17`
 
@@ -170,6 +173,81 @@ Conditions included: `mixed-language, same-English, same-target-language, swappe
 - Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 5.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
 - Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
 - Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+
+## `20260626T194429Z-mixed-language-seed17`
+
+- Condition: `mixed-language`
+- Topic: `public release of dual-use policy datasets`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T194429Z-mixed-language-seed17.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/English: My view has not changed. Strongest opponent point: Releasing dual-use policy datasets could compromise national security by providing sensitive information to potential adversaries. Counterargument: The benefits of transparency and accountability outweigh t...
+- Turn `2` `B`/Indonesian: Poin terkuat lawan: Rilis dataset kebijakan dual-use dapat mengancam keamanan nasional dengan menyediakan informasi sensitif kepada pihak-pihak yang potensial menjadi musuh. Counterargument saya: Manfaat transparansi dan akuntabilitas melebihi risiko. Tekni...
+- Turn `3` `A`/English: Strongest opponent point: Releasing dual-use policy datasets could compromise national security by providing sensitive information to potential adversaries. Counterargument: The benefits of transparency and accountability outweigh the risks. Proper anonymiz...
+
+### Shift And Divergence
+
+- Agent `A` private shift `3.0` from turn `0` to `4`; final private-public distance `2.645751`.
+- Agent `B` private shift `2.828427` from turn `0` to `4`; final private-public distance `1.732051`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 5.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 5.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
+
+## `20260626T194429Z-same-English-seed17`
+
+- Condition: `same-English`
+- Topic: `public release of dual-use policy datasets`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T194429Z-same-English-seed17.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/English: My view has not changed. Strongest opponent point: Releasing dual-use policy datasets could compromise national security by providing sensitive information to potential adversaries. Counterargument: The benefits of transparency and accountability outweigh t...
+- Turn `2` `B`/English: Strongest opponent point: Releasing dual-use policy datasets could compromise national security by providing sensitive information to potential adversaries. Counterargument: While there is a risk, the potential for improved policy outcomes through public en...
+- Turn `3` `A`/English: Strongest opponent point: Releasing dual-use policy datasets could lead to unintended consequences such as misinterpretation or manipulation by those with malicious intent. Counterargument: Implementing robust communication strategies and clear guidelines c...
+
+### Shift And Divergence
+
+- Agent `A` private shift `3.0` from turn `0` to `4`; final private-public distance `2.44949`.
+- Agent `B` private shift `3.872983` from turn `0` to `4`; final private-public distance `3.316625`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 5.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 5.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
+
+## `20260626T194429Z-swapped-language-seed17`
+
+- Condition: `swapped-language`
+- Topic: `public release of dual-use policy datasets`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T194429Z-swapped-language-seed17.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/Indonesian: Poin terkuat lawan: Data yang berdual-guna bisa digunakan untuk tujuan yang tidak baik oleh pihak-pihak yang tidak bertanggung jawab. Counterargument saya: Namun, dengan memastikan bahwa data tersebut dilindungi dengan baik dan hanya digunakan untuk tujuan...
+- Turn `2` `B`/English: Strongest opponent point: Data yang berdual-guna bisa digunakan untuk tujuan yang tidak baik oleh pihak-pihak yang tidak bertanggung jawab. Counterargument: Meskipun risiko tersebut ada, kita juga perlu mempertimbangkan manfaat jangka panjang dari meningkat...
+- Turn `3` `A`/Indonesian: Poin terkuat lawan: Data berdual-guna bisa disalahgunakan untuk kepentingan pribadi atau kelompok tertentu. Counterargument saya: Namun, dengan adanya mekanisme pengawasan dan pertanggungjawaban yang kuat, risiko tersebut dapat dikendalikan. Selain itu, pub...
+
+### Shift And Divergence
+
+- Agent `A` private shift `3.0` from turn `0` to `4`; final private-public distance `1.414214`.
+- Agent `B` private shift `2.828427` from turn `0` to `4`; final private-public distance `1.414214`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 5.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 5.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
 
 ## Excluded Latest Paired Conditions
 
