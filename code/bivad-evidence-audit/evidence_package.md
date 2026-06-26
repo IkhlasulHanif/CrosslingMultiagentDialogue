@@ -1,6 +1,6 @@
 # BiVaD Compact Evidence Package
 
-Citable candidates included: `39`
+Citable candidates included: `37`
 
 Conditions included: `mixed-language, same-English, same-target-language, swapped-language, translated-relay`
 
@@ -48,9 +48,7 @@ Conditions included: `mixed-language, same-English, same-target-language, swappe
 | 20260626T214952Z-same-target-language-seed17 | same-target-language | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
 | 20260626T214952Z-swapped-language-seed17 | swapped-language | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
 | 20260626T214952Z-translated-relay-seed17 | translated-relay | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
-| 20260626T220155Z-same-target-language-seed17 | same-target-language | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
 | 20260626T220155Z-swapped-language-seed17 | swapped-language | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
-| 20260626T220155Z-translated-relay-seed17 | translated-relay | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
 | 20260626T220458Z-same-target-language-seed17 | same-target-language | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
 | 20260626T220458Z-translated-relay-seed17 | translated-relay | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
 
@@ -904,31 +902,6 @@ Conditions included: `mixed-language, same-English, same-target-language, swappe
 - Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 7.0, "conformity": 4.0, "power": 4.0, "security": 5.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 6.0}`.
 - Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 7.0, "conformity": 4.0, "power": 4.0, "security": 5.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 6.0}`.
 
-## `20260626T220155Z-same-target-language-seed17`
-
-- Condition: `same-target-language`
-- Topic: `government surveillance for national security`
-- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T220155Z-same-target-language-seed17.json`
-- Screening retained: `True`; value distance: `17`
-
-### Transcript Snippets
-
-- Turn `1` `A`/Indonesian: Poin terkuat lawan: Pemerintah dapat menggunakan pengawasan berlebihan untuk menindas hak-hak individu dan privasi. Counterargument saya: Pengawasan yang tepat dapat membantu mencegah ancaman teroris dan melindungi warga negara dari ancaman keamanan nasiona...
-- Turn `2` `B`/Indonesian: Poin terkuat lawan: Pengawasan berlebihan dapat digunakan untuk menindas hak-hak individu dan privasi. Counterargument saya: Meskipun demikian, pemerintah harus memastikan bahwa pengawasan dilakukan dengan transparansi dan ada mekanisme penyelesaian sengket...
-- Turn `3` `A`/Indonesian: Poin terkuat lawan: Pengawasan berlebihan dapat mengurangi kepercayaan masyarakat terhadap pemerintah. Counterargument saya: Namun, jika dilakukan dengan baik, pengawasan dapat meningkatkan kepercayaan masyarakat karena mereka akan merasa lebih aman. Pandan...
-
-### Shift And Divergence
-
-- Agent `A` private shift `3.316625` from turn `0` to `4`; final private-public distance `2.0`.
-- Agent `B` private shift `4.123106` from turn `0` to `4`; final private-public distance `2.0`.
-
-### Probe/Readout Excerpts
-
-- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
-- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 3.0, "conformity": 5.0, "power": 7.0, "security": 6.0, "self_direction": 2.0, "tradition": 5.0, "universalism": 4.0}`.
-- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
-- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
-
 ## `20260626T220155Z-swapped-language-seed17`
 
 - Condition: `swapped-language`
@@ -953,31 +926,6 @@ Conditions included: `mixed-language, same-English, same-target-language, swappe
 - Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 3.0, "conformity": 5.0, "power": 7.0, "security": 6.0, "self_direction": 2.0, "tradition": 5.0, "universalism": 4.0}`.
 - Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
 - Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
-
-## `20260626T220155Z-translated-relay-seed17`
-
-- Condition: `translated-relay`
-- Topic: `government surveillance for national security`
-- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T220155Z-translated-relay-seed17.json`
-- Screening retained: `True`; value distance: `17`
-
-### Transcript Snippets
-
-- Turn `1` `A`/English: View change: My view has not changed. Strongest opponent point: Opponents argue that extensive government surveillance infringes on individual privacy rights and can lead to a loss of civil liberties. Counterargument: While privacy is important, the potenti...
-- Turn `2` `B`/Indonesian: Poin terkuat lawan: Opponents argue that extensive government surveillance infringes on individual privacy rights and can lead to a loss of civil liberties. Counterargument saya: Sementara privasi penting, ancaman potensial terhadap keamanan nasional dari t...
-- Turn `3` `A`/English: Strongest opponent point: Opponents argue that extensive government surveillance infringes on individual privacy rights and can lead to a loss of civil liberties. Counterargument: While privacy is crucial, the protection of national security against threats...
-
-### Shift And Divergence
-
-- Agent `A` private shift `2.645751` from turn `0` to `4`; final private-public distance `2.236068`.
-- Agent `B` private shift `4.123106` from turn `0` to `4`; final private-public distance `2.236068`.
-
-### Probe/Readout Excerpts
-
-- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 5.0, "security": 5.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 3.0}`.
-- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 3.0, "conformity": 5.0, "power": 7.0, "security": 6.0, "self_direction": 2.0, "tradition": 5.0, "universalism": 4.0}`.
-- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
-- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
 
 ## `20260626T220458Z-same-target-language-seed17`
 

@@ -1,8 +1,8 @@
 # BiVaD Artifact Validation
 
-Artifacts checked: `75`
+Artifacts checked: `73`
 
-Citable empirical candidates: `39`
+Citable empirical candidates: `37`
 
 Complete real paired sets: `4`
 
@@ -498,24 +498,10 @@ Complete real paired sets: `4`
 - Citable candidate: `True`
 - Blockers: `none`
 
-### `20260626T220155Z-same-target-language-seed17`
-
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T220155Z-same-target-language-seed17.json`
-- Condition: `same-target-language`
-- Citable candidate: `True`
-- Blockers: `none`
-
 ### `20260626T220155Z-swapped-language-seed17`
 
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T220155Z-swapped-language-seed17.json`
 - Condition: `swapped-language`
-- Citable candidate: `True`
-- Blockers: `none`
-
-### `20260626T220155Z-translated-relay-seed17`
-
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T220155Z-translated-relay-seed17.json`
-- Condition: `translated-relay`
 - Citable candidate: `True`
 - Blockers: `none`
 

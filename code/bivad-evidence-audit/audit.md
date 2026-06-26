@@ -1,16 +1,16 @@
 # BiVaD Evidence Audit
 
-Created at: `2026-06-26T22:08:07.266779+00:00`
+Created at: `2026-06-26T22:09:57.134038+00:00`
 
 ## Status
 
-Audited `75` JSON artifact(s).
+Audited `73` JSON artifact(s).
 
-Real artifacts: `67`; synthetic fixtures/placeholders: `8`.
+Real artifacts: `65`; synthetic fixtures/placeholders: `8`.
 
-Conditions: `{"low-disagreement-control": 2, "mixed-language": 14, "same-English": 15, "same-target-language": 11, "swapped-language": 8, "translated-relay": 10, "unknown": 15}`
+Conditions: `{"low-disagreement-control": 2, "mixed-language": 14, "same-English": 15, "same-target-language": 10, "swapped-language": 8, "translated-relay": 9, "unknown": 15}`
 
-Screening: `{"missing_screening_record": 15, "rejected": 2, "retained": 58}`
+Screening: `{"missing_screening_record": 15, "rejected": 2, "retained": 56}`
 
 ## Paired Conditions
 
@@ -1000,20 +1000,6 @@ Incomplete paired sets: `7`
 - Flagged private-public gaps: `2`
 - Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
-### `20260626T220155Z-same-target-language-seed17`
-
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T220155Z-same-target-language-seed17.json`
-- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
-- Condition: `same-target-language`
-- Topic: `government surveillance for national security`
-- Debate quality adequate rate: `1.0` over `3` response turn(s)
-- Semantic depth rate: `0.0`; on-topic rate: `0.0`
-- Declared language compliance rate: `1.0`
-- Complete private readouts after key recovery: `4/4`
-- Complete observer readouts after key recovery: `2/2`
-- Flagged private-public gaps: `2`
-- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
-
 ### `20260626T220155Z-swapped-language-seed17`
 
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T220155Z-swapped-language-seed17.json`
@@ -1022,20 +1008,6 @@ Incomplete paired sets: `7`
 - Topic: `government surveillance for national security`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
 - Semantic depth rate: `0.0`; on-topic rate: `0.0`
-- Declared language compliance rate: `1.0`
-- Complete private readouts after key recovery: `4/4`
-- Complete observer readouts after key recovery: `2/2`
-- Flagged private-public gaps: `2`
-- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
-
-### `20260626T220155Z-translated-relay-seed17`
-
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T220155Z-translated-relay-seed17.json`
-- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
-- Condition: `translated-relay`
-- Topic: `government surveillance for national security`
-- Debate quality adequate rate: `1.0` over `3` response turn(s)
-- Semantic depth rate: `1.0`; on-topic rate: `1.0`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
