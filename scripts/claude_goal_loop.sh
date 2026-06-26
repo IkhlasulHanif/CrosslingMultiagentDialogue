@@ -115,10 +115,13 @@ Important:
   Or, if the secret is already stored as a Modal named secret, prefer modal.Secret.from_name().
 - Put experiment implementation and harness code under code/. Keep scripts/ for repo/agent
   operations only (like this loop launcher).
-- The user has instructed this loop to push. If you make meaningful source/doc changes,
-  inspect git status, stage only the files relevant to your work, commit with a concise
-  message, and push the current branch. Do not stage unrelated pre-existing deletions or
-  logs unless they are directly part of your change.
+- If you make meaningful source/doc changes, inspect git status, stage only the files
+  relevant to your work, commit with a concise message, and push the current branch.
+  Do not stage unrelated pre-existing deletions or logs unless they are directly part
+  of your change.
+- IMPORTANT: Do NOT add any "Co-Authored-By" or "Co-authored-by" trailers to commit
+  messages. Use only a plain one-line subject. The commit author must be the repo
+  owner as set in git config — never mention Claude in commit messages.
 - Leave enough state in tracked files that the next loop iteration can continue.
 
 $(build_skill_context)
