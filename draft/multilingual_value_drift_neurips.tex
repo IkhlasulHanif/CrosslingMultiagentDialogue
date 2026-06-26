@@ -368,6 +368,42 @@ Table~\ref{tab:topic-scan} shows three key patterns.
 
 These results are preliminary (single seed, single language pair, 4~turns) and serve as a ranked candidate list for multi-seed, multi-language follow-up. They also confirm that cross-lingual value-shift differences are not a property of a single topic but generalize across the five topics tested, with effect size varying by topic. Code: \texttt{code/analyze\_topic\_divergence.py}, \texttt{code/bivad-evidence-audit/topic\_divergence\_scan.json}.
 
+\subsection{UBI Five-Condition Comparison}
+\label{sec:ubi-five-conditions}
+
+The topic scan identifies UBI as the highest-divergence topic ($\Delta_B=1.68$). We now run the full five-condition set for UBI using the same model, seed, and language pair (Qwen2.5-7B-Instruct, seed~17, 4~turns, Indonesian/English). Agent~B begins with distinctly different priors from the dual-use pilot: B's initial values weight conformity~$=6$ and power~$=6$ highly and self-direction~$=3$ low, making B a more conservative starting point on a redistribution topic.
+
+\begin{table}[t]
+\centering
+\caption{Empirical five-condition pilot for UBI (Qwen2.5-7B-Instruct, seed~17, 4~turns, Indonesian/English). B's initial private priors: conformity~6, power~6, security~5, self-direction~3, tradition~5. Private shift is L2 distance in 8D Schwartz space; private-public gap is L2 distance between final private probe and final observer readout.}
+\label{tab:empirical-ubi}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+Condition & A priv.\ shift & B priv.\ shift & Combined & A priv.-pub.\ gap & B priv.-pub.\ gap \\
+\midrule
+Same English          & 1.732 & 5.000 & 6.732 & 3.742 & 3.742 \\
+Mixed-language        & 2.000 & 3.317 & 5.317 & 1.414 & 1.732 \\
+Swapped-language      & 2.236 & 5.000 & 7.236 & 1.414 & 1.732 \\
+Same target-language  & 2.000 & 5.000 & 7.000 & 1.000 & 1.732 \\
+Translated relay      & 1.732 & 3.317 & 5.049 & 2.000 & 2.828 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+Table~\ref{tab:empirical-ubi} reveals a strikingly different pattern from the dual-use topic.
+
+\textbf{B's shift depends on the joint language assignment, not one isolated factor.} B shifts 5.000 under same-English, swapped-language, and same-target-language, but only 3.317 under mixed-language and translated-relay. The suppressed-shift cases share a specific interaction: A's argument is generated on the English side while B responds in Indonesian. Neither factor is sufficient alone: same-English also has English-origin A arguments but B shifts 5.000, and same-target-language also has Indonesian B production but B shifts 5.000. The translated-relay match with mixed-language suggests that the relay does not remove this interaction for the UBI topic.
+
+\textbf{This mechanism is opposite to the dual-use finding.} In the dual-use topic (Table~\ref{tab:empirical}), translated relay \emph{amplified} B's shift (3.873, matching same-English). In the UBI topic, translated relay \emph{suppresses} B's shift (3.317, matching mixed-language). The same relay translation step has topic-specific effects on the direction of cross-lingual divergence.
+
+\textbf{B converges to different endpoints.} Under swapped-language and same-target-language, B converges to \{conformity:3, power:3, self-direction:4\} --- a larger departure from its initial high-conformity/high-power priors. Under mixed-language and translated-relay, B reaches only \{conformity:4, power:4, self-direction:3\} --- less movement from its initial priors. For the UBI topic, the endpoint difference is therefore best described as a language-assignment interaction rather than a pure production-language or exposure-language effect.
+
+\textbf{Private-public gaps are lowest in conditions without English-source asymmetry.} The same-English condition has the highest gaps (3.742 for both agents). Same-target-language has the lowest A gap (1.000). When both agents share the same source language context, private probe answers most closely track the observer-inferred values.
+
+These patterns are exploratory (single topic, seed, model). Code: \texttt{code/compare\_five\_conditions.py \mbox{--topic-filter} "universal basic income" \mbox{--out-suffix} \_ubi}, \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_ubi.json}.
+
 \subsection{Replication: Language-Pair Invariance and Multi-Seed Coverage}
 \label{sec:replication}
 

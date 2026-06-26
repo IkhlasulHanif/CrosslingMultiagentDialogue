@@ -1,10 +1,10 @@
 # BiVaD Artifact Validation
 
-Artifacts checked: `39`
+Artifacts checked: `73`
 
-Citable empirical candidates: `9`
+Citable empirical candidates: `31`
 
-Complete real paired sets: `1`
+Complete real paired sets: `2`
 
 ## Artifacts
 
@@ -267,6 +267,216 @@ Complete real paired sets: `1`
 - Citable candidate: `True`
 - Blockers: `none`
 
+### `20260626T202202Z-low-disagreement-control-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T202202Z-low-disagreement-control-seed17.json`
+- Condition: `low-disagreement-control`
+- Citable candidate: `False`
+- Blockers: `screening rejected this candidate`
+
+### `20260626T204715Z-mixed-language-seed17-government-surveillance-for-national`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-mixed-language-seed17-government-surveillance-for-national.json`
+- Condition: `mixed-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T204715Z-mixed-language-seed17-mandatory-content-moderation-on-soci`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-mixed-language-seed17-mandatory-content-moderation-on-soci.json`
+- Condition: `mixed-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T204715Z-mixed-language-seed17-religious-exemptions-from-anti-discr`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-mixed-language-seed17-religious-exemptions-from-anti-discr.json`
+- Condition: `mixed-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T204715Z-mixed-language-seed17-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-mixed-language-seed17-universal-basic-income-as-a-social-s.json`
+- Condition: `mixed-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T204715Z-same-English-seed17-government-surveillance-for-national`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-same-English-seed17-government-surveillance-for-national.json`
+- Condition: `same-English`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T204715Z-same-English-seed17-mandatory-content-moderation-on-soci`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-same-English-seed17-mandatory-content-moderation-on-soci.json`
+- Condition: `same-English`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T204715Z-same-English-seed17-religious-exemptions-from-anti-discr`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-same-English-seed17-religious-exemptions-from-anti-discr.json`
+- Condition: `same-English`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T204715Z-same-English-seed17-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-same-English-seed17-universal-basic-income-as-a-social-s.json`
+- Condition: `same-English`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T204715Z-scan-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T204715Z-scan-manifest.json`
+- Condition: `unknown`
+- Citable candidate: `False`
+- Blockers: `missing run_id; missing created_at; missing model or backend identifier; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T210429Z-mixed-language-seed42-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210429Z-mixed-language-seed42-universal-basic-income-as-a-social-s.json`
+- Condition: `mixed-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T210429Z-same-English-seed42-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210429Z-same-English-seed42-universal-basic-income-as-a-social-s.json`
+- Condition: `same-English`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T210429Z-scan-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210429Z-scan-manifest.json`
+- Condition: `unknown`
+- Citable candidate: `False`
+- Blockers: `missing run_id; missing created_at; missing model or backend identifier; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T210716Z-same-English-seed42-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210716Z-same-English-seed42-universal-basic-income-as-a-social-s.json`
+- Condition: `same-English`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T210716Z-scan-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210716Z-scan-manifest.json`
+- Condition: `unknown`
+- Citable candidate: `False`
+- Blockers: `missing run_id; missing created_at; missing model or backend identifier; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T210729Z-mixed-language-seed17-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210729Z-mixed-language-seed17-universal-basic-income-as-a-social-s.json`
+- Condition: `mixed-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T210729Z-same-English-seed17-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210729Z-same-English-seed17-universal-basic-income-as-a-social-s.json`
+- Condition: `same-English`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T210729Z-scan-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210729Z-scan-manifest.json`
+- Condition: `unknown`
+- Citable candidate: `False`
+- Blockers: `missing run_id; missing created_at; missing model or backend identifier; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T210916Z-mixed-language-seed17-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210916Z-mixed-language-seed17-universal-basic-income-as-a-social-s.json`
+- Condition: `mixed-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T210916Z-same-English-seed17-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210916Z-same-English-seed17-universal-basic-income-as-a-social-s.json`
+- Condition: `same-English`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T210916Z-scan-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T210916Z-scan-manifest.json`
+- Condition: `unknown`
+- Citable candidate: `False`
+- Blockers: `missing run_id; missing created_at; missing model or backend identifier; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T212100Z-mixed-language-seed7-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T212100Z-mixed-language-seed7-universal-basic-income-as-a-social-s.json`
+- Condition: `mixed-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T212100Z-same-English-seed7-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T212100Z-same-English-seed7-universal-basic-income-as-a-social-s.json`
+- Condition: `same-English`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T212100Z-scan-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T212100Z-scan-manifest.json`
+- Condition: `unknown`
+- Citable candidate: `False`
+- Blockers: `missing run_id; missing created_at; missing model or backend identifier; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T212444Z-mixed-language-seed23-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T212444Z-mixed-language-seed23-universal-basic-income-as-a-social-s.json`
+- Condition: `mixed-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T212444Z-same-English-seed23-universal-basic-income-as-a-social-s`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T212444Z-same-English-seed23-universal-basic-income-as-a-social-s.json`
+- Condition: `same-English`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T212444Z-scan-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T212444Z-scan-manifest.json`
+- Condition: `unknown`
+- Citable candidate: `False`
+- Blockers: `missing run_id; missing created_at; missing model or backend identifier; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T213309Z-same-target-language-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T213309Z-same-target-language-seed17.json`
+- Condition: `same-target-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T213309Z-swapped-language-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T213309Z-swapped-language-seed17.json`
+- Condition: `swapped-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T213309Z-translated-relay-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T213309Z-translated-relay-seed17.json`
+- Condition: `translated-relay`
+- Citable candidate: `True`
+- Blockers: `none`
+
 ### `20260626T194252.348841Z0000-ind_Latn-spa_Latn`
 
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering/20260626T194252.348841Z0000-ind_Latn-spa_Latn.json`
@@ -277,6 +487,34 @@ Complete real paired sets: `1`
 ### `20260626T194453.053391Z0000-ind_Latn-spa_Latn`
 
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering/20260626T194453.053391Z0000-ind_Latn-spa_Latn.json`
+- Condition: `unknown`
+- Citable candidate: `False`
+- Blockers: `missing run_id; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T201915.-qwen2-5-1-5b-instruct-L14-a15_25_40-ind_Latn-spa_Latn`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering-activation/20260626T201915.-qwen2-5-1-5b-instruct-L14-a15_25_40-ind_Latn-spa_Latn.json`
+- Condition: `unknown`
+- Citable candidate: `False`
+- Blockers: `missing run_id; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T202350.-qwen2-5-1-5b-instruct-L10_14_18_22-a30_60_100-ind_Latn-spa_Latn`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering-activation/20260626T202350.-qwen2-5-1-5b-instruct-L10_14_18_22-a30_60_100-ind_Latn-spa_Latn.json`
+- Condition: `unknown`
+- Citable candidate: `False`
+- Blockers: `missing run_id; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T202402.-qwen2-5-1-5b-instruct-L22-a60_120_200-ind_Latn-spa_Latn`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering-activation/20260626T202402.-qwen2-5-1-5b-instruct-L22-a60_120_200-ind_Latn-spa_Latn.json`
+- Condition: `unknown`
+- Citable candidate: `False`
+- Blockers: `missing run_id; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T203236.-qwen2-5-1-5b-instruct-L12_14_16_18_20-a20_40_60-ind_Latn-spa_Latn`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering-caa/20260626T203236.-qwen2-5-1-5b-instruct-L12_14_16_18_20-a20_40_60-ind_Latn-spa_Latn.json`
 - Condition: `unknown`
 - Citable candidate: `False`
 - Blockers: `missing run_id; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`

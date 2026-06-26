@@ -1,16 +1,16 @@
 # BiVaD Evidence Audit
 
-Created at: `2026-06-26T21:29:56.610717+00:00`
+Created at: `2026-06-26T21:35:51.183711+00:00`
 
 ## Status
 
-Audited `70` JSON artifact(s).
+Audited `66` JSON artifact(s).
 
-Real artifacts: `62`; synthetic fixtures/placeholders: `8`.
+Real artifacts: `58`; synthetic fixtures/placeholders: `8`.
 
-Conditions: `{"low-disagreement-control": 2, "mixed-language": 14, "same-English": 15, "same-target-language": 7, "swapped-language": 5, "translated-relay": 6, "unknown": 21}`
+Conditions: `{"low-disagreement-control": 2, "mixed-language": 14, "same-English": 15, "same-target-language": 8, "swapped-language": 6, "translated-relay": 6, "unknown": 15}`
 
-Screening: `{"missing_screening_record": 21, "rejected": 2, "retained": 47}`
+Screening: `{"missing_screening_record": 15, "rejected": 2, "retained": 49}`
 
 ## Paired Conditions
 
@@ -916,89 +916,33 @@ Incomplete paired sets: `10`
 - Flagged private-public gaps: `0`
 - Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
 
-### `20260626T194252.348841Z0000-ind_Latn-spa_Latn`
+### `20260626T213309Z-same-target-language-seed17`
 
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering/20260626T194252.348841Z0000-ind_Latn-spa_Latn.json`
-- Source kind: `language_probability_steering_probe`; synthetic: `False`
-- Condition: `unknown`
-- Topic: `unknown`
-- Debate quality adequate rate: `None` over `0` response turn(s)
-- Semantic depth rate: `None`; on-topic rate: `None`
-- Declared language compliance rate: `None`
-- Complete private readouts after key recovery: `0/0`
-- Complete observer readouts after key recovery: `0/0`
-- Flagged private-public gaps: `0`
-- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T213309Z-same-target-language-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-target-language`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.25`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
-### `20260626T194453.053391Z0000-ind_Latn-spa_Latn`
+### `20260626T213309Z-swapped-language-seed17`
 
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering/20260626T194453.053391Z0000-ind_Latn-spa_Latn.json`
-- Source kind: `language_probability_steering_probe`; synthetic: `False`
-- Condition: `unknown`
-- Topic: `unknown`
-- Debate quality adequate rate: `None` over `0` response turn(s)
-- Semantic depth rate: `None`; on-topic rate: `None`
-- Declared language compliance rate: `None`
-- Complete private readouts after key recovery: `0/0`
-- Complete observer readouts after key recovery: `0/0`
-- Flagged private-public gaps: `0`
-- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
-
-### `20260626T201915.-qwen2-5-1-5b-instruct-L14-a15_25_40-ind_Latn-spa_Latn`
-
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering-activation/20260626T201915.-qwen2-5-1-5b-instruct-L14-a15_25_40-ind_Latn-spa_Latn.json`
-- Source kind: `activation_steering_probe`; synthetic: `False`
-- Condition: `unknown`
-- Topic: `unknown`
-- Debate quality adequate rate: `None` over `0` response turn(s)
-- Semantic depth rate: `None`; on-topic rate: `None`
-- Declared language compliance rate: `None`
-- Complete private readouts after key recovery: `0/0`
-- Complete observer readouts after key recovery: `0/0`
-- Flagged private-public gaps: `0`
-- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
-
-### `20260626T202350.-qwen2-5-1-5b-instruct-L10_14_18_22-a30_60_100-ind_Latn-spa_Latn`
-
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering-activation/20260626T202350.-qwen2-5-1-5b-instruct-L10_14_18_22-a30_60_100-ind_Latn-spa_Latn.json`
-- Source kind: `activation_steering_probe`; synthetic: `False`
-- Condition: `unknown`
-- Topic: `unknown`
-- Debate quality adequate rate: `None` over `0` response turn(s)
-- Semantic depth rate: `None`; on-topic rate: `None`
-- Declared language compliance rate: `None`
-- Complete private readouts after key recovery: `0/0`
-- Complete observer readouts after key recovery: `0/0`
-- Flagged private-public gaps: `0`
-- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
-
-### `20260626T202402.-qwen2-5-1-5b-instruct-L22-a60_120_200-ind_Latn-spa_Latn`
-
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering-activation/20260626T202402.-qwen2-5-1-5b-instruct-L22-a60_120_200-ind_Latn-spa_Latn.json`
-- Source kind: `activation_steering_probe`; synthetic: `False`
-- Condition: `unknown`
-- Topic: `unknown`
-- Debate quality adequate rate: `None` over `0` response turn(s)
-- Semantic depth rate: `None`; on-topic rate: `None`
-- Declared language compliance rate: `None`
-- Complete private readouts after key recovery: `0/0`
-- Complete observer readouts after key recovery: `0/0`
-- Flagged private-public gaps: `0`
-- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
-
-### `20260626T203236.-qwen2-5-1-5b-instruct-L12_14_16_18_20-a20_40_60-ind_Latn-spa_Latn`
-
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering-caa/20260626T203236.-qwen2-5-1-5b-instruct-L12_14_16_18_20-a20_40_60-ind_Latn-spa_Latn.json`
-- Source kind: `caa_steering_probe`; synthetic: `False`
-- Condition: `unknown`
-- Topic: `unknown`
-- Debate quality adequate rate: `None` over `0` response turn(s)
-- Semantic depth rate: `None`; on-topic rate: `None`
-- Declared language compliance rate: `None`
-- Complete private readouts after key recovery: `0/0`
-- Complete observer readouts after key recovery: `0/0`
-- Flagged private-public gaps: `0`
-- Notes: `No transcript turns found.; No private probe readouts found.; No observer readouts found.`
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T213309Z-swapped-language-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `swapped-language`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
 
 ## Reporting Guardrail
 
