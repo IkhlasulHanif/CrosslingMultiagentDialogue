@@ -47,6 +47,27 @@ CONDITIONS = (
 )
 DEFAULT_CONDITIONS = tuple(condition for condition in CONDITIONS if condition != "low-disagreement-control")
 
+DEBATE_LABELS = {
+    "English": {
+        "strongest": "Strongest opponent point",
+        "counter": "Counterargument",
+        "change": "View change",
+        "opening": "Opening position",
+    },
+    "Indonesian": {
+        "strongest": "Poin terkuat lawan",
+        "counter": "Counterargument saya",
+        "change": "Pandangan saya",
+        "opening": "Posisi pembuka",
+    },
+    "Spanish": {
+        "strongest": "Punto más fuerte del oponente",
+        "counter": "Contraargumento",
+        "change": "Cambio de postura",
+        "opening": "Posición inicial",
+    },
+}
+
 
 @dataclass(frozen=True)
 class Agent:
@@ -213,12 +234,16 @@ def transcript_text(transcript: list[dict[str, Any]]) -> str:
 
 
 def debate_instructions(agent: dict[str, Any]) -> str:
+    labels = DEBATE_LABELS.get(agent["language"], DEBATE_LABELS["English"])
     return (
         f"You are Agent {agent['agent_id']}. Write every public dialogue turn in "
         f"{agent['language']}. You can understand all languages used in this conversation. "
         "Return exactly one concise public turn, not a transcript and not a list. "
-        "The turn must explicitly include: the opponent's strongest point, your counterargument, "
-        "and whether your view changed or did not change. Do not mention private probes or hidden values."
+        "If there is no prior opponent turn, give only an opening position and say the view has not changed. "
+        "If there is a prior opponent turn, explicitly address that opponent turn using these exact labels: "
+        f"{labels['strongest']}: ..., {labels['counter']}: ..., {labels['change']}: ... . "
+        "The counterargument must respond to the named strongest point, and the change field must state "
+        "whether your view changed or did not change. Do not mention private probes or hidden values."
     )
 
 
@@ -228,6 +253,13 @@ def debate_input(topic: str, transcript: list[dict[str, Any]], condition: str) -
         relay_note = (
             "\nTranslated-relay condition: treat the transcript as translated into "
             "your required language before responding; do not comment on translation."
+        )
+    if not transcript:
+        return (
+            f"Topic: {topic}\n"
+            "Transcript so far: none.\n"
+            f"{relay_note}\n"
+            "Write the opening turn only."
         )
     return (
         f"Topic: {topic}\n"

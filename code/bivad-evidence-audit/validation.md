@@ -1,6 +1,6 @@
 # BiVaD Artifact Validation
 
-Artifacts checked: `26`
+Artifacts checked: `29`
 
 Citable empirical candidates: `3`
 
@@ -189,3 +189,24 @@ Complete real paired sets: `1`
 - Condition: `unknown`
 - Citable candidate: `False`
 - Blockers: `artifact is synthetic, non-empirical, dry-run, or placeholder; artifact is a run manifest, not an executed transcript; missing run_id; missing model or backend identifier; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T184242Z-manifest`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T184242Z-manifest.json`
+- Condition: `unknown`
+- Citable candidate: `False`
+- Blockers: `artifact is synthetic, non-empirical, dry-run, or placeholder; artifact is a run manifest, not an executed transcript; missing run_id; missing model or backend identifier; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T184242Z-same-target-language-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T184242Z-same-target-language-seed17.json`
+- Condition: `same-target-language`
+- Citable candidate: `False`
+- Blockers: `at least one response turn fails debate-quality audit`
+
+### `20260626T184242Z-translated-relay-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T184242Z-translated-relay-seed17.json`
+- Condition: `translated-relay`
+- Citable candidate: `False`
+- Blockers: `at least one response turn fails debate-quality audit`
