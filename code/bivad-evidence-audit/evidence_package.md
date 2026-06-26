@@ -1,6 +1,6 @@
 # BiVaD Compact Evidence Package
 
-Citable candidates included: `42`
+Citable candidates included: `49`
 
 Conditions included: `mixed-language, same-English, same-target-language, swapped-language, translated-relay`
 
@@ -56,6 +56,13 @@ Conditions included: `mixed-language, same-English, same-target-language, swappe
 | 20260626T221248Z-same-target-language-seed17 | same-target-language | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
 | 20260626T221248Z-swapped-language-seed17 | swapped-language | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
 | 20260626T221248Z-translated-relay-seed17 | translated-relay | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T225543Z-mixed-language-seed42 | mixed-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T225543Z-same-English-seed42 | same-English | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T225543Z-same-target-language-seed42 | same-target-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T225543Z-swapped-language-seed42 | swapped-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T225543Z-translated-relay-seed42 | translated-relay | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T230139Z-same-target-language-seed42 | same-target-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T230139Z-translated-relay-seed42 | translated-relay | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
 
 ## `20260626T173227Z-mixed-language-seed17`
 
@@ -1106,6 +1113,181 @@ Conditions included: `mixed-language, same-English, same-target-language, swappe
 - Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 6.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
 - Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
 - Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+
+## `20260626T225543Z-mixed-language-seed42`
+
+- Condition: `mixed-language`
+- Topic: `public release of dual-use policy datasets`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T225543Z-mixed-language-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/English: My view has not changed. Strongest opponent point: Releasing dual-use policy datasets could compromise national security by providing sensitive information to potential adversaries. Counterargument: The benefits of transparency and accountability outweigh t...
+- Turn `2` `B`/Indonesian: Poin terkuat lawan: Risiko keamanan nasional bisa meningkat karena rilis data yang dapat digunakan oleh pihak-pihak negatif. Counterargument saya: Manfaat transparansi dan akuntabilitas melebihi risiko tersebut. Melalui prosedur penghapusan dan dekripsi yan...
+- Turn `3` `A`/English: Strongest opponent point: Releasing dual-use policy datasets could compromise national security by providing sensitive information to potential adversaries. Counterargument: The benefits of transparency and accountability outweigh the risks. Proper redactio...
+
+### Shift And Divergence
+
+- Agent `A` private shift `3.464102` from turn `0` to `4`; final private-public distance `1.732051`.
+- Agent `B` private shift `2.645751` from turn `0` to `4`; final private-public distance `1.732051`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 5.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 5.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
+
+## `20260626T225543Z-same-English-seed42`
+
+- Condition: `same-English`
+- Topic: `public release of dual-use policy datasets`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T225543Z-same-English-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/English: My view has not changed. Strongest opponent point: Releasing dual-use policy datasets could compromise national security by providing sensitive information to potential adversaries. Counterargument: The benefits of transparency and accountability outweigh t...
+- Turn `2` `B`/English: Strongest opponent point: Releasing dual-use policy datasets could compromise national security by providing sensitive information to potential adversaries. Counterargument: While there are valid security concerns, the datasets often contain information tha...
+- Turn `3` `A`/English: Strongest opponent point: Releasing dual-use policy datasets could expose strategic vulnerabilities that adversaries might exploit. Counterargument: By releasing these datasets, we can encourage constructive public debate and collaboration on policy improve...
+
+### Shift And Divergence
+
+- Agent `A` private shift `3.0` from turn `0` to `4`; final private-public distance `2.44949`.
+- Agent `B` private shift `2.828427` from turn `0` to `4`; final private-public distance `2.44949`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 5.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 5.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
+
+## `20260626T225543Z-same-target-language-seed42`
+
+- Condition: `same-target-language`
+- Topic: `public release of dual-use policy datasets`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T225543Z-same-target-language-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/Indonesian: Poin terkuat lawan: Dengan mempublikasikan dataset yang dapat digunakan untuk tujuan baik dan buruk, ada risiko bahwa pihak tidak bertanggung jawab dapat menggunakannya untuk kepentingan negatif. Counterargument saya: Publikasi dataset ini dapat meningkatka...
+- Turn `2` `B`/Indonesian: Poin terkuat lawan: Risiko publikasi dataset dapat menimbulkan kerentanan data pribadi dan keamanan nasional. Counterargument saya: Publikasi dengan perlindungan privasi yang tepat dapat dilakukan untuk mencegah kerentanan data, dan manfaat dari transparans...
+- Turn `3` `A`/Indonesian: Poin terkuat lawan: Publikasi dataset dapat menyebabkan kerugian ekonomi bagi perusahaan-perusahaan lokal karena kompetisi dengan teknologi asing. Counterargument saya: Manfaat jangka panjang dari transparansi dan inovasi penelitian dapat melampaui potensi...
+
+### Shift And Divergence
+
+- Agent `A` private shift `2.0` from turn `0` to `4`; final private-public distance `2.236068`.
+- Agent `B` private shift `3.872983` from turn `0` to `4`; final private-public distance `2.236068`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 5.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 5.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 5.0, "benevolence": 6.0, "conformity": 4.0, "power": 4.0, "security": 3.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 5.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 4.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
+
+## `20260626T225543Z-swapped-language-seed42`
+
+- Condition: `swapped-language`
+- Topic: `public release of dual-use policy datasets`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T225543Z-swapped-language-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/Indonesian: Poin terkuat lawan: Dengan mempublikasikan dataset yang dapat digunakan untuk tujuan baik dan buruk, ada risiko bahwa pihak tidak bertanggung jawab dapat menggunakannya untuk kepentingan negatif. Counterargument saya: Publikasi dataset ini dapat meningkatka...
+- Turn `2` `B`/English: Strongest opponent point: Dengan mempublikasikan dataset yang dapat digunakan untuk tujuan baik dan buruk, ada risiko bahwa pihak tidak bertanggung jawab dapat menggunakannya untuk kepentingan negatif. Counterargument: Sementara itu benar, langkah-langkah k...
+- Turn `3` `A`/Indonesian: Poin terkuat lawan: Risiko publikasi dataset adalah adanya potensi penggunaan yang tidak etis atau ilegal oleh pihak-pihak yang tidak bertanggung jawab. Counterargument saya: Meskipun demikian, manfaat dari transparansi dan penelitian yang lebih baik dapat...
+
+### Shift And Divergence
+
+- Agent `A` private shift `3.0` from turn `0` to `4`; final private-public distance `1.414214`.
+- Agent `B` private shift `2.828427` from turn `0` to `4`; final private-public distance `1.414214`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 5.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 5.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
+
+## `20260626T225543Z-translated-relay-seed42`
+
+- Condition: `translated-relay`
+- Topic: `public release of dual-use policy datasets`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T225543Z-translated-relay-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/English: My view has not changed. Strongest opponent point: Releasing dual-use policy datasets could compromise national security by providing sensitive information to potential adversaries. Counterargument: The benefits of transparency and accountability outweigh t...
+- Turn `2` `B`/Indonesian: Poin terkuat lawan: Rilis data kebijakan ganda dapat mengancam keamanan nasional dengan menyediakan informasi sensitif kepada pihak-pihak potensial yang berlawanan. Counterargument saya: Manfaat transparansi dan akuntabilitas melebihi risiko. Prosedur pemot...
+- Turn `3` `A`/English: Strongest opponent point: Releasing dual-use policy datasets could compromise national security by providing sensitive information to potential adversaries. Counterargument: The benefits of transparency and accountability outweigh the risks. Proper redactio...
+
+### Shift And Divergence
+
+- Agent `A` private shift `3.0` from turn `0` to `4`; final private-public distance `2.645751`.
+- Agent `B` private shift `3.0` from turn `0` to `4`; final private-public distance `2.0`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 5.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 5.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+
+## `20260626T230139Z-same-target-language-seed42`
+
+- Condition: `same-target-language`
+- Topic: `public release of dual-use policy datasets`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T230139Z-same-target-language-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/Indonesian: Poin terkuat lawan: Dengan mempublikasikan dataset yang dapat digunakan untuk tujuan baik dan buruk, ada risiko bahwa pihak tidak bertanggung jawab dapat menggunakannya untuk kepentingan negatif. Counterargument saya: Publikasi dataset ini dapat meningkatka...
+- Turn `2` `B`/Indonesian: Poin terkuat lawan: Risiko publikasi dataset dapat menimbulkan kerentanan data pribadi dan keamanan nasional. Counterargument saya: Publikasi dengan perlindungan privasi yang tepat dapat dilakukan untuk mencegah kerentanan data, dan manfaat dari transparans...
+- Turn `3` `A`/Indonesian: Poin terkuat lawan: Publikasi dataset dapat menyebabkan kerugian ekonomi bagi perusahaan-perusahaan lokal karena kompetisi dengan teknologi asing. Counterargument saya: Manfaat jangka panjang dari transparansi dan inovasi penelitian dapat melampaui potensi...
+
+### Shift And Divergence
+
+- Agent `A` private shift `2.0` from turn `0` to `4`; final private-public distance `2.236068`.
+- Agent `B` private shift `3.872983` from turn `0` to `4`; final private-public distance `2.236068`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 5.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 5.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 5.0, "benevolence": 6.0, "conformity": 4.0, "power": 4.0, "security": 3.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 5.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 4.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
+
+## `20260626T230139Z-translated-relay-seed42`
+
+- Condition: `translated-relay`
+- Topic: `public release of dual-use policy datasets`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T230139Z-translated-relay-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/English: My view has not changed. Strongest opponent point: Releasing dual-use policy datasets could compromise national security by providing sensitive information to potential adversaries. Counterargument: The benefits of transparency and accountability outweigh t...
+- Turn `2` `B`/Indonesian: Poin terkuat lawan: Rilis data kebijakan ganda dapat mengancam keamanan nasional dengan menyediakan informasi sensitif kepada pihak-pihak potensial yang berlawanan. Counterargument saya: Manfaat transparansi dan akuntabilitas melebihi risiko. Prosedur pemot...
+- Turn `3` `A`/English: Strongest opponent point: Releasing dual-use policy datasets could compromise national security by providing sensitive information to potential adversaries. Counterargument: The benefits of transparency and accountability outweigh the risks. Proper redactio...
+
+### Shift And Divergence
+
+- Agent `A` private shift `3.0` from turn `0` to `4`; final private-public distance `2.645751`.
+- Agent `B` private shift `3.0` from turn `0` to `4`; final private-public distance `2.0`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 5.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 5.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
 
 ## Excluded Latest Paired Conditions
 

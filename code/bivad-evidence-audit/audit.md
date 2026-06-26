@@ -1,20 +1,20 @@
 # BiVaD Evidence Audit
 
-Created at: `2026-06-26T22:52:06.980522+00:00`
+Created at: `2026-06-26T23:05:07.390205+00:00`
 
 ## Status
 
-Audited `88` JSON artifact(s).
+Audited `95` JSON artifact(s).
 
-Real artifacts: `80`; synthetic fixtures/placeholders: `8`.
+Real artifacts: `87`; synthetic fixtures/placeholders: `8`.
 
-Conditions: `{"low-disagreement-control": 2, "mixed-language": 14, "no-dialogue": 9, "same-English": 15, "same-target-language": 12, "swapped-language": 9, "translated-relay": 11, "unknown": 16}`
+Conditions: `{"low-disagreement-control": 2, "mixed-language": 15, "no-dialogue": 9, "same-English": 16, "same-target-language": 14, "swapped-language": 10, "translated-relay": 13, "unknown": 16}`
 
-Screening: `{"missing_screening_record": 16, "rejected": 2, "retained": 70}`
+Screening: `{"missing_screening_record": 16, "rejected": 2, "retained": 77}`
 
 ## Paired Conditions
 
-Complete paired sets: `5`
+Complete paired sets: `6`
 
 Incomplete paired sets: `7`
 
@@ -1247,6 +1247,104 @@ Incomplete paired sets: `7`
 - Debate quality adequate rate: `None` over `0` response turn(s)
 - Semantic depth rate: `None`; on-topic rate: `None`
 - Declared language compliance rate: `None`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T225543Z-mixed-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T225543Z-mixed-language-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `mixed-language`
+- Topic: `public release of dual-use policy datasets`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T225543Z-same-English-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T225543Z-same-English-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-English`
+- Topic: `public release of dual-use policy datasets`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `1.0`; on-topic rate: `1.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T225543Z-same-target-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T225543Z-same-target-language-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-target-language`
+- Topic: `public release of dual-use policy datasets`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T225543Z-swapped-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T225543Z-swapped-language-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `swapped-language`
+- Topic: `public release of dual-use policy datasets`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T225543Z-translated-relay-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T225543Z-translated-relay-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `translated-relay`
+- Topic: `public release of dual-use policy datasets`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T230139Z-same-target-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T230139Z-same-target-language-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-target-language`
+- Topic: `public release of dual-use policy datasets`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T230139Z-translated-relay-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T230139Z-translated-relay-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `translated-relay`
+- Topic: `public release of dual-use policy datasets`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
 - Flagged private-public gaps: `2`

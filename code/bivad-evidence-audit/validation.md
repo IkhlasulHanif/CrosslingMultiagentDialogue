@@ -1,10 +1,10 @@
 # BiVaD Artifact Validation
 
-Artifacts checked: `88`
+Artifacts checked: `95`
 
-Citable empirical candidates: `42`
+Citable empirical candidates: `49`
 
-Complete real paired sets: `5`
+Complete real paired sets: `6`
 
 ## Artifacts
 
@@ -623,3 +623,52 @@ Complete real paired sets: `5`
 - Condition: `no-dialogue`
 - Citable candidate: `False`
 - Blockers: `missing or incomplete transcript turns; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+
+### `20260626T225543Z-mixed-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T225543Z-mixed-language-seed42.json`
+- Condition: `mixed-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T225543Z-same-English-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T225543Z-same-English-seed42.json`
+- Condition: `same-English`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T225543Z-same-target-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T225543Z-same-target-language-seed42.json`
+- Condition: `same-target-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T225543Z-swapped-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T225543Z-swapped-language-seed42.json`
+- Condition: `swapped-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T225543Z-translated-relay-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T225543Z-translated-relay-seed42.json`
+- Condition: `translated-relay`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T230139Z-same-target-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T230139Z-same-target-language-seed42.json`
+- Condition: `same-target-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T230139Z-translated-relay-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T230139Z-translated-relay-seed42.json`
+- Condition: `translated-relay`
+- Citable candidate: `True`
+- Blockers: `none`

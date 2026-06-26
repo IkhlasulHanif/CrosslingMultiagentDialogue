@@ -594,6 +594,44 @@ The zero-divergence seeds also have higher absolute B shifts ($D_B \in \{4.47, 5
 
 \textbf{Interpretation.} These findings together indicate that: (1) the cross-lingual probe-shift difference is not a systematic bias of the UBI topic at this model and scale; (2) it is trajectory-dependent, arising from the specific argument content that the fixed seed~17 initializes; (3) when it does arise, the effect generalizes across language pairs, confirming it is not an artifact of Indonesian specifically. Code: \texttt{code/modal\_bivad\_runner.py}, \texttt{runs/bivad-local-lm/}.
 
+\subsection{Seed Stability: Dual-Use Five-Condition Comparison at Seed~42}
+\label{sec:seed-stability}
+
+The five-condition tables in Sections~\ref{sec:empirical}--\ref{sec:content-five-conditions} all use seed~17. To assess whether the structural patterns in those tables are seed-stable, we ran the full five-condition set for the primary dual-use topic at seed~42 (Qwen2.5-7B-Instruct, Indonesian/English, 4~turns). Table~\ref{tab:seed-stability} compares the two seeds side by side.
+
+\begin{table}[h]
+\centering
+\caption{Dual-use five-condition comparison across seeds 17 and 42 (Qwen2.5-7B-Instruct, Indonesian/English, 4~turns). Shift is L2 distance in 8D Schwartz space; gap is L2 distance between final private probe and observer readout.}
+\label{tab:seed-stability}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llrrrrr}
+\toprule
+Seed & Condition & A shift & B shift & Combined & A gap & B gap \\
+\midrule
+17 & Same-English        & 3.000 & 3.873 & 6.873 & 2.449 & 3.317 \\
+17 & Mixed-language      & 3.000 & 2.828 & 5.828 & 2.646 & 1.732 \\
+17 & Swapped-language    & 3.000 & 2.828 & 5.828 & 1.414 & 1.414 \\
+17 & Same-target-lang.   & 3.000 & 2.646 & 5.646 & 2.449 & 1.732 \\
+17 & Translated-relay    & 2.646 & 3.873 & 6.519 & \textbf{3.606} & \textbf{3.464} \\
+\midrule
+42 & Same-English        & 3.000 & 2.828 & 5.828 & 2.449 & 2.449 \\
+42 & Mixed-language      & 3.464 & 2.646 & 6.110 & 1.732 & 1.732 \\
+42 & Swapped-language    & 3.000 & 2.828 & 5.828 & 1.414 & 1.414 \\
+42 & Same-target-lang.   & 2.000 & 3.873 & 5.873 & 2.236 & 2.236 \\
+42 & Translated-relay    & 3.000 & 3.000 & 6.000 & 2.646 & 2.000 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\textbf{Swapped-language is the most stable condition.} Both seeds produce A~shift~$=3.000$, B~shift~$=2.828$, and private-public gaps of $1.414$ for both agents under swapped-language. This is the only condition where the outcome profile is identical across seeds.
+
+\textbf{B's maximum shift occurs in different conditions across seeds.} At seed~17, B shifts maximally (3.873) under same-English and translated-relay. At seed~42, B shifts maximally (3.873) under same-target-language. The condition driving the peak varies with the debate trajectory seeded by the random seed; no single language condition reliably maximizes B's shift.
+
+\textbf{Translated-relay gap amplification does not replicate at seed~42.} The most notable non-replication: seed~17 shows translated-relay private-public gaps of A~$=3.606$, B~$=3.464$ --- the largest across all five conditions. At seed~42, relay gaps are A~$=2.646$, B~$=2.000$, comparable to same-English. The pattern in seed~17 where relay uniquely inflates gaps is not a structural property of the relay condition; it is trajectory-dependent.
+
+\textbf{Combined interpretation.} The dual-use seed-stability check confirms that (a) absolute shift magnitudes are comparable across seeds (combined range 5.646--6.873 at seed~17, 5.828--6.110 at seed~42); (b) swapped-language convergence is the most robust single-condition finding; and (c) condition-specific effects such as the relay gap amplification and the identity of the maximum-B-shift condition are seed-sensitive. These results reinforce the conclusion from Section~\ref{sec:replication} that effect-direction findings require multi-seed replication before being treated as structural. Artifacts: \texttt{runs/bivad-local-lm/20260626T225543Z-*seed42.json}; comparison tables: \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_dual\_use\_seed17.json} and \texttt{five\_condition\_comparison\_dual\_use\_seed42.json}.
+
 \subsection{No-Dialogue Control: Measurement-Induced Drift}
 \label{sec:no-dialogue}
 

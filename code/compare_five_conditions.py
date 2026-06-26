@@ -223,6 +223,12 @@ def parse_args() -> argparse.Namespace:
         default="",
         help="Append this suffix to output filenames (e.g. '_ubi' → five_condition_comparison_ubi.json).",
     )
+    parser.add_argument(
+        "--seed-filter",
+        default=None,
+        type=int,
+        help="Only include artifacts with this exact seed value.",
+    )
     return parser.parse_args()
 
 
@@ -498,6 +504,9 @@ def main() -> None:
     if args.topic_filter:
         tf = args.topic_filter.lower()
         rows = [r for r in rows if tf in r.get("topic", "").lower()]
+
+    if args.seed_filter is not None:
+        rows = [r for r in rows if r.get("seed") == args.seed_filter]
 
     complete_set_metadata = None
     fallback_selection = False
