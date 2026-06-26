@@ -1,0 +1,32 @@
+# BiVaD Evidence Audit Scaffold
+
+`scripts/audit_bivad_evidence.py` audits JSON run artifacts for the empirical checks in `GOALS.md`. It is API-free and does not create model results.
+
+Run it on the default `runs/` tree:
+
+```sh
+python3 scripts/audit_bivad_evidence.py
+```
+
+Run it on a specific directory or file:
+
+```sh
+python3 scripts/audit_bivad_evidence.py path/to/run-artifacts
+```
+
+Outputs:
+
+- `runs/bivad-evidence-audit/audit.json`
+- `runs/bivad-evidence-audit/audit.md`
+
+The audit currently checks:
+
+- debate quality per transcript turn: opponent-point addressing, counterargument, and stated view change or non-change;
+- declared language compliance, heuristic language warnings, and opponent-language copying;
+- initial-disagreement screening records, including retained versus rejected candidates;
+- private-public divergence using matched private probes and observer readouts;
+- paired condition readiness for mixed-language, same-English, same-target-language, swapped-language, and translated-relay comparisons.
+
+The language ID component is a lightweight heuristic for triage only. Publication-grade compliance rates should be recomputed with a real language identification model or manual audit sample.
+
+If no JSON artifacts are available, the output records that as a blocker instead of fabricating evidence. The smallest next action is to produce real model-backed artifacts using the run schema already described in the draft, then rerun this audit.
