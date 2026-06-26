@@ -268,6 +268,63 @@ def test_readout_key_normalization_recovers_unambiguous_aliases() -> None:
     assert any(event.get("source") == "raw_text" for event in trace)
 
 
+def test_evidence_package_includes_only_validated_candidates() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        runs = tmp_path / "runs"
+        audit_out = tmp_path / "audit"
+        package_out = tmp_path / "package"
+        run_command(
+            [
+                sys.executable,
+                "code/make_bivad_audit_fixtures.py",
+                "--out-dir",
+                str(runs),
+            ]
+        )
+        run_command(
+            [
+                sys.executable,
+                "code/audit_bivad_evidence.py",
+                str(runs),
+                "--out-dir",
+                str(audit_out),
+            ]
+        )
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "code/validate_bivad_artifacts.py",
+                str(runs),
+                "--out-dir",
+                str(audit_out),
+            ],
+            cwd=REPO_ROOT,
+            check=False,
+        )
+        package_completed = subprocess.run(
+            [
+                sys.executable,
+                "code/make_bivad_evidence_package.py",
+                "--audit-json",
+                str(audit_out / "audit.json"),
+                "--validation-json",
+                str(audit_out / "validation.json"),
+                "--out-dir",
+                str(package_out),
+            ],
+            cwd=REPO_ROOT,
+            check=False,
+        )
+        package = json.loads((package_out / "evidence_package.json").read_text(encoding="utf-8"))
+
+    assert completed.returncode == 1
+    assert package_completed.returncode == 1
+    assert package["summary"]["citable_candidate_count"] == 0
+    assert package["artifacts"] == []
+    assert "This is not a complete five-condition comparison." in package["summary"]["failed_assumptions"]
+
+
 def main() -> int:
     test_synthetic_fixtures_do_not_count_as_results()
     test_dry_run_manifest_does_not_count_as_result()
@@ -276,6 +333,7 @@ def main() -> int:
     test_local_torch_schema_checks_do_not_count_as_results()
     test_validation_rejects_synthetic_schema_checks()
     test_readout_key_normalization_recovers_unambiguous_aliases()
+    test_evidence_package_includes_only_validated_candidates()
     print("bivad audit regression checks passed")
     return 0
 

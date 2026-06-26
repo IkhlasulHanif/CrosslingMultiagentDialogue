@@ -4,6 +4,7 @@ Keep experiment implementation and experiment harnesses in this directory.
 
 - `audit_bivad_evidence.py`: API-free audit harness for BiVaD-style JSON run artifacts.
 - `validate_bivad_artifacts.py`: stricter API-free gate that reports whether audited artifacts are citable empirical candidates.
+- `make_bivad_evidence_package.py`: API-free package builder that extracts only validated citable candidates into compact JSON/Markdown tables and snippets.
 - `run_bivad_pilot.py`: dry-run-capable model runner for a minimal paired BiVaD pilot using the OpenAI Responses API.
 - `run_bivad_local_lm.py`: dry-run-capable local Hugging Face causal-LM runner for API-free paired pilots.
 - `preflight_bivad_local_lm.py`: offline readiness check for Torch/MPS, transformers, and complete local model directories.
@@ -50,6 +51,7 @@ python3 code/run_bivad_local_lm.py --out-dir runs/bivad-local-lm
 python3 code/run_bivad_local_lm.py --execute --model-path /path/to/local-or-cached-model --out-dir runs/bivad-local-lm
 python3 code/audit_bivad_evidence.py runs/bivad-local-lm
 python3 code/validate_bivad_artifacts.py runs/bivad-local-lm --out-dir code/bivad-evidence-audit
+python3 code/make_bivad_evidence_package.py --out-dir code/bivad-evidence-audit
 ```
 
 `run_bivad_local_lm.py` loads models with `local_files_only=True` by default and uses Apple MPS when available, otherwise CPU. Pass `--allow-download` only when intentionally fetching model files. The runner does not invent missing probe or observer JSON values; malformed local-model outputs remain incomplete and should be rejected by `validate_bivad_artifacts.py`.
@@ -65,6 +67,14 @@ python3 code/validate_bivad_artifacts.py path/to/run-artifacts --out-dir code/bi
 The validator returns a non-zero status when artifacts are synthetic, incomplete, missing paired conditions, missing probe/readout values, rejected by screening, or failing debate/language compliance gates. This is expected for `code/fixtures/bivad-local-torch`; those artifacts exercise schema paths only.
 
 Readout validation uses audited key normalization for unambiguous local-model aliases such as `Self-direction` or `Beneficence`. It accepts only numeric 1-7 values already emitted by the model and records recovery counts/events under `readout_normalization` in the audit and validation outputs.
+
+Build the compact draft-facing evidence package from the latest audit and validation outputs:
+
+```sh
+python3 code/make_bivad_evidence_package.py --out-dir code/bivad-evidence-audit
+```
+
+The package builder does not rerun models or reinterpret failed artifacts. It includes only rows that already pass `validate_bivad_artifacts.py`, records representative transcript/probe/readout snippets, and lists excluded latest paired conditions with their blockers.
 
 Run a real minimal pilot when API credentials are available:
 
