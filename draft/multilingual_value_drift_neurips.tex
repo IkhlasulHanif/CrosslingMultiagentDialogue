@@ -368,6 +368,17 @@ Table~\ref{tab:topic-scan} shows three key patterns.
 
 These results are preliminary (single seed, single language pair, 4~turns) and serve as a ranked candidate list for multi-seed, multi-language follow-up. They also confirm that cross-lingual value-shift differences are not a property of a single topic but generalize across the five topics tested, with effect size varying by topic. Code: \texttt{code/analyze\_topic\_divergence.py}, \texttt{code/bivad-evidence-audit/topic\_divergence\_scan.json}.
 
+\subsection{Replication: Second Language Pair and Second Seed}
+\label{sec:replication}
+
+To probe the robustness of the top-divergence finding, we ran two additional replication cells for the UBI topic: (a) the Spanish/English language pair at seed~17, and (b) the Indonesian/English pair at seed~42. Results are compared against the shared same-English baseline at the same seed.
+
+\textbf{Spanish/English at seed~17 replicates exactly.} Under Spanish/English at seed~17, $D_B(\text{mixed})=3.32$ and $D_B(\text{same-EN})=5.00$, giving $\Delta_B=1.68$~--- identical to the Indonesian/English result at the same seed. Agent~B's initial and final private probe vectors match across both language pairs, as do the same-English baselines (which are deterministic at fixed seed). This confirms that the UBI cross-lingual divergence at seed~17 is \emph{not} specific to Indonesian: switching B's production language from Indonesian to Spanish produces the same probe-shift divergence of 1.68 L2 units.
+
+\textbf{Seed~42 Indonesian shows no divergence.} Under Indonesian/English at seed~42, both conditions converge to \emph{identical} B private probe endpoints ($D_B(\text{mixed})=D_B(\text{same-EN})=5.29$, $\Delta_B=0.00$). The seed-42 debate transcript is sufficiently similar across language conditions that no language-conditioned probe difference emerges. This indicates that the UBI divergence effect is seed-sensitive: seed~17 produces a clear language-condition difference while seed~42 does not.
+
+The joint pattern --- language-pair invariance within seed~17, but seed~17 specificity --- suggests that the effect depends on the specific debate trajectory that seed~17 initializes rather than on a systematic property of UBI or of Indonesian as a language. This is a standard caveat for single-seed evaluations. Additional seeds and a third language pair (e.g., Arabic or Hindi) are needed to estimate the fraction of seeds that produce cross-lingual divergence on the UBI topic. Code: \texttt{code/modal\_bivad\_runner.py}, \texttt{runs/bivad-local-lm/}.
+
 \section{Threats to Validity}
 
 \paragraph{Prompted value states are not true beliefs.}

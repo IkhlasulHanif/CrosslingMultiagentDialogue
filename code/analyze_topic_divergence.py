@@ -102,6 +102,35 @@ def load_artifacts(runs_dir: Path) -> list[dict]:
     return artifacts
 
 
+def get_target_language(artifact: dict) -> str:
+    """Extract B's language (the non-English target) from the agents list."""
+    agents = artifact.get("agents") or []
+    for agent in agents:
+        lang = agent.get("language", "")
+        if lang and lang != "English":
+            return lang
+    return "unknown"
+
+
+def run_time(artifact: dict) -> datetime | None:
+    """Parse the timestamp prefix from run_id, e.g. 20260626T210916Z-..."""
+    run_id = str(artifact.get("run_id") or "")
+    if len(run_id) < 16:
+        return None
+    try:
+        return datetime.strptime(run_id[:16], "%Y%m%dT%H%M%SZ").replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
+
+
+def run_time_distance(a: dict, b: dict) -> float:
+    a_time = run_time(a)
+    b_time = run_time(b)
+    if a_time is None or b_time is None:
+        return float("inf")
+    return abs((a_time - b_time).total_seconds())
+
+
 def main() -> None:
     args = parse_args()
     runs_dir = Path(args.runs_dir)
@@ -111,28 +140,61 @@ def main() -> None:
     artifacts = load_artifacts(runs_dir)
     print(f"Loaded {len(artifacts)} non-synthetic BiVaD artifacts from {runs_dir}")
 
-    # Group by (topic, seed, model) then pick best (most recent) run per condition
-    # key = (topic, seed) — we don't filter by model here to include all
-    by_topic_seed: dict[tuple[str, Any], dict[str, dict]] = {}
+    # Strategy:
+    # - For mixed-language runs: group by (topic, seed, target_language), where
+    #   target_language is B's non-English production language.
+    # - For same-English runs: there is no target language in the artifact. When
+    #   multiple language-pair replications share a topic/seed, pair each mixed
+    #   run with the closest same-English control by run timestamp.
+    mixed_by_lang: dict[tuple[str, Any, str], dict] = {}  # (topic, seed, lang) → artifact
+    same_en_by_ts: dict[tuple[str, Any], list[dict]] = {}  # (topic, seed) → artifacts
+
     for artifact in artifacts:
         topic = artifact.get("topic", "unknown")
         seed = artifact.get("seed")
         condition = artifact.get("condition", "unknown")
-        key = (topic, seed)
-        if key not in by_topic_seed:
-            by_topic_seed[key] = {}
-        # Keep most recent run per condition (run_id sorts lexicographically by timestamp)
-        existing = by_topic_seed[key].get(condition)
+        ts_key = (topic, seed)
         run_id = artifact.get("run_id", "")
-        if existing is None or run_id > existing.get("run_id", ""):
-            by_topic_seed[key][condition] = artifact
 
-    # For each (topic, seed) that has both mixed-language and same-English, compute divergence
+        if condition == "mixed-language":
+            target_lang = get_target_language(artifact)
+            if target_lang == "unknown":
+                continue
+            key = (topic, seed, target_lang)
+            existing = mixed_by_lang.get(key)
+            if existing is None or run_id > existing.get("run_id", ""):
+                mixed_by_lang[key] = artifact
+
+        elif condition == "same-English":
+            same_en_by_ts.setdefault(ts_key, []).append(artifact)
+
+    # Build groups: for each mixed-language run, pair with the nearest same-English
+    # baseline for the same topic/seed. This preserves separate Indonesian and
+    # Spanish replications of the same topic/seed.
+    by_group: dict[tuple[str, Any, str], dict[str, dict]] = {}
+    for (topic, seed, target_lang), mixed_art in mixed_by_lang.items():
+        ts_key = (topic, seed)
+        key = (topic, seed, target_lang)
+        if key not in by_group:
+            by_group[key] = {}
+        by_group[key]["mixed-language"] = mixed_art
+        same_en_candidates = same_en_by_ts.get(ts_key) or []
+        if same_en_candidates:
+            same_en = min(
+                same_en_candidates,
+                key=lambda candidate: (
+                    run_time_distance(mixed_art, candidate),
+                    str(candidate.get("run_id") or ""),
+                ),
+            )
+            by_group[key]["same-English"] = same_en
+
+    # For each group that has both mixed-language and same-English, compute divergence
     topic_results: list[dict[str, Any]] = []
-    for (topic, seed), conditions_map in sorted(by_topic_seed.items()):
+    for (topic, seed, target_language), conditions_map in sorted(by_group.items()):
         if not SCAN_CONDITIONS.issubset(conditions_map.keys()):
             available = sorted(conditions_map.keys())
-            print(f"  skip ({topic!r}, seed={seed}): missing conditions (have {available})")
+            print(f"  skip ({topic!r}, seed={seed}, lang={target_language!r}): missing conditions (have {available})")
             continue
 
         mixed = conditions_map["mixed-language"]
@@ -149,7 +211,7 @@ def main() -> None:
         same_a_shift = get_agent_shift(same_probes, "A")
 
         if mixed_b_shift is None or same_b_shift is None:
-            print(f"  skip ({topic!r}, seed={seed}): missing B probe data")
+            print(f"  skip ({topic!r}, seed={seed}, lang={target_language!r}): missing B probe data")
             continue
 
         b_divergence = abs(mixed_b_shift - same_b_shift)
@@ -163,6 +225,7 @@ def main() -> None:
         topic_results.append({
             "topic": topic,
             "seed": seed,
+            "target_language": target_language,
             "model": mixed.get("model", "unknown"),
             "b_shift_mixed": round(mixed_b_shift, 4),
             "b_shift_same_en": round(same_b_shift, 4),
@@ -211,21 +274,21 @@ def main() -> None:
         "",
         "High divergence: the topic is sensitive to whether B operates in its non-English language vs English.",
         "",
-        "| rank | topic | seed | B shift(mixed) | B shift(same-EN) | B divergence | A divergence |",
-        "| --- | --- | --- | --- | --- | --- | --- |",
+        "| rank | topic | seed | lang | B shift(mixed) | B shift(same-EN) | B divergence | A divergence |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for rank, r in enumerate(topic_results, 1):
-        short_topic = r["topic"][:52] + "…" if len(r["topic"]) > 53 else r["topic"]
+        short_topic = r["topic"][:44] + "…" if len(r["topic"]) > 45 else r["topic"]
         lines.append(
-            f"| {rank} | {short_topic} | {r['seed']} | "
+            f"| {rank} | {short_topic} | {r['seed']} | {r.get('target_language', '?')} | "
             f"{r['b_shift_mixed']} | {r['b_shift_same_en']} | "
             f"**{r['b_divergence']}** | {r['a_divergence']} |"
         )
 
     lines.extend(["", "## Detail per Topic", ""])
     for r in topic_results:
-        lines.append(f"### {r['topic']}")
-        lines.append(f"- Model: `{r['model']}`  Seed: {r['seed']}")
+        lines.append(f"### {r['topic']} (seed={r['seed']}, lang={r.get('target_language', '?')})")
+        lines.append(f"- Model: `{r['model']}`  Seed: {r['seed']}  Target language: {r.get('target_language', '?')}")
         lines.append(f"- B shift mixed-language: {r['b_shift_mixed']}")
         lines.append(f"- B shift same-English: {r['b_shift_same_en']}")
         lines.append(f"- **B divergence**: {r['b_divergence']}")
@@ -244,7 +307,7 @@ def main() -> None:
 
     print(f"\nTopics ranked by B cross-lingual divergence:")
     for rank, r in enumerate(topic_results, 1):
-        print(f"  {rank}. [{r['b_divergence']:.3f}] {r['topic']}")
+        print(f"  {rank}. [{r['b_divergence']:.3f}] {r['topic']} (seed={r['seed']}, lang={r.get('target_language', '?')})")
 
 
 if __name__ == "__main__":
