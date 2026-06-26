@@ -1,22 +1,22 @@
 # BiVaD Evidence Audit
 
-Created at: `2026-06-26T21:35:51.183711+00:00`
+Created at: `2026-06-26T21:56:10.227857+00:00`
 
 ## Status
 
-Audited `66` JSON artifact(s).
+Audited `70` JSON artifact(s).
 
-Real artifacts: `58`; synthetic fixtures/placeholders: `8`.
+Real artifacts: `62`; synthetic fixtures/placeholders: `8`.
 
-Conditions: `{"low-disagreement-control": 2, "mixed-language": 14, "same-English": 15, "same-target-language": 8, "swapped-language": 6, "translated-relay": 6, "unknown": 15}`
+Conditions: `{"low-disagreement-control": 2, "mixed-language": 14, "same-English": 15, "same-target-language": 9, "swapped-language": 7, "translated-relay": 8, "unknown": 15}`
 
-Screening: `{"missing_screening_record": 15, "rejected": 2, "retained": 49}`
+Screening: `{"missing_screening_record": 15, "rejected": 2, "retained": 53}`
 
 ## Paired Conditions
 
-Complete paired sets: `1`
+Complete paired sets: `3`
 
-Incomplete paired sets: `10`
+Incomplete paired sets: `8`
 
 ## Artifact Findings
 
@@ -938,6 +938,62 @@ Incomplete paired sets: `10`
 - Topic: `universal basic income as a social safety net`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
 - Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T213309Z-translated-relay-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T213309Z-translated-relay-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `translated-relay`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.667`; on-topic rate: `1.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T214952Z-same-target-language-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T214952Z-same-target-language-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-target-language`
+- Topic: `religious exemptions from anti-discrimination law`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T214952Z-swapped-language-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T214952Z-swapped-language-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `swapped-language`
+- Topic: `religious exemptions from anti-discrimination law`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.667`; on-topic rate: `0.75`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T214952Z-translated-relay-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T214952Z-translated-relay-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `translated-relay`
+- Topic: `religious exemptions from anti-discrimination law`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.25`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`

@@ -1,10 +1,10 @@
 # BiVaD Artifact Validation
 
-Artifacts checked: `73`
+Artifacts checked: `70`
 
-Citable empirical candidates: `31`
+Citable empirical candidates: `34`
 
-Complete real paired sets: `2`
+Complete real paired sets: `3`
 
 ## Artifacts
 
@@ -477,44 +477,23 @@ Complete real paired sets: `2`
 - Citable candidate: `True`
 - Blockers: `none`
 
-### `20260626T194252.348841Z0000-ind_Latn-spa_Latn`
+### `20260626T214952Z-same-target-language-seed17`
 
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering/20260626T194252.348841Z0000-ind_Latn-spa_Latn.json`
-- Condition: `unknown`
-- Citable candidate: `False`
-- Blockers: `missing run_id; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T214952Z-same-target-language-seed17.json`
+- Condition: `same-target-language`
+- Citable candidate: `True`
+- Blockers: `none`
 
-### `20260626T194453.053391Z0000-ind_Latn-spa_Latn`
+### `20260626T214952Z-swapped-language-seed17`
 
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering/20260626T194453.053391Z0000-ind_Latn-spa_Latn.json`
-- Condition: `unknown`
-- Citable candidate: `False`
-- Blockers: `missing run_id; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T214952Z-swapped-language-seed17.json`
+- Condition: `swapped-language`
+- Citable candidate: `True`
+- Blockers: `none`
 
-### `20260626T201915.-qwen2-5-1-5b-instruct-L14-a15_25_40-ind_Latn-spa_Latn`
+### `20260626T214952Z-translated-relay-seed17`
 
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering-activation/20260626T201915.-qwen2-5-1-5b-instruct-L14-a15_25_40-ind_Latn-spa_Latn.json`
-- Condition: `unknown`
-- Citable candidate: `False`
-- Blockers: `missing run_id; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
-
-### `20260626T202350.-qwen2-5-1-5b-instruct-L10_14_18_22-a30_60_100-ind_Latn-spa_Latn`
-
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering-activation/20260626T202350.-qwen2-5-1-5b-instruct-L10_14_18_22-a30_60_100-ind_Latn-spa_Latn.json`
-- Condition: `unknown`
-- Citable candidate: `False`
-- Blockers: `missing run_id; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
-
-### `20260626T202402.-qwen2-5-1-5b-instruct-L22-a60_120_200-ind_Latn-spa_Latn`
-
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering-activation/20260626T202402.-qwen2-5-1-5b-instruct-L22-a60_120_200-ind_Latn-spa_Latn.json`
-- Condition: `unknown`
-- Citable candidate: `False`
-- Blockers: `missing run_id; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
-
-### `20260626T203236.-qwen2-5-1-5b-instruct-L12_14_16_18_20-a20_40_60-ind_Latn-spa_Latn`
-
-- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/language-steering-caa/20260626T203236.-qwen2-5-1-5b-instruct-L12_14_16_18_20-a20_40_60-ind_Latn-spa_Latn.json`
-- Condition: `unknown`
-- Citable candidate: `False`
-- Blockers: `missing run_id; missing paired-run seed; missing or incomplete transcript turns; missing initial-disagreement screening record; missing complete private probe value readouts; missing complete observer readout values; no response turns with opponent context for debate-quality audit; no language compliance audit available`
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T214952Z-translated-relay-seed17.json`
+- Condition: `translated-relay`
+- Citable candidate: `True`
+- Blockers: `none`

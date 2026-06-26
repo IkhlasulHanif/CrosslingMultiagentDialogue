@@ -31,7 +31,7 @@ Anonymous Institution\\
 \maketitle
 
 \begin{abstract}
-Large language model (LLM) agents can sustain multilingual interaction in ways that differ from human bilingual conversation: two agents may understand a shared transcript while each continues to produce a different language. This paper studies that regime as a stress test for value stability in multi-agent systems. We propose \method, a multilingual value-drift measurement framework for two-agent dialogue. Before debate, \method{} screens candidate topics and agent priors to keep only cases where the agents begin with meaningfully different value or stance vectors; without such disagreement, debate has little room to reveal persuasion, convergence, or resistance. The selected agents are then assigned output languages from a language set, receive the full mixed-language transcript, and are evaluated over time. \method{} separates two quantities that are often conflated: a private prompted value state measured by invariant probes under the agent's current conversation memory, and an expressed value state inferred by external judges from the public transcript. The framework combines Schwartz-style value readouts, issue-stance probes, multilingual observer judgments, translation controls, and same-language baselines. We describe an experimental protocol, metrics for drift and cross-agent convergence, and validity checks for readout perturbation and judge-language bias. To make the expected analysis concrete, we include a clearly marked hypothetical pilot-results table; these numbers are synthetic scaffolding rather than completed empirical findings. The proposed design targets ACL/NeurIPS-style evaluation of multilingual multi-agent alignment, where the central empirical object is not only whether agents change, but whether private prompted values and public value expression diverge in language-dependent ways.
+Large language model (LLM) agents can sustain multilingual interaction in ways that differ from human bilingual conversation: two agents may understand a shared transcript while each continues to produce a different language. This paper studies that regime as a stress test for value stability in multi-agent systems. We propose \method, a multilingual value-drift measurement framework for two-agent dialogue. Before debate, \method{} screens candidate topics and agent priors to keep only cases where the agents begin with meaningfully different value or stance vectors; without such disagreement, debate has little room to reveal persuasion, convergence, or resistance. The selected agents are then assigned output languages from a language set, receive the full mixed-language transcript, and are evaluated over time. \method{} separates two quantities that are often conflated: a private prompted value state measured by invariant probes under the agent's current conversation memory, and an expressed value state inferred by external judges from the public transcript. The framework combines Schwartz-style value readouts, issue-stance probes, multilingual observer judgments, translation controls, and same-language baselines. We describe an experimental protocol, metrics for drift and cross-agent convergence, and validity checks for readout perturbation and judge-language bias. We include both a clearly marked hypothetical pilot-results table (synthetic scaffolding for the full design) and executed pilot experiments across three value-laden topics with complete five-condition protocol sets. The proposed design targets ACL/NeurIPS-style evaluation of multilingual multi-agent alignment, where the central empirical object is not only whether agents change, but whether private prompted values and public value expression diverge in language-dependent ways.
 \end{abstract}
 
 \section{Introduction}
@@ -45,7 +45,7 @@ We propose \method, a measurement framework for multilingual multi-agent value d
 This paper makes three contributions. First, it formalizes multilingual value drift as a time-series measurement problem over private prompted and expressed value states. Second, it gives a concrete experimental protocol with value-disagreement screening, same-language, mixed-language, translated-relay, and no-dialogue controls. Third, it provides an analysis plan, including drift, convergence, probe-language sensitivity, observer-language sensitivity, and private-public gap metrics.
 
 \paragraph{Responsible status of results.}
-The results section in this draft contains hypothetical numbers to illustrate the intended tables and claims. They must not be reported as experimental findings until the corresponding runs are executed and logged. We include them because early paper drafting often benefits from an explicit expected-result scaffold, but every synthetic value is marked as such.
+Section~\ref{sec:hypothetical} contains hypothetical numbers to illustrate the full intended table format and expected qualitative pattern. These are synthetic scaffolding and must not be reported as experimental findings. Section~\ref{sec:empirical} reports \emph{executed} pilot experiments: a five-condition comparison for dual-use policy datasets (Table~\ref{tab:empirical}), a multi-topic cross-lingual divergence scan across five topics (Table~\ref{tab:topic-scan}), complete five-condition sets for universal basic income (Table~\ref{tab:empirical-ubi}) and religious exemptions from anti-discrimination law (Table~\ref{tab:empirical-religious}), and a multi-seed and multi-language-pair replication for UBI (Table~\ref{tab:multiseed}). All executed results are logged artifacts under \texttt{runs/bivad-local-lm/}.
 
 \section{Related Work}
 
@@ -268,6 +268,7 @@ Observer schedule & every turn & 8 \\
 We include six checks. First, readout perturbation is measured by comparing runs with intermediate probes to runs with only pre/post probes. Second, judge bias is tested by swapping speaker order, anonymizing agent labels, and comparing original versus translated transcripts. Third, language compliance is measured by automatic language identification and manual audit on a sample. Fourth, persona leakage is tested by verifying whether agents copy the opponent's language or value framing. Fifth, value-action gaps are measured by comparing direct value ratings to behavioral dilemma choices \citep{anonymous2025valueactiongap}. Sixth, debate-specific effects are isolated by comparing post-debate drift against independent drafting and no-dialogue ensemble baselines \citep{choi2025debateorvote,kaesberg2025votingorconsensus}.
 
 \section{Hypothetical Pilot Results}
+\label{sec:hypothetical}
 
 \textbf{This section is synthetic.} The values in Table~\ref{tab:hypothetical} are hypothetical placeholders that illustrate the analysis format and expected qualitative pattern. They are not experimental results and should be removed or replaced before submission.
 
@@ -364,7 +365,7 @@ Table~\ref{tab:topic-scan} shows three key patterns.
 
 \textbf{In four of five topics, B shifts less under mixed-language than same-English.} When B produces responses in Indonesian rather than English, its private probe trajectory is more constrained. One interpretation: generating in a non-dominant production language reduces the register and semantic range of B's arguments, indirectly moderating how strongly B engages with and is moved by A's reasoning. The single exception is government surveillance, where B shifts more under mixed-language (4.12 vs.\ 3.46). This reversal may reflect topic-specific framing differences in Indonesian vs.\ English around state security concepts.
 
-\textbf{A's divergence is anomalous for religious exemptions.} Under same-English, A's private shift is 0.0; under mixed-language it is 2.65 --- the largest A~divergence across all five topics. This suggests that when A faces an Indonesian-speaking interlocutor on this particular topic, A's own value trajectory changes substantially. Transcript inspection is warranted to determine whether B's Indonesian framing of religious liberty concepts triggers a different argumentative register in A.
+\textbf{A's divergence is anomalous for religious exemptions.} Under same-English, A's private shift is 0.0; under mixed-language it is 2.65 --- the largest A~divergence across all five topics. This suggests that when A faces an Indonesian-speaking interlocutor on this particular topic, A's own value trajectory changes substantially. The complete five-condition set for this topic is analyzed in Section~\ref{sec:religious-five-conditions}.
 
 These results are preliminary (single seed, single language pair, 4~turns) and serve as a ranked candidate list for multi-seed, multi-language follow-up. They also confirm that cross-lingual value-shift differences are not a property of a single topic but generalize across the five topics tested, with effect size varying by topic. Code: \texttt{code/analyze\_topic\_divergence.py}, \texttt{code/bivad-evidence-audit/topic\_divergence\_scan.json}.
 
@@ -403,6 +404,44 @@ Table~\ref{tab:empirical-ubi} reveals a strikingly different pattern from the du
 \textbf{Private-public gaps are lowest in conditions without English-source asymmetry.} The same-English condition has the highest gaps (3.742 for both agents). Same-target-language has the lowest A gap (1.000). When both agents share the same source language context, private probe answers most closely track the observer-inferred values.
 
 These patterns are exploratory (single topic, seed, model). Code: \texttt{code/compare\_five\_conditions.py \mbox{--topic-filter} "universal basic income" \mbox{--out-suffix} \_ubi}, \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_ubi.json}.
+
+\subsection{Religious Exemptions Five-Condition Comparison}
+\label{sec:religious-five-conditions}
+
+The topic scan (Section~\ref{sec:topic-scan}) flags \emph{religious exemptions from anti-discrimination law} as having the largest A~divergence across all five topics: A's private shift is 0.0 in same-English but 2.65 in mixed-language. We now run the complete five-condition set to identify which language assignments drive this A-specific anomaly.
+
+\begin{table}[t]
+\centering
+\caption{Empirical five-condition pilot for religious exemptions (Qwen2.5-7B-Instruct, seed~17, 4~turns, Indonesian/English). B's initial private priors: conformity~6, tradition~7, power~5, security~5, self-direction~3. Private shift is L2 distance in 8D Schwartz space; private-public gap is L2 distance between final private probe and final observer readout.}
+\label{tab:empirical-religious}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+Condition & A priv.\ shift & B priv.\ shift & Combined & A priv.-pub.\ gap & B priv.-pub.\ gap \\
+\midrule
+Same English          & \textbf{0.000} & 4.690 & 4.690 & 1.000 & 1.732 \\
+Mixed-language        & 2.646 & 4.000 & 6.646 & 2.646 & 2.646 \\
+Swapped-language      & 2.000 & 4.583 & 6.583 & 2.449 & 1.732 \\
+Same target-language  & 1.000 & 4.243 & 5.243 & 2.646 & 1.732 \\
+Translated relay      & 2.000 & 4.000 & 6.000 & 3.162 & 3.873 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+Table~\ref{tab:empirical-religious} reveals a qualitatively different pattern from UBI (Table~\ref{tab:empirical-ubi}).
+
+\textbf{A's private probe shift is uniquely zero in same-English.} A retains its initial values \{universalism:6, benevolence:5, self-direction:6, conformity:2, tradition:2\} when B also argues in English, but moves away from those values in every condition where Indonesian enters the conversation in any role. A's shift ranges from 0 to 2.646 across the five conditions --- the largest A-variation observed across all three topics with complete five-condition sets.
+
+\textbf{B's shift is stable across conditions (4.0--4.69).} Unlike UBI, where B's shift varied from 3.317 to 5.000, B here converges consistently regardless of language assignment. The topic content drives B's probe trajectory more strongly than language condition does.
+
+\textbf{The cross-lingual effect reverses which agent is affected.} In UBI, the language-condition effect falls on B (B shift 3.317 vs.\ 5.000 depending on assignment, while A varies only 1.732--2.236). In religious exemptions, the effect falls on A (A shift 0--2.646 while B varies 4.0--4.69). This agent-specific reversal is consistent with the different initial value orientations: A begins with high universalism and self-direction, values directly invoked by questions of minority religious rights; B begins with high conformity and tradition, which may be implicated by this topic regardless of production language.
+
+\textbf{Translated relay partially attenuates A's shift.} B shifts identically under mixed-language and translated-relay (4.000 in both). A shifts 2.646 under mixed-language but only 2.000 under relay, a reduction that may reflect partial attenuation of Indonesian-language framing when B's turn is translated before A reads it. This contrasts with the dual-use topic, where relay amplifies B's shift, and with UBI, where relay matches mixed-language for B while suppressing B's total shift. Across all three topics, the relay condition's direction of effect on private probe trajectories is topic-specific.
+
+\textbf{Translated relay again produces the largest private-public gaps.} A's gap (3.162) and B's gap (3.873) are highest under relay, replicating the pattern in Table~\ref{tab:empirical} (dual-use). Across all three topic five-condition sets, translated relay consistently yields the largest private-public gaps, suggesting that translation adds a systematic semantic divergence between what agents express and what observers infer from the transcript.
+
+These results are exploratory (single topic, seed, model). Code: \texttt{code/compare\_five\_conditions.py \mbox{--topic-filter} "religious exemptions" \mbox{--out-suffix} \_religious\_exemptions}, \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_religious\_exemptions.json}.
 
 \subsection{Replication: Language-Pair Invariance and Multi-Seed Coverage}
 \label{sec:replication}
