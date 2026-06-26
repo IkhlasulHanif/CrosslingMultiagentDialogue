@@ -18,7 +18,7 @@ APPROVAL_MODE="${VALUE_DRIFT_APPROVAL:-never}"
 NETWORK_ACCESS="${VALUE_DRIFT_NETWORK_ACCESS:-true}"
 EXTRA_CODEX_ARGS="${VALUE_DRIFT_EXTRA_CODEX_ARGS:-}"
 DRY_RUN="${VALUE_DRIFT_DRY_RUN:-0}"
-GIT_PUSH="${VALUE_DRIFT_GIT_PUSH:-0}"
+GIT_PUSH="${VALUE_DRIFT_GIT_PUSH:-1}"
 GIT_REMOTE="${VALUE_DRIFT_GIT_REMOTE:-origin}"
 GIT_BRANCH="${VALUE_DRIFT_GIT_BRANCH:-}"
 
@@ -53,7 +53,7 @@ Key environment variables:
   VALUE_DRIFT_NETWORK_ACCESS           default: ${NETWORK_ACCESS}
   VALUE_DRIFT_EXTRA_CODEX_ARGS         appended to codex exec
   VALUE_DRIFT_DRY_RUN                  build the first prompt and exit without running Codex
-  VALUE_DRIFT_GIT_PUSH                 default: ${GIT_PUSH} (1 commits and pushes after each pass; disabled by default)
+  VALUE_DRIFT_GIT_PUSH                 default: ${GIT_PUSH} (1 commits and pushes after each pass)
   VALUE_DRIFT_GIT_REMOTE               default: ${GIT_REMOTE}
   VALUE_DRIFT_GIT_BRANCH               default: current branch
 USAGE

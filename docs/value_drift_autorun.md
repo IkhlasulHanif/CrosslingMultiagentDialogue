@@ -37,7 +37,7 @@ Useful environment variables:
 - `VALUE_DRIFT_CONTINUE_ON_ERROR`, default `0`.
 - `VALUE_DRIFT_NETWORK_ACCESS`, default `true`.
 - `VALUE_DRIFT_EXTRA_CODEX_ARGS`, appended to `codex exec`.
-- `VALUE_DRIFT_GIT_PUSH`, default `0`, keeps the repo local. Set to `1` to commit and push after each pass attempt.
+- `VALUE_DRIFT_GIT_PUSH`, default `1`, commits and pushes after each pass attempt.
 - `VALUE_DRIFT_GIT_REMOTE`, default `origin`.
 - `VALUE_DRIFT_GIT_BRANCH`, default current branch.
 

@@ -21,7 +21,7 @@ Engineering constraints:
 - Prefer mini-class models for API-backed trials unless the user explicitly changes the policy.
 - Keep trial runs small by default.
 - If dependencies, API credentials, or network are unavailable, improve the offline harness, prompts, schemas, logging, or analysis scripts instead.
-- Do not push.
+- Do not push manually from inside the worker pass; the outer harness commits and pushes after each pass attempt.
 
 Every pass must write a research update containing:
 - What changed.
