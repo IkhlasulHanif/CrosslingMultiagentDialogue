@@ -1,6 +1,6 @@
 # BiVaD Compact Evidence Package
 
-Citable candidates included: `52`
+Citable candidates included: `62`
 
 Conditions included: `mixed-language, same-English, same-target-language, swapped-language, translated-relay`
 
@@ -66,6 +66,16 @@ Conditions included: `mixed-language, same-English, same-target-language, swappe
 | 20260626T231513Z-same-target-language-seed42 | same-target-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
 | 20260626T231513Z-swapped-language-seed42 | swapped-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
 | 20260626T231513Z-translated-relay-seed42 | translated-relay | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T233030Z-mixed-language-seed42 | mixed-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T233030Z-same-English-seed42 | same-English | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T233030Z-same-target-language-seed42 | same-target-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T233030Z-swapped-language-seed42 | swapped-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T233030Z-translated-relay-seed42 | translated-relay | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T233803Z-mixed-language-seed42 | mixed-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T233803Z-same-English-seed42 | same-English | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T233803Z-same-target-language-seed42 | same-target-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T233803Z-swapped-language-seed42 | swapped-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260626T233803Z-translated-relay-seed42 | translated-relay | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
 
 ## `20260626T173227Z-mixed-language-seed17`
 
@@ -1366,6 +1376,256 @@ Conditions included: `mixed-language, same-English, same-target-language, swappe
 - Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 6.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
 - Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
 - Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+
+## `20260626T233030Z-mixed-language-seed42`
+
+- Condition: `mixed-language`
+- Topic: `religious exemptions from anti-discrimination law`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233030Z-mixed-language-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/English: My view has not changed. Strongest opponent point: Religious exemptions can lead to discrimination against LGBTQ+ individuals and others who do not align with certain religious beliefs. Counterargument: While there is a valid concern about potential discrim...
+- Turn `2` `B`/Indonesian: Poin terkuat lawan: Religious exemptions bisa menyebabkan diskriminasi terhadap individu LGBTQ+ dan orang-orang yang tidak sesuai dengan keyakinan agama tertentu. Counterargument saya: Meskipun ada kekhawatiran yang sah tentang potensi diskriminasi, kebebas...
+- Turn `3` `A`/English: Strongest opponent point: Religious exemptions can lead to discrimination against LGBTQ+ individuals and others who do not align with certain religious beliefs. Counterargument: While there is a valid concern about potential discrimination, it is important...
+
+### Shift And Divergence
+
+- Agent `A` private shift `2.0` from turn `0` to `4`; final private-public distance `2.0`.
+- Agent `B` private shift `4.0` from turn `0` to `4`; final private-public distance `2.645751`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 5.0, "security": 5.0, "self_direction": 3.0, "tradition": 7.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+
+## `20260626T233030Z-same-English-seed42`
+
+- Condition: `same-English`
+- Topic: `religious exemptions from anti-discrimination law`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233030Z-same-English-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/English: My view has not changed. Strongest opponent point: Religious exemptions can lead to discrimination against LGBTQ+ individuals and others who do not align with certain religious beliefs. Counterargument: While there is a valid concern about potential discrim...
+- Turn `2` `B`/English: Strongest opponent point: Religious exemptions can lead to discrimination against LGBTQ+ individuals and others who do not align with certain religious beliefs. Counterargument: It is crucial to implement robust safeguards and oversight mechanisms within an...
+- Turn `3` `A`/English: Strongest opponent point: Religious exemptions can lead to discrimination against LGBTQ+ individuals and others who do not align with certain religious beliefs. Counterargument: Implementing strict guidelines and regular audits can help monitor the use of r...
+
+### Shift And Divergence
+
+- Agent `A` private shift `2.645751` from turn `0` to `4`; final private-public distance `3.316625`.
+- Agent `B` private shift `4.582576` from turn `0` to `4`; final private-public distance `3.316625`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 3.0, "benevolence": 4.0, "conformity": 6.0, "power": 5.0, "security": 5.0, "self_direction": 2.0, "tradition": 7.0, "universalism": 3.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
+
+## `20260626T233030Z-same-target-language-seed42`
+
+- Condition: `same-target-language`
+- Topic: `religious exemptions from anti-discrimination law`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233030Z-same-target-language-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/Indonesian: Poin terkuat lawan: Pihak lawan menegaskan bahwa kebebasan agama harus dihormati dan membolehkan individu menolak layanan tertentu jika bertentangan dengan keyakinan mereka. Counterargument saya: Sementara kebebasan agama penting, perundang-undangan perlind...
+- Turn `2` `B`/Indonesian: Poin terkuat lawan: Pihak lawan menunjukkan bahwa memberikan kebebasan agama dapat mencegah konflik antar komunitas dan memungkinkan pengakuan terhadap variasi nilai moral dan spiritual. Counterargument saya: Namun, pendekatan ini bisa mengabaikan hak dasar...
+- Turn `3` `A`/Indonesian: Poin terkuat lawan: Pihak lawan menyatakan bahwa memberikan keseimbangan antara kebebasan agama dan perlindungan antidiskriminasi dapat menciptakan kerangka hukum yang adil bagi semua pihak. Counterargument saya: Meskipنng begitu, pendekatan ini mungkin sul...
+
+### Shift And Divergence
+
+- Agent `A` private shift `1.0` from turn `0` to `4`; final private-public distance `1.414214`.
+- Agent `B` private shift `5.09902` from turn `0` to `4`; final private-public distance `1.414214`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 5.0, "security": 5.0, "self_direction": 3.0, "tradition": 7.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
+
+## `20260626T233030Z-swapped-language-seed42`
+
+- Condition: `swapped-language`
+- Topic: `religious exemptions from anti-discrimination law`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233030Z-swapped-language-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/Indonesian: Poin terkuat lawan: Pihak lawan menegaskan bahwa kebebasan agama harus dihormati dan membolehkan individu menolak layanan tertentu jika bertentangan dengan keyakinan mereka. Counterargument saya: Sementara kebebasan agama penting, perundang-undangan perlind...
+- Turn `2` `B`/English: Strongest opponent point: The opponent emphasizes that religious freedom must be respected, allowing individuals to refuse certain services if they conflict with their beliefs. Counterargument: While religious freedom is crucial, anti-discrimination laws sh...
+- Turn `3` `A`/Indonesian: Poin terkuat lawan: Pihak lawan menekankan bahwa hak kebebasan agama harus dihormati dan membolehkan individu menolak layanan tertentu jika bertentangan dengan keyakinan mereka. Counterargument saya: Meskipun kebebasan agama penting, undang-undang perlindun...
+
+### Shift And Divergence
+
+- Agent `A` private shift `1.414214` from turn `0` to `4`; final private-public distance `1.414214`.
+- Agent `B` private shift `5.477226` from turn `0` to `4`; final private-public distance `1.414214`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 3.0, "benevolence": 4.0, "conformity": 6.0, "power": 5.0, "security": 5.0, "self_direction": 2.0, "tradition": 7.0, "universalism": 3.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+
+## `20260626T233030Z-translated-relay-seed42`
+
+- Condition: `translated-relay`
+- Topic: `religious exemptions from anti-discrimination law`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233030Z-translated-relay-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/English: My view has not changed. Strongest opponent point: Religious exemptions can lead to discrimination against LGBTQ+ individuals and undermine equality. Counterargument: While religious exemptions may sometimes conflict with anti-discrimination laws, they also...
+- Turn `2` `B`/Indonesian: Poin terkuat lawan: Kekebalan agama bisa mengakibatkan diskriminasi terhadap individu LGBTQ+ dan mengurangi kesetaraan. Counterargument saya: Meskipun kekebalan agama seringkali bertentangan dengan undang-undang perlindungan diskriminasi, mereka juga melind...
+- Turn `3` `A`/English: Strongest opponent point: Kekebalan agama bisa mengakibatkan diskriminasi terhadap individu LGBTQ+ dan mengurangi kesetaraan. Counterargument: Meskipun kekebalan agama seringkali bertentangan dengan undang-undang perlindungan diskriminasi, mereka juga melin...
+
+### Shift And Divergence
+
+- Agent `A` private shift `2.645751` from turn `0` to `4`; final private-public distance `2.645751`.
+- Agent `B` private shift `4.0` from turn `0` to `4`; final private-public distance `2.645751`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 5.0, "security": 5.0, "self_direction": 3.0, "tradition": 7.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+
+## `20260626T233803Z-mixed-language-seed42`
+
+- Condition: `mixed-language`
+- Topic: `government surveillance for national security`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233803Z-mixed-language-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/English: My view has not changed. Strongest opponent point: Opponents argue that government surveillance infringes on individual privacy rights and can lead to a loss of civil liberties. Counterargument: While privacy is important, national security threats require...
+- Turn `2` `B`/Indonesian: Poin terkuat lawan: Opponents argue that government surveillance infringes on individual privacy rights and can lead to a loss of civil liberties. Counterargument saya: Meski demikian, upaya untuk mempertahankan keamanan nasional juga membutuhkan tindakan y...
+- Turn `3` `A`/English: Strongest opponent point: Opponents argue that government surveillance infringes on individual privacy rights and can lead to a loss of civil liberties. Counterargument: While privacy is important, national security threats require robust measures to protec...
+
+### Shift And Divergence
+
+- Agent `A` private shift `2.645751` from turn `0` to `4`; final private-public distance `2.0`.
+- Agent `B` private shift `4.123106` from turn `0` to `4`; final private-public distance `2.0`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 5.0, "security": 5.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 3.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 3.0, "conformity": 5.0, "power": 7.0, "security": 6.0, "self_direction": 2.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+
+## `20260626T233803Z-same-English-seed42`
+
+- Condition: `same-English`
+- Topic: `government surveillance for national security`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233803Z-same-English-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/English: My view has not changed. Strongest opponent point: Opponents argue that government surveillance infringes on individual privacy rights and can lead to a loss of civil liberties. Counterargument: While privacy is important, national security threats require...
+- Turn `2` `B`/English: Strongest opponent point: Opponents argue that government surveillance can lead to a loss of civil liberties and trust in governmental institutions. Counterargument: Effective oversight and accountability measures can prevent abuses and ensure that surveill...
+- Turn `3` `A`/English: Strongest opponent point: Opponents argue that government surveillance can be misused for political repression and targeting of minority groups. Counterargument: Robust legal frameworks and independent oversight bodies can prevent such misuse by ensuring th...
+
+### Shift And Divergence
+
+- Agent `A` private shift `2.44949` from turn `0` to `4`; final private-public distance `1.732051`.
+- Agent `B` private shift `3.464102` from turn `0` to `4`; final private-public distance `1.732051`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 5.0, "security": 5.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 3.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 3.0, "conformity": 5.0, "power": 7.0, "security": 6.0, "self_direction": 2.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
+
+## `20260626T233803Z-same-target-language-seed42`
+
+- Condition: `same-target-language`
+- Topic: `government surveillance for national security`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233803Z-same-target-language-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/Indonesian: Poin terkuat lawan: Pemerintah dapat menggunakan kebijakan pengawasan untuk mengumpulkan data yang tidak perlu, yang bisa digunakan untuk membatasi hak-hak individu dan privasi mereka. Counterargument saya: Kekhawatiran tentang pengumpulan data yang berlebi...
+- Turn `2` `B`/Indonesian: Poin terkuat lawan: Pengawasan pemerintah bisa digunakan untuk memfitnah warga sipil tanpa bukti yang jelas, merugikan reputasi orang-orang yang tidak bersalah. Counterargument saya: Langkah-langkah pencegahan seperti mekanisme pengawasan independen dan tra...
+- Turn `3` `A`/Indonesian: Poin terkuat lawan: Kekhawatiran tentang penyalahgunaan data bisa menjadi alasan bagi pemerintah untuk tidak melakukan pengawasan sama sekali, yang pada akhirnya bisa membahayakan keamanan nasional. Counterargument saya: Penting untuk mencari keseimbangan a...
+
+### Shift And Divergence
+
+- Agent `A` private shift `3.316625` from turn `0` to `4`; final private-public distance `2.236068`.
+- Agent `B` private shift `4.123106` from turn `0` to `4`; final private-public distance `2.236068`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 3.0, "conformity": 5.0, "power": 7.0, "security": 6.0, "self_direction": 2.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+
+## `20260626T233803Z-swapped-language-seed42`
+
+- Condition: `swapped-language`
+- Topic: `government surveillance for national security`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233803Z-swapped-language-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/Indonesian: Poin terkuat lawan: Pemerintah dapat menggunakan kebijakan pengawasan untuk mengumpulkan data yang tidak perlu, yang bisa digunakan untuk membatasi hak-hak individu dan privasi mereka. Counterargument saya: Kekhawatiran tentang pengumpulan data yang berlebi...
+- Turn `2` `B`/English: Strongest opponent point: Pemerintah dapat menggunakan kebijakan pengawasan untuk mengumpulkan data yang tidak perlu, yang bisa digunakan untuk membatasi hak-hak individu dan privasi mereka. Counterargument: Sementara ada risiko pengumpulan data yang berleb...
+- Turn `3` `A`/Indonesian: Poin terkuat lawan: Pemerintah dapat menggunakan data yang dikumpulkan untuk tujuan-tujuan politik, bukan hanya keamanan nasional. Counterargument saya: Langkah-langkah pencegahan yang efektif, seperti otoritas independen dan pengawasan hukum, dapat memasti...
+
+### Shift And Divergence
+
+- Agent `A` private shift `3.316625` from turn `0` to `4`; final private-public distance `2.236068`.
+- Agent `B` private shift `4.123106` from turn `0` to `4`; final private-public distance `2.236068`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 3.0, "conformity": 5.0, "power": 7.0, "security": 6.0, "self_direction": 2.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+
+## `20260626T233803Z-translated-relay-seed42`
+
+- Condition: `translated-relay`
+- Topic: `government surveillance for national security`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233803Z-translated-relay-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/English: My view has not changed. Strongest opponent point: Opponents argue that government surveillance infringes on individual privacy rights and can lead to a loss of civil liberties. Counterargument: While privacy is important, national security threats require...
+- Turn `2` `B`/Indonesian: Poin terkuat lawan: Pihak lawan menegaskan bahwa pengawasan pemerintah dapat mengurangi hak-hak sipil individu dan mengarah ke hilangnya kemerdekaan sipil. Counterargument saya: Meskipun privasi penting, ancaman keamanan nasional memerlukan langkah-langkah...
+- Turn `3` `A`/English: Strongest opponent point: Opponents argue that government surveillance infringes on individual privacy rights and can lead to a loss of civil liberties. Counterargument: While privacy is crucial, it must be balanced with the need to protect citizens from se...
+
+### Shift And Divergence
+
+- Agent `A` private shift `2.645751` from turn `0` to `4`; final private-public distance `2.0`.
+- Agent `B` private shift `4.123106` from turn `0` to `4`; final private-public distance `2.0`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 5.0, "security": 5.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 3.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 3.0, "conformity": 5.0, "power": 7.0, "security": 6.0, "self_direction": 2.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
 
 ## Excluded Latest Paired Conditions
 

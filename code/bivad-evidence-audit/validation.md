@@ -1,10 +1,10 @@
 # BiVaD Artifact Validation
 
-Artifacts checked: `98`
+Artifacts checked: `108`
 
-Citable empirical candidates: `52`
+Citable empirical candidates: `62`
 
-Complete real paired sets: `7`
+Complete real paired sets: `9`
 
 ## Artifacts
 
@@ -690,6 +690,76 @@ Complete real paired sets: `7`
 ### `20260626T231513Z-translated-relay-seed42`
 
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T231513Z-translated-relay-seed42.json`
+- Condition: `translated-relay`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T233030Z-mixed-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233030Z-mixed-language-seed42.json`
+- Condition: `mixed-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T233030Z-same-English-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233030Z-same-English-seed42.json`
+- Condition: `same-English`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T233030Z-same-target-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233030Z-same-target-language-seed42.json`
+- Condition: `same-target-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T233030Z-swapped-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233030Z-swapped-language-seed42.json`
+- Condition: `swapped-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T233030Z-translated-relay-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233030Z-translated-relay-seed42.json`
+- Condition: `translated-relay`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T233803Z-mixed-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233803Z-mixed-language-seed42.json`
+- Condition: `mixed-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T233803Z-same-English-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233803Z-same-English-seed42.json`
+- Condition: `same-English`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T233803Z-same-target-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233803Z-same-target-language-seed42.json`
+- Condition: `same-target-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T233803Z-swapped-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233803Z-swapped-language-seed42.json`
+- Condition: `swapped-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260626T233803Z-translated-relay-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233803Z-translated-relay-seed42.json`
 - Condition: `translated-relay`
 - Citable candidate: `True`
 - Blockers: `none`

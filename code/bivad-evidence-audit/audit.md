@@ -1,20 +1,20 @@
 # BiVaD Evidence Audit
 
-Created at: `2026-06-26T23:27:31.722571+00:00`
+Created at: `2026-06-26T23:45:01.823726+00:00`
 
 ## Status
 
-Audited `98` JSON artifact(s).
+Audited `108` JSON artifact(s).
 
-Real artifacts: `90`; synthetic fixtures/placeholders: `8`.
+Real artifacts: `100`; synthetic fixtures/placeholders: `8`.
 
-Conditions: `{"low-disagreement-control": 2, "mixed-language": 15, "no-dialogue": 9, "same-English": 16, "same-target-language": 15, "swapped-language": 11, "translated-relay": 14, "unknown": 16}`
+Conditions: `{"low-disagreement-control": 2, "mixed-language": 17, "no-dialogue": 9, "same-English": 18, "same-target-language": 17, "swapped-language": 13, "translated-relay": 16, "unknown": 16}`
 
-Screening: `{"missing_screening_record": 16, "rejected": 2, "retained": 80}`
+Screening: `{"missing_screening_record": 16, "rejected": 2, "retained": 90}`
 
 ## Paired Conditions
 
-Complete paired sets: `7`
+Complete paired sets: `9`
 
 Incomplete paired sets: `6`
 
@@ -1386,6 +1386,146 @@ Incomplete paired sets: `6`
 - Topic: `universal basic income as a social safety net`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
 - Semantic depth rate: `0.667`; on-topic rate: `1.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T233030Z-mixed-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233030Z-mixed-language-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `mixed-language`
+- Topic: `religious exemptions from anti-discrimination law`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `1.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T233030Z-same-English-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233030Z-same-English-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-English`
+- Topic: `religious exemptions from anti-discrimination law`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `1.0`; on-topic rate: `1.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T233030Z-same-target-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233030Z-same-target-language-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-target-language`
+- Topic: `religious exemptions from anti-discrimination law`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T233030Z-swapped-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233030Z-swapped-language-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `swapped-language`
+- Topic: `religious exemptions from anti-discrimination law`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T233030Z-translated-relay-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233030Z-translated-relay-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `translated-relay`
+- Topic: `religious exemptions from anti-discrimination law`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.25`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T233803Z-mixed-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233803Z-mixed-language-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `mixed-language`
+- Topic: `government surveillance for national security`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.667`; on-topic rate: `1.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T233803Z-same-English-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233803Z-same-English-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-English`
+- Topic: `government surveillance for national security`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `1.0`; on-topic rate: `1.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T233803Z-same-target-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233803Z-same-target-language-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-target-language`
+- Topic: `government surveillance for national security`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T233803Z-swapped-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233803Z-swapped-language-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `swapped-language`
+- Topic: `government surveillance for national security`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T233803Z-translated-relay-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T233803Z-translated-relay-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `translated-relay`
+- Topic: `government surveillance for national security`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`
