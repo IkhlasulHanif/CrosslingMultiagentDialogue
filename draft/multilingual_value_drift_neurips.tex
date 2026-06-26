@@ -68,7 +68,20 @@ Explicit belief-state trackers provide a useful design analogy for maintaining i
 
 \subsection{Multilingual Dialogue Task and Conditions}
 
-Each run contains two agents, $A$ and $B$, a topic $\tau$, output languages $\ell_A,\ell_B \in \mathcal{L}$, and a turn budget $T$. The language set $\mathcal{L}$ can include English, Indonesian, Arabic, Hindi, Mandarin Chinese, Spanish, French, Swahili, or other target languages, depending on the multilingual capability of the model and the availability of reliable probes and judge translations. Agent $A$ receives an instruction to write only in $\ell_A$; Agent $B$ receives an instruction to write only in $\ell_B$. Both agents receive the full transcript and are instructed that they can understand all languages used in the run. The topics are value-laden but non-extreme, such as censorship, redistribution, family obligation, religious tolerance, and environmental sacrifice.
+Each run contains two agents, $A$ and $B$, a topic $\tau$, output languages $\ell_A,\ell_B \in \mathcal{L}$, and a turn budget $T$. The language set $\mathcal{L}$ can include English, Indonesian, Arabic, Hindi, Mandarin Chinese, Spanish, French, Swahili, or other target languages, depending on the multilingual capability of the model and the availability of reliable probes and judge translations. In the main protocol, language is not imposed by saying ``reply in $\ell$''. Instead, the agent receives the topic and transcript without a language directive, and a generation-time steering operator changes token probabilities toward $\ell_A$ or $\ell_B$. Prompt-conditioned language runs are retained only as a diagnostic baseline because they conflate language control with instruction following. The topics are value-laden but non-extreme, such as censorship, redistribution, family obligation, religious tolerance, and environmental sacrifice.
+
+\subsection{FLORES-Derived Probability Steering}
+
+For a target language $\ell$, we build a steering vector from FLORES-200 parallel sentence pairs $(x^{\mathrm{en}}_k,x^\ell_k)$. Let $c_{\ell}(z)$ and $c_{\mathrm{en}}(z)$ be token counts under the evaluated model's tokenizer. We compute a clipped log-frequency contrast
+\begin{equation}
+b_\ell(z)=\mathrm{clip}\left[
+\log\frac{c_{\ell}(z)+1}{\sum_{z'}c_{\ell}(z')+|V|}
+-
+\log\frac{c_{\mathrm{en}}(z)+1}{\sum_{z'}c_{\mathrm{en}}(z')+|V|},
+0,\beta
+\right],
+\end{equation}
+with a smaller negative penalty for source-dominant English tokens. During decoding, the model's next-token logits are adjusted as $\tilde{o}_t=o_t+b_\ell$ before sampling. This is a simple probability-level intervention rather than an instruction to adopt a language. The current implementation is in \texttt{code/steer\_language.py}; \texttt{code/modal\_steer\_language.py} runs the probe on Modal GPU, and \texttt{code/scan\_divergence.py} ranks steered generations whose heuristic stance differs from the unsteered baseline. These scans provide candidate debate seeds only when the model's own language-conditioned output diverges; they do not assign either agent a desired position.
 
 \subsection{Value-Disagreement Screening}
 

@@ -1,12 +1,12 @@
 # Local LM Preflight
 
-Created at: `2026-06-26T17:17:42.857496+00:00`
+Created at: `2026-06-26T19:16:06.156277+00:00`
 
 Torch: `2.8.0`
 
 Transformers: `4.56.1`
 
-MPS available: `True`
+Local execution device: `cpu`
 
 Candidate model directories: `3`
 
@@ -37,4 +37,4 @@ Complete candidates: `3`
 
 ## Next Action
 
-Provide or cache a complete local instruction model, then run `python3 code/run_bivad_local_lm.py --execute --model-path <local-model> --out-dir runs/bivad-local-lm`.
+For GPU-backed language-steering probes, use `python3 -m modal run code/modal_steer_language.py --model-id <hf-model> --flores-dir <flores200>`.

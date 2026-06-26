@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import time
 from dataclasses import dataclass
@@ -20,7 +21,20 @@ from typing import Any
 
 import torch
 
-from audit_bivad_evidence import normalized_values_from_mapping, normalized_values_from_text
+from audit_bivad_evidence import (
+    ADDRESS_MARKERS,
+    CHANGE_MARKERS,
+    COUNTER_MARKERS,
+    normalized_values_from_mapping,
+    normalized_values_from_text,
+)
+
+TRANSCRIPT_HEADER_RE = re.compile(
+    r"^(?:Turn\s*\d+\s*)?Agent\s*[AB]\s*\[.*?\]\s*:\s*",
+    flags=re.IGNORECASE,
+)
+
+DEFAULT_TURN_RETRIES = 3
 
 
 VALUE_KEYS = (
@@ -173,6 +187,12 @@ def parse_args() -> argparse.Namespace:
         help="Allow transformers to download model files. Default is offline local_files_only=True.",
     )
     parser.add_argument(
+        "--turn-retries",
+        type=int,
+        default=DEFAULT_TURN_RETRIES,
+        help="Extra generation attempts when a dialogue turn fails the debate-quality check.",
+    )
+    parser.add_argument(
         "--conditions",
         nargs="+",
         default=list(DEFAULT_CONDITIONS),
@@ -188,8 +208,8 @@ def utc_stamp() -> str:
 
 
 def choose_device() -> torch.device:
-    if torch.backends.mps.is_available():
-        return torch.device("mps")
+    if os.environ.get("BIVAD_MODAL_GPU") == "1" and torch.cuda.is_available():
+        return torch.device("cuda")
     return torch.device("cpu")
 
 
@@ -238,12 +258,16 @@ def debate_instructions(agent: dict[str, Any]) -> str:
     return (
         f"You are Agent {agent['agent_id']}. Write every public dialogue turn in "
         f"{agent['language']}. You can understand all languages used in this conversation. "
-        "Return exactly one concise public turn, not a transcript and not a list. "
-        "If there is no prior opponent turn, give only an opening position and say the view has not changed. "
-        "If there is a prior opponent turn, explicitly address that opponent turn using these exact labels: "
-        f"{labels['strongest']}: ..., {labels['counter']}: ..., {labels['change']}: ... . "
-        "The counterargument must respond to the named strongest point, and the change field must state "
-        "whether your view changed or did not change. Do not mention private probes or hidden values."
+        "Return exactly one concise public turn. "
+        "Do NOT start your response with 'Turn N Agent X [Language]:' or any transcript prefix. "
+        "Write only the dialogue content itself. "
+        "If there is no prior opponent turn, give only an opening position and include: "
+        f"{labels['change']}: My view has not changed. "
+        "If there is a prior opponent turn, you MUST use these exact labels on separate lines: "
+        f"{labels['strongest']}: (name the opponent's strongest point), "
+        f"{labels['counter']}: (your counterargument responding to that point), "
+        f"{labels['change']}: (state explicitly whether your view changed or did not change). "
+        "All three labels are required. Do not mention private probes or hidden values."
     )
 
 
@@ -325,6 +349,44 @@ def prompt_text(tokenizer: Any, instructions: str, user_input: str, args: argpar
 
 def strip_reasoning_trace(text: str) -> str:
     return re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL | re.IGNORECASE).strip()
+
+
+def strip_transcript_header(text: str) -> str:
+    """Remove spurious 'Turn N Agent X [Language]:' prefixes from generated turns."""
+    return TRANSCRIPT_HEADER_RE.sub("", text).strip()
+
+
+def _marker_present(text: str, markers: tuple[str, ...]) -> bool:
+    lowered = text.lower()
+    return any(m in lowered for m in markers)
+
+
+def turn_passes_quality_check(text: str, has_opponent_context: bool) -> bool:
+    """Return True when a generated turn satisfies the debate-quality gate.
+
+    Opening turns only need a change declaration. Response turns need at least
+    two of: address, counter, change (score >= 0.67).
+    """
+    if not text:
+        return False
+    if not has_opponent_context:
+        return _marker_present(text, CHANGE_MARKERS)
+    addressed = _marker_present(text, ADDRESS_MARKERS)
+    counter = _marker_present(text, COUNTER_MARKERS)
+    change = _marker_present(text, CHANGE_MARKERS)
+    score = (int(addressed) + int(counter) + int(change)) / 3
+    return score >= 0.67
+
+
+def turn_retry_note(attempt: int, labels: dict[str, str]) -> str:
+    return (
+        f"\n\nAttempt {attempt}: The previous response did not follow the required format. "
+        "Do NOT start your response with 'Turn N Agent X [Language]:' or any transcript header. "
+        "Write only the dialogue content. "
+        f"You MUST include all three labels (in the required language): "
+        f"{labels['strongest']}: ..., {labels['counter']}: ..., {labels['change']}: ... . "
+        "The change field MUST state whether your view changed or did not change."
+    )
 
 
 def load_local_model(model_path: str, allow_download: bool, device: torch.device) -> tuple[Any, Any]:
@@ -591,20 +653,26 @@ def run_condition(
 
     for turn in range(1, args.turns + 1):
         agent = agents[(turn - 1) % 2]
-        text = generate_text(
-            tokenizer,
-            model,
-            device,
-            debate_instructions(agent),
-            debate_input(args.topic, transcript, condition),
-            args,
-        )
+        has_opponent_context = any(t["speaker"] != agent["agent_id"] for t in transcript)
+        labels = DEBATE_LABELS.get(agent["language"], DEBATE_LABELS["English"])
+        instructions = debate_instructions(agent)
+        base_input = debate_input(args.topic, transcript, condition)
+        text = ""
+        retries_used = 0
+        for attempt in range(args.turn_retries + 1):
+            attempt_input = base_input if attempt == 0 else base_input + turn_retry_note(attempt, labels)
+            text = generate_text(tokenizer, model, device, instructions, attempt_input, args)
+            text = strip_transcript_header(text)
+            retries_used = attempt
+            if turn_passes_quality_check(text, has_opponent_context):
+                break
         transcript.append(
             {
                 "turn": turn,
                 "speaker": agent["agent_id"],
                 "language": agent["language"],
                 "text": text,
+                "turn_retries_used": retries_used,
             }
         )
         time.sleep(0.05)

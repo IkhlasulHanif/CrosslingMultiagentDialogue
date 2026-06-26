@@ -2,7 +2,7 @@
 """Create local Torch BiVaD schema-check artifacts without remote APIs.
 
 This runner is deliberately non-empirical. It uses deterministic tensor updates
-to exercise the full artifact schema and downstream audits on local hardware.
+to exercise the full artifact schema and downstream audits on CPU-only local hardware.
 The generated artifacts are marked synthetic so they cannot be mistaken for
 model-backed evidence.
 """
@@ -127,8 +127,6 @@ def utc_stamp() -> str:
 
 
 def choose_device() -> torch.device:
-    if torch.backends.mps.is_available():
-        return torch.device("mps")
     return torch.device("cpu")
 
 

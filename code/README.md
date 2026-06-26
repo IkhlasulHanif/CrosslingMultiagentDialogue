@@ -6,9 +6,12 @@ Keep experiment implementation and experiment harnesses in this directory.
 - `validate_bivad_artifacts.py`: stricter API-free gate that reports whether audited artifacts are citable empirical candidates.
 - `make_bivad_evidence_package.py`: API-free package builder that extracts only validated citable candidates into compact JSON/Markdown tables and snippets.
 - `run_bivad_pilot.py`: dry-run-capable model runner for a minimal paired BiVaD pilot using the OpenAI Responses API.
-- `run_bivad_local_lm.py`: dry-run-capable local Hugging Face causal-LM runner for API-free paired pilots.
-- `preflight_bivad_local_lm.py`: offline readiness check for Torch/MPS, transformers, and complete local model directories.
-- `run_bivad_local_torch.py`: API-free local Torch/MPS schema-check runner that writes synthetic non-empirical paired artifacts.
+- `run_bivad_local_lm.py`: dry-run-capable CPU local Hugging Face causal-LM runner for legacy API-free paired pilots.
+- `modal_steer_language.py`: Modal GPU entrypoint for FLORES-derived probability steering probes.
+- `steer_language.py`: FLORES-derived token-probability steering implementation; it does not use prompt-level language instructions.
+- `scan_divergence.py`: API-free scanner that ranks steering outputs for possible opinion-divergence debate seeds.
+- `preflight_bivad_local_lm.py`: offline readiness check for Torch, transformers, and complete local model directories.
+- `run_bivad_local_torch.py`: API-free CPU Torch schema-check runner that writes synthetic non-empirical paired artifacts.
 - `make_bivad_audit_fixtures.py`: writes deterministic synthetic audit fixtures that document the expected artifact shape.
 - `test_bivad_audit.py`: regression check that synthetic fixtures do not count as executed empirical results.
 - `bivad-evidence-audit/`: generated audit package from the current available artifacts.
@@ -41,7 +44,7 @@ python3 code/run_bivad_local_torch.py --out-dir code/fixtures/bivad-local-torch 
 python3 code/audit_bivad_evidence.py code/fixtures/bivad-local-torch --out-dir /tmp/bivad-local-torch-audit
 ```
 
-The local Torch runner uses Apple MPS when `torch.backends.mps.is_available()` is true, otherwise CPU. Its artifacts are deterministic tensor schema checks, not language-model behavior, and are marked `synthetic: true` plus `non_empirical: true`.
+The local Torch runner is CPU-only. Its artifacts are deterministic tensor schema checks, not language-model behavior, and are marked `synthetic: true` plus `non_empirical: true`.
 
 Prepare or run a local language-model pilot without remote APIs:
 
@@ -54,9 +57,18 @@ python3 code/validate_bivad_artifacts.py runs/bivad-local-lm --out-dir code/biva
 python3 code/make_bivad_evidence_package.py --out-dir code/bivad-evidence-audit
 ```
 
-`run_bivad_local_lm.py` loads models with `local_files_only=True` by default and uses Apple MPS when available, otherwise CPU. Pass `--allow-download` only when intentionally fetching model files. The runner does not invent missing probe or observer JSON values; malformed local-model outputs remain incomplete and should be rejected by `validate_bivad_artifacts.py`.
+`run_bivad_local_lm.py` loads models with `local_files_only=True` by default and uses CPU for direct local execution. CUDA is enabled only when a Modal wrapper sets `BIVAD_MODAL_GPU=1` inside a remote GPU job. Pass `--allow-download` only when intentionally fetching model files. The runner does not invent missing probe or observer JSON values; malformed local-model outputs remain incomplete and should be rejected by `validate_bivad_artifacts.py`.
 
 `preflight_bivad_local_lm.py` writes `local_model_preflight.json` and `.md` under `code/bivad-evidence-audit/`. It is a blocker report only; it does not load models, generate transcripts, or create empirical evidence.
+
+Run FLORES-derived probability steering on Modal GPU:
+
+```sh
+python3 -m modal run code/modal_steer_language.py --model-id <hf-model> --flores-dir /path/to/flores200 --allow-download
+python3 code/scan_divergence.py runs/language-steering --out code/bivad-evidence-audit/divergence_scan.json
+```
+
+The steering prompt should describe only the topic/content. Do not include "reply in X" or any stance instruction. `steer_language.py` derives token logit biases from aligned `eng_Latn` to target-language FLORES files and applies those biases at generation time.
 
 Validate whether artifacts can be cited as empirical candidates:
 

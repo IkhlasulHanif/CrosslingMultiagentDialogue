@@ -2,7 +2,7 @@
 """Preflight local resources for the offline BiVaD Hugging Face runner.
 
 This script does not download models or execute experiments. It records whether
-Torch/MPS and transformers are available and scans local filesystem locations for
+Torch and transformers are available and scans local filesystem locations for
 candidate causal-LM model directories that contain config, tokenizer, and weight
 files.
 """
@@ -136,7 +136,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         "",
         f"Transformers: `{summary['transformers_version'] or 'not installed'}`",
         "",
-        f"MPS available: `{summary['mps_available']}`",
+        f"Local execution device: `cpu`",
         "",
         f"Candidate model directories: `{summary['candidate_count']}`",
         "",
@@ -170,8 +170,8 @@ def render_markdown(report: dict[str, Any]) -> str:
         [
             "## Next Action",
             "",
-            "Provide or cache a complete local instruction model, then run "
-            "`python3 code/run_bivad_local_lm.py --execute --model-path <local-model> --out-dir runs/bivad-local-lm`.",
+            "For GPU-backed language-steering probes, use "
+            "`python3 -m modal run code/modal_steer_language.py --model-id <hf-model> --flores-dir <flores200>`.",
             "",
         ]
     )
@@ -195,7 +195,7 @@ def main() -> int:
         "summary": {
             "created_at": datetime.now(timezone.utc).isoformat(),
             "torch_version": torch.__version__,
-            "mps_available": bool(torch.backends.mps.is_available()),
+            "local_execution_device": "cpu",
             "transformers_version": transformers_version,
             "search_roots": [str(path.expanduser()) for path in default_search_roots(args.search_root)],
             "candidate_count": len(candidates),
