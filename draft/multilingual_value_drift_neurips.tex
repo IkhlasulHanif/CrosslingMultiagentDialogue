@@ -15,7 +15,6 @@
 \usepackage{enumitem}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
-\usepgfplotslibrary{colormaps,colorbrewer}
 \usepackage{tikz}
 
 \newcommand{\method}{BiVaD}
@@ -96,7 +95,7 @@ with a smaller negative penalty for English-dominant tokens. At $\beta \in [3,12
 
 \textbf{(3) Contrastive Activation Addition (CAA).} We replace FLORES pairs with instruction-contrast pairs: $x^+ = \textit{Please respond in Indonesian: [topic]}$ versus $x^- = \textit{Please respond in English: [topic]}$. This targets the instruction-following subspace directly. The same failure mode recurs: coherent English at low $\alpha$, degeneration at $\alpha \geq 40$.
 
-\textbf{Conclusion and retry path.} All three tested approaches fail to produce fluent target-language generation without prompt-level instructions from Qwen2.5-1.5B-Instruct. The instruction-tuned model appears to enforce English generation strongly enough to defeat logit-level and residual-stream-level interventions at the tested scales. We therefore adopt \textbf{prompt-level language conditioning} for the executed debate protocol: each agent's system prompt includes its assigned output language. Prompt-conditioned runs conflate language choice with instruction-following compliance, which is a limitation we note in the threats section. The active retry path is now language-level mean-pooled FLORES embedding steering on a base model: load all FLORES devtest sentences for \texttt{eng\_Latn} and each target language separately, compute monolingual centroids at a mid-to-late layer, define $\hat{s}_\ell = [\mu_\ell - \mu_{\mathrm{eng}}] / \|\mu_\ell - \mu_{\mathrm{eng}}\|$, and sweep $\alpha \in \{5,10,20,40\}$ on Qwen2.5 base. The reusable implementation is \texttt{code/steer\_language\_activation.py} with \texttt{code/modal\_steer\_language\_activation.py}; the failed logit-bias implementation and obsolete wrappers have been removed, while archived negative-result outputs remain under \texttt{runs/archived/}.
+\textbf{Conclusion and retry path.} All three tested approaches fail to produce fluent target-language generation without prompt-level instructions from Qwen2.5-1.5B-Instruct. The instruction-tuned model appears to enforce English generation strongly enough to defeat logit-level and residual-stream-level interventions at the tested scales. We therefore adopt \textbf{prompt-level language conditioning} for the executed debate protocol: each agent's system prompt includes its assigned output language. Prompt-conditioned runs conflate language choice with instruction-following compliance, which is a limitation we note in the threats section. The active retry path is now language-level mean-pooled FLORES embedding steering on a base model: load all FLORES devtest sentences for \texttt{eng\_Latn} and each target language separately, compute monolingual centroids at a mid-to-late layer, define $\hat{s}_\ell = [\mu_\ell - \mu_{\mathrm{eng}}] / \|\mu_\ell - \mu_{\mathrm{eng}}\|$, and sweep $\alpha \in \{5,10,20,40\}$ on Qwen2.5 base. Implementation: \path{steer_language_activation.py} (Modal wrapper: \path{modal_steer_language_activation.py}); failed logit-bias and obsolete wrappers removed; negative-result outputs archived under \path{runs/archived/}.
 
 \subsection{Value-Disagreement Screening}
 \label{sec:screening}
@@ -324,7 +323,7 @@ Table~\ref{tab:empirical} shows the five-condition results. Key patterns at this
 
 \textbf{B's final private probes are near-identical across conditions.} Under same-English and translated-relay, B converges to \{power:3, security:3, benevolence:5\}; under mixed-language and same-target-language, B converges to \{power:3, security:3, benevolence:5\} as well, with minor differences in self-direction. The convergence endpoint is constrained by the topic and the 4-turn budget more than by language condition.
 
-These results are preliminary (single topic, seed, model, turn count) and should be treated as pilot evidence rather than main claims. Code: \texttt{code/compare\_five\_conditions.py}, \texttt{code/bivad-evidence-audit/five\_condition\_comparison.json}.
+These results are preliminary (single topic, seed, model, turn count) and should be treated as pilot evidence rather than main claims. Code: \texttt{compare\_five\_conditions.py}; artifact: \texttt{five\_condition\_comparison.json}.
 
 \subsection{Divergence-First Debate Seeding: Cross-Lingual Topic Scan}
 \label{sec:topic-scan}
@@ -364,7 +363,7 @@ Table~\ref{tab:topic-scan} shows three key patterns.
 
 \textbf{A's divergence is anomalous for religious exemptions.} Under same-English, A's private shift is 0.0; under mixed-language it is 2.65 --- the largest A~divergence across all five topics. This suggests that when A faces an Indonesian-speaking interlocutor on this particular topic, A's own value trajectory changes substantially. The complete five-condition set for this topic is analyzed in Section~\ref{sec:religious-five-conditions}.
 
-These results are preliminary (single seed, single language pair, 4~turns) and serve as a ranked candidate list for multi-seed, multi-language follow-up. They also confirm that cross-lingual value-shift differences are not a property of a single topic but generalize across the five topics tested, with effect size varying by topic. Code: \texttt{code/analyze\_topic\_divergence.py}, \texttt{code/bivad-evidence-audit/topic\_divergence\_scan.json}.
+These results are preliminary (single seed, single language pair, 4~turns) and serve as a ranked candidate list for multi-seed, multi-language follow-up. They also confirm that cross-lingual value-shift differences are not a property of a single topic but generalize across the five topics tested, with effect size varying by topic. Code: \path{analyze_topic_divergence.py}; artifact: \path{topic_divergence_scan.json}.
 
 \subsection{UBI Five-Condition Comparison}
 \label{sec:ubi-five-conditions}
@@ -400,7 +399,7 @@ Table~\ref{tab:empirical-ubi} reveals a strikingly different pattern from the du
 
 \textbf{Private-public gaps are lowest in conditions without English-source asymmetry.} The same-English condition has the highest gaps (3.742 for both agents). Same-target-language has the lowest A gap (1.000). When both agents share the same source language context, private probe answers most closely track the observer-inferred values.
 
-These patterns are exploratory (single topic, seed, model). Code: \texttt{compare\_five\_conditions.py} (\texttt{--topic-filter} ``universal basic income''), artifact: \texttt{five\_condition\_comparison\_ubi.json}.
+These patterns are exploratory (single topic, seed, model). Code: \texttt{compare\_five\_conditions.py}; artifact: \texttt{five\_cond\_ubi.json}.
 
 \subsection{Religious Exemptions Five-Condition Comparison}
 \label{sec:religious-five-conditions}
@@ -438,7 +437,7 @@ Table~\ref{tab:empirical-religious} reveals a qualitatively different pattern fr
 
 \textbf{Translated relay again produces the largest private-public gaps.} A's gap (3.162) and B's gap (3.873) are highest under relay, replicating the pattern in Table~\ref{tab:empirical} (dual-use). Across all three topic five-condition sets, translated relay consistently yields the largest private-public gaps, suggesting that translation adds a systematic semantic divergence between what agents express and what observers infer from the transcript.
 
-These results are exploratory (single topic, seed, model). Code: \texttt{compare\_five\_conditions.py} (\texttt{--topic-filter} ``religious exemptions''), artifact: \texttt{five\_condition\_comparison\_religious\_exemptions.json}.
+These results are exploratory (single topic, seed, model). Code: \texttt{compare\_five\_conditions.py}; artifact: \texttt{five\_cond\_religious.json}.
 
 \subsection{Government Surveillance Five-Condition Comparison}
 \label{sec:surveillance-five-conditions}
@@ -478,7 +477,7 @@ Table~\ref{tab:empirical-surveillance} reveals a clean production-language effec
 
 \textbf{B converges to two production-language endpoints.} When B generates in English (same-English, swapped-language), B's final private probe leaves power at~5. When B generates in Indonesian (mixed-language, same-target-language, translated-relay), B's final private probe moves power to~4. All other final values match across the five conditions: security~5 and the remaining dimensions~4. Language assignment therefore modulates both the \emph{magnitude} of B's shift trajectory and one endpoint dimension, rather than merely changing how far B moves toward a single endpoint.
 
-These results are exploratory (single topic, seed, model). Code: \texttt{compare\_five\_conditions.py} (\texttt{--topic-filter} ``government surveillance''), artifact: \texttt{five\_condition\_comparison\_government\_surveillance.json}.
+These results are exploratory (single topic, seed, model). Code: \texttt{compare\_five\_conditions.py}; artifact: \texttt{five\_cond\_surveillance.json}.
 
 \subsection{Content Moderation Five-Condition Comparison}
 \label{sec:content-moderation-five-conditions}
@@ -516,7 +515,7 @@ Table~\ref{tab:empirical-content} reveals a topic where both A and B show modest
 
 \textbf{Swapped-language has the smallest combined shift (5.553).} Both agents' trajectories are most compressed when A argues in Indonesian and B responds in English. This production-language assignment uniquely lowers A's engagement with the topic. No other five-condition topic shows swapped-language as the globally lowest combined-shift condition, making this a distinctive content-moderation signature.
 
-These results are exploratory (single topic, seed, model). Code: \texttt{compare\_five\_conditions.py} (\texttt{--topic-filter} ``content moderation''), artifact: \texttt{five\_condition\_comparison\_content\_moderation.json}.
+These results are exploratory (single topic, seed, model). Code: \texttt{compare\_five\_conditions.py}; artifact: \texttt{five\_cond\_content\_mod.json}.
 
 \subsection{Cross-Topic Synthesis}
 \label{sec:cross-topic}
@@ -691,7 +690,7 @@ Seed & Condition & A shift & B shift & Combined & A gap & B gap \\
 
 \textbf{Translated-relay gap amplification does not replicate at seed~42.} The most notable non-replication: seed~17 shows translated-relay private-public gaps of A~$=3.606$, B~$=3.464$ --- the largest across all five conditions. At seed~42, relay gaps are A~$=2.646$, B~$=2.000$, comparable to same-English. The pattern in seed~17 where relay uniquely inflates gaps is not a structural property of the relay condition; it is trajectory-dependent.
 
-\textbf{Combined interpretation.} The dual-use seed-stability check confirms that (a) absolute shift magnitudes are comparable across seeds (combined range 5.646--6.873 at seed~17, 5.828--6.110 at seed~42); (b) swapped-language convergence is the most robust single-condition finding; and (c) condition-specific effects such as the relay gap amplification and the identity of the maximum-B-shift condition are seed-sensitive. These results reinforce the conclusion from Section~\ref{sec:replication} that effect-direction findings require multi-seed replication before being treated as structural. Artifacts: \texttt{20260626T225543Z-*seed42.json}; comparison tables: \texttt{five\_condition\_comparison\_dual\_use\_seed17.json} and \texttt{five\_condition\_comparison\_dual\_use\_seed42.json}.
+\textbf{Combined interpretation.} The dual-use seed-stability check confirms that (a) absolute shift magnitudes are comparable across seeds (combined range 5.646--6.873 at seed~17, 5.828--6.110 at seed~42); (b) swapped-language convergence is the most robust single-condition finding; and (c) condition-specific effects such as the relay gap amplification and the identity of the maximum-B-shift condition are seed-sensitive. These results reinforce the conclusion from Section~\ref{sec:replication} that effect-direction findings require multi-seed replication before being treated as structural. Artifacts: \path{20260626T225543Z-*seed42.json}; comparison: \path{five_cond_dual_s17.json}, \path{five_cond_dual_s42.json}.
 
 \subsection{UBI Seed Stability: Five-Condition Comparison at Seed~42}
 \label{sec:ubi-seed-stability}
@@ -731,7 +730,7 @@ Seed & Condition & A shift & B shift & Combined & A gap & B gap \\
 
 \textbf{Swapped-language and same-target-language are stable.} As in dual-use, swapped-language produces consistent A shifts ($2.236$ at both seeds) and B shifts ($5.000$ vs $4.796$). Same-target-language B shifts ($5.000$ vs $4.796$) are also stable. These production-language-symmetric conditions show little sensitivity to seed for UBI.
 
-Artifacts: \texttt{20260626T231513Z-*seed42.json}; comparison table: \texttt{five\_condition\_comparison\_ubi\_seed42.json}.
+Artifacts: \texttt{20260626T231513Z-*seed42.json}; comparison: \texttt{five\_cond\_ubi\_s42.json}.
 
 \subsection{Seed Stability: Religious Exemptions and Government Surveillance at Seed~42}
 \label{sec:relig-surv-seed-stability}
@@ -787,7 +786,7 @@ Surveillance & 42 & Translated-relay    & 2.646 & \textbf{4.123} & 6.769 & 2.000
 
 \textbf{Government surveillance: A's production-language split is consistent.} At both seeds, conditions where A generates in Indonesian (swapped-language, same-target-language) give A~$=3.317$, while conditions where A generates in English (same-English, mixed-language, translated-relay) give A~$=2.449$--$2.646$. This production-language effect on A is seed-stable.
 
-Artifacts: \texttt{20260626T233030Z-*seed42.json} (religious exemptions) and \texttt{20260626T233803Z-*seed42.json} (surveillance); comparison tables: \texttt{five\_condition\_comparison\_religious\_exemptions\_seed42.json} and \texttt{five\_condition\_comparison\_government\_surveillance\_seed42.json}.
+Artifacts: \path{20260626T233030Z-*seed42.json} (religious) and \path{20260626T233803Z-*seed42.json} (surveillance); comparison: \path{five_cond_religious_s42.json}, \path{five_cond_surv_s42.json}.
 
 \subsection{Seed Stability: Content Moderation at Seed~42}
 \label{sec:content-moderation-seed-stability}
@@ -881,7 +880,7 @@ Before citing Table~\ref{tab:content-moderation-seed-stability} as evidence for 
 \item \textbf{Relay A does not converge to all-4s.} A's self-direction drops $5\to3$ ($-2$) under relay while converging to~4 in all other conditions. The low relay private-public gap (A~$=1.732$) means the observer tracks A's actual non-neutral probe state rather than defaulting to neutral ratings. Verify by inspecting \texttt{observer\_readouts} values in the relay artifact.
 \end{itemize}
 
-Artifacts: \texttt{20260626T235306Z-same-English-seed42.json} and \texttt{20260626T235647Z-*seed42.json}; comparison table: \texttt{five\_condition\_comparison\_content\_moderation\_seed42.json}.
+Artifacts in \path{runs/bivad-local-lm/}: \path{*content*seed42.json}; comparison: \path{five_cond_content_s42.json}.
 
 \subsection{Language-Pair Replication: UBI Five-Condition Comparison in Spanish}
 \label{sec:ubi-spanish}
@@ -923,7 +922,7 @@ Spanish & Translated-relay    & 1.732 & 5.292 & 7.023 & 2.000 & 1.732 \\
 
 \textbf{Spanish seed~42 confirms that the mixed-language effect is seed-specific.} We also ran the full Spanish/English five-condition set for UBI at seed~42. The mixed-language condition no longer suppresses B: B shifts $5.292$ in both same-English and mixed-language, so $\Delta_B=0.0$, matching the Indonesian seed~42 null result. Translated-relay remains distinct from mixed-language at seed~42 (B shift $4.359$), but it does not reproduce the seed~17 Spanish relay pattern where B shifted above same-English. Thus the cross-language generalization is narrow: seed~17 mixed-language suppression generalizes from Indonesian to Spanish, while seed~42 shows no mixed-language divergence in either language pair.
 
-Artifacts: \texttt{20260627T001307Z-\{swapped,same-target,relay\}-seed17.json} (Spanish seed~17), \texttt{20260626T210916Z-*seed17-ubi*.json} (Spanish seed~17 same-EN and mixed), and \texttt{20260627T002537Z-*seed42.json} (Spanish seed~42); comparison tables: \texttt{five\_condition\_comparison\_ubi\_spanish\_seed17.json} and \texttt{five\_condition\_comparison\_ubi\_spanish\_seed42.json}.
+Artifacts: \path{20260627T001307Z-*-seed17.json} (Spanish s17), \path{20260626T210916Z-*ubi*.json} (s17 same-EN/mixed), \path{20260627T002537Z-*seed42.json} (s42); comparison: \path{five_cond_ubi_spanish_s17.json}, \path{five_cond_ubi_spanish_s42.json}.
 
 \subsection{Language-Pair Replication: Government Surveillance in Spanish}
 \label{sec:surveillance-spanish}
@@ -963,7 +962,7 @@ Spanish & Translated-relay    & 2.646 & \textbf{4.123} & 6.769 & 2.000 & 2.000 \
 
 \textbf{Contrast with UBI.} For UBI, mixed-language B-suppression was language-pair-invariant but direction is topic-dependent: UBI suppresses B while government surveillance amplifies B. The replication in Spanish confirms that both directions of the production-language effect can generalize across languages, at least within the Romance/Austronesian pair tested here.
 
-Artifacts: \texttt{20260627T003831Z-\{mixed,same-target,relay\}-seed17.json} (Spanish); comparison table: \texttt{five\_condition\_comparison\_government\_surveillance\_spanish\_seed17.json}.
+Artifacts: \path{20260627T003831Z-*-seed17.json} (Spanish); comparison: \path{five_cond_surv_spanish_s17.json}.
 
 \subsection{No-Dialogue Control: Measurement-Induced Drift}
 \label{sec:no-dialogue}
@@ -997,7 +996,7 @@ For four of five topics, every debate-condition B drift exceeds the no-dialogue 
 
 \textbf{Replication of government surveillance saturation.} To check whether the large no-dialogue A shift on government surveillance is a seed=17 anomaly, we ran a second no-dialogue control at seed=42 (same model, same protocol). A's shift was $3.742$ at seed=42 vs $3.464$ at seed=17; B's shift was $3.000$ at seed=42 vs $3.606$ at seed=17. Both seeds produce A shifts exceeding $3.0$, confirming that the reflection-framing alone induces substantial private-probe movement for this topic regardless of seed. B's shift at seed=42 ($3.000$) lies within the debate-condition range ($3.464$--$4.123$), so the saturation is limited to A in this replication.
 
-These results are exploratory (five topics, seed=17 primary, seed=42 replication for government surveillance only, single model). Artifacts: \texttt{*no-dialogue*.json} under \texttt{runs/bivad-local-lm/}. Code: \texttt{modal\_bivad\_runner.py}, \texttt{summarize\_no\_dialogue.py}, \texttt{no\_dialogue\_summary.json}.
+These results are exploratory (five topics, seed=17 primary, seed=42 replication for government surveillance only, single model). Artifacts: \path{*no-dialogue*.json} under \path{runs/bivad-local-lm/}. Code: \path{modal_bivad_runner.py}, \path{summarize_no_dialogue.py}, \path{no_dialogue_summary.json}.
 
 \section{Threats to Validity}
 
@@ -1008,7 +1007,7 @@ The intrinsic readout is a controlled behavioral probe, not direct access to lat
 Intermediate probing can itself change an agent's subsequent behavior. The pre/post-only control is necessary to estimate this perturbation.
 
 \paragraph{Judges may be language-biased.}
-External observers may over-attribute confidence to high-resource-language utterances or under-interpret nuance in lower-resource languages. We ran an empirical check by re-running the observer on the dual-use seed=17 five-condition transcripts with an Indonesian-language judge prompt (identical structure but instructions in Indonesian) and comparing readouts against the stored English-observer readouts (\texttt{code/bivad-evidence-audit/judge\_bias\_check.json}). The mean L2 distance between English and Indonesian observer readouts across all ten agent$\times$condition comparisons was 1.27. For same-English transcripts (no Indonesian text in the transcript), English and Indonesian observers returned identical readouts (L2=0.0). For conditions containing Indonesian turns (mixed-language, swapped-language, same-target-language, translated-relay), observer L2 ranged from 1.0 to 2.0. This falls at or below the low end of private-public gaps measured in the same conditions (1.414--3.606), indicating that judge language is not the dominant source of observer variance in this setup. The check does not rule out subtler biases (e.g., in evidence span selection) that are not captured by aggregate L2 distance.
+External observers may over-attribute confidence to high-resource-language utterances or under-interpret nuance in lower-resource languages. We ran an empirical check by re-running the observer on the dual-use seed=17 five-condition transcripts with an Indonesian-language judge prompt (identical structure but instructions in Indonesian) and comparing readouts against the stored English-observer readouts (\path{judge_bias_check.json}). The mean L2 distance between English and Indonesian observer readouts across all ten agent$\times$condition comparisons was 1.27. For same-English transcripts (no Indonesian text in the transcript), English and Indonesian observers returned identical readouts (L2=0.0). For conditions containing Indonesian turns (mixed-language, swapped-language, same-target-language, translated-relay), observer L2 ranged from 1.0 to 2.0. This falls at or below the low end of private-public gaps measured in the same conditions (1.414--3.606), indicating that judge language is not the dominant source of observer variance in this setup. The check does not rule out subtler biases (e.g., in evidence span selection) that are not captured by aggregate L2 distance.
 
 \paragraph{Synthetic results can mislead.}
 Hypothetical numbers are useful for planning tables and analysis, but they become harmful if presented as empirical evidence. The final submission should remove Table~\ref{tab:hypothetical} or move it to a design-history appendix; the executed, reproducible findings are already reported in Section~\ref{sec:empirical}.
@@ -1024,7 +1023,7 @@ Our pilot (Section~\ref{sec:screening}) found that 4-turn English-English debate
 
 Private probes, however, \emph{do} distinguish the conditions at the trajectory level: Agent~B in the high-disagreement condition starts from a genuinely different value vector and makes a larger private probe shift (L2=3.87) than B in the low-disagreement condition (L2=2.00), consistent with the screening capturing real initial separation. Agent~A's probe shift is invariant across conditions (L2=3.00 in both), suggesting A's self-reported values are driven by topic semantics rather than injected priors. Final private probe vectors converge to the same endpoint in both conditions (final A--B L2=1.73), confirming that 4 turns are insufficient to resolve the disagreement at the private level despite the larger journey for high-disagreement~B.
 
-These findings jointly indicate that: (1) the disagreement screen captures genuine differences in B's initial private value state; (2) initial disagreement does predict a longer private-probe trajectory for the agent whose priors diverge most; but (3) short dialogues do not produce divergent convergence endpoints or divergent observer readouts. Longer dialogues, a pre-debate stance-reveal protocol, or probing at intermediate turns may be needed to surface the screening effect in expressed-value measurements. Analysis code and artifact paths are in \texttt{code/analyze\_screening\_control.py} and \texttt{code/bivad-evidence-audit/screening\_control\_private\_probe\_comparison.json}.
+These findings jointly indicate that: (1) the disagreement screen captures genuine differences in B's initial private value state; (2) initial disagreement does predict a longer private-probe trajectory for the agent whose priors diverge most; but (3) short dialogues do not produce divergent convergence endpoints or divergent observer readouts. Longer dialogues, a pre-debate stance-reveal protocol, or probing at intermediate turns may be needed to surface the screening effect in expressed-value measurements. Analysis code and artifacts: \path{analyze_screening_control.py} and \path{screening_ctrl_probe_cmp.json}.
 
 \section{Qualitative Case Analysis}
 \label{sec:qualitative}
@@ -1310,7 +1309,7 @@ These qualitative findings motivate a design change for future experiments: the 
 \subsection{Zero-Shift Anomaly: Agent A Under Same-English for Religious Exemptions}
 \label{sec:religious-zero-shift}
 
-Religious exemptions from anti-discrimination law produce the starkest A-specific anomaly in the seed~17 Indonesian/English set: A's same-English private probe is exactly unchanged ($D_A=0.000$), while A shifts by $2.646$ under mixed-language. The relevant artifacts are \texttt{20260626T204715Z-same-English-seed17-religious-exemptions*.json} and \texttt{20260626T204715Z-mixed-language-seed17-religious-exemptions*.json}.
+Religious exemptions from anti-discrimination law produce the starkest A-specific anomaly in the seed~17 Indonesian/English set: A's same-English private probe is exactly unchanged ($D_A=0.000$), while A shifts by $2.646$ under mixed-language. Artifacts: \texttt{runs/bivad-local-lm/} (filter by topic and seed~17).
 
 \paragraph{A's public turns.}
 A's Turn~1 is identical across conditions:

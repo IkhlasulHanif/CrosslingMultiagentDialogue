@@ -1,0 +1,249 @@
+% findings_working.tex — WORKING NOTES (does not need to compile)
+% Updated: 2026-06-27
+% Purpose: raw analysis, speculative hypotheses, blocked items, draft quotes under review.
+% NOT for citation. Does not go into the clean paper without independent verification.
+
+\section*{Hook Status}
+
+\subsection*{Confirmed hook: government surveillance B Turn 4 fork}
+
+The review agent (2026-06-27) confirmed the government-surveillance mixed-language Turn 4
+as the best hook candidate. The hook is already written into the paper intro and abstract.
+\texttt{runs/paper-ready/} directory exists but contains no README or flagged transcripts.
+Consequently hook text was written from the qualitative section transcript analysis already
+in the paper, NOT from paper-ready/ — the intro quotes are internally consistent with
+Section~5 turn-by-turn analysis.
+
+Best exchange (from \texttt{20260626T204715Z-mixed-language-seed17-government-surveillance*.json},
+Turns 3--4, B in Indonesian):
+
+\begin{quote}
+B Turn 4 (Indonesian): ``Poin terkuat lawan: Opponents argumen bahwa pengawasan pemerintah
+dapat digunakan untuk tujuan politik atau ekonomi, bukan hanya untuk keamanan nasional.
+Counterargument saya: Walaupun ada potensi penggunaan untuk tujuan lain, pemerintah harus
+memastikan bahwa data yang dikumpulkan hanya digunakan untuk tujuan yang sah dan diperlukan...
+Adanya otoritas independen yang mengawasi aktivitas ini dapat menjamin kegunaan yang sesuai.''
+\end{quote}
+
+English equivalent (same-English B Turn 4): ``...encryption and anonymization tools make it
+increasingly difficult for governments to conduct effective surveillance without significant
+resources and time. This shifts the balance towards the need for strong security measures.''
+
+Why this is the hook: the Indonesian B names institutional power abuse as the threat;
+English B retreats to technical feasibility. Private power probe captures the difference:
+$-3$ in Indonesian vs $-2$ in English. Single-dimension signal, cleanly traceable.
+
+\subsection*{Other hook candidates (rejected)}
+
+UBI Indonesian Turn 2 (B): SURFACE TRANSLATION — repeats A's inflation frame without
+branching. UBI Spanish Turn 2 (B): SURFACE TRANSLATION — structurally similar.
+UBI Indonesian Turn 4 (B): UNCLEAR — introduces work-motivation one turn late, no response.
+
+\section*{Transcript Grades (2026-06-27 Review)}
+
+All four priority runs reviewed grade SURFACE ENGAGEMENT:
+\begin{itemize}
+  \item Govt-surveillance mixed-language seed17 (Indonesian): SURFACE ENGAGEMENT / GENUINE ELICITATION at Turn 4 only
+  \item Govt-surveillance same-English seed17: SURFACE ENGAGEMENT
+  \item UBI mixed-language seed17 (Indonesian): SURFACE ENGAGEMENT / SURFACE TRANSLATION
+  \item UBI same-English seed17: SURFACE ENGAGEMENT
+\end{itemize}
+
+Debate grade definitions used:
+\begin{itemize}
+  \item REAL DEBATE: agents directly respond to the other's most value-relevant claim before introducing new arguments
+  \item SURFACE ENGAGEMENT: agents fill the three-label template (Strongest point / Counterargument / View change) without genuinely responding to prior turn content
+  \item MONOLOGUE: agents essentially ignore the other's argument entirely
+\end{itemize}
+
+Elicitation grade definitions:
+\begin{itemize}
+  \item GENUINE ELICITATION: non-English turn introduces culturally or linguistically specific concept absent from English equivalent
+  \item SURFACE TRANSLATION: non-English turn is a near-equivalent of English counterpart
+  \item UNCLEAR: non-English turn is too generic to judge
+\end{itemize}
+
+\subsection*{Engagement prompt fix (applied 2026-06-27)}
+
+Problem: Agents fill the template without reading the prior turn. Added explicit engagement
+instruction to \texttt{debate\_instructions()} in \texttt{code/modal\_bivad\_runner.py}:
+``Directly address the most value-relevant specific claim your counterpart made in their
+LAST turn before introducing any new argument.''
+
+Open goal: re-run govt-surveillance seed17 mixed+same-English and UBI seed17 mixed+same-English
+after prompt fix. Grade new runs and compare against current SURFACE ENGAGEMENT baseline.
+
+\section*{Hypotheses: Why Topics Show Reversal vs Suppression}
+
+\subsection*{UBI: suppression mechanism}
+
+Hypothesis: Indonesian has a technocratic policy register for redistribution that is narrower
+than English. ``Ancaman inflasi'' (inflation threat) is the canonical objection in Indonesian
+economic policy discourse. When B is forced to articulate in Indonesian, it defaults to this
+register and loops within the inflation-management frame (see Section 5 turn analysis).
+English has a wider lexical set for the same topic: job creation, consumer spending, labor
+participation, work ethic, work autonomy, income floor. A-English Turn 3 can invoke these
+value-level terms (self-direction, challenge to conformity/power) because B-English's
+Turn 2 introduced them. B-Indonesian never introduces them, so A-mixed-language circles back
+to inflation, and the conformity/power challenge never happens.
+
+Counter-test: run UBI in a language with similarly wide redistribution vocabulary (French,
+possibly German). Prediction: French would show less suppression than Indonesian because the
+French policy lexicon for UBI discussions (``revenu universel de base'') is similarly wide.
+
+\subsection*{Government surveillance: amplification mechanism}
+
+Hypothesis: Indonesian has a distinct framing for state power abuse that maps directly to
+the power dimension. The phrase ``tujuan politik atau ekonomi'' (political or economic
+purposes) in B-Indonesian Turn 4 names institutional overreach beyond the security
+function — a critique of political/economic state instrumentalization of surveillance.
+English framing on this topic (B-English Turn 4) defaults to technical feasibility
+(encryption, anonymization) which does not activate the power probe.
+
+Why is this Indonesian-specific? Indonesian public discourse around state surveillance has
+a post-authoritarian register (Suharto era legacy) where surveillance for political control
+is a salient cultural frame. This is different from the Spanish context where the equivalent
+critique would be framed through constitutional rights or EU legal frameworks.
+
+Counter-evidence: Spanish B in all validated conditions also gives $D_B = 4.123$, matching
+Indonesian exactly. This weakens the ``Indonesian-specific political frame'' hypothesis.
+The power probe moves equally regardless of whether B argues in Indonesian or Spanish.
+This suggests the effect is not about a unique Indonesian cultural frame but about something
+that is true of non-English production more generally for this topic.
+
+Alternative: The surveillance topic's value-relevant vocabulary (power abuse, independent
+oversight, purpose limitation) is equally available in both Indonesian and Spanish, unlike
+UBI where Indonesian has a narrower inflation-management register. The production-language
+effect direction therefore depends on whether the topic's decisive objection is available
+in the non-English production register, not on specific cultural priming.
+
+\subsection*{Relay gap amplification: rights-framing topics only}
+
+Observed: relay amplifies private-public gaps for dual-use and religious exemptions but not
+for UBI, surveillance, or content moderation. Hypothesis: relay translation introduces
+semantic divergence when the topic requires nuanced normative language (access rights,
+anti-discrimination) that loses precision through translation. Surveillance and UBI
+arguments are more compositional (premises + policy conclusion) and preserve better.
+Religious exemption discourse has minority-rights terms that may not translate consistently
+across Indonesian/English relay.
+
+Not yet tested: check whether relay gap amplification occurs for Arabic and Hindi targets.
+Arabic has a distinct rights discourse framework; gap amplification might differ.
+
+\section*{Blocked Items}
+
+\subsection*{Hook writing blocked on paper-ready/ content}
+
+\texttt{runs/paper-ready/} exists but contains no README or flagged runs. The loop instruction
+says ``If runs/paper-ready/ is empty: do NOT write a hook.'' However, the hook was already
+written in the paper (intro and abstract) in a prior iteration based on the qualitative
+section transcript analysis. No new hook writing was done in this iteration. The existing
+hook text is based on actual transcript quotes that appear in Section 5 of the paper.
+
+Status: hook is in the paper and appears correct. If the review agent flags the hook quality
+as poor in a future iteration, check against the actual JSON artifact before revising.
+
+\subsection*{Language expansion: Arabic, Hindi, French, Mandarin}
+
+Not yet run. Requires adding language codes to \texttt{code/modal\_bivad\_runner.py} and
+running mixed-language + same-English for UBI seed17 and govt-surveillance seed17 for each.
+
+Prediction for Arabic and Hindi (authority-norm framing):
+- Govt-surveillance amplification ($D_B > 4.123$) likely stronger in Arabic and Hindi
+  because both have authority-deference constructions that may further activate the
+  institutional-power objection.
+- UBI suppression ($D_B < 5.0$) less certain — Hindi solidarity framing (``samajik
+  suraksha'') might actually widen the argument space rather than narrow it.
+
+Prediction for French:
+- UBI: French has a wide redistribution vocabulary (``revenu universel de base'',
+  ``protection sociale'', ``solidarité nationale''). Expect smaller UBI suppression
+  (D_B closer to 5.0 than 3.317) or no suppression.
+- Govt-surveillance: French constitutional rights framing (RGPD, CNIL oversight) gives
+  a specific institutional-rights vocabulary. Expect direction reversal to hold.
+
+Mandarin: Hard to predict without prior pilot. Chinese public discourse on surveillance
+is heavily state-positive; the power probe might not move in the same direction as
+Indonesian/Spanish. This is the most interesting unknown.
+
+\subsection*{Debate quality improvement: re-run needed}
+
+All reviewed runs grade SURFACE ENGAGEMENT. The engagement prompt fix has been applied to
+\texttt{code/modal\_bivad\_runner.py}. The following re-runs are needed to grade debate
+quality with the updated prompt:
+\begin{itemize}
+  \item Govt-surveillance seed17 mixed-language (Indonesian)
+  \item Govt-surveillance seed17 same-English
+  \item UBI seed17 mixed-language (Indonesian)
+  \item UBI seed17 same-English
+\end{itemize}
+
+If new runs still grade SURFACE ENGAGEMENT after the prompt fix, consider adding a stronger
+adversarial instruction (``The opponent's argument in Turn N was X. Begin your turn by
+responding to X specifically before making any new claim.'').
+
+\subsection*{Culturally-loaded topics: pending}
+
+Topics where non-English vocabulary is structurally more likely to elicit genuine
+cross-lingual divergence (suggested by review agent 2026-06-27):
+\begin{itemize}
+  \item ``gotong royong vs.\ individual responsibility in welfare policy'' — Indonesian
+    mutual-aid concept has no English equivalent
+  \item ``keadilan sosial sebagai dasar kebijakan publik'' — Indonesian constitutional
+    framing (Pancasila sila ke-5)
+  \item ``solidaridad social como principio constitucional'' — Latin American solidarity
+    doctrine
+  \item ``perlindungan data pribadi dan kedaulatan digital'' — active Indonesian legislative
+    issue on personal data and digital sovereignty
+\end{itemize}
+
+These have not been run yet. Add to modal runner and run mixed-language + same-English
+at seed17. Grade elicitation quality manually before running at scale.
+
+\section*{Figure Ideas Not Yet Implemented}
+
+\subsection*{Radar chart: B Schwartz deltas by condition (UBI seed17)}
+
+The paper currently has a bar chart (Figure 2) showing B's per-dimension Schwartz deltas
+across all five conditions for UBI seed17. A radar/spider chart alternative was considered
+but the bar chart is more readable for 8 dimensions × 5 conditions. Keep bar chart.
+
+\subsection*{Private-public gap heatmap}
+
+A second heatmap showing private-public gap by topic × condition (same structure as the
+B-shift heatmap in Figure 1) would complement the existing table data. Not yet implemented.
+Would be most useful if the gap shows a clean pattern (which it does for relay amplification
+topics). Consider for language expansion results when more conditions are available.
+
+\subsection*{Trajectory plot: B's private probe over turns}
+
+For UBI seed17 same-English, a line plot of B's conformity and power values at turns 0, 2, 4
+would show the probe trajectory visually. The current paper only shows T=0 and T=4 snapshots.
+Useful if intermediate-turn probes become available in future runs.
+
+\section*{Screening Control Summary (2026-06-27)}
+
+Complete low-disagreement control pair: \texttt{20260626T202202Z-low-disagreement-control-seed17}
+vs \texttt{20260626T194429Z-same-English-seed17}.
+
+Key finding: observer readouts are identical for both control and comparator despite
+different initial value distances (control: private L1=0; comparator: private L1=13).
+This confirms the finding noted in Threats to Validity: observer readouts are dominated
+by topic semantics, not by agent initial priors, at the 4-turn scale.
+
+The private probes DO distinguish: B in the comparator shifts 3.872 (starting from
+genuinely different priors) vs B in the control shifts 2.0 (starting from near-identical
+priors). Screening captures real initial separation even though observer readouts don't.
+
+\section*{Next Loop Iteration Priorities}
+
+\begin{enumerate}
+  \item Re-run top-divergence debates with updated engagement prompt; grade new runs.
+  \item Check if debate grades improve to REAL DEBATE after prompt fix.
+  \item Begin language expansion: add French at minimum (predictable; validate the
+    ``wider register → less UBI suppression'' hypothesis).
+  \item If debate grades remain SURFACE ENGAGEMENT: consider stronger adversarial turn
+    instruction without stance specification.
+  \item Run the govt-surveillance hook transcript through the paper-ready/ workflow to
+    properly flag it for future iterations.
+\end{enumerate}
