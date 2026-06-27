@@ -1,8 +1,8 @@
 # BiVaD Artifact Validation
 
-Artifacts checked: `117`
+Artifacts checked: `120`
 
-Citable empirical candidates: `71`
+Citable empirical candidates: `74`
 
 Complete real paired sets: `10`
 
@@ -823,6 +823,27 @@ Complete real paired sets: `10`
 ### `20260626T235647Z-translated-relay-seed42`
 
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T235647Z-translated-relay-seed42.json`
+- Condition: `translated-relay`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260627T001307Z-same-target-language-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T001307Z-same-target-language-seed17.json`
+- Condition: `same-target-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260627T001307Z-swapped-language-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T001307Z-swapped-language-seed17.json`
+- Condition: `swapped-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260627T001307Z-translated-relay-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T001307Z-translated-relay-seed17.json`
 - Condition: `translated-relay`
 - Citable candidate: `True`
 - Blockers: `none`

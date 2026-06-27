@@ -1,16 +1,16 @@
 # BiVaD Evidence Audit
 
-Created at: `2026-06-27T00:02:56.725065+00:00`
+Created at: `2026-06-27T00:16:40.669464+00:00`
 
 ## Status
 
-Audited `117` JSON artifact(s).
+Audited `120` JSON artifact(s).
 
-Real artifacts: `109`; synthetic fixtures/placeholders: `8`.
+Real artifacts: `112`; synthetic fixtures/placeholders: `8`.
 
-Conditions: `{"low-disagreement-control": 2, "mixed-language": 19, "no-dialogue": 9, "same-English": 19, "same-target-language": 19, "swapped-language": 15, "translated-relay": 18, "unknown": 16}`
+Conditions: `{"low-disagreement-control": 2, "mixed-language": 19, "no-dialogue": 9, "same-English": 19, "same-target-language": 20, "swapped-language": 16, "translated-relay": 19, "unknown": 16}`
 
-Screening: `{"missing_screening_record": 16, "rejected": 2, "retained": 99}`
+Screening: `{"missing_screening_record": 16, "rejected": 2, "retained": 102}`
 
 ## Paired Conditions
 
@@ -1652,6 +1652,48 @@ Incomplete paired sets: `6`
 - Topic: `mandatory content moderation on social media platforms`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
 - Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260627T001307Z-same-target-language-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T001307Z-same-target-language-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-target-language`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.25`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260627T001307Z-swapped-language-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T001307Z-swapped-language-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `swapped-language`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.75`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260627T001307Z-translated-relay-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T001307Z-translated-relay-seed17.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `translated-relay`
+- Topic: `universal basic income as a social safety net`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `1.0`
 - Declared language compliance rate: `1.0`
 - Complete private readouts after key recovery: `4/4`
 - Complete observer readouts after key recovery: `2/2`

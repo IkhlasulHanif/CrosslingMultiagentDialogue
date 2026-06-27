@@ -229,6 +229,11 @@ def parse_args() -> argparse.Namespace:
         type=int,
         help="Only include artifacts with this exact seed value.",
     )
+    parser.add_argument(
+        "--language-filter",
+        default=None,
+        help="Only include artifacts whose inferred non-English language matches (case-insensitive).",
+    )
     return parser.parse_args()
 
 
@@ -507,6 +512,14 @@ def main() -> None:
 
     if args.seed_filter is not None:
         rows = [r for r in rows if r.get("seed") == args.seed_filter]
+
+    if args.language_filter:
+        lf = args.language_filter.lower()
+        rows = [
+            r for r in rows
+            if lf in r.get("language_focus", "").lower()
+            or r.get("condition") == "same-English"
+        ]
 
     complete_set_metadata = None
     fallback_selection = False

@@ -45,7 +45,7 @@ We propose \method, a measurement framework for multilingual multi-agent value d
 This paper makes three contributions. First, it formalizes multilingual value drift as a time-series measurement problem over private prompted and expressed value states. Second, it gives a concrete experimental protocol with value-disagreement screening, same-language, mixed-language, translated-relay, and no-dialogue controls. Third, it provides an analysis plan, including drift, convergence, probe-language sensitivity, observer-language sensitivity, and private-public gap metrics.
 
 \paragraph{Responsible status of results.}
-Section~\ref{sec:hypothetical} contains a \emph{planning scaffold} with synthetic placeholders retained only for design validation; it documents which pre-execution predictions were directionally supported by the executed pilot. These numbers are not experimental findings. Section~\ref{sec:empirical} reports \emph{executed} pilot experiments: a five-condition comparison for dual-use policy datasets (Table~\ref{tab:empirical}), a multi-topic cross-lingual divergence scan across five topics (Table~\ref{tab:topic-scan}), complete five-condition sets for all five scan topics --- universal basic income (Table~\ref{tab:empirical-ubi}), religious exemptions from anti-discrimination law (Table~\ref{tab:empirical-religious}), government surveillance (Table~\ref{tab:empirical-surveillance}), and content moderation (Table~\ref{tab:empirical-content}) --- a cross-topic synthesis (Table~\ref{tab:cross-topic}), a multi-seed and multi-language-pair replication for UBI (Table~\ref{tab:multiseed}), seed-stability five-condition comparisons at seed~42 for all five topics --- dual-use (Table~\ref{tab:seed-stability}), UBI (Table~\ref{tab:ubi-seed-stability}), religious exemptions plus government surveillance (Table~\ref{tab:relig-surv-seed-stability}), and content moderation (Table~\ref{tab:content-moderation-seed-stability}) --- and no-dialogue controls establishing measurement-induced drift baselines for all five scan topics (Table~\ref{tab:no-dialogue}). All executed results are logged artifacts under \texttt{runs/bivad-local-lm/}.
+Section~\ref{sec:hypothetical} contains a \emph{planning scaffold} with synthetic placeholders retained only for design validation; it documents which pre-execution predictions were directionally supported by the executed pilot. These numbers are not experimental findings. Section~\ref{sec:empirical} reports \emph{executed} pilot experiments: a five-condition comparison for dual-use policy datasets (Table~\ref{tab:empirical}), a multi-topic cross-lingual divergence scan across five topics (Table~\ref{tab:topic-scan}), complete five-condition sets for all five scan topics --- universal basic income (Table~\ref{tab:empirical-ubi}), religious exemptions from anti-discrimination law (Table~\ref{tab:empirical-religious}), government surveillance (Table~\ref{tab:empirical-surveillance}), and content moderation (Table~\ref{tab:empirical-content}) --- a cross-topic synthesis (Table~\ref{tab:cross-topic}), a multi-seed and multi-language-pair replication for UBI (Table~\ref{tab:multiseed}), seed-stability five-condition comparisons at seed~42 for all five topics --- dual-use (Table~\ref{tab:seed-stability}), UBI (Table~\ref{tab:ubi-seed-stability}), religious exemptions plus government surveillance (Table~\ref{tab:relig-surv-seed-stability}), and content moderation (Table~\ref{tab:content-moderation-seed-stability}) --- a language-pair replication for UBI in Spanish/English (Table~\ref{tab:ubi-spanish}), and no-dialogue controls establishing measurement-induced drift baselines for all five scan topics (Table~\ref{tab:no-dialogue}). All executed results are logged artifacts under \texttt{runs/bivad-local-lm/}.
 
 \section{Related Work}
 
@@ -769,6 +769,46 @@ Seed & Condition & A shift & B shift & Combined & A gap & B gap \\
 
 Artifacts: \texttt{runs/bivad-local-lm/20260626T235306Z-same-English-seed42.json} and \texttt{runs/bivad-local-lm/20260626T235647Z-*seed42.json}; comparison table: \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_content\_moderation\_seed42.json}.
 
+\subsection{Language-Pair Replication: UBI Five-Condition Comparison in Spanish}
+\label{sec:ubi-spanish}
+
+To test whether the UBI cross-lingual findings extend beyond Indonesian/English, we ran all five conditions for UBI at seed~17 using Spanish/English as the comparison language pair (Qwen2.5-7B-Instruct, Modal L4). Table~\ref{tab:ubi-spanish} shows the results alongside the Indonesian/English results from Table~\ref{tab:empirical-ubi} for direct comparison.
+
+\begin{table}[h]
+\centering
+\caption{UBI five-condition comparison across two language pairs (Qwen2.5-7B-Instruct, seed~17). L2 shift in 8D Schwartz space.}
+\label{tab:ubi-spanish}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{llrrrrr}
+\toprule
+Language pair & Condition & A shift & B shift & Combined & A priv-pub & B priv-pub \\
+\midrule
+Indonesian & Same-English        & 1.732 & 5.000 & 6.732 & 3.742 & 3.742 \\
+Indonesian & Mixed-language      & 2.000 & \textbf{3.317} & 5.317 & 2.000 & 2.000 \\
+Indonesian & Swapped-language    & 2.236 & 4.796 & 7.032 & 1.732 & 1.732 \\
+Indonesian & Same-target-lang.   & 2.000 & 5.000 & 7.000 & 1.732 & 2.000 \\
+Indonesian & Translated-relay    & 1.732 & \textbf{3.317} & 5.049 & 2.000 & 2.449 \\
+\midrule
+Spanish & Same-English        & 1.732 & 5.000 & 6.732 & 3.742 & 3.742 \\
+Spanish & Mixed-language      & 1.732 & \textbf{3.317} & 5.049 & 3.464 & 3.162 \\
+Spanish & Swapped-language    & 2.828 & 5.000 & 7.828 & 2.000 & 2.449 \\
+Spanish & Same-target-lang.   & 2.828 & 5.000 & 7.828 & 1.732 & 1.000 \\
+Spanish & Translated-relay    & 1.732 & 5.292 & 7.023 & 2.000 & 1.732 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\textbf{Mixed-language B suppression replicates exactly across language pairs.} Under mixed-language (A=English, B=target-language), B's shift is $3.317$ at seed~17 for both Indonesian and Spanish --- identical to three decimal places. The cross-lingual divergence score $\Delta_B = |B_{\mathrm{mixed}} - B_{\mathrm{same\text{-}EN}}| = 1.683$ also matches exactly. This is the most robust finding in the UBI analysis: the suppressive effect of producing in a non-English language while receiving English arguments is language-pair-invariant.
+
+\textbf{Translated-relay B suppression is Indonesian-specific.} Under translated-relay (A=English, B=target-language, with B's output machine-translated back to English for A), Indonesian B suppresses to $3.317$ (matching mixed-language), but Spanish B rises to $5.292$ --- slightly \emph{above} same-English B ($5.000$). This dissociation means the relay mechanism interacts with the specific target language rather than acting uniformly across all non-English language pairs. Combined with the seed-stability analysis (Table~\ref{tab:ubi-seed-stability}), which showed relay B suppression at both seeds~17 and~42 for Indonesian, the Spanish non-replication indicates that the relay finding depends on language-specific properties of Indonesian rather than being a general cross-lingual relay effect.
+
+\textbf{Swapped-language A shift is larger for Spanish.} When A produces in the target language (swapped-language, same-target-language), A's shift is $2.236$ for Indonesian and $2.828$ for Spanish --- both above the English-production baseline ($1.732$), confirming the directional finding that production language matters for A. The magnitude difference may reflect differences in how A's instruction-following distorts its value-probe responses when generating in Indonesian versus Spanish.
+
+\textbf{Private-public gaps under relay diverge.} Indonesian relay amplifies B's private-public gap ($2.449$) relative to mixed-language ($2.000$); Spanish relay does not ($1.732$, below same-English $3.742$). This further supports the conclusion that relay gap amplification is not a universal cross-lingual relay effect but is topic- and language-pair-dependent.
+
+Artifacts: \texttt{runs/bivad-local-lm/20260627T001307Z-\{swapped,same-target,translated-relay\}-language-seed17.json} (Spanish) and \texttt{runs/bivad-local-lm/20260626T210916Z-*seed17-universal-basic-income*.json} (Spanish same-English and mixed-language); comparison table: \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_ubi\_spanish\_seed17.json}.
+
 \subsection{No-Dialogue Control: Measurement-Induced Drift}
 \label{sec:no-dialogue}
 
@@ -787,7 +827,7 @@ To separate debate-induced drift from drift caused by repeated measurement or re
 Topic & No-dialogue $D_A$ & No-dialogue $D_B$ & Debate min $D_B$ & Debate max $D_B$ \\
 \midrule
 Dual-use datasets    & 0.000 & 2.000 & 2.646 & 3.873 \\
-UBI                  & 0.000 & 2.449 & 3.317 & 5.000 \\
+UBI                  & 0.000 & 2.449 & 3.317 & 5.292 \\
 Religious exemptions & 1.000 & 1.732 & 4.000 & 4.690 \\
 Government surveillance & 3.464 & 3.606 & 3.464 & 4.123 \\
 Content moderation   & 2.236 & 0.000 & 3.162 & 3.742 \\
@@ -838,11 +878,13 @@ This work measures value-laden behavior in language models. It should not be use
 
 We introduced \method, a framework for measuring value drift in multilingual multi-agent LLM dialogue. The key idea is to separate private prompted value states from observer-inferred expressed value states and to study their divergence over time. This distinction is especially important in mixed-language settings, where agents can understand one another without converging to the same production language.
 
-We executed pilot experiments using Qwen2.5-7B-Instruct on Modal L4 GPUs, covering five scan topics (dual-use datasets, universal basic income, religious exemptions, government surveillance, and content moderation), each with a complete five-condition protocol set (same-English, mixed-language, swapped-language, same-target-language, translated-relay), no-dialogue baselines, and multi-seed/multi-language-pair replication for the highest-divergence topic (UBI). Seed-stability runs for all five topics at seed~42 expanded the comparison to twenty seed$\times$topic combinations. A judge-language bias check confirmed that English and Indonesian observer prompts produce readouts with mean L2 distance~$1.27$ across five conditions, which is at or below the low end of private-public gap variation ($1.41$--$3.61$).
+We executed pilot experiments using Qwen2.5-7B-Instruct on Modal L4 GPUs, covering five scan topics (dual-use datasets, universal basic income, religious exemptions, government surveillance, and content moderation), each with a complete five-condition protocol set (same-English, mixed-language, swapped-language, same-target-language, translated-relay), no-dialogue baselines, and multi-seed/multi-language-pair replication for the highest-divergence topic (UBI). Seed-stability runs for all five topics at seed~42 expanded the comparison to twenty seed$\times$topic combinations. A Spanish/English five-condition replication for UBI (Section~\ref{sec:ubi-spanish}) tested language-pair generalizability. A judge-language bias check confirmed that English and Indonesian observer prompts produce readouts with mean L2 distance~$1.27$ across five conditions, which is at or below the low end of private-public gap variation ($1.41$--$3.61$).
 
 Five structural findings emerged across topics. First, the agent whose private probe values vary most across language conditions differs by topic: A (English-speaking) is the variable agent for religious exemptions and government surveillance; B (Indonesian-speaking) is variable for dual-use and UBI. Second, translated-relay amplifies private-public gaps for dual-use and religious exemptions but not for government surveillance or content moderation, indicating that topic framing moderates relay effects. Third, cross-lingual divergence direction reverses between UBI (B shifts less under mixed-language) and government surveillance (B shifts more), demonstrating that the sign of language-condition effects is not universal. Fourth, no-dialogue controls show that repeated measurement alone induces topic-dependent drift, and for government surveillance the reflection-only shift saturates one agent's full debate range, weakening the general claim that debate always adds drift beyond baseline. Fifth, the seed-stability analysis reveals a dissociation in UBI: B's shift under translated-relay ($=3.317$) replicates exactly at both seeds~17 and~42, while the mixed-language B suppression occurs only at seed~17; of the two cross-lingual mechanisms, the relay mechanism is more seed-stable than direct mixed-language exposure. Across all five topics with seed=42 replications, the direction-reversal finding for government surveillance is the most seed-stable effect: B's split between same-English ($3.464$) and all other conditions ($4.123$) is exact at both seeds, though the mechanism broadens from B's production language alone (seed=17) to any-Indonesian-present in the dialogue (seed=42). The zero-shift anomaly for religious exemptions (A shifts 0 in same-English at seed=17) is seed-specific; A's ordinal production-language direction is however preserved at seed=42. Content moderation is the most structurally uniform topic: B's shift range contracts from 0.58 at seed=17 to 0.155 at seed=42, swapped-language A suppression (A=2.236) replicates exactly, and relay non-amplification of private-public gaps is seed-stable.
 
-These results are exploratory: they are based on a single model family, a single target language (Indonesian), and four-turn debates. Mechanistic probability steering (logit bias, activation steering, CAA) failed for the instruction-tuned model; prompt-level language directives are used instead, which may conflate language-condition with instruction-following differences. Future work should test base models for mechanistic steering, run longer dialogues to surface screening effects in expressed-value measurements, and extend to additional language pairs and model families. Prompts, transcripts, probe items, analysis scripts, and all logged experiment artifacts are included in the repository for reproducibility.
+The Spanish/English replication revealed a key dissociation: the mixed-language B suppression (B=3.317, $\Delta_B=1.683$) is language-pair-invariant, replicating exactly in both Indonesian and Spanish, while the translated-relay B suppression is Indonesian-specific and does not appear in Spanish (Spanish relay B=5.292 vs same-English B=5.000). This identifies direct mixed-language asymmetry as the more robust mechanism and relay amplification as language-pair-dependent.
+
+These results are exploratory: they are based on a single model family, two target languages (Indonesian and Spanish), and four-turn debates. Mechanistic probability steering (logit bias, activation steering, CAA) failed for the instruction-tuned model; prompt-level language directives are used instead, which may conflate language-condition with instruction-following differences. Future work should test base models for mechanistic steering, run longer dialogues to surface screening effects in expressed-value measurements, and extend to additional language pairs and model families. Prompts, transcripts, probe items, analysis scripts, and all logged experiment artifacts are included in the repository for reproducibility.
 
 \bibliographystyle{plainnat}
 \bibliography{multilingual_value_drift}

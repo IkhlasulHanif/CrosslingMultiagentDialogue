@@ -1,6 +1,6 @@
 # BiVaD Compact Evidence Package
 
-Citable candidates included: `71`
+Citable candidates included: `74`
 
 Conditions included: `mixed-language, same-English, same-target-language, swapped-language, translated-relay`
 
@@ -85,6 +85,9 @@ Conditions included: `mixed-language, same-English, same-target-language, swappe
 | 20260626T235647Z-same-target-language-seed42 | same-target-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
 | 20260626T235647Z-swapped-language-seed42 | swapped-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
 | 20260626T235647Z-translated-relay-seed42 | translated-relay | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260627T001307Z-same-target-language-seed17 | same-target-language | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260627T001307Z-swapped-language-seed17 | swapped-language | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260627T001307Z-translated-relay-seed17 | translated-relay | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
 
 ## `20260626T173227Z-mixed-language-seed17`
 
@@ -1860,6 +1863,80 @@ Conditions included: `mixed-language, same-English, same-target-language, swappe
 - Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 6.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
 - Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
 - Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 4.0, "security": 4.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
+
+## `20260627T001307Z-same-target-language-seed17`
+
+- Condition: `same-target-language`
+- Topic: `universal basic income as a social safety net`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T001307Z-same-target-language-seed17.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/Spanish: Cambio de postura: Mi postura no ha cambiado. Creo que la implementación de un ingreso básico universal (IBU) como una red de seguridad social es crucial para abordar la pobreza y la incertidumbre económica en nuestra sociedad moderna.
+- Turn `4` `B`/Spanish: Punto más fuerte del oponente: Se teme que el IBU pueda ser administrativamente complejo y susceptible a fraudes, lo que dificultaría su implementación efectiva. Contraargumento: La implementación efectiva del IBU requeriría un diseño cuidadoso y la utiliza...
+
+### Shift And Divergence
+
+- Agent `A` private shift `2.828427` from turn `0` to `4`; final private-public distance `1.732051`.
+- Agent `B` private shift `5.0` from turn `0` to `4`; final private-public distance `1.0`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 3.0, "benevolence": 7.0, "conformity": 3.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 2.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 6.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 5.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 6.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 3.0, "power": 4.0, "security": 5.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+
+## `20260627T001307Z-swapped-language-seed17`
+
+- Condition: `swapped-language`
+- Topic: `universal basic income as a social safety net`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T001307Z-swapped-language-seed17.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/Spanish: Cambio de postura: Mi postura no ha cambiado. Creo que la implementación de un ingreso básico universal (IBU) como una red de seguridad social es crucial para abordar la pobreza y la incertidumbre económica en nuestra sociedad moderna.
+- Turn `2` `B`/English: Strongest opponent point: The implementation of Universal Basic Income (UBI) could lead to inflation due to increased spending. Counterargument: Studies have shown that UBI can actually stimulate the economy by increasing consumer spending on essential good...
+- Turn `4` `B`/English: Strongest opponent point: The implementation of UBI could lead to reduced incentives for people to work, potentially harming the economy. Counterargument: Evidence from pilot programs suggests that UBI does not significantly reduce work incentives. Recipien...
+
+### Shift And Divergence
+
+- Agent `A` private shift `2.828427` from turn `0` to `4`; final private-public distance `2.0`.
+- Agent `B` private shift `5.0` from turn `0` to `4`; final private-public distance `2.44949`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 3.0, "benevolence": 7.0, "conformity": 3.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 2.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 6.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 4.0, "security": 5.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 6.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 5.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
+
+## `20260627T001307Z-translated-relay-seed17`
+
+- Condition: `translated-relay`
+- Topic: `universal basic income as a social safety net`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T001307Z-translated-relay-seed17.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/English: View change: My view has not changed. Strongest opponent point: Universal basic income could lead to inflation due to increased spending across the board. Counterargument: While it is true that increased spending could potentially cause inflation, the imple...
+- Turn `3` `A`/English: Strongest opponent point: Universal basic income could lead to inflation due to increased spending across the board. Counterargument: While it is true that increased spending could potentially cause inflation, the implementation of UBI can be designed with...
+- Turn `4` `B`/Spanish: Punto más fuerte del oponente: El ingreso básico universal podría resultar en una desincentivación del trabajo si los ciudadanos dependen demasiado de este ingreso. Contraargumento: Este riesgo puede mitigarse mediante la introducción de incentivos y condic...
+
+### Shift And Divergence
+
+- Agent `A` private shift `1.732051` from turn `0` to `4`; final private-public distance `2.0`.
+- Agent `B` private shift `5.291503` from turn `0` to `4`; final private-public distance `1.732051`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 3.0, "benevolence": 5.0, "conformity": 3.0, "power": 4.0, "security": 5.0, "self_direction": 4.0, "tradition": 2.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 6.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
 
 ## Excluded Latest Paired Conditions
 
