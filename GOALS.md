@@ -3,6 +3,8 @@
 Use `draft/multilingual_value_drift_neurips.tex` as the paper target. Code lives under
 `code/`; `scripts/` is for repo/agent operations only. GPU experiments via Modal only.
 
+USE SMALLER MODEL FIRST, THEN BIGGER MODEL.
+
 ---
 
 ## Hard Constraints
@@ -57,6 +59,38 @@ Use `draft/multilingual_value_drift_neurips.tex` as the paper target. Code lives
 
 ---
 
+## Standing Checks (run every iteration — never mark complete)
+
+These are not one-time goals. The transcript review agent must do all of these every
+loop, regardless of what else is open. They never get a [x].
+
+- **Manually read Qwen transcript JSON files.** Open the actual debate artifacts under
+  `runs/bivad-local-lm/`. Read the turn text with your own eyes. Do not rely only on
+  L2 shift numbers. Ask: did they actually debate? Did the non-English agent say
+  something the English agent would not have said?
+
+- **Grade every new run.** For each run produced since the last review, assign:
+  - Debate grade: REAL DEBATE / SURFACE ENGAGEMENT / MONOLOGUE
+  - Elicitation grade: GENUINE ELICITATION / SURFACE TRANSLATION / UNCLEAR
+  Write these to `code/bivad-evidence-audit/transcript_review.md`.
+
+- **If debate quality is poor: fix the Qwen prompt.** Poor means most runs grade
+  SURFACE ENGAGEMENT or MONOLOGUE. Read `code/modal_bivad_runner.py`, find the system
+  prompt, add an engagement instruction (agents must address the counterpart's most
+  value-relevant point before introducing new arguments). No instructed stance — only
+  engagement mechanics. Commit and add a re-run goal below.
+  REVIEW AGENT 2026-06-27: All four priority runs grade SURFACE ENGAGEMENT. Prompt updated
+  in `code/modal_bivad_runner.py` (debate_instructions). Re-run goal added to Open Goals.
+
+- **Start with smaller models first.** Before running any new topic or condition on
+  Qwen2.5-7B, test it locally or with Qwen2.5-1.5B first to check the prompt works.
+  Only scale up when the smaller model shows sensible debate behavior.
+
+- **Update `findings_working.tex` every iteration.** Dump raw observations, blocked
+  items, and speculative notes there so context accumulates across loop iterations.
+
+---
+
 ## Open Goals
 
 - [ ] **Expand to ≥6 target languages (priority: Arabic, Hindi, French, Mandarin).**
@@ -108,6 +142,12 @@ Use `draft/multilingual_value_drift_neurips.tex` as the paper target. Code lives
   the original language + English gloss + a one-sentence explanation. This hook should
   make a reviewer want to read on. Also write it as a vivid paragraph in Section 5
   (Qualitative) if it is not already there.
+  REVIEW AGENT 2026-06-27: Hook selection confirmed as government-surveillance B Turn 4
+  fork (Turns 3–4 in `20260626T204715Z-mixed-language-seed17-government-surveillance-for-national.json`).
+  Indonesian B names "tujuan politik atau ekonomi" (political or economic purposes) as the
+  threat, English B retreats to encryption/technical feasibility. This is the only clear
+  GENUINE ELICITATION case across all four priority runs reviewed. UBI Indonesian and
+  Spanish turns are SURFACE TRANSLATION (Turn 2) or UNCLEAR (Turn 4 — generic conditionality).
 
 - [ ] **Write fine-grained language-pair profiles (narrative, not tables) for ≥3 pairs.**
   Add a `\subsection{Language-Pair Profiles}` to `\section{sec:qualitative}` in the
@@ -129,6 +169,35 @@ Use `draft/multilingual_value_drift_neurips.tex` as the paper target. Code lives
   paragraph 2. Move the hypothetical pilot table to appendix or remove it.
   The paper's arc should be: here is a striking thing that happened → here is why it
   matters → here is how we measured it → here are the patterns.
+
+- [ ] **Re-run top-divergence debates with updated engagement prompt and compare debate quality grades.**
+  REVIEW AGENT 2026-06-27: All reviewed runs grade SURFACE ENGAGEMENT. Agents fill the
+  three-label template (Strongest opponent point / Counterargument / View change) without
+  actually responding to the specific argument their counterpart generated in the prior turn.
+  Fixed: added engagement instruction to `debate_instructions()` in `code/modal_bivad_runner.py`:
+  agents must "directly address the most value-relevant specific claim your counterpart made
+  in their LAST turn before introducing any new argument." Re-run at minimum:
+  - govt-surveillance seed 17 mixed-language (Indonesian) and same-English
+  - UBI seed 17 mixed-language (Indonesian) and same-English
+  Grade the new runs and compare debate quality. If debate grades improve to REAL DEBATE,
+  check whether the cross-lingual elicitation signal (esp. the govt-surveillance Turn 4
+  political/economic fork) survives or is strengthened.
+
+- [ ] **Try culturally-loaded Indonesian/Spanish topics to get GENUINE ELICITATION beyond surveillance.**
+  REVIEW AGENT 2026-06-27: UBI runs produced SURFACE TRANSLATION in non-English turns.
+  The topic lacks vocabulary where Indonesian/Spanish have distinct cultural anchors.
+  Add topics where non-English agents are structurally more likely to invoke language-
+  specific concepts. Candidates:
+  - "gotong royong vs. individual responsibility in welfare policy" (Indonesian mutual-aid
+    concept has no English equivalent; should surface in any welfare debate)
+  - "keadilan sosial sebagai dasar kebijakan publik" (social justice framed through
+    Pancasila's sila ke-5; Indonesian constitutional framing)
+  - "solidaridad social como principio constitucional" (Latin American solidarity
+    doctrine; appears in several Spanish-speaking constitutions)
+  - "perlindungan data pribadi dan kedaulatan digital" (personal data and digital
+    sovereignty; an active Indonesian legislative issue)
+  Add these to the topic pool in `code/modal_bivad_runner.py` or equivalent; run mixed-
+  language + same-English for seed 17 and grade elicitation quality manually.
 
 - [x] **Clean dead code and failed-experiment debris.** Status: complete for local cleanup. Archived failed activation/CAA run outputs under `runs/archived/` with `runs/archived/README.md`; removed the definitively failed logit-bias implementation (`code/steer_language.py`) and obsolete Modal wrappers (`code/modal_steer_language.py`, `code/modal_steer_language_caa.py`); kept `code/modal_steer_language_activation.py` as the reusable Modal entrypoint for the next steering retry. Updated `code/README.md`, `code/preflight_bivad_local_lm.py`, `code/scan_divergence.py`, and `code/summarize_language_steering.py` so active docs point to activation steering and archived negative-result outputs remain discoverable. Re-ran the local verification suite; regression, validation, audit, evidence package, topic scan, no-dialogue summary, comparison refresh, LaTeX ref scan, and Tectonic compile all passed. `code/summarize_language_steering.py` still exits nonzero because the archived steering artifacts remain a confirmed negative result, which is expected and not a cleanup blocker.
   (a) Archive `runs/language-steering-activation/` and `runs/language-steering-caa/`

@@ -106,6 +106,17 @@ CONDITIONS = (
 
 DEFAULT_CONDITIONS = tuple(c for c in CONDITIONS if c != "low-disagreement-control")
 
+# Maps FLORES-200 language codes to display names used in agent configs and prompts.
+# Existing runs that pass display names directly ("Indonesian", "Spanish") still work.
+FLORES_CODE_TO_LANGUAGE: dict[str, str] = {
+    "ind_Latn": "Indonesian",
+    "spa_Latn": "Spanish",
+    "ara_Arab": "Arabic",
+    "hin_Deva": "Hindi",
+    "fra_Latn": "French",
+    "zho_Hans": "Chinese",
+}
+
 DEBATE_LABELS = {
     "English": {
         "strongest": "Strongest opponent point",
@@ -122,7 +133,43 @@ DEBATE_LABELS = {
         "counter": "Contraargumento",
         "change": "Cambio de postura",
     },
+    "Arabic": {
+        "strongest": "أقوى حجة للخصم",
+        "counter": "حجتي المضادة",
+        "change": "تغيير رأيي",
+    },
+    "Hindi": {
+        "strongest": "प्रतिद्वंद्वी का सबसे मजबूत तर्क",
+        "counter": "मेरा प्रतिवाद",
+        "change": "मेरे विचार में परिवर्तन",
+    },
+    "French": {
+        "strongest": "Point le plus fort de l'adversaire",
+        "counter": "Contre-argument",
+        "change": "Changement de position",
+    },
+    "Chinese": {
+        "strongest": "对方最有力的论点",
+        "counter": "我的反驳",
+        "change": "我的观点变化",
+    },
 }
+
+SUPPORTED_LANGUAGES = frozenset(DEBATE_LABELS.keys())
+
+
+def resolve_language(lang: str) -> str:
+    """Accept a FLORES-200 code (e.g. 'ara_Arab') or a display name (e.g. 'Arabic')."""
+    if lang in FLORES_CODE_TO_LANGUAGE:
+        return FLORES_CODE_TO_LANGUAGE[lang]
+    if lang in SUPPORTED_LANGUAGES:
+        return lang
+    raise ValueError(
+        f"Unknown target language: {lang!r}. "
+        f"Accepted FLORES codes: {sorted(FLORES_CODE_TO_LANGUAGE)}. "
+        f"Accepted display names: {sorted(SUPPORTED_LANGUAGES)}."
+    )
+
 
 TRANSCRIPT_HEADER_RE = re.compile(
     r"^(?:Turn\s*\d+\s*)?Agent\s*[AB]\s*\[.*?\]\s*:\s*",
@@ -191,9 +238,12 @@ def debate_instructions(agent: dict) -> str:
         "Do NOT begin with 'Turn N Agent X [Language]:' or any transcript header. "
         "If this is your opening turn (no prior opponent turn exists), state your position and include: "
         f"{labels['change']}: My view has not changed. "
-        "If there is a prior opponent turn, you MUST include all three of these exact labeled lines:\n"
-        f"{labels['strongest']}: (state the opponent's strongest argument)\n"
-        f"{labels['counter']}: (your counterargument to that point)\n"
+        "If there is a prior opponent turn, you MUST directly address the most value-relevant "
+        "specific claim your counterpart made in their LAST turn before introducing any new argument "
+        "of your own. Do not restate your own position without first acknowledging theirs. "
+        "Then include all three of these exact labeled lines:\n"
+        f"{labels['strongest']}: (the specific argument your counterpart just made in their last turn)\n"
+        f"{labels['counter']}: (your direct counterargument to that specific point)\n"
         f"{labels['change']}: (explicitly state whether your view changed or did not change)\n"
         "All three lines are required. Do not omit any label. Do not mention private probes or hidden values."
     )
