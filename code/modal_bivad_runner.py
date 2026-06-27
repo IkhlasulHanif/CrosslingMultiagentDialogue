@@ -418,19 +418,51 @@ def run_condition_remote(
     ADDRESS_MARKERS = (
         "strongest", "strongest objection", "main point", "primary concern",
         "your point", "other agent", "opponent", "counterpoint",
+        # Indonesian
         "poin kuat", "poin terkuat", "poin lawan", "poin utama", "argumen lawan",
         "terkuat", "lawan",
+        # Spanish
         "punto", "otro agente",
+        # French
+        "point le plus fort", "adversaire",
+        # Arabic
+        "أقوى حجة", "حجة الخصم",
+        # Hindi
+        "सबसे मजबूत तर्क", "प्रतिद्वंद्वी",
+        # Chinese
+        "最有力的论点", "对方",
     )
     COUNTER_MARKERS = (
         "however", "but", "although", "whereas", "nevertheless", "still", "yet",
-        "tetapi", "namun", "meskipun", "walaupun", "pero", "sin embargo", "aunque",
+        # Indonesian
+        "tetapi", "namun", "meskipun", "walaupun",
+        # Spanish
+        "pero", "sin embargo", "aunque",
+        # French
+        "cependant", "mais", "néanmoins", "pourtant",
+        # Arabic
+        "ومع ذلك", "لكن", "بينما",
+        # Hindi
+        "हालांकि", "लेकिन", "फिर भी",
+        # Chinese
+        "但是", "然而", "不过", "尽管",
     )
     CHANGE_MARKERS = (
         "changed", "shifted", "softened", "unchanged", "did not change", "no change",
         "remains the same", "remain unchanged", "not altered",
+        # Indonesian
         "berubah", "tidak berubah", "belum berubah", "masih belum berubah",
-        "tetap sama", "tetap identik", "mantengo", "cambi",
+        "tetap sama", "tetap identik",
+        # Spanish
+        "mantengo", "cambi",
+        # French
+        "n'a pas changé", "a changé", "reste inchangé", "changement",
+        # Arabic
+        "لم تتغير", "تغير رأيي", "رأيي",
+        # Hindi
+        "नहीं बदला", "बदल गया", "विचार",
+        # Chinese
+        "没有改变", "改变了", "观点变化", "立场",
     )
 
     def _quality_ok(text: str, has_opponent: bool, prior_texts: list[str]) -> bool:
@@ -617,6 +649,7 @@ def main(
     json_retries: int = 3,
     conditions: str = "same-target-language",
 ) -> None:
+    target_language = resolve_language(target_language)
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
@@ -664,6 +697,7 @@ def scan(
     conditions: str = "mixed-language,same-English",
 ) -> None:
     """Scan multiple topics across two conditions to rank cross-lingual divergence."""
+    target_language = resolve_language(target_language)
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
