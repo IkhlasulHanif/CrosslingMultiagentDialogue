@@ -81,32 +81,56 @@ def compute_steering_vector(
     layer_idx: int,
     device: torch.device,
     max_sentences: int = 0,
+    mode: str = "pairs",
 ) -> tuple[torch.Tensor, dict[str, Any]]:
-    """Return (unit-norm steering vector, metadata)."""
-    if max_sentences > 0:
-        source_sentences = source_sentences[:max_sentences]
-        target_sentences = target_sentences[:max_sentences]
-    src_states: list[torch.Tensor] = []
-    tgt_states: list[torch.Tensor] = []
+    """Return (unit-norm steering vector, metadata).
 
-    for sentence in source_sentences:
-        src_states.append(_sentence_hidden_state(model, tokenizer, sentence, layer_idx, device))
-    for sentence in target_sentences:
-        tgt_states.append(_sentence_hidden_state(model, tokenizer, sentence, layer_idx, device))
+    mode='pairs': treat source/target as parallel pairs; truncate both to max_sentences;
+        direction = mean(tgt_hidden_i - src_hidden_i) over pairs.
+    mode='centroids': treat each language pool independently (monolingual); ignore
+        max_sentences (use all loaded sentences); direction = mean(tgt_pool) - mean(src_pool).
+    Due to linearity the two modes are numerically equivalent when pools have the same
+    sentences, but 'centroids' deliberately uses the full monolingual devtest set without
+    requiring parallel alignment.
+    """
+    if mode == "pairs":
+        if max_sentences > 0:
+            source_sentences = source_sentences[:max_sentences]
+            target_sentences = target_sentences[:max_sentences]
+        n = min(len(source_sentences), len(target_sentences))
+        source_sentences = source_sentences[:n]
+        target_sentences = target_sentences[:n]
+        if n == 0:
+            raise ValueError("source and target FLORES sentence pools must both be non-empty")
+        pair_diffs: list[torch.Tensor] = []
+        for src_sent, tgt_sent in zip(source_sentences, target_sentences):
+            src_h = _sentence_hidden_state(model, tokenizer, src_sent, layer_idx, device)
+            tgt_h = _sentence_hidden_state(model, tokenizer, tgt_sent, layer_idx, device)
+            pair_diffs.append(tgt_h - src_h)
+        raw_sv = torch.stack(pair_diffs).mean(0)
+        src_count = tgt_count = n
+    else:  # centroids
+        if not source_sentences or not target_sentences:
+            raise ValueError("source and target FLORES sentence pools must both be non-empty")
+        src_states = [
+            _sentence_hidden_state(model, tokenizer, s, layer_idx, device)
+            for s in source_sentences
+        ]
+        tgt_states = [
+            _sentence_hidden_state(model, tokenizer, s, layer_idx, device)
+            for s in target_sentences
+        ]
+        raw_sv = torch.stack(tgt_states).mean(0) - torch.stack(src_states).mean(0)
+        src_count = len(src_states)
+        tgt_count = len(tgt_states)
 
-    if not src_states or not tgt_states:
-        raise ValueError("source and target FLORES sentence pools must both be non-empty")
-
-    raw_sv = torch.stack(tgt_states).mean(0) - torch.stack(src_states).mean(0)
     raw_norm = float(raw_sv.norm().item())
-    if raw_norm > 1e-8:
-        unit_sv = raw_sv / raw_norm
-    else:
-        unit_sv = raw_sv
+    unit_sv = raw_sv / raw_norm if raw_norm > 1e-8 else raw_sv
 
     meta = {
-        "source_sentence_count": len(src_states),
-        "target_sentence_count": len(tgt_states),
+        "mode": mode,
+        "source_sentence_count": src_count,
+        "target_sentence_count": tgt_count,
         "layer_idx": layer_idx,
         "raw_vector_norm": round(raw_norm, 4),
     }
@@ -233,6 +257,16 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--top-p", type=float, default=0.9)
     p.add_argument("--allow-download", action="store_true")
     p.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto")
+    p.add_argument(
+        "--mode",
+        choices=["pairs", "centroids"],
+        default="pairs",
+        help=(
+            "'pairs' (default): treat FLORES sentences as parallel pairs, pairwise subtraction. "
+            "'centroids': load all devtest sentences for each language independently (monolingual), "
+            "compute language-level centroids, direction = target_centroid - english_centroid."
+        ),
+    )
     return p.parse_args()
 
 
@@ -286,10 +320,10 @@ def main() -> int:
         tgt_sents = read_flores_file(flores_dir, args.split, target)
 
         primary_layer = active_layers[0]
-        max_desc = "all" if args.max_pairs <= 0 else str(args.max_pairs)
+        max_desc = "all" if args.max_pairs <= 0 or args.mode == "centroids" else str(args.max_pairs)
         print(
             f"\nComputing steering vector: {args.source_lang} -> {target}  "
-            f"primary_layer={primary_layer}  active_layers={active_layers}  "
+            f"mode={args.mode}  primary_layer={primary_layer}  active_layers={active_layers}  "
             f"sentences_per_language={max_desc}"
         )
         sv, sv_meta = compute_steering_vector(
@@ -300,6 +334,7 @@ def main() -> int:
             layer_idx=primary_layer,
             device=device,
             max_sentences=args.max_pairs,
+            mode=args.mode,
         )
         sv_meta["source_lang"] = args.source_lang
         sv_meta["target_lang"] = target
@@ -357,12 +392,17 @@ def main() -> int:
         "split": args.split,
         "max_pairs": args.max_pairs,
         "num_model_layers": num_layers,
+        "mode": args.mode,
         "method": (
-            "FLORES-200 monolingual sentence pools define language-level centroids: "
-            "mean_pooled(target_hidden_states) - mean_pooled(source_hidden_states) "
-            "at primary_layer, normalized to unit norm. English is the default source "
-            "anchor. During generation, alpha * steering_vector is added to the "
-            "residual stream at each active_layer via forward hooks. "
+            "FLORES-200 language-level centroids (mode=centroids): all devtest sentences "
+            "for each language loaded independently (monolingual); "
+            "direction = mean_pooled(target) - mean_pooled(english), unit-normalized."
+            if args.mode == "centroids" else
+            "FLORES-200 parallel pairs (mode=pairs): pairwise subtraction "
+            "mean(tgt_hidden_i - src_hidden_i) at primary_layer, unit-normalized."
+        ) + (
+            " English is the default source anchor. "
+            "alpha * steering_vector is added to the residual stream at each active_layer via forward hooks. "
             "No language instructions appear in the content prompts."
         ),
         "steering_vector_metadata": sv_metadata,
