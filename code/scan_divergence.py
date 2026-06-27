@@ -2,7 +2,7 @@
 """Rank language-steered generations for possible opinion divergence seeds.
 
 This is an artifact scanner, not a model runner. It consumes JSON from
-`steer_language.py` and flags prompts where baseline and steered generations
+saved steering probes and flags prompts where baseline and steered generations
 move in different heuristic stance directions. These are candidate seeds for
 manual inspection or later BiVaD runs; the script does not instruct a stance and
 does not fabricate agent priors.

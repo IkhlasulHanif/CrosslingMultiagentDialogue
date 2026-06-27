@@ -171,7 +171,7 @@ def render_markdown(report: dict[str, Any]) -> str:
             "## Next Action",
             "",
             "For GPU-backed language-steering probes, use "
-            "`python3 -m modal run code/modal_steer_language.py --model-id <hf-model> --flores-dir <flores200>`.",
+            "`python3 -m modal run code/modal_steer_language_activation.py --model-id <hf-base-model>`.",
             "",
         ]
     )

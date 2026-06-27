@@ -21,6 +21,8 @@ DEFAULT_INPUTS = (
     "runs/language-steering",
     "runs/language-steering-activation",
     "runs/language-steering-caa",
+    "runs/archived/language-steering-activation",
+    "runs/archived/language-steering-caa",
 )
 
 TARGET_STOPWORD_MIN = 3

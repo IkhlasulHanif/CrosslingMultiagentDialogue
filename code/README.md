@@ -8,8 +8,9 @@ Keep experiment implementation and experiment harnesses in this directory.
 - `summarize_no_dialogue.py`: summarizes no-dialogue measurement-drift baselines and joins them to topic-specific five-condition debate ranges.
 - `run_bivad_pilot.py`: legacy dry-run-capable model runner for a minimal paired BiVaD pilot using the OpenAI Responses API; not used for the current Modal-only empirical path.
 - `run_bivad_local_lm.py`: dry-run-capable CPU local Hugging Face causal-LM runner for legacy API-free paired pilots.
-- `modal_steer_language.py`: Modal GPU entrypoint for FLORES-derived probability steering probes.
-- `steer_language.py`: FLORES-derived token-probability steering implementation; it does not use prompt-level language instructions.
+- `modal_steer_language_activation.py`: Modal GPU entrypoint for FLORES-derived activation steering probes.
+- `steer_language_activation.py`: FLORES-derived activation steering implementation; the active retry path should use language-level mean-pooled FLORES centroids on base models.
+- `summarize_language_steering.py`: API-free validation gate for saved steering artifacts, including archived negative-result runs.
 - `scan_divergence.py`: API-free scanner that ranks steering outputs for possible opinion-divergence debate seeds.
 - `preflight_bivad_local_lm.py`: offline readiness check for Torch, transformers, and complete local model directories.
 - `run_bivad_local_torch.py`: API-free CPU Torch schema-check runner that writes synthetic non-empirical paired artifacts.
@@ -62,14 +63,14 @@ python3 code/make_bivad_evidence_package.py --out-dir code/bivad-evidence-audit
 
 `preflight_bivad_local_lm.py` writes `local_model_preflight.json` and `.md` under `code/bivad-evidence-audit/`. It is a blocker report only; it does not load models, generate transcripts, or create empirical evidence.
 
-Run FLORES-derived probability steering on Modal GPU:
+Run FLORES-derived activation steering on Modal GPU:
 
 ```sh
-python3 -m modal run code/modal_steer_language.py --model-id <hf-model> --flores-dir /path/to/flores200 --allow-download
-python3 code/scan_divergence.py runs/language-steering --out code/bivad-evidence-audit/divergence_scan.json
+python3 -m modal run code/modal_steer_language_activation.py --model-id <hf-base-model> --source-lang eng_Latn --target-langs ind_Latn,spa_Latn
+python3 code/scan_divergence.py runs/language-steering-activation --out code/bivad-evidence-audit/divergence_scan.json
 ```
 
-The steering prompt should describe only the topic/content. Do not include "reply in X" or any stance instruction. `steer_language.py` derives token logit biases from aligned `eng_Latn` to target-language FLORES files and applies those biases at generation time.
+The steering prompt should describe only the topic/content. Do not include "reply in X" or any stance instruction. The old token logit-bias implementation was removed after failing validation; archived failed outputs live under `runs/archived/`.
 
 Validate whether artifacts can be cited as empirical candidates:
 
