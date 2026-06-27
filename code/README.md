@@ -8,6 +8,7 @@ Keep experiment implementation and experiment harnesses in this directory.
 - `summarize_no_dialogue.py`: summarizes no-dialogue measurement-drift baselines and joins them to topic-specific five-condition debate ranges.
 - `run_bivad_pilot.py`: legacy dry-run-capable model runner for a minimal paired BiVaD pilot using the OpenAI Responses API; not used for the current Modal-only empirical path.
 - `run_bivad_local_lm.py`: dry-run-capable CPU local Hugging Face causal-LM runner for legacy API-free paired pilots.
+- `modal_bivad_runner.py`: Modal GPU debate runner with entrypoints for single conditions, scans, language expansion, engagement-prompt reruns, and culturally loaded topic scans.
 - `modal_steer_language_activation.py`: Modal GPU entrypoint for FLORES-derived activation steering probes.
 - `steer_language_activation.py`: FLORES-derived activation steering implementation; the active retry path uses language-level mean-pooled FLORES devtest centroids on base models, with English as anchor.
 - `summarize_language_steering.py`: API-free validation gate for saved steering artifacts, including archived negative-result runs.
@@ -71,6 +72,16 @@ python3 code/scan_divergence.py runs/language-steering-activation --out code/biv
 ```
 
 By default the Modal entrypoint targets `Qwen/Qwen2.5-7B`, layer 22, all FLORES devtest sentences per language, and alpha sweep `5,10,20,40`. The steering prompt should describe only the topic/content. Do not include "reply in X" or any stance instruction. The old token logit-bias implementation was removed after failing validation; archived failed outputs live under `runs/archived/`.
+
+Run the pending Modal debate batches from `GOALS.md`:
+
+```sh
+python3 -m modal run code/modal_bivad_runner.py::rerun_top_divergence
+python3 -m modal run code/modal_bivad_runner.py::expansion
+python3 -m modal run code/modal_bivad_runner.py::cultural_topics
+```
+
+`rerun_top_divergence` runs Indonesian mixed-language and same-English for UBI plus government surveillance at seed 17 after the engagement-prompt change. `expansion` runs Arabic, Hindi, French, and Chinese mixed-language plus same-English for UBI and government surveillance at seed 17. `cultural_topics` runs the Indonesian/Spanish culturally loaded topic scan. All three write batch-tagged JSON artifacts and a manifest under `runs/bivad-local-lm/`; manually review transcripts before promoting any new result into the paper.
 
 Validate whether artifacts can be cited as empirical candidates:
 

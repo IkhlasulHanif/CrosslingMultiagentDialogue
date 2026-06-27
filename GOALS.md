@@ -94,6 +94,17 @@ loop, regardless of what else is open. They never get a [x].
 ## Open Goals
 
 - [ ] **Expand to ≥6 target languages (priority: Arabic, Hindi, French, Mandarin).**
+  Status: implementation scaffold complete, empirical runs pending. `code/modal_bivad_runner.py`
+  already supports `ara_Arab`, `hin_Deva`, `fra_Latn`, and `zho_Hans` through
+  `FLORES_CODE_TO_LANGUAGE` plus localized debate labels. Added a dedicated Modal batch
+  entrypoint:
+  `python3 -m modal run code/modal_bivad_runner.py::expansion`
+  which runs Arabic/Hindi/French/Chinese × {UBI, government surveillance} ×
+  {mixed-language, same-English}, writes batch-tagged artifacts/manifests, and records
+  `target_language` at the artifact top level. Blocker: the Modal grid has not been run,
+  so there are no new comparison pairs to add to the paper. Smallest next action: run
+  `rerun_top_divergence` first to confirm the engagement prompt improves debate quality,
+  then run `expansion`.
   Add `ara_Arab`, `hin_Deva`, `fra_Latn`, `zho_Hans` to `code/modal_bivad_runner.py`
   (or equivalent runner). Run mixed-language + same-English for UBI seed 17 and
   government surveillance seed 17 for each new pair. Target: ≥4 new citable comparison
@@ -171,6 +182,11 @@ loop, regardless of what else is open. They never get a [x].
   matters → here is how we measured it → here are the patterns.
 
 - [ ] **Re-run top-divergence debates with updated engagement prompt and compare debate quality grades.**
+  Status: runner ready, empirical rerun pending. Added
+  `python3 -m modal run code/modal_bivad_runner.py::rerun_top_divergence` to run the
+  minimum four-condition set (government surveillance and UBI, seed 17, Indonesian
+  mixed-language + same-English) using the updated engagement prompt. Blocker: no Modal
+  job was launched in this loop, so there are no new debate-quality grades yet.
   REVIEW AGENT 2026-06-27: All reviewed runs grade SURFACE ENGAGEMENT. Agents fill the
   three-label template (Strongest opponent point / Counterargument / View change) without
   actually responding to the specific argument their counterpart generated in the prior turn.
@@ -184,6 +200,11 @@ loop, regardless of what else is open. They never get a [x].
   political/economic fork) survives or is strengthened.
 
 - [ ] **Try culturally-loaded Indonesian/Spanish topics to get GENUINE ELICITATION beyond surveillance.**
+  Status: runner ready, empirical scan pending. Added
+  `python3 -m modal run code/modal_bivad_runner.py::cultural_topics` with the four proposed
+  culturally loaded topics and Indonesian/Spanish target languages. The entrypoint writes
+  batch-tagged artifacts and a manifest under `runs/bivad-local-lm/`. Blocker: no Modal
+  job was launched in this loop, so no elicitation grades exist yet.
   REVIEW AGENT 2026-06-27: UBI runs produced SURFACE TRANSLATION in non-English turns.
   The topic lacks vocabulary where Indonesian/Spanish have distinct cultural anchors.
   Add topics where non-English agents are structurally more likely to invoke language-

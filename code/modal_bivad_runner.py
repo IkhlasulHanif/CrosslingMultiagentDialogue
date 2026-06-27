@@ -106,6 +106,22 @@ CONDITIONS = (
 
 DEFAULT_CONDITIONS = tuple(c for c in CONDITIONS if c != "low-disagreement-control")
 
+EXPANSION_TARGET_LANGUAGES = ("ara_Arab", "hin_Deva", "fra_Latn", "zho_Hans")
+EXPANSION_TOPICS = (
+    "universal basic income as a social safety net",
+    "government surveillance for national security",
+)
+TOP_DIVERGENCE_RERUN_TOPICS = (
+    "government surveillance for national security",
+    "universal basic income as a social safety net",
+)
+CULTURALLY_LOADED_TOPICS = (
+    "gotong royong versus individual responsibility in welfare policy",
+    "keadilan sosial sebagai dasar kebijakan publik",
+    "solidaridad social como principio constitucional",
+    "perlindungan data pribadi dan kedaulatan digital",
+)
+
 # Maps FLORES-200 language codes to display names used in agent configs and prompts.
 # Existing runs that pass display names directly ("Indonesian", "Spanish") still work.
 FLORES_CODE_TO_LANGUAGE: dict[str, str] = {
@@ -605,6 +621,7 @@ def run_condition_remote(
         "run_id": f"modal-{condition}-seed{seed}",
         "created_at": datetime.now(timezone.utc).isoformat(),
         "condition": condition,
+        "target_language": target_language,
         "topic": topic,
         "seed": seed,
         "model": MODEL_ID,
@@ -636,6 +653,80 @@ def run_condition_remote(
 # Local entrypoint
 # ---------------------------------------------------------------------------
 
+def _slug(text: str, max_len: int = 36) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", text.lower())[:max_len].strip("-")
+
+
+def _condition_list(conditions: str) -> list[str]:
+    condition_list = [c.strip() for c in conditions.split(",") if c.strip()]
+    for condition in condition_list:
+        if condition not in CONDITIONS:
+            raise SystemExit(f"Unknown condition: {condition}")
+    return condition_list
+
+
+def _write_batch_manifest(
+    out: Path,
+    stamp: str,
+    batch_name: str,
+    manifest: list[dict[str, str | int]],
+) -> None:
+    manifest_path = out / f"{stamp}-{batch_name}-manifest.json"
+    manifest_path.write_text(
+        json.dumps({"stamp": stamp, "batch": batch_name, "runs": manifest}, indent=2),
+        encoding="utf-8",
+    )
+    print(f"Wrote manifest {manifest_path}")
+
+
+def _run_condition_local(
+    *,
+    out: Path,
+    stamp: str,
+    batch_prefix: str,
+    condition: str,
+    target_language: str,
+    topic: str,
+    seed: int,
+    turns: int,
+    max_new_tokens: int,
+    readout_max_new_tokens: int,
+    turn_retries: int,
+    json_retries: int,
+) -> dict[str, str | int]:
+    print(
+        f"Running batch={batch_prefix!r} condition={condition!r} "
+        f"target_language={target_language!r} topic={topic!r} ..."
+    )
+    artifact = run_condition_remote.remote(
+        condition=condition,
+        target_language=target_language,
+        topic=topic,
+        seed=seed,
+        turns=turns,
+        max_new_tokens=max_new_tokens,
+        readout_max_new_tokens=readout_max_new_tokens,
+        turn_retries=turn_retries,
+        json_retries=json_retries,
+    )
+    run_id = (
+        f"{stamp}-{batch_prefix}-{_slug(target_language, 16)}-"
+        f"{condition}-seed{seed}-{_slug(topic)}"
+    )
+    artifact["run_id"] = run_id
+    artifact["batch"] = batch_prefix
+    path = out / f"{run_id}.json"
+    path.write_text(json.dumps(artifact, indent=2, sort_keys=True), encoding="utf-8")
+    print(f"  Wrote {path}")
+    return {
+        "run_id": run_id,
+        "path": str(path),
+        "condition": condition,
+        "target_language": target_language,
+        "topic": topic,
+        "seed": seed,
+    }
+
 @app.local_entrypoint()
 def main(
     topic: str = "public release of dual-use policy datasets",
@@ -654,10 +745,7 @@ def main(
     out.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
-    for condition in conditions.split(","):
-        condition = condition.strip()
-        if condition not in CONDITIONS:
-            raise SystemExit(f"Unknown condition: {condition}")
+    for condition in _condition_list(conditions):
         print(f"Running condition: {condition} ...")
         artifact = run_condition_remote.remote(
             condition=condition,
@@ -670,7 +758,7 @@ def main(
             turn_retries=turn_retries,
             json_retries=json_retries,
         )
-        run_id = f"{stamp}-{condition}-seed{seed}"
+        run_id = f"{stamp}-{_slug(target_language, 16)}-{condition}-seed{seed}"
         artifact["run_id"] = run_id
         path = out / f"{run_id}.json"
         path.write_text(json.dumps(artifact, indent=2, sort_keys=True), encoding="utf-8")
@@ -703,37 +791,176 @@ def scan(
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
     topic_list = [t.strip() for t in topics.split("|") if t.strip()]
-    condition_list = [c.strip() for c in conditions.split(",") if c.strip()]
-    for condition in condition_list:
-        if condition not in CONDITIONS:
-            raise SystemExit(f"Unknown condition: {condition}")
+    condition_list = _condition_list(conditions)
 
     print(f"Scan: {len(topic_list)} topics × {len(condition_list)} conditions = {len(topic_list) * len(condition_list)} runs")
 
     manifest: list[dict] = []
     for topic in topic_list:
-        topic_slug = re.sub(r"[^a-z0-9]+", "-", topic.lower())[:36].strip("-")
         for condition in condition_list:
             print(f"Running condition={condition!r} topic={topic!r} ...")
-            artifact = run_condition_remote.remote(
-                condition=condition,
-                target_language=target_language,
-                topic=topic,
-                seed=seed,
-                turns=turns,
-                max_new_tokens=max_new_tokens,
-                readout_max_new_tokens=readout_max_new_tokens,
-                turn_retries=turn_retries,
-                json_retries=json_retries,
+            manifest.append(
+                _run_condition_local(
+                    out=out,
+                    stamp=stamp,
+                    batch_prefix="scan",
+                    condition=condition,
+                    target_language=target_language,
+                    topic=topic,
+                    seed=seed,
+                    turns=turns,
+                    max_new_tokens=max_new_tokens,
+                    readout_max_new_tokens=readout_max_new_tokens,
+                    turn_retries=turn_retries,
+                    json_retries=json_retries,
+                )
             )
-            run_id = f"{stamp}-{condition}-seed{seed}-{topic_slug}"
-            artifact["run_id"] = run_id
-            path = out / f"{run_id}.json"
-            path.write_text(json.dumps(artifact, indent=2, sort_keys=True), encoding="utf-8")
-            print(f"  Wrote {path}")
-            manifest.append({"run_id": run_id, "path": str(path), "condition": condition, "topic": topic})
 
-    manifest_path = out / f"{stamp}-scan-manifest.json"
-    manifest_path.write_text(json.dumps({"stamp": stamp, "runs": manifest}, indent=2), encoding="utf-8")
-    print(f"Wrote manifest {manifest_path}")
+    _write_batch_manifest(out, stamp, "scan", manifest)
     print(f"Done. Run code/analyze_topic_divergence.py to rank topics by cross-lingual divergence.")
+
+
+@app.local_entrypoint()
+def expansion(
+    target_languages: str = ",".join(EXPANSION_TARGET_LANGUAGES),
+    topics: str = "|".join(EXPANSION_TOPICS),
+    seed: int = 17,
+    turns: int = 4,
+    out_dir: str = "runs/bivad-local-lm",
+    max_new_tokens: int = 250,
+    readout_max_new_tokens: int = 420,
+    turn_retries: int = 4,
+    json_retries: int = 3,
+    conditions: str = "mixed-language,same-English",
+) -> None:
+    """Run the Arabic/Hindi/French/Chinese expansion grid from GOALS.md."""
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    langs = [resolve_language(lang.strip()) for lang in target_languages.split(",") if lang.strip()]
+    topic_list = [t.strip() for t in topics.split("|") if t.strip()]
+    condition_list = _condition_list(conditions)
+
+    print(
+        f"Expansion: {len(langs)} languages × {len(topic_list)} topics × "
+        f"{len(condition_list)} conditions = {len(langs) * len(topic_list) * len(condition_list)} runs"
+    )
+    manifest: list[dict[str, str | int]] = []
+    for target_language in langs:
+        for topic in topic_list:
+            for condition in condition_list:
+                manifest.append(
+                    _run_condition_local(
+                        out=out,
+                        stamp=stamp,
+                        batch_prefix="language-expansion",
+                        condition=condition,
+                        target_language=target_language,
+                        topic=topic,
+                        seed=seed,
+                        turns=turns,
+                        max_new_tokens=max_new_tokens,
+                        readout_max_new_tokens=readout_max_new_tokens,
+                        turn_retries=turn_retries,
+                        json_retries=json_retries,
+                    )
+                )
+    _write_batch_manifest(out, stamp, "language-expansion", manifest)
+    print("Done. Run audit, validation, topic divergence, and transcript review before updating paper results.")
+
+
+@app.local_entrypoint()
+def rerun_top_divergence(
+    target_language: str = "Indonesian",
+    topics: str = "|".join(TOP_DIVERGENCE_RERUN_TOPICS),
+    seed: int = 17,
+    turns: int = 4,
+    out_dir: str = "runs/bivad-local-lm",
+    max_new_tokens: int = 250,
+    readout_max_new_tokens: int = 420,
+    turn_retries: int = 4,
+    json_retries: int = 3,
+    conditions: str = "mixed-language,same-English",
+) -> None:
+    """Re-run top-divergence debates after prompt updates for manual quality grading."""
+    target_language = resolve_language(target_language)
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    topic_list = [t.strip() for t in topics.split("|") if t.strip()]
+    condition_list = _condition_list(conditions)
+
+    print(
+        f"Top-divergence re-run: {len(topic_list)} topics × "
+        f"{len(condition_list)} conditions = {len(topic_list) * len(condition_list)} runs"
+    )
+    manifest: list[dict[str, str | int]] = []
+    for topic in topic_list:
+        for condition in condition_list:
+            manifest.append(
+                _run_condition_local(
+                    out=out,
+                    stamp=stamp,
+                    batch_prefix="engagement-rerun",
+                    condition=condition,
+                    target_language=target_language,
+                    topic=topic,
+                    seed=seed,
+                    turns=turns,
+                    max_new_tokens=max_new_tokens,
+                    readout_max_new_tokens=readout_max_new_tokens,
+                    turn_retries=turn_retries,
+                    json_retries=json_retries,
+                )
+            )
+    _write_batch_manifest(out, stamp, "engagement-rerun", manifest)
+    print("Done. Manually grade transcript quality before treating these as improved evidence.")
+
+
+@app.local_entrypoint()
+def cultural_topics(
+    target_languages: str = "Indonesian,Spanish",
+    topics: str = "|".join(CULTURALLY_LOADED_TOPICS),
+    seed: int = 17,
+    turns: int = 4,
+    out_dir: str = "runs/bivad-local-lm",
+    max_new_tokens: int = 250,
+    readout_max_new_tokens: int = 420,
+    turn_retries: int = 4,
+    json_retries: int = 3,
+    conditions: str = "mixed-language,same-English",
+) -> None:
+    """Scan culturally loaded Indonesian/Spanish topics for genuine elicitation."""
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    langs = [resolve_language(lang.strip()) for lang in target_languages.split(",") if lang.strip()]
+    topic_list = [t.strip() for t in topics.split("|") if t.strip()]
+    condition_list = _condition_list(conditions)
+
+    print(
+        f"Cultural-topic scan: {len(langs)} languages × {len(topic_list)} topics × "
+        f"{len(condition_list)} conditions = {len(langs) * len(topic_list) * len(condition_list)} runs"
+    )
+    manifest: list[dict[str, str | int]] = []
+    for target_language in langs:
+        for topic in topic_list:
+            for condition in condition_list:
+                manifest.append(
+                    _run_condition_local(
+                        out=out,
+                        stamp=stamp,
+                        batch_prefix="cultural-topic-scan",
+                        condition=condition,
+                        target_language=target_language,
+                        topic=topic,
+                        seed=seed,
+                        turns=turns,
+                        max_new_tokens=max_new_tokens,
+                        readout_max_new_tokens=readout_max_new_tokens,
+                        turn_retries=turn_retries,
+                        json_retries=json_retries,
+                    )
+                )
+    _write_batch_manifest(out, stamp, "cultural-topic-scan", manifest)
+    print("Done. Use transcript_review.md to grade elicitation before promoting any result.")
