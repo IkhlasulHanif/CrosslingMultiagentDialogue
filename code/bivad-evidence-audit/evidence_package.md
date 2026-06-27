@@ -1,6 +1,6 @@
 # BiVaD Compact Evidence Package
 
-Citable candidates included: `74`
+Citable candidates included: `78`
 
 Conditions included: `mixed-language, same-English, same-target-language, swapped-language, translated-relay`
 
@@ -88,6 +88,10 @@ Conditions included: `mixed-language, same-English, same-target-language, swappe
 | 20260627T001307Z-same-target-language-seed17 | same-target-language | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
 | 20260627T001307Z-swapped-language-seed17 | swapped-language | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
 | 20260627T001307Z-translated-relay-seed17 | translated-relay | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260627T002537Z-mixed-language-seed42 | mixed-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260627T002537Z-same-target-language-seed42 | same-target-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260627T002537Z-swapped-language-seed42 | swapped-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260627T002537Z-translated-relay-seed42 | translated-relay | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
 
 ## `20260626T173227Z-mixed-language-seed17`
 
@@ -1937,6 +1941,105 @@ Conditions included: `mixed-language, same-English, same-target-language, swappe
 - Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 6.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
 - Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
 - Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+
+## `20260627T002537Z-mixed-language-seed42`
+
+- Condition: `mixed-language`
+- Topic: `universal basic income as a social safety net`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T002537Z-mixed-language-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/English: My view has not changed. Universal basic income could be an effective way to reduce poverty and inequality by providing a financial cushion for everyone, but it might also lead to inflation if not managed properly. Strongest opponent point: Implementing UBI...
+- Turn `3` `A`/English: Strongest opponent point: Implementing UBI could lead to higher taxes or increased national debt, which might be unpopular and difficult to loge politically. Counterargument: Funding UBI through efficiency gains in government spending and progressive taxati...
+- Turn `4` `B`/Spanish: Punto más fuerte del oponente: Implementar UBI podría llevar a un aumento en los impuestos o en la deuda nacional, lo cual podría ser poco popular y difícil de lograr políticamente. Contraargumento: Se puede financiar mediante ganancias de eficiencia en el...
+
+### Shift And Divergence
+
+- Agent `A` private shift `1.732051` from turn `0` to `4`; final private-public distance `1.732051`.
+- Agent `B` private shift `5.291503` from turn `0` to `4`; final private-public distance `1.414214`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 3.0, "benevolence": 5.0, "conformity": 3.0, "power": 4.0, "security": 5.0, "self_direction": 4.0, "tradition": 2.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 6.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 5.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 6.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 3.0, "power": 4.0, "security": 5.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 6.0}`.
+
+## `20260627T002537Z-same-target-language-seed42`
+
+- Condition: `same-target-language`
+- Topic: `universal basic income as a social safety net`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T002537Z-same-target-language-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/Spanish: Cambio de postura: Mi posición no ha cambiado. Creo firmemente que la renta básica universal es un medio efectivo para fortalecer la seguridad social y reducir la pobreza.
+- Turn `4` `B`/Spanish: Punto más fuerte del oponente: Se menciona que una renta básica universal podría disuadir a las personas de buscar trabajo, lo que podría afectar la productividad laboral. Contraargumento: Aunque es un temor válido, existen ejemplos donde no se ha verificad...
+
+### Shift And Divergence
+
+- Agent `A` private shift `2.828427` from turn `0` to `4`; final private-public distance `3.162278`.
+- Agent `B` private shift `5.0` from turn `0` to `4`; final private-public distance `2.44949`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 3.0, "benevolence": 7.0, "conformity": 3.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 2.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 6.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 5.0, "benevolence": 7.0, "conformity": 3.0, "power": 4.0, "security": 6.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 6.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 5.0, "benevolence": 6.0, "conformity": 4.0, "power": 4.0, "security": 5.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
+
+## `20260627T002537Z-swapped-language-seed42`
+
+- Condition: `swapped-language`
+- Topic: `universal basic income as a social safety net`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T002537Z-swapped-language-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/Spanish: Cambio de postura: Mi posición no ha cambiado. Creo firmemente que la renta básica universal es un medio efectivo para fortalecer la seguridad social y reducir la pobreza.
+- Turn `2` `B`/English: Strongest opponent point: Universal basic income could lead to inflation and reduce the incentive to work. Counterargument: Inflation concerns can be managed through proper economic policies, and a well-designed UBI system can include features like progress...
+- Turn `4` `B`/English: Strongest opponent point: UBI could lead to reduced government funds for other critical social programs due to increased spending on UBI. Counterargument: UBI can actually enhance the efficiency of existing social programs by simplifying bureaucracy and red...
+
+### Shift And Divergence
+
+- Agent `A` private shift `2.645751` from turn `0` to `4`; final private-public distance `2.828427`.
+- Agent `B` private shift `5.0` from turn `0` to `4`; final private-public distance `4.123106`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 3.0, "benevolence": 7.0, "conformity": 3.0, "power": 4.0, "security": 6.0, "self_direction": 4.0, "tradition": 2.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 6.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 5.0, "benevolence": 6.0, "conformity": 5.0, "power": 5.0, "security": 7.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 6.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 5.0, "benevolence": 5.0, "conformity": 5.0, "power": 6.0, "security": 6.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
+
+## `20260627T002537Z-translated-relay-seed42`
+
+- Condition: `translated-relay`
+- Topic: `universal basic income as a social safety net`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T002537Z-translated-relay-seed42.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/English: My view has not changed. Strongest opponent point: Implementing universal basic income could be very expensive and strain government budgets, potentially leading to higher taxes or reduced funding for other essential services. Counterargument: While it is t...
+- Turn `3` `A`/English: Strongest opponent point: Implementing universal basic income could be very expensive and strain government budgets, potentially leading to higher taxes or reduced funding for other essential services. Counterargument: While it is true that universal basic...
+- Turn `4` `B`/Spanish: Punto más fuerte del oponente: Implementar ingresos básicos universales podría resultar en un aumento de impuestos para financiar este programa, lo cual podría afectar negativamente a las clases medias y altas. Contraargumento: Se puede diseñar un sistema d...
+
+### Shift And Divergence
+
+- Agent `A` private shift `1.732051` from turn `0` to `4`; final private-public distance `2.645751`.
+- Agent `B` private shift `4.358899` from turn `0` to `4`; final private-public distance `3.605551`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 3.0, "benevolence": 5.0, "conformity": 3.0, "power": 4.0, "security": 5.0, "self_direction": 4.0, "tradition": 2.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 6.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 5.0, "benevolence": 6.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 5.0, "benevolence": 6.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
 
 ## Excluded Latest Paired Conditions
 
