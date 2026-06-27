@@ -6,7 +6,7 @@ Keep experiment implementation and experiment harnesses in this directory.
 - `validate_bivad_artifacts.py`: stricter API-free gate that reports whether audited artifacts are citable empirical candidates.
 - `make_bivad_evidence_package.py`: API-free package builder that extracts only validated citable candidates into compact JSON/Markdown tables and snippets.
 - `summarize_no_dialogue.py`: summarizes no-dialogue measurement-drift baselines and joins them to topic-specific five-condition debate ranges.
-- `run_bivad_pilot.py`: dry-run-capable model runner for a minimal paired BiVaD pilot using the OpenAI Responses API.
+- `run_bivad_pilot.py`: legacy dry-run-capable model runner for a minimal paired BiVaD pilot using the OpenAI Responses API; not used for the current Modal-only empirical path.
 - `run_bivad_local_lm.py`: dry-run-capable CPU local Hugging Face causal-LM runner for legacy API-free paired pilots.
 - `modal_steer_language.py`: Modal GPU entrypoint for FLORES-derived probability steering probes.
 - `steer_language.py`: FLORES-derived token-probability steering implementation; it does not use prompt-level language instructions.
@@ -47,7 +47,7 @@ python3 code/audit_bivad_evidence.py code/fixtures/bivad-local-torch --out-dir /
 
 The local Torch runner is CPU-only. Its artifacts are deterministic tensor schema checks, not language-model behavior, and are marked `synthetic: true` plus `non_empirical: true`.
 
-Prepare or run a local language-model pilot without remote APIs:
+Prepare local API-free checks, or run local CPU language-model debugging when explicitly needed:
 
 ```sh
 python3 code/preflight_bivad_local_lm.py
@@ -58,7 +58,7 @@ python3 code/validate_bivad_artifacts.py runs/bivad-local-lm --out-dir code/biva
 python3 code/make_bivad_evidence_package.py --out-dir code/bivad-evidence-audit
 ```
 
-`run_bivad_local_lm.py` loads models with `local_files_only=True` by default and uses CPU for direct local execution. CUDA is enabled only when a Modal wrapper sets `BIVAD_MODAL_GPU=1` inside a remote GPU job. Pass `--allow-download` only when intentionally fetching model files. The runner does not invent missing probe or observer JSON values; malformed local-model outputs remain incomplete and should be rejected by `validate_bivad_artifacts.py`.
+`run_bivad_local_lm.py` loads models with `local_files_only=True` by default and uses CPU for direct local execution. CUDA is enabled only when a Modal wrapper sets `BIVAD_MODAL_GPU=1` inside a remote GPU job. Do not use Apple MPS or local CUDA for empirical runs. Pass `--allow-download` only when intentionally fetching model files. The runner does not invent missing probe or observer JSON values; malformed local-model outputs remain incomplete and should be rejected by `validate_bivad_artifacts.py`.
 
 `preflight_bivad_local_lm.py` writes `local_model_preflight.json` and `.md` under `code/bivad-evidence-audit/`. It is a blocker report only; it does not load models, generate transcripts, or create empirical evidence.
 
@@ -98,13 +98,13 @@ python3 code/summarize_no_dialogue.py
 
 The no-dialogue summarizer selects the newest no-dialogue artifact per topic, computes repeated-probe drift and empty-transcript observer gaps, and joins B's debate-shift range from topic-specific five-condition comparison files.
 
-Run a real minimal pilot when API credentials are available:
+Legacy OpenAI API pilot path, retained only for schema compatibility:
 
 ```sh
 OPENAI_API_KEY=... python3 code/run_bivad_pilot.py --execute --out-dir runs/bivad-pilot
 python3 code/audit_bivad_evidence.py runs/bivad-pilot
 ```
 
-The pilot runner defaults to `gpt-5.5` with `reasoning.effort=medium` and writes artifacts in the schema consumed by `audit_bivad_evidence.py`. The `seed` value is a paired-run grouping key; the runner does not assume deterministic API sampling. Dry-run manifests are treated as placeholders by the audit and do not count as empirical evidence.
+The current GOALS.md workflow does not use `OPENAI_API_KEY` or remote model APIs for empirical implementation. This runner defaults to `gpt-5.5` with `reasoning.effort=medium` and writes artifacts in the schema consumed by `audit_bivad_evidence.py`. The `seed` value is a paired-run grouping key; the runner does not assume deterministic API sampling. Dry-run manifests are treated as placeholders by the audit and do not count as empirical evidence.
 
 Operational repository scripts, such as the Codex goal loop, belong in `scripts/`. New experiment runners, probes, scoring code, and analysis harnesses should go under `code/`.
