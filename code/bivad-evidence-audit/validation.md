@@ -1,8 +1,8 @@
 # BiVaD Artifact Validation
 
-Artifacts checked: `124`
+Artifacts checked: `128`
 
-Citable empirical candidates: `78`
+Citable empirical candidates: `81`
 
 Complete real paired sets: `10`
 
@@ -872,6 +872,34 @@ Complete real paired sets: `10`
 ### `20260627T002537Z-translated-relay-seed42`
 
 - Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T002537Z-translated-relay-seed42.json`
+- Condition: `translated-relay`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260627T003831Z-mixed-language-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T003831Z-mixed-language-seed17.json`
+- Condition: `mixed-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260627T003831Z-same-target-language-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T003831Z-same-target-language-seed17.json`
+- Condition: `same-target-language`
+- Citable candidate: `True`
+- Blockers: `none`
+
+### `20260627T003831Z-swapped-language-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T003831Z-swapped-language-seed17.json`
+- Condition: `swapped-language`
+- Citable candidate: `False`
+- Blockers: `at least one response turn fails debate-quality audit`
+
+### `20260627T003831Z-translated-relay-seed17`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T003831Z-translated-relay-seed17.json`
 - Condition: `translated-relay`
 - Citable candidate: `True`
 - Blockers: `none`

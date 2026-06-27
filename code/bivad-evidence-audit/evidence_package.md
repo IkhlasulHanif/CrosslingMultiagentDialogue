@@ -1,6 +1,6 @@
 # BiVaD Compact Evidence Package
 
-Citable candidates included: `78`
+Citable candidates included: `81`
 
 Conditions included: `mixed-language, same-English, same-target-language, swapped-language, translated-relay`
 
@@ -92,6 +92,9 @@ Conditions included: `mixed-language, same-English, same-target-language, swappe
 | 20260627T002537Z-same-target-language-seed42 | same-target-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
 | 20260627T002537Z-swapped-language-seed42 | swapped-language | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
 | 20260627T002537Z-translated-relay-seed42 | translated-relay | 42 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260627T003831Z-mixed-language-seed17 | mixed-language | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260627T003831Z-same-target-language-seed17 | same-target-language | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
+| 20260627T003831Z-translated-relay-seed17 | translated-relay | 17 | 1.0 | 1.0 | 4 | 2 | 2 |
 
 ## `20260626T173227Z-mixed-language-seed17`
 
@@ -2040,6 +2043,80 @@ Conditions included: `mixed-language, same-English, same-target-language, swappe
 - Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 4.0, "conformity": 6.0, "power": 6.0, "security": 5.0, "self_direction": 3.0, "tradition": 5.0, "universalism": 4.0}`.
 - Observer `A` turn `4` complete `True` values `{"achievement": 5.0, "benevolence": 6.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
 - Observer `B` turn `4` complete `True` values `{"achievement": 5.0, "benevolence": 6.0, "conformity": 4.0, "power": 4.0, "security": 6.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
+
+## `20260627T003831Z-mixed-language-seed17`
+
+- Condition: `mixed-language`
+- Topic: `government surveillance for national security`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T003831Z-mixed-language-seed17.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/English: My view has not changed. Strongest opponent point: Opponents argue that government surveillance infringes on individual privacy rights and can lead to abuse of power by those in authority. Counterargument: While it is true that surveillance can raise concer...
+- Turn `3` `A`/English: Strongest opponent point: Opponents argue that government surveillance infringes on individual privacy rights and can lead to abuse of power by those in authority. Counterargument: While it is true that surveillance can raise concerns about privacy, it is a...
+- Turn `4` `B`/Spanish: Punto más fuerte del oponente: Los contrarios argumentan que la vigilancia gubernamental puede crear una cultura de miedo y desconfianza entre la población, lo cual es perjudicial para la libertad civil y el bienestar social. Contraargumento: Aunque compart...
+
+### Shift And Divergence
+
+- Agent `A` private shift `2.645751` from turn `0` to `4`; final private-public distance `2.236068`.
+- Agent `B` private shift `4.123106` from turn `0` to `4`; final private-public distance `2.0`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 5.0, "security": 5.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 3.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 3.0, "conformity": 5.0, "power": 7.0, "security": 6.0, "self_direction": 2.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 5.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+
+## `20260627T003831Z-same-target-language-seed17`
+
+- Condition: `same-target-language`
+- Topic: `government surveillance for national security`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T003831Z-same-target-language-seed17.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/Spanish: Cambio de postura: Mi postura no ha cambiado. Creo que la vigilancia gubernamental es necesaria para garantizar la seguridad nacional, pero debe haber un equilibrio entre la protección y la privacidad.
+- Turn `4` `B`/Spanish: Punto más fuerte del oponente: El oponente ha enfatizado que las políticas de vigilancia deben estar sujetas a revisiones regulares y controles para evitar abusos. Contraargumento: Estoy de acuerdo en la necesidad de controles, pero también es crucial imple...
+
+### Shift And Divergence
+
+- Agent `A` private shift `3.316625` from turn `0` to `4`; final private-public distance `2.44949`.
+- Agent `B` private shift `4.123106` from turn `0` to `4`; final private-public distance `2.44949`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 3.0, "security": 3.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 5.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 3.0, "conformity": 5.0, "power": 7.0, "security": 6.0, "self_direction": 2.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 5.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 5.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 5.0, "tradition": 4.0, "universalism": 5.0}`.
+
+## `20260627T003831Z-translated-relay-seed17`
+
+- Condition: `translated-relay`
+- Topic: `government surveillance for national security`
+- Artifact: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260627T003831Z-translated-relay-seed17.json`
+- Screening retained: `True`; value distance: `17`
+
+### Transcript Snippets
+
+- Turn `1` `A`/English: View change: My view has not changed. Strongest opponent point: Opponents argue that extensive government surveillance infringes on individual privacy rights and can lead to a loss of civil liberties. Counterargument: While privacy is important, the potenti...
+- Turn `3` `A`/English: Strongest opponent point: Opponents argue that extensive government surveillance infringes on individual privacy rights and can lead to a loss of civil liberties. Counterargument: While privacy is crucial, the threat of terrorist attacks and other significa...
+- Turn `4` `B`/Spanish: Punto más fuerte del oponente: El oponente argumenta que la vigilancia gubernamental extensa invade los derechos de privacidad individuales y puede llevar a una pérdida de libertades civiles. Contraargumento: La vigilancia controlada puede ayudar a prevenir...
+
+### Shift And Divergence
+
+- Agent `A` private shift `2.645751` from turn `0` to `4`; final private-public distance `2.0`.
+- Agent `B` private shift `4.123106` from turn `0` to `4`; final private-public distance `2.0`.
+
+### Probe/Readout Excerpts
+
+- Private `A` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 6.0, "conformity": 4.0, "power": 5.0, "security": 5.0, "self_direction": 4.0, "tradition": 3.0, "universalism": 3.0}`.
+- Private `B` turn `0` complete `True` values `{"achievement": 4.0, "benevolence": 3.0, "conformity": 5.0, "power": 7.0, "security": 6.0, "self_direction": 2.0, "tradition": 5.0, "universalism": 4.0}`.
+- Observer `A` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
+- Observer `B` turn `4` complete `True` values `{"achievement": 4.0, "benevolence": 5.0, "conformity": 4.0, "power": 5.0, "security": 6.0, "self_direction": 4.0, "tradition": 4.0, "universalism": 5.0}`.
 
 ## Excluded Latest Paired Conditions
 
