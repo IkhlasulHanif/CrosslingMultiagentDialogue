@@ -183,6 +183,12 @@ def infer_language_focus(artifact: dict[str, Any]) -> str:
         for agent in artifact.get("agents") or []
         if isinstance(agent, dict) and agent.get("language")
     }
+    if not languages:
+        languages = {
+            str(turn.get("language"))
+            for turn in artifact.get("transcript") or []
+            if isinstance(turn, dict) and turn.get("language")
+        }
     non_english = sorted(language for language in languages if language.lower() != "english")
     if len(non_english) == 1:
         return non_english[0]
