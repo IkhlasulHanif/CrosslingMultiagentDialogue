@@ -1,20 +1,20 @@
 # BiVaD Evidence Audit
 
-Created at: `2026-06-26T23:52:13.534739+00:00`
+Created at: `2026-06-27T00:02:56.725065+00:00`
 
 ## Status
 
-Audited `108` JSON artifact(s).
+Audited `117` JSON artifact(s).
 
-Real artifacts: `100`; synthetic fixtures/placeholders: `8`.
+Real artifacts: `109`; synthetic fixtures/placeholders: `8`.
 
-Conditions: `{"low-disagreement-control": 2, "mixed-language": 17, "no-dialogue": 9, "same-English": 18, "same-target-language": 17, "swapped-language": 13, "translated-relay": 16, "unknown": 16}`
+Conditions: `{"low-disagreement-control": 2, "mixed-language": 19, "no-dialogue": 9, "same-English": 19, "same-target-language": 19, "swapped-language": 15, "translated-relay": 18, "unknown": 16}`
 
-Screening: `{"missing_screening_record": 16, "rejected": 2, "retained": 90}`
+Screening: `{"missing_screening_record": 16, "rejected": 2, "retained": 99}`
 
 ## Paired Conditions
 
-Complete paired sets: `9`
+Complete paired sets: `10`
 
 Incomplete paired sets: `6`
 
@@ -1524,6 +1524,132 @@ Incomplete paired sets: `6`
 - Source kind: `local_lm_bivad_pilot`; synthetic: `False`
 - Condition: `translated-relay`
 - Topic: `government surveillance for national security`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T235306Z-mixed-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T235306Z-mixed-language-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `mixed-language`
+- Topic: `mandatory content moderation on social media platforms`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.667`; on-topic rate: `1.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T235306Z-same-English-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T235306Z-same-English-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-English`
+- Topic: `mandatory content moderation on social media platforms`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `1.0`; on-topic rate: `1.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T235306Z-same-target-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T235306Z-same-target-language-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-target-language`
+- Topic: `mandatory content moderation on social media platforms`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T235306Z-swapped-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T235306Z-swapped-language-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `swapped-language`
+- Topic: `mandatory content moderation on social media platforms`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T235306Z-translated-relay-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T235306Z-translated-relay-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `translated-relay`
+- Topic: `mandatory content moderation on social media platforms`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T235647Z-mixed-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T235647Z-mixed-language-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `mixed-language`
+- Topic: `mandatory content moderation on social media platforms`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.667`; on-topic rate: `1.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T235647Z-same-target-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T235647Z-same-target-language-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `same-target-language`
+- Topic: `mandatory content moderation on social media platforms`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.0`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T235647Z-swapped-language-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T235647Z-swapped-language-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `swapped-language`
+- Topic: `mandatory content moderation on social media platforms`
+- Debate quality adequate rate: `1.0` over `3` response turn(s)
+- Semantic depth rate: `0.0`; on-topic rate: `0.5`
+- Declared language compliance rate: `1.0`
+- Complete private readouts after key recovery: `4/4`
+- Complete observer readouts after key recovery: `2/2`
+- Flagged private-public gaps: `2`
+- Notes: `Readout key normalization recovered complete value vectors from raw model text; inspect readout_normalization before citing.`
+
+### `20260626T235647Z-translated-relay-seed42`
+
+- Path: `/Users/ikhlasul.hanif/Documents/MultiAgent/runs/bivad-local-lm/20260626T235647Z-translated-relay-seed42.json`
+- Source kind: `local_lm_bivad_pilot`; synthetic: `False`
+- Condition: `translated-relay`
+- Topic: `mandatory content moderation on social media platforms`
 - Debate quality adequate rate: `1.0` over `3` response turn(s)
 - Semantic depth rate: `0.0`; on-topic rate: `0.5`
 - Declared language compliance rate: `1.0`
