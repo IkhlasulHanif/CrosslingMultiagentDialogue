@@ -3,71 +3,73 @@
 Euclidean shift = L2 distance in 8-dimensional Schwartz value space between initial (turn 0) and final private probes. private_public_gaps are L2 distances between final private probe and final observer readout for each agent.
 
 Selection: latest complete citable five-condition set with fixed seed/topic/model/comparison language.
-Selected set: seed=42; topic=government surveillance for national security; model=Qwen2.5-7B-Instruct; comparison_language=Indonesian.
+Selected set: seed=42; topic=universal basic income as a social safety net; model=Qwen2.5-7B-Instruct; comparison_language=Spanish.
 
 | run_id | condition | seed | language | model | A shift | B shift | combined | A priv-pub gap | B priv-pub gap |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 20260626T233803Z-same-English-seed42 | same-English | 42 | English | Qwen2.5-7B-Instruct | 2.44949 | 3.464102 | 5.913592 | 1.732051 | 1.732051 |
-| 20260626T233803Z-mixed-language-seed42 | mixed-language | 42 | Indonesian | Qwen2.5-7B-Instruct | 2.645751 | 4.123106 | 6.768857 | 2.0 | 2.0 |
-| 20260626T233803Z-swapped-language-seed42 | swapped-language | 42 | Indonesian | Qwen2.5-7B-Instruct | 3.316625 | 4.123106 | 7.439731 | 2.236068 | 2.236068 |
-| 20260626T233803Z-same-target-language-seed42 | same-target-language | 42 | Indonesian | Qwen2.5-7B-Instruct | 3.316625 | 4.123106 | 7.439731 | 2.236068 | 2.236068 |
-| 20260626T233803Z-translated-relay-seed42 | translated-relay | 42 | Indonesian | Qwen2.5-7B-Instruct | 2.645751 | 4.123106 | 6.768857 | 2.0 | 2.0 |
+| 20260626T210716Z-same-English-seed42-universal-basic-income-as-a-social-s | same-English | 42 | English | Qwen2.5-7B-Instruct | 1.732051 | 5.291503 | 7.023554 | 2.44949 | 3.0 |
+| 20260627T002537Z-mixed-language-seed42 | mixed-language | 42 | Spanish | Qwen2.5-7B-Instruct | 1.732051 | 5.291503 | 7.023554 | 1.732051 | 1.414214 |
+| 20260627T002537Z-swapped-language-seed42 | swapped-language | 42 | Spanish | Qwen2.5-7B-Instruct | 2.645751 | 5.0 | 7.645751 | 2.828427 | 4.123106 |
+| 20260627T002537Z-same-target-language-seed42 | same-target-language | 42 | Spanish | Qwen2.5-7B-Instruct | 2.828427 | 5.0 | 7.828427 | 3.162278 | 2.44949 |
+| 20260627T002537Z-translated-relay-seed42 | translated-relay | 42 | Spanish | Qwen2.5-7B-Instruct | 1.732051 | 4.358899 | 6.09095 | 2.645751 | 3.605551 |
 
 ## Pattern Observations
 
-- same-English (Qwen2.5-7B-Instruct): agent B shifts more (A=2.44949, B=3.464102)
-- mixed-language (Qwen2.5-7B-Instruct): agent B shifts more (A=2.645751, B=4.123106)
-- translated-relay (Qwen2.5-7B-Instruct): agent B shifts more (A=2.645751, B=4.123106)
+- same-English (Qwen2.5-7B-Instruct): agent B shifts more (A=1.732051, B=5.291503)
+- mixed-language (Qwen2.5-7B-Instruct): agent B shifts more (A=1.732051, B=5.291503)
+- swapped-language (Qwen2.5-7B-Instruct): agent B shifts more (A=2.645751, B=5.0)
+- same-target-language (Qwen2.5-7B-Instruct): agent B shifts more (A=2.828427, B=5.0)
+- translated-relay (Qwen2.5-7B-Instruct): agent B shifts more (A=1.732051, B=4.358899)
 
 ## Outcome Comparisons
 
-- same-English vs mixed-language: A shifts less in same-English than in mixed-language (2.44949 vs 2.645751), while B shifts less in same-English than in mixed-language (3.464102 vs 4.123106).
-- same-target-language vs translated-relay on the Modal Qwen2.5 pair: A shifts less under relay (same-target=3.316625, relay=2.645751), while B shifts the same amount under relay (same-target=4.123106, relay=4.123106).
-- mixed-language vs swapped-language: private shifts are similar under the two production-language assignments (mixed A=2.645751, B=4.123106; swapped A=3.316625, B=4.123106).
+- same-English vs mixed-language: A shifts the same amount in both conditions (1.732051), while B shifts the same amount in both conditions (5.291503).
+- same-target-language vs translated-relay on the Modal Qwen2.5 pair: A shifts less under relay (same-target=2.828427, relay=1.732051), while B shifts less under relay (same-target=5.0, relay=4.358899).
+- mixed-language vs swapped-language: private shifts are similar under the two production-language assignments (mixed A=1.732051, B=5.291503; swapped A=2.645751, B=5.0).
 
 ## Per-Condition Detail
 
 ### same-English
-- `20260626T233803Z-same-English-seed42` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
-  - Topic: government surveillance for national security
-  - Agent A: initial {'achievement': 4.0, 'benevolence': 6.0, 'conformity': 4.0, 'power': 5.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 3.0} → final {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 4.0, 'power': 5.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=2.44949 | priv-pub gap=1.732051
-  - Agent B: initial {'achievement': 4.0, 'benevolence': 3.0, 'conformity': 5.0, 'power': 7.0, 'security': 6.0, 'self_direction': 2.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 4.0, 'power': 5.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=3.464102 | priv-pub gap=1.732051
+- `20260626T210716Z-same-English-seed42-universal-basic-income-as-a-social-s` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
+  - Topic: universal basic income as a social safety net
+  - Agent A: initial {'achievement': 3.0, 'benevolence': 5.0, 'conformity': 3.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 2.0, 'universalism': 5.0} → final {'achievement': 4.0, 'benevolence': 6.0, 'conformity': 3.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=1.732051 | priv-pub gap=2.44949
+  - Agent B: initial {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 6.0, 'power': 6.0, 'security': 5.0, 'self_direction': 3.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 6.0, 'conformity': 3.0, 'power': 3.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=5.291503 | priv-pub gap=3.0
   - Transcript spans:
-    - turn 1 English: My view has not changed. Strongest opponent point: Opponents argue that government surveillance infringes on individual privacy rights and can lead to a loss of civil liberties. Counterargument: While privacy is important, national security threats require ro…
-    - turn 4 English: Strongest opponent point: Opponents argue that government surveillance can be conducted without sufficient transparency, leading to potential abuse and lack of public trust. Counterargument: Implementing clear guidelines and regular audits can enhance transpa…
+    - turn 1 English: My view has not changed. Universal basic income could be an effective way to reduce poverty and inequality by providing a financial cushion for everyone, but it might also lead to inflation if not managed properly. Strongest opponent point: Implementing UBI c…
+    - turn 4 English: Strongest opponent point: Implementing UBI could lead to higher taxes or increased national debt, which might be unpopular and difficult to achieve politically. Counterargument: UBI could enhance workforce participation by reducing financial stress, leading t…
 
 ### mixed-language
-- `20260626T233803Z-mixed-language-seed42` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
-  - Topic: government surveillance for national security
-  - Agent A: initial {'achievement': 4.0, 'benevolence': 6.0, 'conformity': 4.0, 'power': 5.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 3.0} → final {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 4.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=2.645751 | priv-pub gap=2.0
-  - Agent B: initial {'achievement': 4.0, 'benevolence': 3.0, 'conformity': 5.0, 'power': 7.0, 'security': 6.0, 'self_direction': 2.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 4.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=4.123106 | priv-pub gap=2.0
+- `20260627T002537Z-mixed-language-seed42` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
+  - Topic: universal basic income as a social safety net
+  - Agent A: initial {'achievement': 3.0, 'benevolence': 5.0, 'conformity': 3.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 2.0, 'universalism': 5.0} → final {'achievement': 4.0, 'benevolence': 5.0, 'conformity': 3.0, 'power': 3.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=1.732051 | priv-pub gap=1.732051
+  - Agent B: initial {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 6.0, 'power': 6.0, 'security': 5.0, 'self_direction': 3.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 6.0, 'conformity': 3.0, 'power': 3.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=5.291503 | priv-pub gap=1.414214
   - Transcript spans:
-    - turn 1 English: My view has not changed. Strongest opponent point: Opponents argue that government surveillance infringes on individual privacy rights and can lead to a loss of civil liberties. Counterargument: While privacy is important, national security threats require ro…
-    - turn 4 Indonesian: Poin terkuat lawan: Opponents argue that government surveillance infringes on individual privacy rights and can lead to a loss of civil liberties. Counterargument saya: Selain itu, penerapan teknologi modern dalam keamanan dapat membantu mengidentifikasi anca…
+    - turn 1 English: My view has not changed. Universal basic income could be an effective way to reduce poverty and inequality by providing a financial cushion for everyone, but it might also lead to inflation if not managed properly. Strongest opponent point: Implementing UBI c…
+    - turn 4 Spanish: Punto más fuerte del oponente: Implementar UBI podría llevar a un aumento en los impuestos o en la deuda nacional, lo cual podría ser poco popular y difícil de lograr políticamente. Contraargumento: Se puede financiar mediante ganancias de eficiencia en el ga…
 
 ### swapped-language
-- `20260626T233803Z-swapped-language-seed42` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
-  - Topic: government surveillance for national security
-  - Agent A: initial {'achievement': 4.0, 'benevolence': 6.0, 'conformity': 4.0, 'power': 3.0, 'security': 3.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} → final {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 4.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=3.316625 | priv-pub gap=2.236068
-  - Agent B: initial {'achievement': 4.0, 'benevolence': 3.0, 'conformity': 5.0, 'power': 7.0, 'security': 6.0, 'self_direction': 2.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 4.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=4.123106 | priv-pub gap=2.236068
+- `20260627T002537Z-swapped-language-seed42` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
+  - Topic: universal basic income as a social safety net
+  - Agent A: initial {'achievement': 3.0, 'benevolence': 7.0, 'conformity': 3.0, 'power': 4.0, 'security': 6.0, 'self_direction': 4.0, 'tradition': 2.0, 'universalism': 5.0} → final {'achievement': 4.0, 'benevolence': 5.0, 'conformity': 4.0, 'power': 4.0, 'security': 6.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=2.645751 | priv-pub gap=2.828427
+  - Agent B: initial {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 6.0, 'power': 6.0, 'security': 5.0, 'self_direction': 3.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 5.0, 'conformity': 3.0, 'power': 3.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=5.0 | priv-pub gap=4.123106
   - Transcript spans:
-    - turn 1 Indonesian: Poin terkuat lawan: Pemerintah dapat menggunakan kebijakan pengawasan untuk mengumpulkan data yang tidak perlu, yang bisa digunakan untuk membatasi hak-hak individu dan privasi mereka. Counterargument saya: Kekhawatiran tentang pengumpulan data yang berlebiha…
-    - turn 4 English: Strongest opponent point: Pemerintah dapat menggunakan data yang dikumpulkan untuk tujuan-tujuan politik, bukan hanya keamanan nasional. Counterargument: Sementara ada risiko penggunaan data untuk tujuan politik, mekanisme pengawasan independen dan transparan…
+    - turn 1 Spanish: Cambio de postura: Mi posición no ha cambiado. Creo firmemente que la renta básica universal es un medio efectivo para fortalecer la seguridad social y reducir la pobreza.
+    - turn 4 English: Strongest opponent point: UBI could lead to reduced government funds for other critical social programs due to increased spending on UBI. Counterargument: UBI can actually enhance the efficiency of existing social programs by simplifying bureaucracy and reduc…
 
 ### same-target-language
-- `20260626T233803Z-same-target-language-seed42` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
-  - Topic: government surveillance for national security
-  - Agent A: initial {'achievement': 4.0, 'benevolence': 6.0, 'conformity': 4.0, 'power': 3.0, 'security': 3.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} → final {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 4.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=3.316625 | priv-pub gap=2.236068
-  - Agent B: initial {'achievement': 4.0, 'benevolence': 3.0, 'conformity': 5.0, 'power': 7.0, 'security': 6.0, 'self_direction': 2.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 4.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=4.123106 | priv-pub gap=2.236068
+- `20260627T002537Z-same-target-language-seed42` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
+  - Topic: universal basic income as a social safety net
+  - Agent A: initial {'achievement': 3.0, 'benevolence': 7.0, 'conformity': 3.0, 'power': 4.0, 'security': 6.0, 'self_direction': 4.0, 'tradition': 2.0, 'universalism': 5.0} → final {'achievement': 4.0, 'benevolence': 5.0, 'conformity': 3.0, 'power': 3.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=2.828427 | priv-pub gap=3.162278
+  - Agent B: initial {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 6.0, 'power': 6.0, 'security': 5.0, 'self_direction': 3.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 5.0, 'conformity': 3.0, 'power': 3.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=5.0 | priv-pub gap=2.44949
   - Transcript spans:
-    - turn 1 Indonesian: Poin terkuat lawan: Pemerintah dapat menggunakan kebijakan pengawasan untuk mengumpulkan data yang tidak perlu, yang bisa digunakan untuk membatasi hak-hak individu dan privasi mereka. Counterargument saya: Kekhawatiran tentang pengumpulan data yang berlebiha…
-    - turn 4 Indonesian: Poin terkuat lawan: Kebijakan pengawasan bisa menimbulkan kekhawatiran tentang penyalahgunaan data oleh pemerintah, yang dapat merugikan hak-hak individu. Counterargument saya: Kita bisa melindungi hak-hak individu dengan memasukkan mekanisme pengawasan indep…
+    - turn 1 Spanish: Cambio de postura: Mi posición no ha cambiado. Creo firmemente que la renta básica universal es un medio efectivo para fortalecer la seguridad social y reducir la pobreza.
+    - turn 4 Spanish: Punto más fuerte del oponente: Se menciona que una renta básica universal podría disuadir a las personas de buscar trabajo, lo que podría afectar la productividad laboral. Contraargumento: Aunque es un temor válido, existen ejemplos donde no se ha verificado…
 
 ### translated-relay
-- `20260626T233803Z-translated-relay-seed42` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
-  - Topic: government surveillance for national security
-  - Agent A: initial {'achievement': 4.0, 'benevolence': 6.0, 'conformity': 4.0, 'power': 5.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 3.0} → final {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 4.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=2.645751 | priv-pub gap=2.0
-  - Agent B: initial {'achievement': 4.0, 'benevolence': 3.0, 'conformity': 5.0, 'power': 7.0, 'security': 6.0, 'self_direction': 2.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 4.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 4.0, 'universalism': 4.0} | shift=4.123106 | priv-pub gap=2.0
+- `20260627T002537Z-translated-relay-seed42` (Qwen2.5-7B-Instruct, transformers.AutoModelForCausalLM (Modal GPU))
+  - Topic: universal basic income as a social safety net
+  - Agent A: initial {'achievement': 3.0, 'benevolence': 5.0, 'conformity': 3.0, 'power': 4.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 2.0, 'universalism': 5.0} → final {'achievement': 4.0, 'benevolence': 5.0, 'conformity': 3.0, 'power': 3.0, 'security': 5.0, 'self_direction': 4.0, 'tradition': 3.0, 'universalism': 5.0} | shift=1.732051 | priv-pub gap=2.645751
+  - Agent B: initial {'achievement': 4.0, 'benevolence': 4.0, 'conformity': 6.0, 'power': 6.0, 'security': 5.0, 'self_direction': 3.0, 'tradition': 5.0, 'universalism': 4.0} → final {'achievement': 4.0, 'benevolence': 5.0, 'conformity': 4.0, 'power': 3.0, 'security': 4.0, 'self_direction': 3.0, 'tradition': 3.0, 'universalism': 4.0} | shift=4.358899 | priv-pub gap=3.605551
   - Transcript spans:
-    - turn 1 English: My view has not changed. Strongest opponent point: Opponents argue that government surveillance infringes on individual privacy rights and can lead to a loss of civil liberties. Counterargument: While privacy is important, national security threats require ro…
-    - turn 4 Indonesian: Poin terkuat lawan: Pihak lawan menekankan bahwa pengawasan pemerintah dapat merugikan hak-hak sipil individu dan mengancam kemerdekaan sipil. Counterargument saya: Selain itu, pengawasan dapat dilakukan dengan cara yang transparan dan bertanggung jawab, misa…
+    - turn 1 English: My view has not changed. Strongest opponent point: Implementing universal basic income could be very expensive and strain government budgets, potentially leading to higher taxes or reduced funding for other essential services. Counterargument: While it is tru…
+    - turn 4 Spanish: Punto más fuerte del oponente: Implementar ingresos básicos universales podría resultar en un aumento de impuestos para financiar este programa, lo cual podría afectar negativamente a las clases medias y altas. Contraargumento: Se puede diseñar un sistema de…
