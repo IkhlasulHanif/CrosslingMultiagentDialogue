@@ -38,8 +38,12 @@ CONDITION_ORDER = [
     "translated-relay",
 ]
 
-TARGET_CONDITIONS = [condition for condition in CONDITION_ORDER if condition != "same-English"]
+TARGET_CONDITIONS = [c for c in CONDITION_ORDER if c != "same-English"]
 
+
+# ---------------------------------------------------------------------------
+# Core metric helpers
+# ---------------------------------------------------------------------------
 
 def euclidean(v1: dict[str, float], v2: dict[str, float]) -> float:
     return math.sqrt(sum((v1.get(k, 0.0) - v2.get(k, 0.0)) ** 2 for k in VALUE_KEYS))
@@ -59,6 +63,10 @@ def truncate(text: str, limit: int = 260) -> str:
         return text
     return text[: limit - 1].rstrip() + "…"
 
+
+# ---------------------------------------------------------------------------
+# Artifact extraction
+# ---------------------------------------------------------------------------
 
 def transcript_examples(artifact: dict[str, Any]) -> list[dict[str, Any]]:
     """Return compact first/final transcript examples for human inspection."""
@@ -92,13 +100,12 @@ def extract_shifts(artifact: dict[str, Any]) -> dict[str, dict[str, Any]] | None
             continue
         initial = sorted_probes[0]["values"]
         final = sorted_probes[-1]["values"]
-        shift = euclidean(initial, final)
         result[agent_id] = {
             "initial_values": initial,
             "initial_turn": sorted_probes[0].get("turn", 0),
             "final_values": final,
             "final_turn": sorted_probes[-1].get("turn"),
-            "shift": round(shift, 6),
+            "shift": round(euclidean(initial, final), 6),
         }
     return result or None
 
@@ -120,37 +127,46 @@ def extract_private_public_gap(artifact: dict[str, Any]) -> dict[str, float]:
         if agent:
             final_public[agent] = ob.get("values") or {}
 
-    gaps: dict[str, float] = {}
-    for agent in set(final_private) & set(final_public):
-        gaps[agent] = round(euclidean(final_private[agent], final_public[agent]), 6)
-    return gaps
-
-
-def load_citable_run_ids(validation_path: Path) -> set[str]:
-    """Return the run_ids of citable candidates from validation.json."""
-    if not validation_path.exists():
-        return set()
-    v = json.loads(validation_path.read_text())
     return {
-        a["run_id"]
-        for a in v.get("artifacts", [])
-        if a.get("citable_candidate") and a.get("run_id")
+        agent: round(euclidean(final_private[agent], final_public[agent]), 6)
+        for agent in set(final_private) & set(final_public)
     }
 
 
-def load_evidence_package(out_dir: Path) -> dict[str, dict]:
-    """Load shift_summary and observer readout values from evidence_package.json keyed by run_id."""
-    ep_path = out_dir / "evidence_package.json"
-    if not ep_path.exists():
-        return {}
-    ep = json.loads(ep_path.read_text())
-    index: dict[str, dict] = {}
-    for item in ep.get("artifacts", []):
-        run_id = item.get("run_id")
-        if run_id:
-            index[run_id] = item
-    return index
+def dimension_change_notes(agent_shifts: dict[str, dict[str, Any]]) -> dict[str, str]:
+    """Return human-readable per-agent notes on which Schwartz dimensions moved most.
 
+    Lists dimensions that changed by ≥1 point, sorted by magnitude:
+    'dim initial→final (±delta)'. Surfaces what the aggregate L2 conceals.
+    """
+    notes: dict[str, str] = {}
+    for agent_id, shift_info in agent_shifts.items():
+        initial = shift_info.get("initial_values") or {}
+        final = shift_info.get("final_values") or {}
+        if not initial or not final:
+            notes[agent_id] = "no probe data"
+            continue
+        movers = sorted(
+            [
+                (k, round(final.get(k, 0.0) - initial.get(k, 0.0), 1))
+                for k in VALUE_KEYS
+                if abs(final.get(k, 0.0) - initial.get(k, 0.0)) >= 1.0
+            ],
+            key=lambda x: -abs(x[1]),
+        )
+        if not movers:
+            notes[agent_id] = "no dimension moved ≥1 point"
+        else:
+            notes[agent_id] = "; ".join(
+                f"{k} {int(initial.get(k, 0))}→{int(final.get(k, 0))} ({d:+.0f})"
+                for k, d in movers
+            )
+    return notes
+
+
+# ---------------------------------------------------------------------------
+# Evidence-package helpers
+# ---------------------------------------------------------------------------
 
 def evidence_transcript_examples(ep_entry: dict[str, Any]) -> list[dict[str, Any]]:
     snippets = ep_entry.get("transcript_snippets") or []
@@ -166,14 +182,93 @@ def evidence_transcript_examples(ep_entry: dict[str, Any]) -> list[dict[str, Any
     return examples
 
 
+def process_ep_entry(run_id: str, ep_entry: dict) -> dict | None:
+    """Build a comparison row from an evidence_package entry using shift_summary."""
+    shift_summary = ep_entry.get("shift_summary") or []
+    if not shift_summary:
+        return None
+    shifts: dict[str, dict[str, Any]] = {}
+    gaps: dict[str, float] = {}
+    for s in shift_summary:
+        agent_id = s.get("agent_id")
+        if not agent_id:
+            continue
+        pp_outputs = ep_entry.get("private_probe_outputs") or []
+        initial_vals = next(
+            (p["values"] for p in pp_outputs
+             if p.get("agent_id") == agent_id
+             and p.get("turn") == s.get("private_start_turn", 0)),
+            None,
+        )
+        final_vals = next(
+            (p["values"] for p in pp_outputs
+             if p.get("agent_id") == agent_id
+             and p.get("turn") == s.get("private_end_turn")),
+            None,
+        )
+        shifts[agent_id] = {
+            "initial_values": initial_vals,
+            "initial_turn": s.get("private_start_turn", 0),
+            "final_values": final_vals,
+            "final_turn": s.get("private_end_turn"),
+            "shift": s.get("private_shift_distance", 0.0),
+        }
+        gap = s.get("final_private_public_distance")
+        if gap is not None:
+            gaps[agent_id] = gap
+    if not shifts:
+        return None
+    model_str = ep_entry.get("model", "unknown")
+    return {
+        "run_id": run_id,
+        "condition": ep_entry.get("condition", "unknown"),
+        "seed": ep_entry.get("seed"),
+        "model": short_model(str(model_str)),
+        "language_focus": ep_entry.get("language_focus", "unknown"),
+        "backend": "local (text-recovered)",
+        "topic": ep_entry.get("topic", "unknown"),
+        "agent_shifts": shifts,
+        "private_public_gaps": gaps,
+        "combined_shift": round(sum(v["shift"] for v in shifts.values()), 6),
+        "transcript_examples": evidence_transcript_examples(ep_entry),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Artifact discovery and loading
+# ---------------------------------------------------------------------------
+
+def load_citable_run_ids(validation_path: Path) -> set[str]:
+    """Return the run_ids of citable candidates from validation.json."""
+    if not validation_path.exists():
+        return set()
+    v = json.loads(validation_path.read_text())
+    return {
+        a["run_id"]
+        for a in v.get("artifacts", [])
+        if a.get("citable_candidate") and a.get("run_id")
+    }
+
+
+def load_evidence_package(out_dir: Path) -> dict[str, dict]:
+    """Load evidence_package.json keyed by run_id."""
+    ep_path = out_dir / "evidence_package.json"
+    if not ep_path.exists():
+        return {}
+    ep = json.loads(ep_path.read_text())
+    return {
+        item["run_id"]: item
+        for item in ep.get("artifacts", [])
+        if item.get("run_id")
+    }
+
+
 def discover_artifacts(runs_dir: Path, citable_ids: set[str]) -> list[Path]:
-    """Yield artifact paths for citable run IDs only."""
-    paths = []
-    for p in sorted(runs_dir.glob("*.json")):
-        stem = p.stem
-        if stem in citable_ids:
-            paths.append(p)
-    return paths
+    """Return artifact paths for citable run IDs only."""
+    return [
+        p for p in sorted(runs_dir.glob("*.json"))
+        if p.stem in citable_ids
+    ]
 
 
 def infer_language_focus(artifact: dict[str, Any]) -> str:
@@ -189,7 +284,7 @@ def infer_language_focus(artifact: dict[str, Any]) -> str:
             for turn in artifact.get("transcript") or []
             if isinstance(turn, dict) and turn.get("language")
         }
-    non_english = sorted(language for language in languages if language.lower() != "english")
+    non_english = sorted(lang for lang in languages if lang.lower() != "english")
     if len(non_english) == 1:
         return non_english[0]
     if not non_english and languages:
@@ -205,10 +300,45 @@ def run_timestamp(run_id: Any) -> int | None:
     if not (prefix.startswith("20") and prefix.endswith("Z")):
         return None
     digits = prefix[:-1].replace("T", "")
-    if not digits.isdigit():
-        return None
-    return int(digits)
+    return int(digits) if digits.isdigit() else None
 
+
+def build_row_from_path(path: Path, ep_index: dict[str, dict]) -> dict[str, Any] | None:
+    """Load one artifact file and return a comparison row, or None to skip."""
+    run_id = path.stem
+    try:
+        artifact = json.loads(path.read_text())
+    except Exception as e:
+        print(f"  skip {path.name}: {e}")
+        return None
+
+    shifts = extract_shifts(artifact)
+    if not shifts:
+        ep_entry = ep_index.get(run_id)
+        if ep_entry:
+            return process_ep_entry(run_id, ep_entry)
+        print(f"  skip {path.name}: insufficient probe data (no ep fallback)")
+        return None
+
+    gaps = extract_private_public_gap(artifact)
+    return {
+        "run_id": artifact.get("run_id", run_id),
+        "condition": artifact.get("condition", "unknown"),
+        "seed": artifact.get("seed"),
+        "model": short_model(str(artifact.get("model", "unknown"))),
+        "language_focus": infer_language_focus(artifact),
+        "backend": artifact.get("backend", "local"),
+        "topic": artifact.get("topic", "unknown"),
+        "agent_shifts": shifts,
+        "private_public_gaps": gaps,
+        "combined_shift": round(sum(v["shift"] for v in shifts.values()), 6),
+        "transcript_examples": transcript_examples(artifact),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Selection / grouping logic
+# ---------------------------------------------------------------------------
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -227,7 +357,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--out-suffix",
         default="",
-        help="Append this suffix to output filenames (e.g. '_ubi' → five_condition_comparison_ubi.json).",
+        help="Append this suffix to output filenames (e.g. '_ubi').",
     )
     parser.add_argument(
         "--seed-filter",
@@ -247,13 +377,15 @@ def newest_per_condition(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     selected: dict[str, dict[str, Any]] = {}
     for row in rows:
         cond = row["condition"]
-        previous = selected.get(cond)
-        if previous is None or str(row["run_id"]) > str(previous["run_id"]):
+        prev = selected.get(cond)
+        if prev is None or str(row["run_id"]) > str(prev["run_id"]):
             selected[cond] = row
     return list(selected.values())
 
 
-def latest_complete_condition_set(rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
+def latest_complete_condition_set(
+    rows: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
     """Return the latest coherent five-condition set and its grouping metadata.
 
     A coherent set fixes seed, topic, model, and the non-English comparison
@@ -271,37 +403,37 @@ def latest_complete_condition_set(rows: list[dict[str, Any]]) -> tuple[list[dict
         key = (*base_key, row.get("language_focus", "unknown"))
         by_key.setdefault(key, []).append(row)
 
-    candidates: list[tuple[str, tuple[Any, str, str, str], list[dict[str, Any]]]] = []
+    candidates: list[tuple[str, tuple, list[dict[str, Any]]]] = []
     for key, group_rows in by_key.items():
         by_condition: dict[str, dict[str, Any]] = {}
         for row in group_rows:
             cond = row["condition"]
-            previous = by_condition.get(cond)
-            if previous is None or str(row["run_id"]) > str(previous["run_id"]):
+            prev = by_condition.get(cond)
+            if prev is None or str(row["run_id"]) > str(prev["run_id"]):
                 by_condition[cond] = row
         base_key = key[:3]
         same_english_candidates = english_controls.get(base_key) or []
         if not same_english_candidates or not set(TARGET_CONDITIONS).issubset(by_condition):
             continue
-        mixed_timestamp = run_timestamp(by_condition["mixed-language"]["run_id"])
-        if mixed_timestamp is None:
-            same_english = max(same_english_candidates, key=lambda row: str(row["run_id"]))
+        mixed_ts = run_timestamp(by_condition["mixed-language"]["run_id"])
+        if mixed_ts is None:
+            same_english = max(same_english_candidates, key=lambda r: str(r["run_id"]))
         else:
             same_english = min(
                 same_english_candidates,
-                key=lambda row: (
-                    abs((run_timestamp(row["run_id"]) or mixed_timestamp) - mixed_timestamp),
-                    str(row["run_id"]),
+                key=lambda r: (
+                    abs((run_timestamp(r["run_id"]) or mixed_ts) - mixed_ts),
+                    str(r["run_id"]),
                 ),
             )
-        selected = [same_english] + [by_condition[condition] for condition in TARGET_CONDITIONS]
-        latest_run_id = max(str(row["run_id"]) for row in selected)
+        selected = [same_english] + [by_condition[c] for c in TARGET_CONDITIONS]
+        latest_run_id = max(str(r["run_id"]) for r in selected)
         candidates.append((latest_run_id, key, selected))
 
     if not candidates:
         return [], None
 
-    _latest_run_id, key, selected = max(candidates, key=lambda item: item[0])
+    _latest, key, selected = max(candidates, key=lambda item: item[0])
     metadata = {
         "seed": key[0],
         "topic": key[1],
@@ -343,6 +475,10 @@ def strict_same_model_sets(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     ]
 
 
+# ---------------------------------------------------------------------------
+# Analysis helpers
+# ---------------------------------------------------------------------------
+
 def build_outcome_comparisons(rows: list[dict[str, Any]]) -> list[str]:
     by_cond = {row["condition"]: row for row in rows}
     notes: list[str] = []
@@ -354,18 +490,16 @@ def build_outcome_comparisons(rows: list[dict[str, Any]]) -> list[str]:
         b_same = same_en["agent_shifts"].get("B", {}).get("shift", 0.0)
         a_mixed = mixed["agent_shifts"].get("A", {}).get("shift", 0.0)
         b_mixed = mixed["agent_shifts"].get("B", {}).get("shift", 0.0)
-        if a_same > a_mixed:
-            a_clause = f"A shifts more in same-English than in mixed-language ({a_same} vs {a_mixed})"
-        elif a_same < a_mixed:
-            a_clause = f"A shifts less in same-English than in mixed-language ({a_same} vs {a_mixed})"
-        else:
-            a_clause = f"A shifts the same amount in both conditions ({a_same})"
-        if b_same > b_mixed:
-            b_clause = f"B shifts more in same-English than in mixed-language ({b_same} vs {b_mixed})."
-        elif b_same < b_mixed:
-            b_clause = f"B shifts less in same-English than in mixed-language ({b_same} vs {b_mixed})."
-        else:
-            b_clause = f"B shifts the same amount in both conditions ({b_same})."
+        a_clause = (
+            f"A shifts more in same-English ({a_same} vs {a_mixed})" if a_same > a_mixed
+            else f"A shifts less in same-English ({a_same} vs {a_mixed})" if a_same < a_mixed
+            else f"A shifts the same amount in both conditions ({a_same})"
+        )
+        b_clause = (
+            f"B shifts more in same-English ({b_same} vs {b_mixed})." if b_same > b_mixed
+            else f"B shifts less in same-English ({b_same} vs {b_mixed})." if b_same < b_mixed
+            else f"B shifts the same amount in both conditions ({b_same})."
+        )
         notes.append(f"same-English vs mixed-language: {a_clause}, while {b_clause}")
 
     same_target = by_cond.get("same-target-language")
@@ -375,12 +509,12 @@ def build_outcome_comparisons(rows: list[dict[str, Any]]) -> list[str]:
         b_target = same_target["agent_shifts"].get("B", {}).get("shift", 0.0)
         a_relay = relay["agent_shifts"].get("A", {}).get("shift", 0.0)
         b_relay = relay["agent_shifts"].get("B", {}).get("shift", 0.0)
-        a_direction = "more" if a_relay > a_target else "less" if a_relay < a_target else "the same amount"
-        b_direction = "more" if b_relay > b_target else "less" if b_relay < b_target else "the same amount"
+        a_dir = "more" if a_relay > a_target else "less" if a_relay < a_target else "the same amount"
+        b_dir = "more" if b_relay > b_target else "less" if b_relay < b_target else "the same amount"
         notes.append(
-            "same-target-language vs translated-relay on the Modal Qwen2.5 pair: "
-            f"A shifts {a_direction} under relay (same-target={a_target}, relay={a_relay}), "
-            f"while B shifts {b_direction} under relay (same-target={b_target}, relay={b_relay})."
+            "same-target-language vs translated-relay: "
+            f"A shifts {a_dir} under relay (same-target={a_target}, relay={a_relay}), "
+            f"B shifts {b_dir} under relay (same-target={b_target}, relay={b_relay})."
         )
 
     swapped = by_cond.get("swapped-language")
@@ -397,120 +531,40 @@ def build_outcome_comparisons(rows: list[dict[str, Any]]) -> list[str]:
     return notes
 
 
+def _row_sort_key(row: dict[str, Any]) -> tuple:
+    """Sort by CONDITION_ORDER position, then by run_id within a condition."""
+    try:
+        order = CONDITION_ORDER.index(row["condition"])
+    except ValueError:
+        order = len(CONDITION_ORDER)
+    return (order, row["run_id"])
+
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+
 def main() -> None:
     args = parse_args()
     runs_dir = Path(args.runs_dir)
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    validation_path = out_dir / "validation.json"
-    citable_ids = load_citable_run_ids(validation_path)
+    citable_ids = load_citable_run_ids(out_dir / "validation.json")
     ep_index = load_evidence_package(out_dir)
 
     artifact_paths = discover_artifacts(runs_dir, citable_ids)
-    # Also include run_ids from evidence_package that may not exist as raw files
     ep_only_ids = set(ep_index) - {p.stem for p in artifact_paths}
     if not artifact_paths and not ep_only_ids:
         print("No citable artifacts found — run validate_bivad_artifacts.py first.")
         return
 
-    rows: list[dict[str, Any]] = []
-
-    def process_ep_entry(run_id: str, ep_entry: dict) -> dict | None:
-        """Build a row from an evidence_package entry using shift_summary."""
-        shift_summary = ep_entry.get("shift_summary") or []
-        if not shift_summary:
-            return None
-        shifts: dict[str, dict[str, Any]] = {}
-        gaps: dict[str, float] = {}
-        for s in shift_summary:
-            agent_id = s.get("agent_id")
-            if not agent_id:
-                continue
-            # Recover initial/final values from private_probe_outputs
-            pp_outputs = ep_entry.get("private_probe_outputs") or []
-            initial_vals = next(
-                (p["values"] for p in pp_outputs
-                 if p.get("agent_id") == agent_id and p.get("turn") == s.get("private_start_turn", 0)),
-                None,
-            )
-            final_vals = next(
-                (p["values"] for p in pp_outputs
-                 if p.get("agent_id") == agent_id and p.get("turn") == s.get("private_end_turn")),
-                None,
-            )
-            shifts[agent_id] = {
-                "initial_values": initial_vals,
-                "initial_turn": s.get("private_start_turn", 0),
-                "final_values": final_vals,
-                "final_turn": s.get("private_end_turn"),
-                "shift": s.get("private_shift_distance", 0.0),
-            }
-            gap = s.get("final_private_public_distance")
-            if gap is not None:
-                gaps[agent_id] = gap
-        if not shifts:
-            return None
-        combined_shift = round(sum(v["shift"] for v in shifts.values()), 6)
-        model_str = ep_entry.get("model", "unknown")
-        return {
-            "run_id": run_id,
-            "condition": ep_entry.get("condition", "unknown"),
-            "seed": ep_entry.get("seed"),
-            "model": short_model(str(model_str)),
-            "language_focus": ep_entry.get("language_focus", "unknown"),
-            "backend": "local (text-recovered)",
-            "topic": ep_entry.get("topic", "unknown"),
-            "agent_shifts": shifts,
-            "private_public_gaps": gaps,
-            "combined_shift": combined_shift,
-            "transcript_examples": evidence_transcript_examples(ep_entry),
-        }
-
-    for path in artifact_paths:
-        run_id = path.stem
-        try:
-            artifact = json.loads(path.read_text())
-        except Exception as e:
-            print(f"  skip {path.name}: {e}")
-            continue
-
-        condition = artifact.get("condition", "unknown")
-        seed = artifact.get("seed")
-        run_id_from_artifact = artifact.get("run_id", run_id)
-        model = short_model(str(artifact.get("model", "unknown")))
-        backend = artifact.get("backend", "local")
-        topic = artifact.get("topic", "unknown")
-        language_focus = infer_language_focus(artifact)
-
-        shifts = extract_shifts(artifact)
-        if not shifts:
-            # Fall back to evidence_package recovered values
-            ep_entry = ep_index.get(run_id)
-            if ep_entry:
-                row = process_ep_entry(run_id, ep_entry)
-                if row:
-                    rows.append(row)
-                    continue
-            print(f"  skip {path.name}: insufficient probe data (no ep fallback)")
-            continue
-
-        gaps = extract_private_public_gap(artifact)
-        combined_shift = round(sum(v["shift"] for v in shifts.values()), 6)
-
-        rows.append({
-            "run_id": run_id_from_artifact,
-            "condition": condition,
-            "seed": seed,
-            "model": model,
-            "language_focus": language_focus,
-            "backend": backend,
-            "topic": topic,
-            "agent_shifts": shifts,
-            "private_public_gaps": gaps,
-            "combined_shift": combined_shift,
-            "transcript_examples": transcript_examples(artifact),
-        })
+    rows: list[dict[str, Any]] = [
+        row
+        for path in artifact_paths
+        for row in [build_row_from_path(path, ep_index)]
+        if row is not None
+    ]
 
     if args.topic_filter:
         tf = args.topic_filter.lower()
@@ -527,47 +581,45 @@ def main() -> None:
             or r.get("condition") == "same-English"
         ]
 
-    complete_set_metadata = None
-    fallback_selection = False
     all_rows = list(rows)
+    complete_set_metadata: dict[str, Any] | None = None
+    fallback_selection = False
     if not args.include_all_citable:
         rows, complete_set_metadata = latest_complete_condition_set(all_rows)
         if not rows:
             rows = newest_per_condition(all_rows)
             fallback_selection = True
 
-    def sort_key(row: dict) -> tuple:
-        try:
-            order = CONDITION_ORDER.index(row["condition"])
-        except ValueError:
-            order = len(CONDITION_ORDER)
-        return (order, row["run_id"])
+    rows.sort(key=_row_sort_key)
 
-    rows.sort(key=sort_key)
+    # Annotate each row with human-readable dimension-change notes
+    for row in rows:
+        row["dimension_notes"] = dimension_change_notes(row["agent_shifts"])
 
-    # Build pattern notes
-    pattern_notes: list[str] = []
+    # Group rows by condition for downstream sections
     by_cond: dict[str, list[dict]] = {}
     for row in rows:
         by_cond.setdefault(row["condition"], []).append(row)
 
-    # Observation: which agent shifts more per condition
+    # Pattern observations: which agent shifts more per condition
+    pattern_notes: list[str] = []
     for cond in CONDITION_ORDER:
         for row in by_cond.get(cond, []):
-            shifts = row["agent_shifts"]
-            a_shift = shifts.get("A", {}).get("shift", 0.0)
-            b_shift = shifts.get("B", {}).get("shift", 0.0)
-            model = row["model"]
+            agent_shifts = row["agent_shifts"]
+            a_shift = agent_shifts.get("A", {}).get("shift", 0.0)
+            b_shift = agent_shifts.get("B", {}).get("shift", 0.0)
+            row_model = row["model"]
             if abs(a_shift - b_shift) > 1.0:
                 dominant = "A" if a_shift > b_shift else "B"
                 pattern_notes.append(
-                    f"{cond} ({model}): agent {dominant} shifts more "
+                    f"{cond} ({row_model}): agent {dominant} shifts more "
                     f"(A={a_shift}, B={b_shift})"
                 )
 
     same_model_sets = strict_same_model_sets(all_rows)
     outcome_comparisons = build_outcome_comparisons(rows)
-    limitation_notes = []
+
+    limitation_notes: list[str] = []
     if fallback_selection:
         limitation_notes.append(
             "No strict five-condition set has the same model, topic, and seed. "
@@ -575,15 +627,15 @@ def main() -> None:
             "causal comparison."
         )
 
-    selection = "all citable artifacts"
-    if not args.include_all_citable:
-        if complete_set_metadata:
-            selection = (
-                "latest complete citable five-condition set with fixed "
-                "seed/topic/model/comparison language"
-            )
-        else:
-            selection = "newest citable artifact per condition"
+    if args.include_all_citable:
+        selection = "all citable artifacts"
+    elif complete_set_metadata:
+        selection = (
+            "latest complete citable five-condition set with fixed "
+            "seed/topic/model/comparison language"
+        )
+    else:
+        selection = "newest citable artifact per condition"
 
     result = {
         "generated_by": "compare_five_conditions.py",
@@ -604,7 +656,7 @@ def main() -> None:
         "rows": rows,
     }
 
-    suffix = args.out_suffix if args.out_suffix else ""
+    suffix = args.out_suffix or ""
     out_json = out_dir / f"five_condition_comparison{suffix}.json"
     out_json.write_text(
         json.dumps(result, indent=2, sort_keys=True, ensure_ascii=False),
@@ -612,7 +664,7 @@ def main() -> None:
     )
     print(f"Wrote {out_json}")
 
-    # Markdown table
+    # --- Markdown output ---
     lines = ["# Five-Condition Cross-Lingual Outcome Comparison", ""]
     lines.append(result["note"])
     lines.append("")
@@ -626,15 +678,12 @@ def main() -> None:
             f"comparison_language={complete_set_metadata['language_focus']}."
         )
     if limitation_notes:
-        lines.append("")
-        lines.append("## Limitations")
-        lines.append("")
-        for note in limitation_notes:
-            lines.append(f"- {note}")
+        lines += ["", "## Limitations", ""]
+        lines += [f"- {n}" for n in limitation_notes]
     lines.append("")
     lines.append(
         "| run_id | condition | seed | language | model | A shift | B shift | combined | "
-        "A priv-pub gap | B priv-pub gap |"
+        "A gap | B gap |"
     )
     lines.append("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |")
     for row in rows:
@@ -644,27 +693,22 @@ def main() -> None:
         b_gap = row["private_public_gaps"].get("B", "—")
         lines.append(
             f"| {row['run_id']} | {row['condition']} | {row['seed']} "
-            f"| {row.get('language_focus', 'unknown')} | {row['model']} | {a_shift} | {b_shift} | {row['combined_shift']} "
-            f"| {a_gap} | {b_gap} |"
+            f"| {row.get('language_focus', 'unknown')} | {row['model']} "
+            f"| {a_shift} | {b_shift} | {row['combined_shift']} | {a_gap} | {b_gap} |"
         )
     lines.append("")
 
     if pattern_notes:
-        lines.append("## Pattern Observations")
-        lines.append("")
-        for note in pattern_notes:
-            lines.append(f"- {note}")
+        lines += ["## Pattern Observations", ""]
+        lines += [f"- {n}" for n in pattern_notes]
         lines.append("")
 
     if outcome_comparisons:
-        lines.append("## Outcome Comparisons")
-        lines.append("")
-        for note in outcome_comparisons:
-            lines.append(f"- {note}")
+        lines += ["## Outcome Comparisons", ""]
+        lines += [f"- {n}" for n in outcome_comparisons]
         lines.append("")
 
-    lines.append("## Per-Condition Detail")
-    lines.append("")
+    lines += ["## Per-Condition Detail", ""]
     for cond in CONDITION_ORDER:
         cond_rows = by_cond.get(cond, [])
         if not cond_rows:
@@ -676,16 +720,21 @@ def main() -> None:
             for agent_id in sorted(row["agent_shifts"]):
                 s = row["agent_shifts"][agent_id]
                 gap = row["private_public_gaps"].get(agent_id, "—")
+                dim_note = row.get("dimension_notes", {}).get(agent_id, "")
                 lines.append(
-                    f"  - Agent {agent_id}: initial {s['initial_values']} "
-                    f"→ final {s['final_values']} | shift={s['shift']} | priv-pub gap={gap}"
+                    f"  - Agent {agent_id}: shift={s['shift']} | priv-pub gap={gap}"
+                )
+                if dim_note:
+                    lines.append(f"    - Dimensions moved: {dim_note}")
+                lines.append(
+                    f"    - initial→final: {s['initial_values']} → {s['final_values']}"
                 )
             examples = row.get("transcript_examples") or []
             if examples:
                 lines.append("  - Transcript spans:")
                 for ex in examples:
                     lines.append(
-                        f"    - turn {ex.get('turn')} {ex.get('language')}: "
+                        f"    - turn {ex.get('turn')} [{ex.get('language')}]: "
                         f"{ex.get('text_excerpt')}"
                     )
         lines.append("")
