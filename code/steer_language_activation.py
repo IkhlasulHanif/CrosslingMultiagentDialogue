@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""Activation-level language steering from FLORES-200 parallel sentence pairs.
+"""Activation-level language steering from language-level FLORES-200 centroids.
 
-Computes a steering vector = mean(target_hidden_states) - mean(source_hidden_states)
-at a specified transformer layer, normalized to unit norm, then injects
-alpha * steering_vector into the residual stream during generation via a
-forward hook registered on that layer.
+Computes a steering vector from separate monolingual sentence pools:
+mean(target_hidden_states) - mean(source_hidden_states) at a specified transformer
+layer, normalized to unit norm. The vector is injected as alpha * steering_vector
+into the residual stream during generation via a forward hook registered on the
+selected layer(s).
 
-This avoids prompt-level language instructions and operates directly on
-internal representations, giving coherent language switching (unlike logit bias
-which causes token repetition at high scales).
+This avoids prompt-level language instructions and operates directly on internal
+representations. The intended retry path is base, non-instruction-tuned models
+with FLORES devtest language-level centroids and English as the anchor.
 """
 
 from __future__ import annotations
@@ -79,20 +80,22 @@ def compute_steering_vector(
     target_sentences: list[str],
     layer_idx: int,
     device: torch.device,
-    max_pairs: int = 200,
+    max_sentences: int = 0,
 ) -> tuple[torch.Tensor, dict[str, Any]]:
     """Return (unit-norm steering vector, metadata)."""
-    n = min(len(source_sentences), len(target_sentences), max_pairs)
+    if max_sentences > 0:
+        source_sentences = source_sentences[:max_sentences]
+        target_sentences = target_sentences[:max_sentences]
     src_states: list[torch.Tensor] = []
     tgt_states: list[torch.Tensor] = []
 
-    for i in range(n):
-        src_states.append(
-            _sentence_hidden_state(model, tokenizer, source_sentences[i], layer_idx, device)
-        )
-        tgt_states.append(
-            _sentence_hidden_state(model, tokenizer, target_sentences[i], layer_idx, device)
-        )
+    for sentence in source_sentences:
+        src_states.append(_sentence_hidden_state(model, tokenizer, sentence, layer_idx, device))
+    for sentence in target_sentences:
+        tgt_states.append(_sentence_hidden_state(model, tokenizer, sentence, layer_idx, device))
+
+    if not src_states or not tgt_states:
+        raise ValueError("source and target FLORES sentence pools must both be non-empty")
 
     raw_sv = torch.stack(tgt_states).mean(0) - torch.stack(src_states).mean(0)
     raw_norm = float(raw_sv.norm().item())
@@ -102,7 +105,8 @@ def compute_steering_vector(
         unit_sv = raw_sv
 
     meta = {
-        "pair_count": n,
+        "source_sentence_count": len(src_states),
+        "target_sentence_count": len(tgt_states),
         "layer_idx": layer_idx,
         "raw_vector_norm": round(raw_norm, 4),
     }
@@ -212,7 +216,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--source-lang", default="eng_Latn")
     p.add_argument("--target-lang", action="append", default=[])
     p.add_argument("--split", default="devtest")
-    p.add_argument("--max-pairs", type=int, default=200)
+    p.add_argument(
+        "--max-pairs",
+        type=int,
+        default=0,
+        help="Maximum sentences per language pool; 0 means use all loaded FLORES sentences.",
+    )
     p.add_argument("--prompt", action="append", default=[])
     p.add_argument("--out", default="runs/language-steering-activation/probe.json")
     p.add_argument("--max-new-tokens", type=int, default=100)
@@ -273,11 +282,16 @@ def main() -> int:
     sv_metadata: list[dict[str, Any]] = []
 
     for target in targets:
-        src_sents = read_flores_file(flores_dir, args.split, args.source_lang)[: args.max_pairs]
-        tgt_sents = read_flores_file(flores_dir, args.split, target)[: args.max_pairs]
+        src_sents = read_flores_file(flores_dir, args.split, args.source_lang)
+        tgt_sents = read_flores_file(flores_dir, args.split, target)
 
         primary_layer = active_layers[0]
-        print(f"\nComputing steering vector: {args.source_lang} → {target}  primary_layer={primary_layer}  active_layers={active_layers}  n={min(len(src_sents), len(tgt_sents), args.max_pairs)}")
+        max_desc = "all" if args.max_pairs <= 0 else str(args.max_pairs)
+        print(
+            f"\nComputing steering vector: {args.source_lang} -> {target}  "
+            f"primary_layer={primary_layer}  active_layers={active_layers}  "
+            f"sentences_per_language={max_desc}"
+        )
         sv, sv_meta = compute_steering_vector(
             model,
             tokenizer,
@@ -285,7 +299,7 @@ def main() -> int:
             tgt_sents,
             layer_idx=primary_layer,
             device=device,
-            max_pairs=args.max_pairs,
+            max_sentences=args.max_pairs,
         )
         sv_meta["source_lang"] = args.source_lang
         sv_meta["target_lang"] = target
@@ -344,10 +358,11 @@ def main() -> int:
         "max_pairs": args.max_pairs,
         "num_model_layers": num_layers,
         "method": (
-            "FLORES-200 parallel sentences define a steering vector as "
-            "mean_pooled(target_hidden) - mean_pooled(source_hidden) at primary_layer, "
-            "normalized to unit norm. During generation, alpha * steering_vector is "
-            "added to the residual stream at each active_layer via forward hooks. "
+            "FLORES-200 monolingual sentence pools define language-level centroids: "
+            "mean_pooled(target_hidden_states) - mean_pooled(source_hidden_states) "
+            "at primary_layer, normalized to unit norm. English is the default source "
+            "anchor. During generation, alpha * steering_vector is added to the "
+            "residual stream at each active_layer via forward hooks. "
             "No language instructions appear in the content prompts."
         ),
         "steering_vector_metadata": sv_metadata,

@@ -68,6 +68,17 @@ Use `draft/multilingual_value_drift_neurips.tex` as the paper target. Code lives
   authority-norm framing (Arabic, Hindi) than in French.
 
 - [ ] **Retry steering with language-level mean-avg, English anchor, FLORES.**
+  Status: implementation updated, empirical retry still pending. `code/steer_language_activation.py`
+  now computes separate monolingual FLORES devtest centroids for `eng_Latn` and each target
+  language, uses `(target centroid - English centroid)` normalized to unit norm, and no
+  longer treats FLORES rows as translation pairs. `code/modal_steer_language_activation.py`
+  now defaults to Qwen2.5 base (`Qwen/Qwen2.5-7B`), layer 22, all devtest sentences, and
+  alpha sweep `{5,10,20,40}`. Paper §steering now says "language-level mean-pooled FLORES"
+  and points to the retained activation-steering implementation, not the removed logit-bias
+  code. Blocker: the Modal GPU run has not been executed in this loop, so there are no
+  new steering results to report. Smallest next action: run
+  `python3 -m modal run code/modal_steer_language_activation.py --target-langs ind_Latn,spa_Latn --out-dir runs/language-steering-activation`
+  and then summarize with `python3 code/summarize_language_steering.py`.
   Implement or update `code/steer_language_activation.py`: (1) load ALL devtest FLORES
   sentences for `eng_Latn` and the target language separately (monolingual, not pairs);
   (2) compute `mean(hidden_states)` for each language at a mid-to-late layer (e.g.,
@@ -78,6 +89,14 @@ Use `draft/multilingual_value_drift_neurips.tex` as the paper target. Code lives
   Update paper §steering to say "language-level mean-pooled FLORES embeddings".
 
 - [ ] **Find and feature the best cross-lingual dialogue hook as the paper's opening.**
+  Status: partially complete. Selected the government-surveillance B Turn 4 fork as the
+  strongest hook because it changes the argument from English technical feasibility
+  (encryption/anonymization) to Indonesian political/economic misuse and maps cleanly to
+  the one-dimensional extra `power` shift. Rewrote the abstract opening and introduction
+  to lead with the original Indonesian phrase plus English gloss and the probe implication.
+  Section 5 already contained the detailed qualitative paragraph/table for this hook, so
+  no new empirical claim was added there. Smallest next action: after a full paper pass,
+  tighten the surrounding intro paragraphs and remove any remaining design-scaffold tone.
   Scan `runs/bivad-local-lm/` for the single best 2–4 turn exchange where language
   assignment produces a qualitatively different argument — something culturally or
   linguistically specific, not just a different L2 number. Best existing candidates:

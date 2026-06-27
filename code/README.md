@@ -9,7 +9,7 @@ Keep experiment implementation and experiment harnesses in this directory.
 - `run_bivad_pilot.py`: legacy dry-run-capable model runner for a minimal paired BiVaD pilot using the OpenAI Responses API; not used for the current Modal-only empirical path.
 - `run_bivad_local_lm.py`: dry-run-capable CPU local Hugging Face causal-LM runner for legacy API-free paired pilots.
 - `modal_steer_language_activation.py`: Modal GPU entrypoint for FLORES-derived activation steering probes.
-- `steer_language_activation.py`: FLORES-derived activation steering implementation; the active retry path should use language-level mean-pooled FLORES centroids on base models.
+- `steer_language_activation.py`: FLORES-derived activation steering implementation; the active retry path uses language-level mean-pooled FLORES devtest centroids on base models, with English as anchor.
 - `summarize_language_steering.py`: API-free validation gate for saved steering artifacts, including archived negative-result runs.
 - `scan_divergence.py`: API-free scanner that ranks steering outputs for possible opinion-divergence debate seeds.
 - `preflight_bivad_local_lm.py`: offline readiness check for Torch, transformers, and complete local model directories.
@@ -70,7 +70,7 @@ python3 -m modal run code/modal_steer_language_activation.py --model-id <hf-base
 python3 code/scan_divergence.py runs/language-steering-activation --out code/bivad-evidence-audit/divergence_scan.json
 ```
 
-The steering prompt should describe only the topic/content. Do not include "reply in X" or any stance instruction. The old token logit-bias implementation was removed after failing validation; archived failed outputs live under `runs/archived/`.
+By default the Modal entrypoint targets `Qwen/Qwen2.5-7B`, layer 22, all FLORES devtest sentences per language, and alpha sweep `5,10,20,40`. The steering prompt should describe only the topic/content. Do not include "reply in X" or any stance instruction. The old token logit-bias implementation was removed after failing validation; archived failed outputs live under `runs/archived/`.
 
 Validate whether artifacts can be cited as empirical candidates:
 

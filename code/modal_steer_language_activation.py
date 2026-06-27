@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """Run activation-steering language probe on Modal GPU.
 
-Downloads FLORES-200 from HuggingFace inside the container, computes a
-steering vector from hidden-state differences (target - source) at a
-specified transformer layer, then adds alpha * normalized_vector via a
-forward hook during generation.
+Downloads FLORES-200 from HuggingFace inside the container, computes separate
+language-level mean-pooled hidden-state centroids for English and each target
+language, then adds alpha * normalized(target - English) via a forward hook
+during generation.
 
 Usage:
     modal run code/modal_steer_language_activation.py \\
-        --model-id Qwen/Qwen2.5-1.5B-Instruct \\
-        --layer-idx 14 --alpha-sweep 15,25,40 \\
+        --model-id Qwen/Qwen2.5-7B \\
+        --layer-idx 22 --alpha-sweep 5,10,20,40 \\
         --out-dir runs/language-steering-activation
 
     modal run code/modal_steer_language_activation.py \\
-        --model-id Qwen/Qwen2.5-7B-Instruct \\
-        --layer-idx 16 --alpha-sweep 20,35,50
+        --model-id Qwen/Qwen2.5-7B \\
+        --layer-indices 20,22,24,26 --alpha-sweep 5,10,20,40
 """
 
 from __future__ import annotations
@@ -63,7 +63,9 @@ def _download_flores_hf(
         if dest.exists():
             continue
         ds = load_dataset("Muennighoff/flores200", lang, split=hf_split, trust_remote_code=True)
-        sentences = [row["sentence"] for row in ds][:max_pairs]
+        sentences = [row["sentence"] for row in ds]
+        if max_pairs > 0:
+            sentences = sentences[:max_pairs]
         dest.write_text("\n".join(sentences), encoding="utf-8")
         print(f"  Downloaded {len(sentences)} FLORES sentences for {lang}")
 
@@ -117,18 +119,18 @@ def run_probe(options: dict) -> str:
 
 @app.local_entrypoint()
 def main(
-    model_id: str = "Qwen/Qwen2.5-1.5B-Instruct",
+    model_id: str = "Qwen/Qwen2.5-7B",
     source_lang: str = "eng_Latn",
     target_langs: str = "ind_Latn,spa_Latn",
     split: str = "devtest",
-    max_pairs: int = 200,
+    max_pairs: int = 0,
     prompts: str = "",
     out_dir: str = "runs/language-steering-activation",
     max_new_tokens: int = 100,
-    layer_idx: int = 14,
+    layer_idx: int = 22,
     layer_indices: str = "",
     alpha: float = 20.0,
-    alpha_sweep: str = "",
+    alpha_sweep: str = "5,10,20,40",
     temperature: float = 0.7,
     top_p: float = 0.9,
 ) -> None:
