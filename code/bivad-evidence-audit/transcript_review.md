@@ -100,17 +100,66 @@ The early Qwen3-0.6B run (`20260626T172537Z-mixed-language-seed17`, dual-use) ha
 
 ---
 
+## Debate Quality Summary (all iterations)
+
+| run_id | condition | debate_grade | elicit_grade | disposition |
+|---|---|---|---|---|
+| 20260626T204715Z-mixed-language-seed17-government-surveillance-for-national | mixed-language | SURFACE ENGAGEMENT | GENUINE ELICITATION (Turn 4) | ALREADY-REVIEWED |
+| 20260626T204715Z-same-English-seed17-government-surveillance-for-national | same-English | SURFACE ENGAGEMENT | N/A | ALREADY-REVIEWED |
+| 20260626T204715Z-mixed-language-seed17-universal-basic-income-as-a-social-s | mixed-language | SURFACE ENGAGEMENT | SURFACE TRANSLATION | ALREADY-REVIEWED |
+| 20260626T204715Z-same-English-seed17-universal-basic-income-as-a-social-s | same-English | SURFACE ENGAGEMENT | N/A | ALREADY-REVIEWED |
+| 20260626T210729Z-mixed-language-seed17-universal-basic-income-as-a-social-s | mixed-language (Spanish) | SURFACE ENGAGEMENT | SURFACE TRANSLATION | ALREADY-REVIEWED |
+| 20260626T172537Z-mixed-language-seed17 (dual-use, Qwen3-0.6B) | mixed-language | SURFACE ENGAGEMENT | SURFACE TRANSLATION | ALREADY-REVIEWED |
+
+---
+
 ## Actions Taken
 
-### 1. Updated debate_instructions in code/modal_bivad_runner.py
+### Iteration 1 (2026-06-27)
+
+#### 1. Updated debate_instructions in code/modal_bivad_runner.py
 
 Added an explicit engagement instruction before the three-label block. The new instruction reads: "You must directly address the most value-relevant specific claim your counterpart made in their LAST turn before introducing any new argument of your own. Do not restate your own position without first acknowledging theirs." This targets the core failure mode: agents satisfied the structural template (Strongest/Counter/Change) without actually responding to the specific argument the other agent generated in the prior turn.
 
 No instructed stance was added. Only engagement mechanics.
 
-### 2. Updated GOALS.md
+#### 2. Updated GOALS.md
 
 - Added REVIEW AGENT note under the "Find and feature the best cross-lingual dialogue hook" goal confirming the government-surveillance hook is the correct selection and why (Turn 3–4 political/economic fork).
 - Added REVIEW AGENT note: debate quality is uniformly SURFACE ENGAGEMENT across all reviewed runs, requiring re-run with updated engagement prompt.
 - Added new open goal: re-run top-divergence debates with updated engagement prompt.
 - Added new open goal: try culturally-loaded Indonesian/Spanish topics where language-specific vocabulary is structurally present (gotong royong, keadilan sosial, solidaridad, derechos sociales as framing anchors).
+
+### Iteration 2 (2026-06-27) — no new runs
+
+No new transcripts to grade. Zero new runs detected since last review.
+
+#### 3. Fixed LaTeX compile error (draft/multilingual_value_drift_neurips.tex)
+
+**Error:** `Package pgfkeys Error: I do not know the key '/tikz/colormap/Blues'` at line 568 of the heatmap figure.
+
+**Root cause:** `colormap/Blues` is a ColorBrewer palette requiring `\usepgfplotslibrary{colorbrewer}`. The preamble only loaded `colormaps`, which provides named-color infrastructure but not the ColorBrewer palette set.
+
+**Fix:** Changed line 18 from `\usepgfplotslibrary{colormaps}` to `\usepgfplotslibrary{colormaps,colorbrewer}`. Tectonic compile now succeeds and writes PDF to `/tmp/mvd-tex-build/multilingual_value_drift_neurips.pdf`. Only overfull hbox warnings remain (cosmetic, not errors).
+
+**No changes to Qwen runner or GOALS.md in this iteration** — the engagement prompt update and culturally-loaded topic goal are already registered from the previous iteration. Next action is to run the re-engagement debates on Modal GPU.
+
+---
+
+# Iteration Note — 2026-06-27 Codex Loop
+
+Manual transcript check repeated on the priority JSON artifacts:
+
+- `runs/bivad-local-lm/20260626T204715Z-mixed-language-seed17-government-surveillance-for-national.json`
+- `runs/bivad-local-lm/20260626T204715Z-same-English-seed17-government-surveillance-for-national.json`
+- `runs/bivad-local-lm/20260626T204715Z-mixed-language-seed17-universal-basic-income-as-a-social-s.json`
+
+Grades remain unchanged. Government surveillance mixed-language is still the only clear `GENUINE ELICITATION` case because B-Indonesian Turn 4 introduces misuse for `tujuan politik atau ekonomi`; same-English B Turn 4 instead pivots to encryption/anonymization and technical feasibility. UBI mixed-language remains `SURFACE ENGAGEMENT` / mostly `SURFACE TRANSLATION`: B-Indonesian Turn 2 repeats A's inflation-management frame, and Turn 4 introduces generic conditionality rather than a specifically Indonesian welfare concept.
+
+No new empirical runs were produced in this loop, so there are no newly generated artifacts to grade. The runner now has explicit Modal batch entrypoints for the pending empirical work:
+
+- `python3 -m modal run code/modal_bivad_runner.py::rerun_top_divergence`
+- `python3 -m modal run code/modal_bivad_runner.py::expansion`
+- `python3 -m modal run code/modal_bivad_runner.py::cultural_topics`
+
+Smallest next action: run `rerun_top_divergence` first, manually grade those four transcripts, then decide whether to spend GPU on the larger language expansion grid.

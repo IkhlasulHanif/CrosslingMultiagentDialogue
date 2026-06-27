@@ -13,6 +13,10 @@
 \usepackage{xcolor}
 \usepackage{graphicx}
 \usepackage{enumitem}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{colormaps,colorbrewer}
+\usepackage{tikz}
 
 \newcommand{\method}{BiVaD}
 \newcommand{\synthetic}{\textsc{Synthetic}}
@@ -277,26 +281,7 @@ We include six checks. First, readout perturbation is measured by comparing runs
 \section{Design Validation Against Executed Results}
 \label{sec:hypothetical}
 
-\textbf{This section is a planning scaffold retained for design validation only.} Table~\ref{tab:hypothetical} shows the \emph{synthetic} placeholders used to plan the analysis format; these are not experimental results and must not be cited as findings. We retain them here to document which pre-execution predictions were directionally supported by the executed pilot in Section~\ref{sec:empirical}.
-
-\begin{table}[t]
-\centering
-\caption{\synthetic{} planning scaffold. Numbers are invented placeholders used before execution. Drift is normalized to $[0,1]$; lower convergence distance means agents became more similar. \textbf{Not empirical results.}}
-\label{tab:hypothetical}
-\resizebox{\linewidth}{!}{%
-\begin{tabular}{lrrrr}
-\toprule
-Condition & Private drift $\uparrow$ & Expressed drift $\uparrow$ & Final convergence $\downarrow$ & Private-public gap $\uparrow$ \\
-\midrule
-Mixed-language & 0.18 & 0.27 & 0.41 & 0.16 \\
-Same high-resource & 0.12 & 0.15 & 0.48 & 0.08 \\
-Same target-language & 0.14 & 0.18 & 0.46 & 0.10 \\
-Translated relay & 0.15 & 0.20 & 0.44 & 0.12 \\
-No dialogue & 0.04 & 0.03 & 0.57 & 0.03 \\
-\bottomrule
-\end{tabular}
-}
-\end{table}
+\textbf{This section is a planning scaffold retained for design validation only.} Table~\ref{tab:hypothetical} (Appendix~\ref{sec:design-scaffold}) shows the \emph{synthetic} placeholders used to plan the analysis format; these are not experimental results and must not be cited as findings. We retain them in the appendix to document which pre-execution predictions were directionally supported by the executed pilot in Section~\ref{sec:empirical}.
 
 \paragraph{Comparison to executed results.}
 The pre-execution hypothesis was that mixed-language dialogue would amplify public value expression more than private prompted value readouts, with translated relay falling between same-language and mixed-language conditions. The executed pilot (Section~\ref{sec:empirical}) partially supports this prediction. \emph{Confirmed}: translated relay does not uniformly match the mixed-language pattern; it produces topic-dependent effects --- amplifying private-public gaps for dual-use and religious exemptions but not for government surveillance or content moderation. \emph{Not confirmed}: the simple ranking mixed $>$ relay $>$ same-language does not hold; the variable agent (A vs B) and the direction of the cross-lingual effect differ by topic. \emph{Revised}: no-dialogue drift is not uniformly low; for government surveillance, A's reflection-only shift (3.464 in 8D Schwartz space) equals the same-English debate minimum, suggesting topic framing can saturate private probe movement independently of peer interaction.
@@ -415,7 +400,7 @@ Table~\ref{tab:empirical-ubi} reveals a strikingly different pattern from the du
 
 \textbf{Private-public gaps are lowest in conditions without English-source asymmetry.} The same-English condition has the highest gaps (3.742 for both agents). Same-target-language has the lowest A gap (1.000). When both agents share the same source language context, private probe answers most closely track the observer-inferred values.
 
-These patterns are exploratory (single topic, seed, model). Code: \texttt{code/compare\_five\_conditions.py \mbox{--topic-filter} "universal basic income" \mbox{--out-suffix} \_ubi}, \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_ubi.json}.
+These patterns are exploratory (single topic, seed, model). Code: \texttt{compare\_five\_conditions.py} (\texttt{--topic-filter} ``universal basic income''), artifact: \texttt{five\_condition\_comparison\_ubi.json}.
 
 \subsection{Religious Exemptions Five-Condition Comparison}
 \label{sec:religious-five-conditions}
@@ -453,7 +438,7 @@ Table~\ref{tab:empirical-religious} reveals a qualitatively different pattern fr
 
 \textbf{Translated relay again produces the largest private-public gaps.} A's gap (3.162) and B's gap (3.873) are highest under relay, replicating the pattern in Table~\ref{tab:empirical} (dual-use). Across all three topic five-condition sets, translated relay consistently yields the largest private-public gaps, suggesting that translation adds a systematic semantic divergence between what agents express and what observers infer from the transcript.
 
-These results are exploratory (single topic, seed, model). Code: \texttt{code/compare\_five\_conditions.py \mbox{--topic-filter} "religious exemptions" \mbox{--out-suffix} \_religious\_exemptions}, \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_religious\_exemptions.json}.
+These results are exploratory (single topic, seed, model). Code: \texttt{compare\_five\_conditions.py} (\texttt{--topic-filter} ``religious exemptions''), artifact: \texttt{five\_condition\_comparison\_religious\_exemptions.json}.
 
 \subsection{Government Surveillance Five-Condition Comparison}
 \label{sec:surveillance-five-conditions}
@@ -493,7 +478,7 @@ Table~\ref{tab:empirical-surveillance} reveals a clean production-language effec
 
 \textbf{B converges to two production-language endpoints.} When B generates in English (same-English, swapped-language), B's final private probe leaves power at~5. When B generates in Indonesian (mixed-language, same-target-language, translated-relay), B's final private probe moves power to~4. All other final values match across the five conditions: security~5 and the remaining dimensions~4. Language assignment therefore modulates both the \emph{magnitude} of B's shift trajectory and one endpoint dimension, rather than merely changing how far B moves toward a single endpoint.
 
-These results are exploratory (single topic, seed, model). Code: \texttt{code/compare\_five\_conditions.py \mbox{--topic-filter} "government surveillance" \mbox{--out-suffix} \_government\_surveillance}, \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_government\_surveillance.json}.
+These results are exploratory (single topic, seed, model). Code: \texttt{compare\_five\_conditions.py} (\texttt{--topic-filter} ``government surveillance''), artifact: \texttt{five\_condition\_comparison\_government\_surveillance.json}.
 
 \subsection{Content Moderation Five-Condition Comparison}
 \label{sec:content-moderation-five-conditions}
@@ -531,7 +516,7 @@ Table~\ref{tab:empirical-content} reveals a topic where both A and B show modest
 
 \textbf{Swapped-language has the smallest combined shift (5.553).} Both agents' trajectories are most compressed when A argues in Indonesian and B responds in English. This production-language assignment uniquely lowers A's engagement with the topic. No other five-condition topic shows swapped-language as the globally lowest combined-shift condition, making this a distinctive content-moderation signature.
 
-These results are exploratory (single topic, seed, model). Code: \texttt{code/compare\_five\_conditions.py \mbox{--topic-filter} "content moderation" \mbox{--out-suffix} \_content\_moderation}, \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_content\_moderation.json}.
+These results are exploratory (single topic, seed, model). Code: \texttt{compare\_five\_conditions.py} (\texttt{--topic-filter} ``content moderation''), artifact: \texttt{five\_condition\_comparison\_content\_moderation.json}.
 
 \subsection{Cross-Topic Synthesis}
 \label{sec:cross-topic}
@@ -568,6 +553,73 @@ Table~\ref{tab:cross-topic} reveals four cross-topic structural patterns.
 \textbf{Scan $\Delta_B$ is a reliable ordinal proxy for five-condition complexity.} UBI ($\Delta_B=1.68$) has the widest B endpoint spread (3.317--5.000) and the clearest single-factor suppression story. Content moderation ($\Delta_B=0.58$) has the narrowest spread (3.162--3.742) and the most stable convergence behavior. The ranking is not perfect (religious exemptions has higher A-range than its $\Delta_B$ implies), but the scan correctly identifies the extremes and the intermediate cases as a rough filter for which topics merit full five-condition analysis.
 
 These cross-topic patterns are exploratory and based on a single model, seed, and language pair. Seed-level replication (as shown for UBI in Section~\ref{sec:replication}) and model-level replication are needed before drawing strong causal claims.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    enlargelimits=false,
+    colorbar,
+    colorbar style={
+        ylabel={$D_B$ (L2 shift)},
+        font=\footnotesize,
+        width=0.3cm,
+    },
+    colormap={bivadblue}{color=(white); color=(blue!35); color=(blue!80!black)},
+    point meta min=2.5,
+    point meta max=5.3,
+    xtick={0,1,2,3,4},
+    xticklabels={Same-EN, Mixed, Swapped, Same-tgt, Relay},
+    x tick label style={font=\footnotesize, rotate=28, anchor=east},
+    ytick={0,1,2,3,4},
+    yticklabels={Dual-use, UBI, Religious, Surv., Content},
+    y tick label style={font=\footnotesize},
+    width=7.2cm,
+    height=5.8cm,
+    tick align=outside,
+    axis on top,
+]
+\addplot[
+    matrix plot*,
+    point meta=explicit,
+    mesh/cols=5,
+] coordinates {
+    (0,0) [3.87]  (1,0) [2.83]  (2,0) [2.83]  (3,0) [2.65]  (4,0) [3.87]
+    (0,1) [5.00]  (1,1) [3.32]  (2,1) [5.00]  (3,1) [5.00]  (4,1) [3.32]
+    (0,2) [4.69]  (1,2) [4.00]  (2,2) [4.58]  (3,2) [4.24]  (4,2) [4.00]
+    (0,3) [3.46]  (1,3) [4.12]  (2,3) [3.46]  (3,3) [4.12]  (4,3) [4.12]
+    (0,4) [3.74]  (1,4) [3.16]  (2,4) [3.32]  (3,4) [3.46]  (4,4) [3.32]
+};
+\node[font=\tiny,white] at (axis cs:0,0) {3.87};
+\node[font=\tiny,black] at (axis cs:1,0) {2.83};
+\node[font=\tiny,black] at (axis cs:2,0) {2.83};
+\node[font=\tiny,black] at (axis cs:3,0) {2.65};
+\node[font=\tiny,white] at (axis cs:4,0) {3.87};
+\node[font=\tiny,white] at (axis cs:0,1) {5.00};
+\node[font=\tiny,black] at (axis cs:1,1) {3.32};
+\node[font=\tiny,white] at (axis cs:2,1) {5.00};
+\node[font=\tiny,white] at (axis cs:3,1) {5.00};
+\node[font=\tiny,black] at (axis cs:4,1) {3.32};
+\node[font=\tiny,white] at (axis cs:0,2) {4.69};
+\node[font=\tiny,black] at (axis cs:1,2) {4.00};
+\node[font=\tiny,white] at (axis cs:2,2) {4.58};
+\node[font=\tiny,black] at (axis cs:3,2) {4.24};
+\node[font=\tiny,black] at (axis cs:4,2) {4.00};
+\node[font=\tiny,black] at (axis cs:0,3) {3.46};
+\node[font=\tiny,black] at (axis cs:1,3) {4.12\dag};
+\node[font=\tiny,black] at (axis cs:2,3) {3.46};
+\node[font=\tiny,black] at (axis cs:3,3) {4.12\dag};
+\node[font=\tiny,black] at (axis cs:4,3) {4.12\dag};
+\node[font=\tiny,white] at (axis cs:0,4) {3.74};
+\node[font=\tiny,black] at (axis cs:1,4) {3.16};
+\node[font=\tiny,black] at (axis cs:2,4) {3.32};
+\node[font=\tiny,black] at (axis cs:3,4) {3.46};
+\node[font=\tiny,black] at (axis cs:4,4) {3.32};
+\end{axis}
+\end{tikzpicture}
+\caption{Agent~B private probe shift ($D_B$, L2 distance in 8D Schwartz space) by topic and dialogue condition (Qwen2.5-7B-Instruct, seed~17, Indonesian/English). Rows are the five scan topics; columns are the five dialogue conditions. Darker shading encodes larger shift. \dag\ marks cells where $D_B$ exceeds the same-English baseline for that topic (direction reversal). Government surveillance (\textit{Surv.}) is the only topic with reversals: B shifts more whenever any condition places Indonesian in the dialogue; the same-English condition alone produces a lower shift.}
+\label{fig:heatmap-topic-condition}
+\end{figure}
 
 \subsection{Replication: Language-Pair Invariance and Multi-Seed Coverage}
 \label{sec:replication}
@@ -639,7 +691,7 @@ Seed & Condition & A shift & B shift & Combined & A gap & B gap \\
 
 \textbf{Translated-relay gap amplification does not replicate at seed~42.} The most notable non-replication: seed~17 shows translated-relay private-public gaps of A~$=3.606$, B~$=3.464$ --- the largest across all five conditions. At seed~42, relay gaps are A~$=2.646$, B~$=2.000$, comparable to same-English. The pattern in seed~17 where relay uniquely inflates gaps is not a structural property of the relay condition; it is trajectory-dependent.
 
-\textbf{Combined interpretation.} The dual-use seed-stability check confirms that (a) absolute shift magnitudes are comparable across seeds (combined range 5.646--6.873 at seed~17, 5.828--6.110 at seed~42); (b) swapped-language convergence is the most robust single-condition finding; and (c) condition-specific effects such as the relay gap amplification and the identity of the maximum-B-shift condition are seed-sensitive. These results reinforce the conclusion from Section~\ref{sec:replication} that effect-direction findings require multi-seed replication before being treated as structural. Artifacts: \texttt{runs/bivad-local-lm/20260626T225543Z-*seed42.json}; comparison tables: \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_dual\_use\_seed17.json} and \texttt{five\_condition\_comparison\_dual\_use\_seed42.json}.
+\textbf{Combined interpretation.} The dual-use seed-stability check confirms that (a) absolute shift magnitudes are comparable across seeds (combined range 5.646--6.873 at seed~17, 5.828--6.110 at seed~42); (b) swapped-language convergence is the most robust single-condition finding; and (c) condition-specific effects such as the relay gap amplification and the identity of the maximum-B-shift condition are seed-sensitive. These results reinforce the conclusion from Section~\ref{sec:replication} that effect-direction findings require multi-seed replication before being treated as structural. Artifacts: \texttt{20260626T225543Z-*seed42.json}; comparison tables: \texttt{five\_condition\_comparison\_dual\_use\_seed17.json} and \texttt{five\_condition\_comparison\_dual\_use\_seed42.json}.
 
 \subsection{UBI Seed Stability: Five-Condition Comparison at Seed~42}
 \label{sec:ubi-seed-stability}
@@ -679,7 +731,7 @@ Seed & Condition & A shift & B shift & Combined & A gap & B gap \\
 
 \textbf{Swapped-language and same-target-language are stable.} As in dual-use, swapped-language produces consistent A shifts ($2.236$ at both seeds) and B shifts ($5.000$ vs $4.796$). Same-target-language B shifts ($5.000$ vs $4.796$) are also stable. These production-language-symmetric conditions show little sensitivity to seed for UBI.
 
-Artifacts: \texttt{runs/bivad-local-lm/20260626T231513Z-*seed42.json}; comparison table: \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_ubi\_seed42.json}.
+Artifacts: \texttt{20260626T231513Z-*seed42.json}; comparison table: \texttt{five\_condition\_comparison\_ubi\_seed42.json}.
 
 \subsection{Seed Stability: Religious Exemptions and Government Surveillance at Seed~42}
 \label{sec:relig-surv-seed-stability}
@@ -735,7 +787,7 @@ Surveillance & 42 & Translated-relay    & 2.646 & \textbf{4.123} & 6.769 & 2.000
 
 \textbf{Government surveillance: A's production-language split is consistent.} At both seeds, conditions where A generates in Indonesian (swapped-language, same-target-language) give A~$=3.317$, while conditions where A generates in English (same-English, mixed-language, translated-relay) give A~$=2.449$--$2.646$. This production-language effect on A is seed-stable.
 
-Artifacts: \texttt{runs/bivad-local-lm/20260626T233030Z-*seed42.json} (religious exemptions) and \texttt{runs/bivad-local-lm/20260626T233803Z-*seed42.json} (surveillance); comparison tables: \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_religious\_exemptions\_seed42.json} and \texttt{five\_condition\_comparison\_government\_surveillance\_seed42.json}.
+Artifacts: \texttt{20260626T233030Z-*seed42.json} (religious exemptions) and \texttt{20260626T233803Z-*seed42.json} (surveillance); comparison tables: \texttt{five\_condition\_comparison\_religious\_exemptions\_seed42.json} and \texttt{five\_condition\_comparison\_government\_surveillance\_seed42.json}.
 
 \subsection{Seed Stability: Content Moderation at Seed~42}
 \label{sec:content-moderation-seed-stability}
@@ -829,7 +881,7 @@ Before citing Table~\ref{tab:content-moderation-seed-stability} as evidence for 
 \item \textbf{Relay A does not converge to all-4s.} A's self-direction drops $5\to3$ ($-2$) under relay while converging to~4 in all other conditions. The low relay private-public gap (A~$=1.732$) means the observer tracks A's actual non-neutral probe state rather than defaulting to neutral ratings. Verify by inspecting \texttt{observer\_readouts} values in the relay artifact.
 \end{itemize}
 
-Artifacts: \texttt{runs/bivad-local-lm/20260626T235306Z-same-English-seed42.json} and \texttt{runs/bivad-local-lm/20260626T235647Z-*seed42.json}; comparison table: \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_content\_moderation\_seed42.json}.
+Artifacts: \texttt{20260626T235306Z-same-English-seed42.json} and \texttt{20260626T235647Z-*seed42.json}; comparison table: \texttt{five\_condition\_comparison\_content\_moderation\_seed42.json}.
 
 \subsection{Language-Pair Replication: UBI Five-Condition Comparison in Spanish}
 \label{sec:ubi-spanish}
@@ -871,7 +923,7 @@ Spanish & Translated-relay    & 1.732 & 5.292 & 7.023 & 2.000 & 1.732 \\
 
 \textbf{Spanish seed~42 confirms that the mixed-language effect is seed-specific.} We also ran the full Spanish/English five-condition set for UBI at seed~42. The mixed-language condition no longer suppresses B: B shifts $5.292$ in both same-English and mixed-language, so $\Delta_B=0.0$, matching the Indonesian seed~42 null result. Translated-relay remains distinct from mixed-language at seed~42 (B shift $4.359$), but it does not reproduce the seed~17 Spanish relay pattern where B shifted above same-English. Thus the cross-language generalization is narrow: seed~17 mixed-language suppression generalizes from Indonesian to Spanish, while seed~42 shows no mixed-language divergence in either language pair.
 
-Artifacts: \texttt{runs/bivad-local-lm/20260627T001307Z-\{swapped,same-target,translated-relay\}-language-seed17.json} (Spanish seed~17), \texttt{runs/bivad-local-lm/20260626T210916Z-*seed17-universal-basic-income*.json} (Spanish seed~17 same-English and mixed-language), and \texttt{runs/bivad-local-lm/20260627T002537Z-*seed42.json} (Spanish seed~42); comparison tables: \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_ubi\_spanish\_seed17.json} and \texttt{five\_condition\_comparison\_ubi\_spanish\_seed42.json}.
+Artifacts: \texttt{20260627T001307Z-\{swapped,same-target,relay\}-seed17.json} (Spanish seed~17), \texttt{20260626T210916Z-*seed17-ubi*.json} (Spanish seed~17 same-EN and mixed), and \texttt{20260627T002537Z-*seed42.json} (Spanish seed~42); comparison tables: \texttt{five\_condition\_comparison\_ubi\_spanish\_seed17.json} and \texttt{five\_condition\_comparison\_ubi\_spanish\_seed42.json}.
 
 \subsection{Language-Pair Replication: Government Surveillance in Spanish}
 \label{sec:surveillance-spanish}
@@ -911,7 +963,7 @@ Spanish & Translated-relay    & 2.646 & \textbf{4.123} & 6.769 & 2.000 & 2.000 \
 
 \textbf{Contrast with UBI.} For UBI, mixed-language B-suppression was language-pair-invariant but direction is topic-dependent: UBI suppresses B while government surveillance amplifies B. The replication in Spanish confirms that both directions of the production-language effect can generalize across languages, at least within the Romance/Austronesian pair tested here.
 
-Artifacts: \texttt{runs/bivad-local-lm/20260627T003831Z-\{mixed,same-target,translated-relay\}-language-seed17.json} (Spanish); comparison table: \texttt{code/bivad-evidence-audit/five\_condition\_comparison\_government\_surveillance\_spanish\_seed17.json}.
+Artifacts: \texttt{20260627T003831Z-\{mixed,same-target,relay\}-seed17.json} (Spanish); comparison table: \texttt{five\_condition\_comparison\_government\_surveillance\_spanish\_seed17.json}.
 
 \subsection{No-Dialogue Control: Measurement-Induced Drift}
 \label{sec:no-dialogue}
@@ -945,7 +997,7 @@ For four of five topics, every debate-condition B drift exceeds the no-dialogue 
 
 \textbf{Replication of government surveillance saturation.} To check whether the large no-dialogue A shift on government surveillance is a seed=17 anomaly, we ran a second no-dialogue control at seed=42 (same model, same protocol). A's shift was $3.742$ at seed=42 vs $3.464$ at seed=17; B's shift was $3.000$ at seed=42 vs $3.606$ at seed=17. Both seeds produce A shifts exceeding $3.0$, confirming that the reflection-framing alone induces substantial private-probe movement for this topic regardless of seed. B's shift at seed=42 ($3.000$) lies within the debate-condition range ($3.464$--$4.123$), so the saturation is limited to A in this replication.
 
-These results are exploratory (five topics, seed=17 primary, seed=42 replication for government surveillance only, single model). Artifacts: \texttt{runs/bivad-local-lm/*no-dialogue*}. Code: \texttt{code/modal\_bivad\_runner.py}, \texttt{code/summarize\_no\_dialogue.py}, and \texttt{code/bivad-evidence-audit/no\_dialogue\_summary.json}.
+These results are exploratory (five topics, seed=17 primary, seed=42 replication for government surveillance only, single model). Artifacts: \texttt{*no-dialogue*.json} under \texttt{runs/bivad-local-lm/}. Code: \texttt{modal\_bivad\_runner.py}, \texttt{summarize\_no\_dialogue.py}, \texttt{no\_dialogue\_summary.json}.
 
 \section{Threats to Validity}
 
@@ -1105,6 +1157,37 @@ L2 shift & \multicolumn{3}{c}{3.317} & \multicolumn{3}{c}{5.000} \\
 }
 \end{table}
 
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    bar width=4pt,
+    symbolic x coords={Ach, Ben, Con, Pow, Sec, Sel, Tra, Uni},
+    xtick=data,
+    x tick label style={font=\footnotesize},
+    ylabel={$\Delta$ probe (T4\,--\,T0)},
+    ylabel style={font=\footnotesize},
+    legend style={font=\tiny, at={(0.5,-0.30)}, anchor=north, legend columns=3,
+        /tikz/every even column/.append style={column sep=0.4cm}},
+    ymajorgrids=true,
+    ymin=-3.8, ymax=1.8,
+    width=\linewidth,
+    height=5cm,
+    tick align=outside,
+]
+\addplot coordinates {(Ach,0)(Ben,1)(Con,-3)(Pow,-3)(Sec,0)(Sel,1)(Tra,-2)(Uni,1)};
+\addplot coordinates {(Ach,0)(Ben,1)(Con,-2)(Pow,-2)(Sec,0)(Sel,0)(Tra,-1)(Uni,1)};
+\addplot coordinates {(Ach,0)(Ben,1)(Con,-3)(Pow,-3)(Sec,0)(Sel,1)(Tra,-2)(Uni,1)};
+\addplot coordinates {(Ach,0)(Ben,1)(Con,-3)(Pow,-3)(Sec,0)(Sel,1)(Tra,-2)(Uni,1)};
+\addplot coordinates {(Ach,0)(Ben,1)(Con,-2)(Pow,-2)(Sec,-1)(Sel,0)(Tra,-1)(Uni,0)};
+\legend{Same-EN, Mixed, Swapped, Same-tgt, Relay}
+\end{axis}
+\end{tikzpicture}
+\caption{Agent~B per-dimension Schwartz probe deltas (turn~4\,$-$\,turn~0) across all five dialogue conditions, UBI seed~17 (Qwen2.5-7B-Instruct, Indonesian/English). Dimension abbreviations: Ach=achievement, Ben=benevolence, Con=conformity, Pow=power, Sec=security, Sel=self-direction, Tra=tradition, Uni=universalism. The $\Delta_B=1.683$ gap between same-English and mixed-language concentrates in \texttt{conformity} ($-3$ vs.\ $-2$) and \texttt{power} ($-3$ vs.\ $-2$), with secondary contributions from \texttt{tradition} ($-2$ vs.\ $-1$) and \texttt{self-direction} ($+1$ vs.\ $0$). Same-English, swapped-language, and same-target-language share identical profiles; mixed-language and relay share the same conformity and power values but diverge on security and universalism.}
+\label{fig:ubi-b-dimensions}
+\end{figure}
+
 The probe shift difference ($5.000 - 3.317 = 1.683$) concentrates in three dimensions:
 
 \textbf{Conformity}: drops -3 in same-English versus -2 in mixed-language. A's Turn~3 in same-English directly invokes work-incentive flexibility and individual autonomy as UBI's benefit --- framing that targets exactly conformity's opposite pole (deference to established norms and roles). B-mixed-language never receives this framing from A; A-mixed stays on the inflation management frame that does not specifically challenge conformity.
@@ -1120,7 +1203,7 @@ The four dimensions with differential shifts (conformity, power, tradition, self
 \subsection{Government Surveillance: Indonesian Production Amplifies B's Shift}
 \label{sec:surveillance-qualitative}
 
-Government surveillance is the cleanest counterexample to the UBI suppression pattern: B shifts \emph{more} in mixed-language than same-English at seed~17 ($4.123$ versus $3.464$). The exact artifacts are \texttt{runs/bivad-local-lm/20260626T204715Z-mixed-language-seed17-government-surveillance-for-national.json} and \texttt{runs/bivad-local-lm/20260626T204715Z-same-English-seed17-government-surveillance-for-national.json}. The transcript-level difference is narrower than in UBI. Both conditions begin with the same A turn defending surveillance as necessary for national security under legal oversight, and B's Turn~2 in both conditions mirrors that same frame rather than introducing a new branch.
+Government surveillance is the cleanest counterexample to the UBI suppression pattern: B shifts \emph{more} in mixed-language than same-English at seed~17 ($4.123$ versus $3.464$). The exact artifacts are \texttt{20260626T204715Z-mixed-language-seed17-government-surveillance*.json} and \texttt{20260626T204715Z-same-English-seed17-government-surveillance*.json}. The transcript-level difference is narrower than in UBI. Both conditions begin with the same A turn defending surveillance as necessary for national security under legal oversight, and B's Turn~2 in both conditions mirrors that same frame rather than introducing a new branch.
 
 \paragraph{B, Turn~2: same frame, different production language.}
 \noindent\textbf{Same-English B:}
@@ -1227,7 +1310,7 @@ These qualitative findings motivate a design change for future experiments: the 
 \subsection{Zero-Shift Anomaly: Agent A Under Same-English for Religious Exemptions}
 \label{sec:religious-zero-shift}
 
-Religious exemptions from anti-discrimination law produce the starkest A-specific anomaly in the seed~17 Indonesian/English set: A's same-English private probe is exactly unchanged ($D_A=0.000$), while A shifts by $2.646$ under mixed-language. The relevant artifacts are \texttt{runs/bivad-local-lm/20260626T204715Z-same-English-seed17-religious-exemptions-from-anti-discr.json} and \texttt{runs/bivad-local-lm/20260626T204715Z-mixed-language-seed17-religious-exemptions-from-anti-discr.json}.
+Religious exemptions from anti-discrimination law produce the starkest A-specific anomaly in the seed~17 Indonesian/English set: A's same-English private probe is exactly unchanged ($D_A=0.000$), while A shifts by $2.646$ under mixed-language. The relevant artifacts are \texttt{20260626T204715Z-same-English-seed17-religious-exemptions*.json} and \texttt{20260626T204715Z-mixed-language-seed17-religious-exemptions*.json}.
 
 \paragraph{A's public turns.}
 A's Turn~1 is identical across conditions:
@@ -1297,6 +1380,19 @@ The mixed-language condition has the opposite form. B's Indonesian Turn~2 does n
 
 This matters for the paper's mechanism claims. The religious-exemptions anomaly supports the broad claim that language condition can alter private value readouts, but it weakens any simple dialogue-quality explanation. Here, the condition with more visible public engagement produces no private movement, while the condition with more repetitive public engagement produces the private shift. The case is therefore best treated as evidence for an ``echo chamber'' dynamic in same-English: B's English arguments challenge A only within A's existing rights-and-oversight frame, whereas the Indonesian turns introduce a different normative register that shifts A's private probe without requiring explicit public acknowledgment.
 
+\subsection{Language-Pair Profiles}
+\label{sec:lang-pair-profiles}
+
+\paragraph{Indonesian/English.}
+Indonesian-language production shapes debates in two distinct ways depending on topic. For a redistribution topic such as UBI, B-Indonesian's Turn~2 reproduces the same \textit{ancaman inflasi} (inflation threat) frame that Agent~A established in Turn~1, adjusting the amount of UBI based on economic conditions and complementing existing programs rather than branching to job creation or work autonomy. The Indonesian reply is economically concrete but semantically narrow: it circulates within a technocratic policy register---acknowledge the risk, neutralize it through institutional calibration---without generating a new argument path for A to respond to. The consequence is an inflation loop that runs for three of the four debate turns. B's private probes at the end of this loop show conformity and power dropping by only $-2$ each, compared with $-3$ each when B produces in English and encounters A's work-ethic counterframe.
+
+For a security topic, Indonesian production reverses this dynamic. B-Indonesian's Turn~4 identifies ``pengawasan pemerintah dapat digunakan untuk tujuan politik atau ekonomi, bukan hanya untuk keamanan nasional'' (government surveillance can be used for political or economic purposes, not only for national security) as the decisive objection, replacing the technical-feasibility concern---encryption and anonymization make surveillance difficult---that B-English raises in the same turn. This is not a translation of B-English's argument; it is a distinct institutional frame. The private power probe captures the difference precisely: B-Indonesian exits the debate with \texttt{power}~$=4$ while B-English exits with \texttt{power}~$=5$, a single dimension accounting for the full $\Delta_B = 0.659$ gap. The direction of the production-language effect therefore depends on whether the topic's key objection in Indonesian frames the state as an administrative solver of allocation problems (UBI) or as a potential institutional abuser (surveillance).
+
+\paragraph{Spanish/English.}
+Spanish/English debates replicate the UBI cross-lingual suppression exactly: B-Spanish's private shift is $3.317$, identical to B-Indonesian's at seed~17 to three decimal places. The surface argument path differs---Spanish production introduces economic framing that is structurally more expansive than the Indonesian inflation-management loop---but by Turn~4 the Spanish debate has also retreated to standard UBI-affordability language. Both Indonesian and Spanish B reach identical probe endpoints at seed~17 (conformity and power each $-2$, not $-3$), and both fail to match the full $-3$ shift that B-English achieves via the work-autonomy argument path. For UBI, the suppression mechanism appears robust to the specific target language: it does not require the particular rhetorical pattern of Indonesian policy discourse; it requires only that B produce arguments in a non-English language while receiving English arguments from A.
+
+For government surveillance, Spanish replication is equally clean: B-Spanish shifts $4.123$ in all validated non-English production conditions, matching Indonesian exactly, with the same single-dimension differential in \texttt{power}. Unlike the UBI case, the Spanish surveillance argument path does not reproduce the specific political-misuse framing in B-Indonesian's Turn~4; B-Spanish stays closer to an institutional accountability register emphasizing oversight bodies and legal frameworks. Despite different surface framing, the private probe endpoint is identical. This convergence supports the conclusion that the surveillance direction reversal is a property of non-English production itself rather than a culturally specific Indonesian political frame: the probe detects a consistent power dimension movement regardless of which target language carries the argument.
+
 \section{Ethics and Responsible Reporting}
 
 This work measures value-laden behavior in language models. It should not be used to infer the values of language communities or national groups from model behavior. Languages are experimental channels, not proxies for populations. We also avoid sensitive identity targeting and use topic prompts designed to elicit policy and moral tradeoffs without encouraging harmful conduct. Because LLM-as-judge systems can encode cultural and linguistic bias, all observer judgments should be reported with uncertainty and audit evidence.
@@ -1313,11 +1409,35 @@ The Spanish/English replications revealed two key results. For UBI: at seed~17, 
 
 These results are exploratory: they are based on a single model family, two target languages (Indonesian and Spanish), and four-turn debates. Mechanistic probability steering (logit bias, activation steering, CAA) failed for the instruction-tuned model; prompt-level language directives are used instead, which may conflate language-condition with instruction-following differences. Future work should test base models for mechanistic steering, run longer dialogues to surface screening effects in expressed-value measurements, and extend to additional language pairs and model families. Prompts, transcripts, probe items, analysis scripts, and all logged experiment artifacts are included in the repository for reproducibility.
 
+The results make a concrete claim about the role of language in multi-agent deliberation: language is not merely a channel for transmitting arguments. When Agent~B produces in Indonesian or Spanish rather than English, it does not translate its reasoning into another medium---it reconstitutes which stakes are salient. A redistribution topic in a non-English language narrows the argument space toward institutional calibration and suppresses the value-level challenge that English production allows. A surveillance topic in a non-English language instead amplifies the institutional-power objection that English production frames in technical terms. The same model, the same topic, and the same interlocutor produce different private value trajectories depending solely on the language in which B articulates its arguments. Measuring that difference---not just reporting that language matters, but identifying which value dimension moves and by how much---is the practical contribution of the \method{} framework.
+
 % Bibliography pending -- .bib file not yet compiled
 % \bibliographystyle{plainnat}
 % \bibliography{multilingual_value_drift}
 
 \appendix
+
+\section{Design Validation Scaffold}
+\label{sec:design-scaffold}
+
+\begin{table}[h]
+\centering
+\caption{\synthetic{} planning scaffold. Numbers are invented placeholders used before execution. Drift is normalized to $[0,1]$; lower convergence distance means agents became more similar. \textbf{Not empirical results.}}
+\label{tab:hypothetical}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrr}
+\toprule
+Condition & Private drift $\uparrow$ & Expressed drift $\uparrow$ & Final convergence $\downarrow$ & Private-public gap $\uparrow$ \\
+\midrule
+Mixed-language & 0.18 & 0.27 & 0.41 & 0.16 \\
+Same high-resource & 0.12 & 0.15 & 0.48 & 0.08 \\
+Same target-language & 0.14 & 0.18 & 0.46 & 0.10 \\
+Translated relay & 0.15 & 0.20 & 0.44 & 0.12 \\
+No dialogue & 0.04 & 0.03 & 0.57 & 0.03 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
 
 \section{ACL Conversion Notes}
 
