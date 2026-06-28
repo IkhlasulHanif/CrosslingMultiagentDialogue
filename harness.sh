@@ -85,6 +85,16 @@ run_agent() {
     fi
 }
 
+# ─── push any new commits to remote ──────────────────────────────────────────
+git_push() {
+    local ahead
+    ahead=$(git -C "$ROOT" rev-list --count origin/main..HEAD 2>/dev/null || echo 0)
+    if [[ "$ahead" -gt 0 ]]; then
+        echo "  [harness] Pushing $ahead commit(s) to remote..."
+        git -C "$ROOT" push origin main 2>&1 | sed 's/^/  [git] /' || echo "  [harness] Push failed — will retry next iter"
+    fi
+}
+
 # ─── read line 1 of a verdict file ────────────────────────────────────────────
 verdict() {
     local file="$1"
@@ -140,12 +150,14 @@ while true; do
             echo "[harness] Phase 0 PASSED — item set locked."
             prompt=$(prompt_supervisor 0 "$iter" "$ctx")
             run_agent "supervisor_phase0" "$prompt" || true
+            git_push
             state_set phase 1; state_set iter 0
         else
             echo "[harness] Phase 0 FAILED — retrying immediately."
             rm -f "$ROOT/artifacts/results/wvs_screen_raw.json" \
                   "$ROOT/artifacts/results/wvs_screen_summary.md" \
                   "$ROOT/artifacts/results/wvs_items_locked.json"
+            git_push
         fi
         continue
     fi
@@ -173,10 +185,12 @@ while true; do
             echo "[harness] Phase 1 PASSED — pilot transcript approved."
             prompt=$(prompt_supervisor 1 "$iter" "$ctx")
             run_agent "supervisor_phase1" "$prompt" || true
+            git_push
             state_set phase 2; state_set iter 0; state_set pass_count 0
         else
             echo "[harness] Phase 1 FAILED — retrying immediately."
             rm -f "$ROOT/artifacts/transcripts/phase1_pilot.json"
+            git_push
         fi
         continue
     fi
@@ -209,13 +223,16 @@ while true; do
                 echo "[harness] Phase 2 complete — environment is valid."
                 prompt=$(prompt_supervisor 2 "$iter" "$ctx")
                 run_agent "supervisor_phase2" "$prompt" || true
+                git_push
                 state_set phase 3; state_set iter 0; state_set pass_count 0
             else
+                git_push
                 state_set iter $(( iter + 1 ))
             fi
         else
             echo "[harness] Phase 2 iter $iter FAILED — will fix and re-run."
             state_set pass_count 0
+            git_push
             state_set iter $(( iter + 1 ))
         fi
         continue
@@ -245,6 +262,7 @@ while true; do
             prompt=$(prompt_supervisor 3 "$iter" "$ctx")
             run_agent "supervisor_phase3_iter${iter}" "$prompt" || true
         fi
+        git_push
         state_set iter $(( iter + 1 ))
         echo "[harness] Phase 3 iter $iter done. Continuing discovery..."
         # Discovery runs until user stops it (or we manually advance to phase 4)
@@ -282,6 +300,7 @@ while true; do
         prompt=$(prompt_paper 5 "$iter" "$ctx")
         run_agent "phase5_paper_iter${iter}" "$prompt" || { safe_sleep; continue; }
 
+        git_push
         state_set iter $(( iter + 1 ))
         echo "[harness] Phase 5 iter $iter done. Looping to refine..."
         # Loops until user stops. To restart from an earlier phase: edit .harness_state
