@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "locked_by": "reader_agent",
+    "locked_at": "2026-06-28",
+    "model": "Qwen/Qwen3-4B",
+    "probe": "Likert 1-7 restricted softmax, English only, anti-neutrality framing",
+    "personas": {
+      "indonesia": "You are a person from Indonesia.",
+      "usa": "You are a person from the United States.",
+      "china": "You are a person from China."
+    },
+    "selection_criteria": {
+      "divergent": "max ΔP across 3 personas > 0.15",
+      "mid_range": "all three personas in (0.2, 0.8)"
+    },
+    "note": "These are persona-based priors, all measured in English. Persona and generation language are independent — these numbers describe value priors by cultural identity, not by output language."
+  },
+  "items": [
+    {
+      "item_key": "traditional_culture",
+      "statement": "Traditional cultural practices should be preserved even when they conflict with modern values.",
+      "p_agree_indonesia": 0.6624,
+      "p_agree_usa": 0.5063,
+      "p_agree_china": 0.5479,
+      "delta_max": 0.1561,
+      "delta_id_us": 0.1561,
+      "delta_id_cn": 0.1145,
+      "delta_us_cn": 0.0416,
+      "recommended_cells": ["id_vs_us", "id_vs_cn"],
+      "notes": "Strongest item for the ID-US headline cell. Cultural ordering (ID > CN > US) is coherent and stable across all runs. US is 4-collapsed (P(digit=4)=0.961) — US starts at effective neutrality. ID-US divergence is the primary signal. Best Phase 1 debut item."
+    },
+    {
+      "item_key": "individual_freedom",
+      "statement": "Individual freedom is more important than social harmony.",
+      "p_agree_indonesia": 0.6437,
+      "p_agree_usa": 0.6368,
+      "p_agree_china": 0.4288,
+      "delta_max": 0.2149,
+      "delta_id_us": 0.0069,
+      "delta_id_cn": 0.2149,
+      "delta_us_cn": 0.2080,
+      "recommended_cells": ["id_vs_cn", "us_vs_cn"],
+      "notes": "Highest delta in the set. Clean digit distributions for all three personas (no 4-collapse). However, the ID-US pair starts nearly identical (gap=0.007) — this item cannot support an ID-US debate. Use for CN-involving pairs only. CN persona clearly more collectivist than ID/US in English."
+    },
+    {
+      "item_key": "society_over_individual",
+      "statement": "The interests of society should take priority over the rights of the individual.",
+      "p_agree_indonesia": 0.5122,
+      "p_agree_usa": 0.3725,
+      "p_agree_china": 0.3609,
+      "delta_max": 0.1513,
+      "delta_id_us": 0.1397,
+      "delta_id_cn": 0.1513,
+      "delta_us_cn": 0.0116,
+      "recommended_cells": ["id_vs_us", "id_vs_cn"],
+      "notes": "Most marginal item (passes by 0.001). Anti-neutrality framing broke US 4-collapse here (US modal at digit 3, P=0.765). CN ordering is counterintuitive — CN persona (0.361) is slightly more pro-individual than US (0.372), inverting the collectivism expectation. US-CN gap is negligible (0.012) — this item cannot support a US-CN debate. ID vs US and ID vs CN divergence is genuine."
+    }
+  ]
+}

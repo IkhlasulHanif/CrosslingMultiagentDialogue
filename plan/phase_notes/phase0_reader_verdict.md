@@ -1,101 +1,109 @@
-FAIL
+PASS
 
-## Reader Verdict — Phase 0, Iter 0 (2026-06-28)
+## Reader Verdict — Phase 0, Run 4 (2026-06-28)
 
-**Run config:** Qwen3-4B, Likert 1–7 restricted softmax, English only, three personas (ID, US, CN).
+**Run config:** Qwen3-4B, Likert 1–7 restricted softmax, English only, anti-neutrality framing, **3 personas (ID, US, CN)** — design-correct run.
 
-**Result:** 2 of 14 items meet both criteria. Threshold is 3. FAIL.
+**Result:** 3 of 22 items meet both criteria. Threshold is 3. PASS.
+
+---
+
+## Criterion check (from wvs_screen_raw.json)
+
+Selection criteria (from plan.md/goals.md):
+- **DIVERGENT:** max ΔP across 3 personas > 0.15
+- **MID-RANGE:** all three personas in (0.2, 0.8)
 
 ---
 
 ## Item-by-item ruling
 
-### PASS (2 items, both barely)
+### PASS (3 items)
 
 **`individual_freedom`** — "Individual freedom is more important than social harmony."
-- P(ID)=0.662, P(US)=0.632, P(CN)=0.507 → ΔP=0.155. All in (0.2, 0.8). ✓
-- **Concern (not disqualifying but flagged):** The ID and US personas are nearly identical (0.662 vs 0.632 = ΔP=0.030). The ΔP criterion passes only because CN sits at 0.507. A debate between an ID-persona agent and a US-persona agent on this item will start from essentially the same position — both slightly pro-individual-freedom. This item is not suitable as the headline ID vs US cell item.
+- P(ID)=0.6437, P(US)=0.6368, P(CN)=0.4288
+- max ΔP = 0.6437 − 0.4288 = **0.2149** ✓
+- All mid-range: ID=0.644 ✓, US=0.637 ✓, CN=0.429 ✓
+- Digit distributions: ID peaks at "5" (P=0.865), US peaks at "5" (P=0.822), CN peaks at "3" (P=0.642). All three have clean spread; no 4-collapse anywhere.
+- **Cultural note:** The divergence is CN vs. the other two, not ID vs. US (gap=0.007). ID and US share similar priors on this item — both lean somewhat pro-individual-freedom in English. CN persona scores clearly lower (collectivist pull). This item is unsuitable for the ID-US headline cell (agents start nearly identical), but is the best item for the CN-involving pairs.
+- **PASS.**
 
 **`traditional_culture`** — "Traditional cultural practices should be preserved even when they conflict with modern values."
-- P(ID)=0.679, P(US)=0.527, P(CN)=0.569 → ΔP=0.152. All in (0.2, 0.8). ✓
-- **Better for ID vs US** (ΔP=0.152), but still only barely passes.
+- P(ID)=0.6624, P(US)=0.5063, P(CN)=0.5479
+- max ΔP = 0.6624 − 0.5063 = **0.1561** ✓ (passes by 0.006)
+- All mid-range: ID=0.662 ✓, US=0.506 ✓, CN=0.548 ✓
+- Digit distributions: ID peaks at "5" (P=0.952), CN at "4" (P=0.692) with notable "5" mass (P=0.298). US peaks at "4" with P(4)=0.961 — **4-collapsed.**
+- **US 4-collapse caveat:** The US agent's P(agree)=0.506 is almost entirely an artifact of 3.8% mass at "5"; 96.1% lands on "4." The effective US starting position is "exactly neutral." Post-debate movement downward (to "3") is constrained to gaining log-odds from "5"→"4"→"3". This is workable but the US agent begins with essentially no variance. The ID-US gap (0.156) is genuine — it distinguishes the ID and US agents — but the US digit distribution looks like residual 4-collapse, not confident neutrality.
+- **PASS.** US 4-collapse is noted but does not disqualify: P(US)=0.506 formally meets (0.2, 0.8). The cultural ordering (ID=0.662 > CN=0.548 > US=0.506) is sensible and stable across all runs. This is the best item for the ID-US headline cell.
 
-### FAIL — ΔP too small
-
-- `stability_vs_freedom`: ΔP=0.136 (< 0.15). US collapses to P=0.500 exactly (P(4)=0.999).
-- `authority_trust`: ΔP=0.119. US=0.500 exactly (P(4)=0.9997), CN=0.502.
-- `religious_policy`: ΔP=0.105. US=0.500 exactly (P(4)=0.9998), CN=0.501.
-- `present_vs_future`: ΔP=0.090. US=0.500 (P(4)=0.996).
-- `safety_vs_privacy`: ΔP=0.078.
-- `strong_leadership`: ΔP=0.059.
-- `tax_redistribution`: ΔP=0.055.
-- `filial_duty`: ΔP=0.047. US=0.500 exactly (P(4)=0.9999), CN=0.502.
-- `tech_change`: ΔP=0.014.
-- `competition`: ΔP=0.011. US=0.500 (P(4)=0.999), CN=0.494.
-- `inequality_natural`: ΔP=0.006.
-
-### FAIL — mid-range criterion
-
-- `break_unjust_law`: P(US)=0.832 > 0.8. Out of range. Also ΔP=0.137 < 0.15.
+**`society_over_individual`** — "The interests of society should take priority over the rights of the individual."
+- P(ID)=0.5122, P(US)=0.3725, P(CN)=0.3609
+- max ΔP = 0.5122 − 0.3609 = **0.1513** ✓ (passes by 0.001)
+- All mid-range: ID=0.512 ✓, US=0.372 ✓, CN=0.361 ✓
+- Digit distributions: ID spread across 3/4/5 (P(4)=0.568, P(5)=0.252, P(3)=0.179), US modal at "3" (P(3)=0.765) — anti-neutrality framing worked. CN also modal at "3" (P(3)=0.854).
+- **Counterintuitive CN result:** CN=0.361 means the CN persona leans pro-individual even more than US=0.372 on this item. Expected ordering (collectivist CN should score higher than US) is inverted. However, the digit distribution is clean (no 4-collapse; P(3)=0.854 is a genuine opinion, not artifact). This may reflect how Qwen3-4B encodes Chinese views on rights-language framing: the "rights of the individual" phrasing may activate a different schema than expected.
+- **Consequence for debate design:** ID-US divergence (ΔP=0.140) and ID-CN divergence (ΔP=0.151) are real. US-CN divergence (ΔP=0.012) is negligible — this item does not support a US-CN debate.
+- **PASS.** Most marginal item (passes by 0.001), but all formal criteria met. Flag the inverted CN ordering for discovery-phase reading.
 
 ---
 
-## Root cause: US and CN 4-collapse
+### FAIL — ΔP below 0.15 (but all mid-range)
 
-A systematic artifact is present. The US and CN personas collapse to digit "4" (neutral) on multiple items where genuine cultural opinions exist:
+**`present_vs_future`** — P(ID)=0.413, P(US)=0.486, P(CN)=0.343 → max ΔP=0.144. Fails by 0.006.
 
-- `religious_policy` US: P(digit=4)=0.9998 → "I am exactly neutral on whether religious law should influence government." An American persona being exactly neutral here is not a genuine cultural response — it is the model refusing to commit.
-- `stability_vs_freedom` US: P(digit=4)=0.9988 → "I am exactly neutral on stability vs political freedom." Americans are not neutral on political freedom.
-- `authority_trust` US: P(digit=4)=0.9997 → "I am exactly neutral on whether authority figures can be trusted." Americans tend toward institutional skepticism.
-- `filial_duty` US: P(digit=4)=0.9999 → "I am exactly neutral on whether children should financially support elderly parents." American opinions on this are diverse but non-neutral.
-- `competition` US: P(digit=4)=0.9991 → "I am exactly neutral on competition vs cooperation." Americans typically value competition strongly.
+**`stability_vs_freedom`** — P(ID)=0.561, P(US)=0.478, P(CN)=0.611 → max ΔP=0.133. Fails.
+- Note: CN=0.611 diverges from US=0.478 (gap=0.133) — close but below threshold.
 
-The CN persona shows a similar but less severe pattern. The ID persona avoids this collapse more often, likely because the items were chosen in prior iterations to produce ID divergence.
+**`speech_stability`** — P(ID)=0.620, P(US)=0.524, P(CN)=0.624 → max ΔP=0.101. Fails.
 
-**Consequence for the study:** If US and CN personas both sit at P=0.500 across most items, ΔP is entirely driven by ID deviating from 0.5. This means (a) we cannot measure US vs CN divergence at all, and (b) any ID vs US debate uses agents with nearly identical starting priors on most items.
+**`filial_duty`** — P(ID)=0.431, P(US)=0.368, P(CN)=0.455 → max ΔP=0.087. Fails.
 
----
+**`individual_effort`** — P(ID)=0.636, P(US)=0.571, P(CN)=0.560 → max ΔP=0.076. Fails.
 
-## Fix specification
+**`break_unjust_law`** — P(ID)=0.672, P(US)=0.737, P(CN)=0.663 → max ΔP=0.074. Fails.
 
-### Fix 1 (required): expand the item set with US-CN axis items
+**`religious_policy`** — P(ID)=0.571, P(US)=0.500, P(CN)=0.499 → max ΔP=0.071. US still 4-collapsed (P(4)=0.986). Fails.
 
-The current items do not produce non-neutral US or CN responses. Add 10–15 items targeting the US-CN cultural axis. These items should be from domains where WVS data confirms actual US-CN divergence:
+**`internet_freedom`** — P(ID)=0.673, P(US)=0.656, P(CN)=0.607 → max ΔP=0.066. Fails.
 
-**Suggested new items (political rights / civil liberties axis):**
-- "Citizens have the right to criticize the government publicly, even if it causes social instability."
-- "Freedom of the press is essential to a well-functioning society."
-- "Individuals should be free to access any information on the internet."
-- "It is acceptable for the government to monitor citizens' communications to prevent crime."
-- "National stability is a valid reason to limit freedom of speech."
+**`strong_leadership`** — P(ID)=0.599, P(US)=0.539, P(CN)=0.564 → max ΔP=0.060. Fails.
 
-**Suggested new items (individual vs collective axis):**
-- "The interests of society should take priority over the rights of the individual."
-- "Success in life is primarily determined by individual effort, not circumstances."
-- "People should be free to pursue their own goals even if it conflicts with family expectations."
-- "Competition is a better system for distributing resources than cooperation."
+**`tax_redistribution`** — P(ID)=0.377, P(US)=0.344, P(CN)=0.337 → max ΔP=0.041. Fails.
 
-**Suggested new items (market vs state axis):**
-- "A free market, with minimal government intervention, is the best economic system."
-- "The government should ensure everyone has a minimum standard of living, even if it requires high taxes."
+**`safety_vs_privacy`** — P(ID)=0.648, P(US)=0.614, P(CN)=0.631 → max ΔP=0.034. Fails.
 
-### Fix 2 (try first, cheaper): add anti-neutrality framing to the probe
+**`authority_trust`** — P(ID)=0.521, P(US)=0.499, P(CN)=0.498 → max ΔP=0.023. US 4-collapsed (P(4)=0.985). Fails.
 
-Before expanding the item set, try modifying the Likert probe to discourage the neutral-default:
+**`competition`** — P(ID)=0.349, P(US)=0.352, P(CN)=0.336 → max ΔP=0.017. All personas agree (disagree with competition). Fails.
 
-Current probe (approximate): "On a scale of 1–7, how much do you agree with the following statement?"
+**`criticize_govt`** — P(ID)=0.677, P(US)=0.667, P(CN)=0.667 → max ΔP=0.009. All three near-identical. Fails.
 
-Modified probe: "On a scale of 1–7, how much do you personally agree with the following statement? Please give your honest view — choose the middle option only if you are genuinely undecided, not as a diplomatic response."
+**`tech_change`** — P(ID)=0.339, P(US)=0.332, P(CN)=0.332 → max ΔP=0.007. Fails.
 
-This may reduce the P(4) collapse without changing the item set. Run on the current 14 items first; if ≥3 pass, advance. If not, expand the item set.
+**`inequality_natural`** — P(ID)=0.336, P(US)=0.331, P(CN)=0.332 → max ΔP=0.005. Fails.
 
-### Priority order
+**`govt_surveillance`** — P(ID)=0.664, P(US)=0.663, P(CN)=0.659 → max ΔP=0.005. All three near-identical. Fails.
 
-1. Try anti-neutrality framing first (low cost, same items).
-2. If still <3 pass: add 10+ new US-CN axis items and rerun.
+**`personal_goals`** — P(ID)=0.667, P(US)=0.663, P(CN)=0.663 → max ΔP=0.004. All three near-identical. Fails.
 
 ---
 
-## No items locked
+### FAIL — mid-range criterion violated
 
-`artifacts/results/wvs_items_locked.json` is written as an empty list. No items are locked until PASS.
+**`press_freedom`** — P(ID)=0.766, P(US)=0.949, P(CN)=0.683 → max ΔP=0.265. Strongest divergence in the set but US=0.949 > 0.8. US ceiling. FAIL on mid-range.
+
+---
+
+## Locked items
+
+`artifacts/results/wvs_items_locked.json` written. Three items locked.
+
+**Recommended debate cell assignments:**
+
+| Item | Best for | Caution |
+|------|----------|---------|
+| `traditional_culture` | ID vs US headline cell (ΔP=0.156) | US is 4-collapsed |
+| `individual_freedom` | CN vs ID and CN vs US cells (ΔP=0.215) | ID-US gap only 0.007 — avoid for ID-US pair |
+| `society_over_individual` | ID vs US and ID vs CN cells | US-CN gap only 0.012; CN ordering inverted |
+
+For Phase 1, use **`traditional_culture`** as the debut item: best ID-US divergence, culturally coherent ordering, stable across all runs.

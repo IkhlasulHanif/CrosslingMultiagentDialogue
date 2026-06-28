@@ -2,6 +2,66 @@
 
 ---
 
+## Coding agent done (phase=1 iter=0) — PILOT DEBATE
+
+**Date:** 2026-06-28
+
+### What was run
+
+Wrote `code/debate_engine.py` — Modal, Qwen3-4B on T4 GPU. Two-agent debate with independent persona and generation language. Key design:
+- Agent A opens; Agent B's opening incorporates A's first turn to avoid consecutive user messages in the chat format.
+- Subsequent turns alternate with proper user/assistant labeling from each agent's perspective.
+- After every turn: a Likert P(agree) probe runs as a one-shot user message (restricted softmax over digits 1–7). Probe NOT added to debate history.
+
+Ran one debate: `traditional_culture`, ID-persona/ID-lang (Agent A) vs US-persona/EN-lang (Agent B), 6 turns, seed=42.
+
+### What was saved
+
+- `code/debate_engine.py` — debate engine (reusable for all phases)
+- `artifacts/transcripts/phase1_pilot.json` — full transcript + per-turn P(agree) probes + config
+
+### P(agree) trajectory
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.809 |
+| 2 | B | usa/en | 0.666 |
+| 3 | A | indonesia/id | 0.981 |
+| 4 | B | usa/en | 0.753 |
+| 5 | A | indonesia/id | 0.982 |
+| 6 | B | usa/en | 0.828 |
+
+### Does it look like two people actually talking?
+
+**Yes, with a significant caveat.**
+
+What works:
+- Clean turn boundaries — each turn is a coherent, standalone response.
+- Language-holding: Agent A stays in Indonesian for all 3 turns; Agent B stays in English for all 3 turns. No code-switching.
+- Persona at turn 1: Agent A opens with Indonesian framing ("leluk dan nenek moyang" — ancestors/forebears), culturally coherent for Indonesian discourse on tradition. Agent B opens with pragmatic hedging ("preservation doesn't mean rigidly holding on to the past") — recognizably American in register.
+
+What's missing:
+- **No genuine disagreement.** Both agents open by agreeing with the statement. There is no opposing position, no rebuttal, no tension. The debate becomes mutual affirmation from turn 2 onward.
+- **Drift direction is trivially upward for both agents.** A: 0.809→0.981→0.982. B: 0.666→0.753→0.828. Both drift toward strong agreement. But since both started agreeing, this is not evidence of cross-lingual drift — it's just two agents reinforcing each other.
+
+### Root cause
+
+`traditional_culture` Phase 0 baselines: P(ID)=0.662, P(US)=0.506 — BOTH above 0.5 (both lean agree). When both agents already agree, the debate has no initial tension. Agent B (US) never argued against tradition; it added nuance but never genuinely pushed back. The machinery produced a valid conversation, but on an item where no debate was possible.
+
+### Implications for reader
+
+The debate machinery is functioning. The problem is item selection for the ID-US pair: `traditional_culture` is the recommended Phase 1 item precisely because it has the highest ID-US ΔP (0.156), but BOTH personas lean agree, just by different amounts. A real debate needs at least one agent starting below 0.5 (disagreeing).
+
+Candidate fix: use `society_over_individual` (P(ID)=0.512, P(US)=0.372 — US leans disagree, ID neutral). Or consider adding a debate framing instruction that does NOT tell agents to defend a specific position, but uses a topic where the personas naturally land on opposite sides.
+
+The reader should decide whether this pilot PASSes (machinery works, language-holds, persona visible) or FAILs (no genuine debate tension). Coded-agent view: the machinery passes, but the item choice for ID-US needs revisiting before Phase 2.
+
+### Next step
+
+Reader writes PASS or FAIL on line 1 of `plan/phase_notes/phase1_reader_notes.md`.
+
+---
+
 ## Coding agent done (phase=0 iter=0) — THREE-PERSONA ID vs US vs CN RUN
 
 **Date:** 2026-06-28

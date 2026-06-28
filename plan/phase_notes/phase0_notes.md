@@ -274,4 +274,61 @@ For a second item, the reader faces a judgment call:
 - **`society_over_individual`** (ΔP=0.140): Misses threshold by 0.01. Culturally coherent (collective vs individual). Both agents mid-range. Reasonable to include.
 - **`speech_stability`** (ΔP=0.096): More distant from threshold. ID=0.620 vs US=0.524 — ID persona favors stability constraints on speech, US does not. Clear contrast but weaker signal.
 
+---
+
+## Reader analysis — 2-persona run with anti-neutrality framing (2026-06-28) — **FAIL**
+
+**Verdict: FAIL.** 1 of 22 items meets both criteria. Threshold is 3. Full verdict in `plan/phase_notes/phase0_reader_verdict.md`.
+
+### Design error (primary issue)
+
+This run probed only 2 personas (Indonesia and US). Goals.md specifies 3 personas (Indonesia, United States, China) and the selection criterion is "max ΔP across the 3 personas > 0.15." The run is off-design. No PASS is possible without China.
+
+Evidence that China matters: in the 3-persona run, `individual_freedom` passed (ΔP=0.155) because CN=0.507 diverged from ID=0.662. In this 2-persona run, `individual_freedom` has ΔP=0.007 — it completely fails. The item's cultural signal is real but requires the CN persona to surface it.
+
+### What this run established
+
+- Anti-neutrality framing works partially. `society_over_individual` US moved from P≈0.500 to P=0.373 (P(digit=3)=0.765). The framing broke the 4-collapse on this item.
+- Anti-neutrality framing did NOT work on `religious_policy` (US still P(4)=0.986), `authority_trust` (US still P(4)=0.985), `internet_freedom`, `criticize_govt`, `govt_surveillance`.
+- `traditional_culture` is the only item that survives on the ID-US axis alone. It is stable across all runs.
+- `society_over_individual` (ID=0.512, US=0.373, ΔP=0.140) is the strongest near-miss. With CN likely to sit higher on collectivism, it may pass in a 3-persona run.
+
+### Fix for next coding run
+
+1. Restore all 3 personas (ID, US, CN) — this is required by the study design.
+2. Keep the 22-item set (it is better than the prior 14-item set).
+3. Keep the anti-neutrality framing (it helped `society_over_individual`).
+4. Do NOT selectively waive the ΔP criterion — 0.140 is not 0.15. If items still fail after adding CN, accept the result and pick from what passes.
+
+Expected outcome with CN restored: `traditional_culture` (confirmed stable), `individual_freedom` (likely to re-emerge), and possibly `society_over_individual` (if CN sits above ~0.52) should give ≥3 items passing.
+
 If the reader requires ≥3 items with strict criteria, this run does not clear the bar. The coding agent's view: `traditional_culture` + `society_over_individual` + one more borderline item is a workable set for Phase 1 if the reader accepts a slightly relaxed ΔP floor of 0.13.
+
+---
+
+## Reader analysis — 3-persona run with anti-neutrality framing (2026-06-28) — **PASS**
+
+**Verdict: PASS.** 3 of 22 items meet both criteria. Full verdict in `plan/phase_notes/phase0_reader_verdict.md`.
+
+### Locked items
+
+| Item | P(ID) | P(US) | P(CN) | max ΔP | Best cells |
+|------|-------|-------|-------|--------|-----------|
+| `traditional_culture` | 0.662 | 0.506 | 0.548 | 0.156 | ID vs US, ID vs CN |
+| `individual_freedom` | 0.644 | 0.637 | 0.429 | 0.215 | CN vs ID, CN vs US |
+| `society_over_individual` | 0.512 | 0.372 | 0.361 | 0.151 | ID vs US, ID vs CN |
+
+### Key findings from raw data review
+
+**`traditional_culture`:** US is 4-collapsed (P(digit=4)=0.961) — US agent starts at effective neutrality (P(agree)=0.506 is almost entirely from 3.8% mass at "5"). The ID-US gap (0.156) is real and stable across all runs. Best item for the Phase 1 ID-US headline cell. Caveat: US has little room to move further toward disagreement from "4".
+
+**`individual_freedom`:** Cleanest distributions (no persona is 4-collapsed). ID=0.644, US=0.637 — near-identical (gap=0.007). CN=0.429 is the outlier. Previous reader prediction confirmed: restoring CN re-unlocked this item (went from ΔP=0.007 to ΔP=0.215). This item only supports CN-involving debates; the ID-US pair has no initial disagreement.
+
+**`society_over_individual`:** Anti-neutrality framing broke the US 4-collapse on this item (P(digit=3)=0.765 for US). CN=0.361 is counterintuitive — the CN persona leans slightly more pro-individual than US, inverting the collectivism expectation. Both US and CN are modal at "3"; ID is spread across 3/4/5. US-CN gap (0.012) is negligible. ID vs US (ΔP=0.140) and ID vs CN (ΔP=0.151) are the only viable debate pairings on this item. Passes by 0.001.
+
+### Phase 1 recommendation
+
+Debut item: **`traditional_culture`** (Phase 1 = ID-persona vs US-persona, natural language assignment).
+- ID-US gap is the largest for this item (0.156) and has been stable across every run.
+- The debate question is rich: tradition vs. modernity, with cultural identity driving the difference.
+- US starting at "4" means the US agent can move in either direction — actually useful for measuring drift.
