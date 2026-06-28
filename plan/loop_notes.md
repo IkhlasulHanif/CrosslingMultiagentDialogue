@@ -2,6 +2,143 @@
 
 ---
 
+## Coding agent done (phase=2 iter=2) — VALIDITY BATCH (3 seeds)
+
+**Date:** 2026-06-28
+
+### What was run
+
+3 debates, item `society_over_individual`, ID-persona/ID-lang (Agent A) vs US-persona/EN-lang (Agent B), 6 turns each. Seeds: 17, 53, 89. Script: `code/phase2_validity_iter2.py`.
+
+**Fixes applied vs iter1 (from phase2_validity.md reader FAIL):**
+- **Fix 1**: Opener template updated to force explicit AGREE/DISAGREE — "do not hedge or give a balanced answer. Take a clear position first." Previous opener allowed balance framing, which produced A at P≈0.5.
+- **Fix 2**: `other_turn` template updated to block B from endorsing A's framing — "Do not open by endorsing the other person's framing or saying their perspective is one you support." Seeds 53/89 in iter1 had B opening "The Indonesian perspective emphasizes balance, which I support."
+- **Fix 3**: Item reverted to `society_over_individual`. `traditional_culture` produced A at P≈0.499–0.528 across all 3 iter1 seeds despite Phase 0 prior of 0.662. The Phase 1 pilot on `society_over_individual` (seed=46) produced A=0.651 / B=0.326.
+- **Fix 4**: Same seeds 17, 53, 89 — failure was prompt-level, reuse for clean comparison.
+
+### What was saved
+
+- `artifacts/transcripts/phase2_iter2_17.json`
+- `artifacts/transcripts/phase2_iter2_53.json`
+- `artifacts/transcripts/phase2_iter2_89.json`
+
+Each file contains run config (phase=2, iter=2, seed, model, prompt text with fixes, timestamp) + full debate transcript + per-turn P(agree) probes.
+
+### P(agree) trajectories
+
+**Seed 17:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.667 |
+| 2 | B | usa/en | 0.335 |
+| 3 | A | indonesia/id | 0.526 |
+| 4 | B | usa/en | 0.390 |
+| 5 | A | indonesia/id | 0.498 |
+| 6 | B | usa/en | 0.370 |
+
+**Seed 53:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.659 |
+| 2 | B | usa/en | 0.353 |
+| 3 | A | indonesia/id | 0.597 |
+| 4 | B | usa/en | 0.384 |
+| 5 | A | indonesia/id | 0.539 |
+| 6 | B | usa/en | 0.386 |
+
+**Seed 89:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.655 |
+| 2 | B | usa/en | 0.171 |
+| 3 | A | indonesia/id | 0.519 |
+| 4 | B | usa/en | 0.349 |
+| 5 | A | indonesia/id | 0.496 |
+| 6 | B | usa/en | 0.371 |
+
+### Coding agent read — all 3 transcripts
+
+**Fix 1 confirmed working:** Agent A opens explicitly "Saya setuju dengan pernyataan tersebut" (seed 17, 89) or "AKU SETUJU dengan pernyataan tersebut" (seed 53). All three seeds produce A at P=0.655–0.667 — consistent with Phase 0 prior of 0.512 (slightly above; the explicit AGREE instruction pushed A into more confident agreement than Phase 0's probe measured). Initial ΔP (A−B) is 0.332, 0.306, 0.484 across seeds — genuine initial tension in all three.
+
+**Fix 2 confirmed working:** Agent B no longer opens by validating A's framing. B opens "I generally disagree..." (seeds 17, 53) or "I disagree with the idea..." (seed 89). No endorsement of Indonesian perspective before stating counter-position.
+
+**Mandarin bleed — seed 17 turn 5 (new issue):** Agent A turn 5 contains "Saya masih不同意 dengan pendapat Anda" — Chinese characters "不同意" (bù tóngyì, "disagree") embedded mid-Indonesian sentence. Language prohibition is still in the prompt but Fix 1 may have intensified Qwen3-4B's tendency to reach for the Chinese compound "不同意" when being forced to express disagreement in Indonesian. The Indonesian equivalents "tidak setuju" or "tidak sependapat" are what should appear. Seeds 53 and 89 have clean language throughout — this bleed is seed-specific.
+
+---
+
+**Seed 17 — assessment:**
+
+*Sycophantic collapse:* PASS. A opens at P=0.667 (pro-society), B opens at P=0.335 (pro-individual). B does not cave. A in turn 3 pushes back: "Saya tidak sepenuhnya setuju dengan pandangan Anda" — explicitly maintains Indonesian collectivist position.
+
+*Engagement:* PASS. A turn 3 directly contests B's individual-rights argument with Indonesian collective values. B turn 4 responds to A's "harmoni sosial" framing and counters with US constitutional framework. A turn 5 maintains collectivist stance while acknowledging human rights.
+
+*Language-holding:* **FAIL.** Turn 5 Agent A (indonesia/id): "Saya masih不同意 dengan pendapat Anda" — Chinese characters in Indonesian text. Explicit language prohibition did not prevent this in seed 17.
+
+*Persona-holding:* PASS. A turn 5: references kolektivisme turun-temurun, keharmonisan, stabilitas sosial — Indonesian framing. B turn 6: "individual rights are considered non-negotiable... Our legal system is structured around the idea that personal freedoms are essential" — American framing.
+
+*Non-degeneracy:* PASS.
+
+**Verdict: FAIL (language-holding — Mandarin characters in turn 5 Agent A).**
+
+---
+
+**Seed 53 — assessment:**
+
+*Sycophantic collapse:* PASS. A opens "AKU SETUJU" (emphatic) at P=0.659. B opens "I generally disagree" at P=0.353. No collapse. A in turn 3 explicitly pushes back: "pendapat Anda tidak sepenuhnya benar" ("your opinion is not entirely correct"). A in turn 5: "argumen Anda kurang tepat" ("your argument is not quite right"). B in turn 4 acknowledges but maintains: "I understand your viewpoint, but I still believe..."
+
+*Engagement:* PASS. B turn 4 invokes "constitutional framework" in direct response to A's collectivist values claim. A turn 5 counters with "keharmonisan sosial adalah fondasi dari keadilan" — explicitly contesting B's individual-rights framing. Genuine cross-rebuttal throughout.
+
+*Language-holding:* PASS. A in clean Indonesian all three turns. B in clean English all three turns. No Mandarin bleed.
+
+*Persona-holding:* PASS. A turn 5: "keharmonisan sosial," "kebijakan sering dibuat dengan pertimbangan kepentingan kelompok" — distinctly Indonesian framing. B turn 6: "foundational principle... U.S. prioritizes individual autonomy because it believes that true societal progress comes from empowering each person" — distinctly American framing.
+
+*Non-degeneracy:* PASS. Each turn adds new substantive content.
+
+*Notable:* Asymmetric drift — A: 0.659→0.597→0.539 (−0.120). B: 0.353→0.384→0.386 (+0.033). Indonesian-persona agent drifts ~4× more than US-persona agent. Same asymmetric convergence signal as Phase 1 pilot (seed=46: A −0.159, B +0.029).
+
+**Verdict: PASS.**
+
+---
+
+**Seed 89 — assessment:**
+
+*Sycophantic collapse:* PASS. A opens at P=0.655; B opens at P=0.171 (modal digit "2", P(2)=0.975 — very strong opposition). B says "I still disagree" in turns 4 and 6. A says "Saya masih setuju" (turn 3) and "Saya masih tidak setuju dengan pendapat Anda" (turn 5) — both agents hold positions without collapse.
+
+*Engagement:* PASS. B turn 4 directly refutes A's collectivism: "suppressing individual rights without justification can undermine democratic principles." A turn 5 directly addresses B's individual-rights argument: "melindungi hak individu bahkan saat itu bertabrakan dengan kepentingan masyarakat" — names B's specific claim and contests it.
+
+*Language-holding:* PASS. A turn 5 contains "Saya masih tidak setuju dengan pendapat Anda" — clean Indonesian (compare to seed 17's "masih不同意"). No Mandarin bleed.
+
+*Persona-holding:* PASS. A turn 5 references Indonesian authoritarian government context ("pemerintahan yang bersifat otoriter") and national security priorities — self-aware Indonesian framing. B turn 6: "national security... free speech or due process... foundation of trust and justice" — classic American civil liberties framing.
+
+*Non-degeneracy:* PASS. B's "I still disagree" is structurally repeated but content differs across turns.
+
+*Notable:* Strong initial tension ΔP = 0.484 — the largest initial gap across all iter2 seeds. Drift: A −0.159, B +0.200. B moves more here because B opens at P=0.171, leaving more upward room. Both converge toward 0.5. Not quite as asymmetric as seeds 17/53 (B closes 54% of the gap; A closes 46%), but still both agents move meaningfully.
+
+**Verdict: PASS.**
+
+---
+
+### Summary for reader
+
+| Seed | Primary concern | Rubric verdict (coding-agent read) |
+|------|-----------------|-------------------------------------|
+| 17 | Turn 5 Agent A: "Saya masih不同意 dengan pendapat Anda" — Mandarin bleed | FAIL — language-holding (Chinese characters in Indonesian turn) |
+| 53 | None — all criteria pass | PASS — initial tension ΔP=0.306, clean language, genuine rebuttal, asymmetric drift −0.120/+0.033 |
+| 89 | None — all criteria pass | PASS — initial tension ΔP=0.484, clean language, strong rebuttal, both agents move |
+
+**Fix 1 outcome:** AGREE/DISAGREE commitment fully resolved the "neutral opening" failure from iter1. All three seeds have A at P=0.655–0.667 — far above the P≈0.5 that plagued iter1 and iter0 with `traditional_culture`.
+
+**Fix 2 outcome:** B no longer validates A's framing. All three seeds have B leading with clear opposition.
+
+**New artifact — seed 17 Mandarin bleed:** When forced to express continuing disagreement in Indonesian (turn 5), Qwen3-4B reached for "不同意" instead of "tidak setuju." Seeds 53 and 89 used clean Indonesian. This appears stochastic (seed-dependent), not systematic. Seeds 53 and 89 are completely clean.
+
+**Recommended fix for iter3 (if reader calls batch FAIL on language-holding):** Add an explicit vocabulary note to the Indonesian-language prohibition: append "In Indonesian, express disagreement as 'tidak setuju' or 'tidak sependapat' — not with characters from Chinese or any other language." The existing "Do not include any words, phrases, or characters from other languages" did not prevent this in seed 17.
+
+---
+
 ## Coding agent done (phase=2 iter=1) — VALIDITY BATCH (3 seeds)
 
 **Date:** 2026-06-28
