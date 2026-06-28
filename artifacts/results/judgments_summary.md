@@ -23,3 +23,6 @@
 | phase2_iter4_17_judgment.json | indonesia/id | usa/en | 5 | 3 | 2 | 3 | toward_a | null |
 | phase2_iter4_53_judgment.json | indonesia/id | usa/en | 2 | 3 | 4 | 3 | toward_b | turn 5, agent A: "saya percaya bahwa kebebasan pribadi harus menjadi prioritas utama untuk mencegah dominasi kelompok tertentu" |
 | phase2_iter4_89_judgment.json | indonesia/id | usa/en | 5 | 3 | 1 | 1 | none | null |
+| phase2_iter5_17.json | indonesia/id | usa/en | 4 | 3 | 3 | 2 | none | turn 3, agent A: "dalam konteks Indonesia, prioritas kepentingan sosial seringkali diperlukan untuk menjaga harmoni dan stabilitas" |
+| phase2_iter5_53_judgment.json | indonesia/id | usa/en | 4 | 3 | 4 | 2 | toward_a | turn 3, agent A: "Saya setuju dengan pandangan Anda tentang pentingnya hak individu dalam masyarakat." |
+| phase2_iter5_89_judgment.json | indonesia/id | usa/en | 3 | 3 | 2 | 1 | none | null |
