@@ -2,6 +2,52 @@
 
 ---
 
+## Coding agent done (phase=0 iter=0) — TWO-PERSONA ID vs US RUN
+
+**Date:** 2026-06-28
+
+### What was run
+
+1. Rewrote `code/phase0_wvs_screen.py` to probe **two personas only** (Indonesia, United States) with anti-neutrality framing in the probe question. Dropped CN persona based on reader fix spec. Kept 22-item set (14 original + 8 US-axis items added in prior iteration).
+2. Model: Qwen3-4B on T4 GPU via Modal. 44 probes (22 items × 2 personas).
+3. Run completed successfully. No errors.
+
+### What was saved
+
+- `artifacts/results/wvs_screen_raw.json` — raw P(agree) + digit distributions + top-10 next-token diagnostics for all 22 items × 2 personas
+- `artifacts/results/wvs_screen_summary.md` — sorted table with ΔP (signed, US−ID), mid-range flags, PASS/FAIL
+
+### Results summary
+
+| Item | P(ID) | P(US) | ΔP (US−ID) | PASS |
+|------|-------|-------|------------|------|
+| press_freedom | 0.766 | 0.949 | +0.182 | ✗ (US ceiling) |
+| **traditional_culture** | **0.662** | **0.506** | **−0.156** | **✓** |
+| society_over_individual | 0.512 | 0.372 | −0.140 | ✗ (ΔP=0.140, threshold=0.15) |
+| speech_stability | 0.620 | 0.524 | −0.096 | ✗ |
+| stability_vs_freedom | 0.561 | 0.478 | −0.083 | ✗ |
+| all others | | | < 0.073 | ✗ |
+
+Strict pass count: **1** (`traditional_culture`).
+
+### Surprises
+
+1. **`individual_freedom` no longer diverges for ID vs US alone.** Without CN pulling the maximum, ΔP collapses to 0.007. The reader's concern was correct — this item has no ID-US contrast, only ID-CN contrast.
+
+2. **Anti-neutrality framing partially worked.** `society_over_individual` US moved from 0.500 to 0.372 — a real improvement. But the framing was insufficient to push enough items past ΔP=0.15.
+
+3. **`press_freedom` shows the strongest signal but is ceiling-pinned.** ΔP=0.182 is the largest, but US=0.949 > 0.8 fails mid-range. The model treats press freedom as near-universally agreed upon by Americans, leaving no room for post-debate drift.
+
+4. **Consistent cultural pattern:** ID persona reliably leans more collectivist/authority-deferring than US across multiple items (traditional_culture, society_over_individual, speech_stability, stability_vs_freedom). This is directionally coherent but magnitude is small.
+
+### Next step
+
+Reader reviews `artifacts/results/wvs_screen_summary.md` and raw JSON, selects items, writes `artifacts/results/wvs_items_locked.json`, and writes PASS/FAIL on line 1 of `plan/phase_notes/phase0_reader_verdict.md`.
+
+Coding agent recommendation: lock `traditional_culture` as the confirmed item. Consider `society_over_individual` (ΔP=0.140) as a second item with relaxed threshold if reader agrees.
+
+---
+
 ## Coding agent done (phase=0 iter=0)
 
 **Date:** 2026-06-28

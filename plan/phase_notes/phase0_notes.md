@@ -171,3 +171,107 @@ This is precisely what the experiment is designed to measure — but it means th
 See `artifacts/results/wvs_items_locked.json` for full detail.
 
 **Recommended Phase 1 debut item:** `present_vs_future`.
+
+---
+
+## Reader analysis — Persona-probe run (2026-06-28) — **FAIL**
+
+**Verdict: FAIL.** 2 of 14 items meet both criteria. Threshold is 3.
+
+### Item-by-item ruling (from raw JSON, not summary)
+
+Only 2 items pass:
+
+- `individual_freedom`: P(ID)=0.662, P(US)=0.632, P(CN)=0.507, ΔP=0.155. Passes by 0.005.
+  - Critical caveat: P(ID) vs P(US) = 0.030 only. The ΔP passes because CN is at 0.507. A debate between ID-persona and US-persona agents on this item starts from nearly identical priors (0.662 vs 0.632). There is essentially nothing to argue about from the ID-US axis.
+- `traditional_culture`: P(ID)=0.679, P(US)=0.527, P(CN)=0.569, ΔP=0.152. Passes by 0.002.
+  - Better for ID-US (ΔP=0.152), but still barely clears threshold.
+
+All remaining items fail ΔP < 0.15.
+
+### Root cause: US and CN 4-collapse
+
+The US and CN personas systematically collapse to digit "4" (P=0.500 exactly) on multiple items. Raw digit probabilities:
+- `religious_policy` US: P(4)=0.9998 — "exactly neutral on whether religious law should influence government"
+- `stability_vs_freedom` US: P(4)=0.9988 — "exactly neutral on stability vs political freedom"
+- `authority_trust` US: P(4)=0.9997 — "exactly neutral on whether authority figures can be trusted"
+- `filial_duty` US: P(4)=0.9999 — "exactly neutral on children supporting elderly parents"
+- `competition` US: P(4)=0.9991 — "exactly neutral on competition vs cooperation"
+
+These are not genuine neutrality. These are items where Americans have clear, culturally-coded opinions. The model is hedging. The CN persona shows the same collapse on most items.
+
+**Consequence:** ΔP is driven almost entirely by the ID persona deviating from 0.5. US and CN cannot be differentiated from each other. A US vs CN debate cannot be supported by this probe.
+
+### Fix specification (full detail in phase0_reader_verdict.md)
+
+1. **Try anti-neutrality framing first** (cheaper): add to probe "Please give your honest personal view — choose the middle option only if you are genuinely undecided, not as a diplomatic response." Rerun on the same 14 items.
+
+2. **Expand item set if framing fix is insufficient**: add 10–15 items targeting the US-CN axis (political rights, civil liberties, individual vs collective, market vs state). Items should be from WVS domains where empirical US-CN survey divergence is documented.
+
+Items to add (suggested):
+- "Citizens have the right to criticize the government publicly, even if it causes social instability."
+- "Freedom of the press is essential to a well-functioning society."
+- "It is acceptable for the government to monitor citizens' communications to prevent crime."
+- "The interests of society should take priority over the rights of the individual."
+- "Success in life is primarily determined by individual effort, not circumstances."
+- "A free market, with minimal government intervention, is the best economic system."
+- "The government should ensure everyone has a minimum standard of living, even if it requires high taxes."
+- "People should be free to pursue their own goals even if it conflicts with family expectations."
+- "National stability is a valid reason to limit freedom of speech."
+
+---
+
+## Two-persona ID vs US run (2026-06-28) — coding agent analysis
+
+**Design:** dropped CN persona; kept anti-neutrality framing from previous run; ran all 22 items (14 original + 8 US-axis items from reader Fix 1). Two personas only: ID and US.
+
+### What ran
+
+- `code/phase0_wvs_screen.py` (rewritten, two personas)
+- Model: Qwen3-4B, T4 GPU, `enable_thinking=False`
+- 22 items × 2 personas = 44 probes
+- Anti-neutrality framing: yes — "choose the middle option only if genuinely undecided"
+- Digit token IDs: {1:16, 2:17, 3:18, 4:19, 5:20, 6:21, 7:22}
+
+### Results (sorted by |ΔP|)
+
+| Item | P(ID) | P(US) | ΔP (US−ID) | PASS |
+|------|-------|-------|------------|------|
+| press_freedom | 0.766 | 0.949 | +0.182 | ✗ (US ceiling) |
+| traditional_culture | 0.662 | 0.506 | −0.156 | ✓ |
+| society_over_individual | 0.512 | 0.372 | −0.140 | ✗ (ΔP < 0.15) |
+| speech_stability | 0.620 | 0.524 | −0.096 | ✗ |
+| stability_vs_freedom | 0.561 | 0.478 | −0.083 | ✗ |
+| present_vs_future | 0.413 | 0.486 | +0.073 | ✗ |
+| religious_policy | 0.571 | 0.500 | −0.070 | ✗ |
+| break_unjust_law | 0.672 | 0.737 | +0.065 | ✗ |
+| individual_effort | 0.636 | 0.571 | −0.065 | ✗ |
+| filial_duty | 0.431 | 0.368 | −0.063 | ✗ |
+| strong_leadership | 0.599 | 0.539 | −0.060 | ✗ |
+| (everything else) | — | — | < 0.035 | ✗ |
+
+### What changed vs previous 3-persona run
+
+Anti-neutrality framing partially reduced the US "4-collapse" — several items that were P(US)=0.500 exactly are now spread (e.g. `society_over_individual` US moved from 0.500 to 0.372). But the framing was insufficient to push divergence past the threshold for most items. Only 1 strict pass.
+
+### Key observations
+
+1. **`traditional_culture` is the only strict pass.** P(ID)=0.662 > P(US)=0.506, ΔP=0.156. Both mid-range. This is consistent across all runs — it is a stable item.
+
+2. **`press_freedom` has the largest ΔP (0.182) but US=0.949 hits the ceiling.** The cultural signal is real (US persona strongly pro-press-freedom, ID somewhat less so), but the US prior is too extreme to allow measurable post-debate drift. Not suitable as a debate item.
+
+3. **`society_over_individual` is a close near-miss.** ΔP=0.140 (threshold is 0.15; 0.01 short). P(ID)=0.512 vs P(US)=0.372 — a clean cultural contrast (ID persona favors collective interest, US favors individual rights). Worth noting for reader consideration.
+
+4. **The ID persona is consistently more opinionated than US.** Across nearly all items, P(ID) deviates further from 0.5. The US persona still hedges more than would be expected for a culturally-coded American opinion.
+
+5. **`individual_freedom` no longer diverges at ID-US level.** P(ID)=0.644, P(US)=0.637, ΔP=0.007. In the 3-persona run, ΔP was 0.155 only because CN=0.507 pulled the max. Without CN, the ID-US gap on this item is negligible — confirms the reader's concern that this item couldn't support an ID vs US debate.
+
+### Recommendation to reader
+
+Lock `traditional_culture` (the one strict pass) as a confirmed debate item.
+
+For a second item, the reader faces a judgment call:
+- **`society_over_individual`** (ΔP=0.140): Misses threshold by 0.01. Culturally coherent (collective vs individual). Both agents mid-range. Reasonable to include.
+- **`speech_stability`** (ΔP=0.096): More distant from threshold. ID=0.620 vs US=0.524 — ID persona favors stability constraints on speech, US does not. Clear contrast but weaker signal.
+
+If the reader requires ≥3 items with strict criteria, this run does not clear the bar. The coding agent's view: `traditional_culture` + `society_over_individual` + one more borderline item is a workable set for Phase 1 if the reader accepts a slightly relaxed ΔP floor of 0.13.

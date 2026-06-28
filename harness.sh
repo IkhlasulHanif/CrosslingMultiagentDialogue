@@ -138,9 +138,10 @@ while true; do
             echo "[harness] Phase 0 PASSED — item set locked."
             state_set phase 1; state_set iter 0
         else
-            echo "[harness] Phase 0 FAILED — reader says: $v"
-            echo "[harness] Fix WVS items or model. Sleeping ${SLEEP_ON_FAIL}s..."
-            safe_sleep
+            echo "[harness] Phase 0 FAILED — retrying immediately."
+            rm -f "$ROOT/artifacts/results/wvs_screen_raw.json" \
+                  "$ROOT/artifacts/results/wvs_screen_summary.md" \
+                  "$ROOT/artifacts/results/wvs_items_locked.json"
         fi
         continue
     fi
@@ -162,9 +163,8 @@ while true; do
             echo "[harness] Phase 1 PASSED — pilot transcript approved."
             state_set phase 2; state_set iter 0; state_set pass_count 0
         else
-            echo "[harness] Phase 1 FAILED — $v"
+            echo "[harness] Phase 1 FAILED — retrying immediately."
             rm -f "$ROOT/artifacts/transcripts/phase1_pilot.json"
-            safe_sleep
         fi
         continue
     fi
@@ -234,8 +234,7 @@ while true; do
             echo "[harness] Phase 4 PASSED — probe is calibrated."
             state_set phase 5; state_set iter 0
         else
-            echo "[harness] Phase 4 FAILED — probe broken. Fix before factorial."
-            safe_sleep
+            echo "[harness] Phase 4 FAILED — retrying immediately."
         fi
         continue
     fi

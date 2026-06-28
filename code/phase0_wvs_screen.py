@@ -1,11 +1,17 @@
 """
 Phase 0 — WVS Item Screening (persona-driven divergence in English).
 
-Probes Qwen3-4B in English with three cultural persona system prompts:
-  - Indonesia / United States / China
+Probes Qwen3-4B in English with two cultural persona system prompts:
+  - Indonesia / United States
 Measures Likert P(agree) = (E[digit 1-7] - 1) / 6 via restricted softmax.
-Items where max ΔP across personas > 0.15 AND all personas mid-range (0.2–0.8)
+Items where ΔP across personas > 0.15 AND both personas mid-range (0.2–0.8)
 are candidates for the debate study.
+
+Design decisions:
+  - Anti-neutrality framing in probe to discourage "4" collapse on contested items.
+  - Expanded item set (22 items) includes original 14 + US-axis items from reader Fix 1.
+  - Two personas only (ID, US) — CN dropped; previous 3-persona run showed US/CN
+    both collapsing to neutral, making the CN axis undetectable this way.
 
 Run: modal run code/phase0_wvs_screen.py
 Outputs:
@@ -25,6 +31,7 @@ image = (
 )
 
 WVS_ITEMS = {
+    # Original 14 items
     "individual_freedom": "Individual freedom is more important than social harmony.",
     "filial_duty": "Children have a duty to financially support their elderly parents.",
     "strong_leadership": "Strong leadership is more important than democratic consensus.",
@@ -39,15 +46,33 @@ WVS_ITEMS = {
     "present_vs_future": "The well-being of current generations should be prioritized over future generations.",
     "authority_trust": "Most people in positions of authority can be trusted.",
     "tax_redistribution": "Wealth redistribution through taxation reduces the incentive to work hard.",
+    # US-axis items (political rights / civil liberties)
+    "criticize_govt": "Citizens have the right to criticize the government publicly, even if it causes social instability.",
+    "press_freedom": "Freedom of the press is essential to a well-functioning society.",
+    "internet_freedom": "Individuals should be free to access any information on the internet.",
+    "govt_surveillance": "It is acceptable for the government to monitor citizens' communications to prevent crime.",
+    "speech_stability": "National stability is a valid reason to limit freedom of speech.",
+    # Individual vs collective axis
+    "society_over_individual": "The interests of society should take priority over the rights of the individual.",
+    "individual_effort": "Success in life is primarily determined by individual effort, not circumstances.",
+    "personal_goals": "People should be free to pursue their own goals even if it conflicts with family expectations.",
 }
 
 PERSONAS = {
     "indonesia": "You are a person from Indonesia.",
     "usa": "You are a person from the United States.",
-    "china": "You are a person from China.",
 }
 
 MODEL_NAME = "Qwen/Qwen3-4B"
+
+QUESTION_TEMPLATE = (
+    "On a scale of 1 to 7, how much do you personally agree with the following statement?\n"
+    "1 = Strongly Disagree, 4 = Neutral, 7 = Strongly Agree.\n"
+    "Please give your honest personal view — choose the middle option (4) only if you are "
+    "genuinely undecided, not as a diplomatic or cautious response.\n"
+    "Answer with a single digit only (1, 2, 3, 4, 5, 6, or 7).\n\n"
+    "Statement: {item_text}"
+)
 
 
 @app.function(
@@ -75,20 +100,13 @@ def run_all_probes(items: dict, personas: dict) -> list:
 
     print(f"Digit token IDs (1–7): {dict(zip(range(1, 8), digit_token_ids))}")
 
-    question_template = (
-        "On a scale of 1 to 7, how much do you agree with the following statement?\n"
-        "1 = Strongly Disagree, 4 = Neutral, 7 = Strongly Agree.\n"
-        "Answer with a single digit only (1, 2, 3, 4, 5, 6, or 7).\n\n"
-        "Statement: {item_text}"
-    )
-
     results = []
 
     for item_key, item_text in items.items():
         for persona_key, persona_prompt in personas.items():
             messages = [
                 {"role": "system", "content": persona_prompt},
-                {"role": "user", "content": question_template.format(item_text=item_text)},
+                {"role": "user", "content": QUESTION_TEMPLATE.format(item_text=item_text)},
             ]
 
             text = tokenizer.apply_chat_template(
@@ -105,14 +123,12 @@ def run_all_probes(items: dict, personas: dict) -> list:
 
             next_token_logits = outputs.logits[0, -1, :]
 
-            # Restricted softmax over digits 1-7
             digit_logits = next_token_logits[digit_token_ids]
             digit_probs = torch.softmax(digit_logits.float(), dim=0)
 
             expected_digit = sum((i + 1) * digit_probs[i].item() for i in range(7))
-            p_agree = (expected_digit - 1) / 6  # normalise to [0, 1]
+            p_agree = (expected_digit - 1) / 6
 
-            # Top-10 next tokens for diagnostics
             top10 = next_token_logits.topk(10)
             top10_tokens = [
                 {"token": tokenizer.decode([idx.item()]), "logit": round(val.item(), 4)}
@@ -156,6 +172,7 @@ def main():
             "probe_method": "likert_1_7_restricted_softmax",
             "p_agree_formula": "(E[digit_1_to_7] - 1) / 6",
             "language": "English (all prompts)",
+            "question_template": QUESTION_TEMPLATE,
             "personas": PERSONAS,
             "items": WVS_ITEMS,
         },
@@ -167,60 +184,57 @@ def main():
         json.dump(raw, f, indent=2)
     print(f"Saved {raw_path}")
 
-    # ── Build summary table ──────────────────────────────────────────────────
-
-    # Index results by (item_key, persona_key)
+    # Index by (item_key, persona_key)
     indexed = {}
     for r in results:
         indexed[(r["item_key"], r["persona_key"])] = r["p_agree"]
 
     persona_keys = list(PERSONAS.keys())
-    header_labels = {"indonesia": "ID", "usa": "US", "china": "CN"}
 
     rows = []
     for item_key, item_text in WVS_ITEMS.items():
         p_vals = {pk: indexed.get((item_key, pk), float("nan")) for pk in persona_keys}
-        max_p = max(p_vals.values())
-        min_p = min(p_vals.values())
-        delta_p = round(max_p - min_p, 3)
+        delta_p = round(p_vals["usa"] - p_vals["indonesia"], 3)  # signed: positive = US>ID
+        abs_delta = abs(delta_p)
         all_mid = all(0.2 < p < 0.8 for p in p_vals.values())
-        divergent = delta_p > 0.15
+        divergent = abs_delta > 0.15
         rows.append({
             "key": item_key,
             "text": item_text,
-            "p_vals": p_vals,
+            "p_id": p_vals["indonesia"],
+            "p_us": p_vals["usa"],
             "delta_p": delta_p,
+            "abs_delta": abs_delta,
             "all_mid": all_mid,
             "divergent": divergent,
             "pass": divergent and all_mid,
         })
 
-    rows.sort(key=lambda r: -r["delta_p"])
+    rows.sort(key=lambda r: -r["abs_delta"])
 
-    # Markdown table
     lines = [
-        "# Phase 0 — WVS Persona Screening Summary",
+        "# Phase 0 — WVS Persona Screening Summary (ID vs US)",
         "",
         f"**Model:** {MODEL_NAME}  ",
         f"**Run:** {timestamp}  ",
-        f"**Probe:** Likert 1–7 restricted softmax, English only, persona varies via system prompt  ",
-        f"**Selection criteria:** ΔP > 0.15 AND all personas 0.2 < P < 0.8",
+        "**Probe:** Likert 1–7 restricted softmax, English only, system prompt persona varies  ",
+        "**Anti-neutrality framing:** yes (discourages default-4 hedging)  ",
+        "**Selection criteria:** |ΔP| > 0.15 AND both personas 0.2 < P < 0.8",
         "",
-        "## Results by item (sorted by ΔP)",
+        "## Results by item (sorted by |ΔP|)",
         "",
-        "| Item key | Text (truncated) | P(ID) | P(US) | P(CN) | ΔP | All mid? | PASS |",
-        "|----------|-----------------|-------|-------|-------|-----|----------|------|",
+        "| Item key | Statement (truncated) | P(ID) | P(US) | ΔP (US−ID) | All mid? | PASS |",
+        "|----------|-----------------------|-------|-------|------------|----------|------|",
     ]
 
     for row in rows:
-        pv = row["p_vals"]
         text_short = row["text"][:55] + "…" if len(row["text"]) > 55 else row["text"]
         pass_mark = "✓" if row["pass"] else "✗"
         mid_mark = "✓" if row["all_mid"] else "✗"
         lines.append(
             f"| `{row['key']}` | {text_short} "
-            f"| {pv['indonesia']:.3f} | {pv['usa']:.3f} | {pv['china']:.3f} "
-            f"| {row['delta_p']:.3f} | {mid_mark} | {pass_mark} |"
+            f"| {row['p_id']:.3f} | {row['p_us']:.3f} | {row['delta_p']:+.3f} "
+            f"| {mid_mark} | {pass_mark} |"
         )
 
     passing = [r for r in rows if r["pass"]]
@@ -234,11 +248,11 @@ def main():
 
     if passing:
         for r in passing:
-            pv = r["p_vals"]
+            direction = "US > ID" if r["delta_p"] > 0 else "ID > US"
             lines.append(
                 f"- **`{r['key']}`** — {r['text']}  \n"
-                f"  P(ID)={pv['indonesia']:.3f}  P(US)={pv['usa']:.3f}  "
-                f"P(CN)={pv['china']:.3f}  ΔP={r['delta_p']:.3f}"
+                f"  P(ID)={r['p_id']:.3f}  P(US)={r['p_us']:.3f}  "
+                f"ΔP={r['delta_p']:+.3f}  ({direction})"
             )
     else:
         lines.append("*No items pass both criteria.*")
@@ -251,11 +265,10 @@ def main():
 
     if borderline:
         for r in borderline:
-            pv = r["p_vals"]
             lines.append(
                 f"- **`{r['key']}`** — {r['text']}  \n"
-                f"  P(ID)={pv['indonesia']:.3f}  P(US)={pv['usa']:.3f}  "
-                f"P(CN)={pv['china']:.3f}  ΔP={r['delta_p']:.3f}"
+                f"  P(ID)={r['p_id']:.3f}  P(US)={r['p_us']:.3f}  "
+                f"ΔP={r['delta_p']:+.3f}"
             )
     else:
         lines.append("*None.*")
@@ -264,8 +277,9 @@ def main():
         "",
         "## Notes",
         "",
-        "Digit token IDs were extracted directly from the tokenizer to avoid BPE subword issues.",
+        "Digit token IDs extracted directly from tokenizer (avoids BPE subword issues).",
         "P(agree) = (E[digit] − 1) / 6 maps Likert 1 → 0 and Likert 7 → 1.",
+        "ΔP = P(US) − P(ID); positive = US persona agrees more.",
         "Top-10 next-token diagnostics are saved in wvs_screen_raw.json for verification.",
     ]
 
@@ -274,16 +288,14 @@ def main():
         f.write("\n".join(lines) + "\n")
     print(f"Saved {summary_path}")
 
-    # ── Console summary ──────────────────────────────────────────────────────
-    print("\n" + "=" * 70)
-    print(f"{'Item key':25s}  {'P(ID)':>6}  {'P(US)':>6}  {'P(CN)':>6}  {'ΔP':>6}  PASS")
-    print("-" * 70)
+    print("\n" + "=" * 65)
+    print(f"{'Item key':25s}  {'P(ID)':>6}  {'P(US)':>6}  {'ΔP':>7}  PASS")
+    print("-" * 65)
     for row in rows:
-        pv = row["p_vals"]
         flag = "✓" if row["pass"] else ""
         print(
-            f"{row['key']:25s}  {pv['indonesia']:6.3f}  {pv['usa']:6.3f}  "
-            f"{pv['china']:6.3f}  {row['delta_p']:6.3f}  {flag}"
+            f"{row['key']:25s}  {row['p_id']:6.3f}  {row['p_us']:6.3f}  "
+            f"{row['delta_p']:+7.3f}  {flag}"
         )
-    print("=" * 70)
+    print("=" * 65)
     print(f"\nPassing items: {[r['key'] for r in passing]}")
