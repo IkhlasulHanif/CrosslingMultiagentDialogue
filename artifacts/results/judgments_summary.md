@@ -26,3 +26,6 @@
 | phase2_iter5_17.json | indonesia/id | usa/en | 4 | 3 | 3 | 2 | none | turn 3, agent A: "dalam konteks Indonesia, prioritas kepentingan sosial seringkali diperlukan untuk menjaga harmoni dan stabilitas" |
 | phase2_iter5_53_judgment.json | indonesia/id | usa/en | 4 | 3 | 4 | 2 | toward_a | turn 3, agent A: "Saya setuju dengan pandangan Anda tentang pentingnya hak individu dalam masyarakat." |
 | phase2_iter5_89_judgment.json | indonesia/id | usa/en | 3 | 3 | 2 | 1 | none | null |
+| phase2_iter6_17_judgment.json | indonesia/id | usa/en | 4 | 2 | 4 | 2 | none | turn 3, agent A: "Kami menganggap pendekatan Amerika lebih ekstrem. Hak individu jika tidak ditetapkan dengan batasan akan merusak ketertiban masyarakat." |
+| phase2_iter6_71_judgment.json | indonesia/id | usa/en | 3 | 3 | 2 | 3 | toward_a | null |
+| phase2_iter6_89_judgment.json | indonesia/id | usa/en | 3 | 2 | 2 | 2 | none | null |
