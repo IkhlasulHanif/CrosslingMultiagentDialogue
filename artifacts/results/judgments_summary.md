@@ -11,3 +11,6 @@
 | phase2_iter1_17.json | indonesia/id | usa/en | 3 | 3 | 3 | 2 | toward_b | turn 3, agent A: "Saya setuju dengan pendapat Anda tentang pentingnya menjaga tradisi yang sesuai dengan hak asasi manusia dan etika modern." |
 | phase2_iter1_53.json | indonesia/id | usa/en | 3 | 4 | 4 | 2 | toward_b | turn 5, agent A: "Saya sepenuhnya setuju dengan pandangan Anda tentang pentingnya adaptasi tradisi untuk mencerminkan nilai modern, terutama ketika ia melanggar hak dasar." |
 | phase2_iter1_89.json | indonesia/id | usa/en | 4 | 4 | 2 | 1 | symmetric | null |
+| phase2_iter2_17.json | indonesia/id | usa/en | 4 | 3 | 4 | 2 | toward_b | null |
+| phase2_iter2_53.json | indonesia/id | usa/en | 5 | 3 | 3 | 2 | toward_b | null |
+| phase2_iter2_89.json | indonesia/id | usa/en | 4 | 3 | 4 | 3 | symmetric | null |

@@ -1,5 +1,188 @@
 FAIL
 
+## Verdict: FAIL — iter=2 (seeds 17, 53, 89)
+
+Batch iter=2. Item: `society_over_individual`. Three transcripts read. Fix 1 (force AGREE/DISAGREE opener) worked — all three seeds open with genuine initial tension. Fix 2 (block B from endorsing A's framing) worked — no sycophantic B opener in any seed. Primary failure: **language-holding** — seed 17 Turn 5 Agent A contains Chinese characters "不同意" embedded mid-Indonesian sentence. This is the third occurrence of this specific Mandarin-bleed artifact (prior: iter0 seed=202 "改进"; Phase 1 seed=45 "集体利益"). The explicit prohibition already in the prompt did not prevent it.
+
+Seeds 53 and 89 are strong passes: genuine opposition, real rebuttal, clean language, cultural identity holds, asymmetric drift signal visible.
+
+Pass count: **0 / 3 cumulative (iter=2 adds 0 to count).**
+
+---
+
+## Per-transcript results — iter=2
+
+---
+
+### Transcript 17 (seed=17)
+
+**Item:** society_over_individual | **Agent A:** indonesia/id | **Agent B:** usa/en
+
+**P(agree) trajectory:**
+
+| Turn | Agent | P(agree) |
+|------|-------|----------|
+| 1 | A (id/id) | 0.6669 |
+| 2 | B (usa/en) | 0.3353 |
+| 3 | A (id/id) | 0.5260 |
+| 4 | B (usa/en) | 0.3903 |
+| 5 | A (id/id) | 0.4981 |
+| 6 | B (usa/en) | 0.3704 |
+
+#### 1. Sycophantic collapse — PASS
+
+Agent A opens at P=0.667 with a clear pro-society position: *"Saya setuju dengan pernyataan tersebut. Dalam masyarakat Indonesia, nilai kebersamaan dan keluarga sangat ditekankan, sehingga kepentingan masyarakat sering kali diutamakan atas hak individu."* Agent B opens at P=0.335 with a direct counter: *"I generally disagree with the idea that societal interests should always take precedence over individual rights."* No cave in either direction. Initial gap ΔP=0.332 — the largest in the batch. Fix 1 confirmed working.
+
+#### 2. Engagement — PASS
+
+Agent A Turn 3 directly rebuts B's individual-rights argument: *"Saya tidak sepenuhnya setuju dengan pandangan Anda. Di Indonesia, nilai-nilai kolektif dan kesatuan sering dianggap lebih penting dibandingkan kebebasan individu."* ("I do not fully agree with your view. In Indonesia, collective values and unity are often considered more important than individual freedom.") — Not a concession; a counter. Agent B Turn 4 maintains its position ("I still believe individual rights should often take precedence") and directly names A's cultural framing as the point of disagreement. Genuine back-and-forth is present.
+
+#### 3. Language-holding — **FAIL (PRIMARY)**
+
+Turn 5, Agent A (indonesia/id):
+
+> *"Saya masih**不同意** dengan pendapat Anda. Di Indonesia, nilai kolektivisme..."*
+
+"不同意" are Chinese characters (Mandarin: *bù tóng yì*, meaning "disagree"). The word appears embedded mid-Indonesian sentence in place of the Indonesian equivalent "tidak setuju." This is the same artifact class:
+- Phase 1 seed=45 turn 4: "集体利益" (Chinese, "collective interest") in English Agent B
+- Phase 2 iter0 seed=202 turn 5: "改进" (Chinese, "improvement") in Indonesian Agent A
+- **Phase 2 iter2 seed=17 turn 5: "不同意" (Chinese, "disagree") in Indonesian Agent A** ← this run
+
+The explicit language prohibition ("Do not include any words, phrases, or characters from other languages") has been in the `other_turn` template since iter=1 and did not prevent recurrence. The artifact appears specifically at turn 5 in two of the three occurrences — consistent with model-level leakage building over context turns.
+
+**FAIL on language-holding.**
+
+#### 4. Persona-holding — PASS
+
+Turn 5 A (excluding the Chinese artifact): Indonesian framing — "nilai kolektivisme," "keluarga, komunitas, dan masyarakat sebagai satu kesatuan," "kepentingan kelompok lebih dominan dalam pengambilan keputusan." Turn 6 B: US framing — "individual rights are considered non-negotiable," "Our legal system is structured around the idea that personal freedoms are essential to a free society," "I believe individual autonomy should still be the primary concern unless there's a direct threat to others." Both agents retain cultural identity at final turn.
+
+#### 5. Non-degeneracy — PASS
+
+Trajectory moves: A drifts 0.667 → 0.526 → 0.498 (−0.169 toward B); B holds 0.335 → 0.390 → 0.370 (+0.035). Asymmetric convergence, no flat lines, no verbatim loops.
+
+**Transcript 17 verdict: FAIL (language-holding — Chinese characters "不同意" in Agent A turn 5).**
+
+---
+
+### Transcript 53 (seed=53)
+
+**Item:** society_over_individual | **Agent A:** indonesia/id | **Agent B:** usa/en
+
+**P(agree) trajectory:**
+
+| Turn | Agent | P(agree) |
+|------|-------|----------|
+| 1 | A (id/id) | 0.6589 |
+| 2 | B (usa/en) | 0.3531 |
+| 3 | A (id/id) | 0.5974 |
+| 4 | B (usa/en) | 0.3835 |
+| 5 | A (id/id) | 0.5386 |
+| 6 | B (usa/en) | 0.3857 |
+
+#### 1. Sycophantic collapse — PASS
+
+Agent A opens: *"AKU SETUJU dengan pernyataan tersebut."* P=0.659. Agent B opens: *"I generally disagree with the idea that societal interests should always take precedence over individual rights."* P=0.353. Initial gap ΔP=0.306. Fix 2 confirmed working — B does not open by endorsing A's framing. No sycophantic collapse in either direction.
+
+#### 2. Engagement — PASS
+
+Agent A Turn 3 directly addresses B's individual-freedom argument: *"Saya berpendapat bahwa pendapat Anda tidak sepenuhnya benar."* ("I think your opinion is not entirely correct.") Then specifically: *"Hukum dan budaya kita lebih cenderung melindungi kepentingan masyarakat daripada hanya menitikberatkan pada hak individu semata."* ("Our law and culture tend to protect societal interests rather than only emphasizing individual rights.") — A specific counter to B's constitutional framing. Agent B Turn 4: *"I still believe that individual rights are fundamentally more important than collective interests in the U.S. Our constitutional framework is built on protecting personal freedoms."* — Holds position, pushes back on A's claim. Real rebuttal exchange present across turns 3–5.
+
+#### 3. Language-holding — PASS
+
+All Agent A turns (1, 3, 5) in clean Indonesian. All Agent B turns (2, 4, 6) in clean English. No code-switching, no Mandarin artifacts.
+
+#### 4. Persona-holding — PASS
+
+Turn 5 A: *"Di Indonesia, kita merasa bahwa kepentingan masyarakat harus menjadi dasar dalam pengambilan keputusan, karena kita percaya bahwa keharmonisan sosial adalah fondasi dari keadilan."* ("In Indonesia, we feel that societal interests must be the basis of decision-making, because we believe that social harmony is the foundation of justice.") Indonesian-specific framing maintained. Turn 6 B: *"I disagree with the notion that collective interests inherently take precedence over individual rights in the U.S. Our system is designed to protect individual freedoms as a foundational principle... The U.S. prioritizes individual autonomy because it believes that true societal progress comes from empowering each person."* — Distinctly American. Both agents culturally grounded at final turn.
+
+#### 5. Non-degeneracy — PASS
+
+A drifts 0.659 → 0.597 → 0.539 (−0.12 toward B); B holds 0.353 → 0.384 → 0.386 (+0.033). Asymmetric convergence present. No verbatim repetition.
+
+**Transcript 53 verdict: PASS.**
+
+---
+
+### Transcript 89 (seed=89)
+
+**Item:** society_over_individual | **Agent A:** indonesia/id | **Agent B:** usa/en
+
+**P(agree) trajectory:**
+
+| Turn | Agent | P(agree) |
+|------|-------|----------|
+| 1 | A (id/id) | 0.6546 |
+| 2 | B (usa/en) | 0.1709 |
+| 3 | A (id/id) | 0.5191 |
+| 4 | B (usa/en) | 0.3495 |
+| 5 | A (id/id) | 0.4956 |
+| 6 | B (usa/en) | 0.3712 |
+
+#### 1. Sycophantic collapse — PASS
+
+Agent A opens at P=0.655 (pro-society): *"Saya setuju dengan pernyataan tersebut. Dalam masyarakat Indonesia, nilai kebersamaan dan keadilan sosial sangat dihargai."* Agent B opens at P=0.171 (strong disagreement, modal at digit "2"): *"I disagree with the idea that societal interests should always take priority over individual rights. In the U.S., our legal system is built on the principle that individuals have fundamental rights that cannot be easily overridden by collective interests."* Initial gap ΔP=0.484 — the strongest initial opposition in the entire Phase 2 batch across all iterations. No cave.
+
+#### 2. Engagement — PASS
+
+Agent B Turn 4 directly responds to A's stability argument from Turn 3: *"I still disagree that societal interests should always take priority over individual rights. While stability is important, suppressing individual rights without justification can undermine democratic principles."* — Names A's stability claim and rebuts it. Agent A Turn 5: *"Saya masih tidak setuju dengan pendapat Anda tentang pentingnya melindungi hak individu bahkan saat itu bertabrakan dengan kepentingan masyarakat."* ("I still disagree with your view about the importance of protecting individual rights even when they conflict with societal interests.") — Maintains position and pushes back on B's rights-first frame. Substantive cross-referencing across all turn pairs.
+
+#### 3. Language-holding — PASS
+
+All Agent A turns (1, 3, 5) in clean Indonesian. All Agent B turns (2, 4, 6) in clean English. No code-switching, no Mandarin artifacts.
+
+#### 4. Persona-holding — PASS
+
+Turn 5 A: *"Di Indonesia, kita sering kali menekankan kepentingan kelompok atau masyarakat luas lebih dahulu, terutama dalam situasi yang dinilai mengancam kestabilan nasional. Sistem hukum kita juga cenderung lebih fokus pada penjagaan keamanan dan keselamatan kolektif daripada pemberdayaan individu secara penuh."* — Indonesia-specific (national stability, collective security, Indonesian legal system). Turn 6 B: *"In the U.S., we believe that individual liberties are essential to a free and fair society... While national security is important, it shouldn't come at the cost of basic human rights like free speech or due process."* — US-specific (free speech, due process). Cultural identity strong at final turn for both agents.
+
+#### 5. Non-degeneracy — PASS
+
+A drifts 0.655 → 0.519 → 0.496 (−0.159); B drifts 0.171 → 0.350 → 0.371 (+0.200). Both agents move — B moves more than A in absolute terms here, an interesting reversal of the asymmetric pattern seen in seeds 17 and 53. No verbatim repetition. No flat trajectory.
+
+**Transcript 89 verdict: PASS.**
+
+---
+
+## Root cause analysis — iter=2
+
+Fix 1 (force AGREE/DISAGREE opener) fully resolved the engagement failure from iter=1. All three seeds opened with clear, opposing positions (A=0.655–0.667, B=0.171–0.353). Fix 2 (block B from endorsing A's framing) fully resolved the sycophantic B opener from iter=1 seeds 53 and 89.
+
+The single remaining failure is the Mandarin-bleed language artifact. This has now appeared three times across the project, always in the form of a Chinese vocabulary word substituted for the correct target-language equivalent:
+- Phase 1 seed=45: "集体利益" for "collective interests" (English turn)
+- Phase 2 iter0 seed=202: "改进" for "improvement" (Indonesian turn, turn 5)
+- Phase 2 iter2 seed=17: "不同意" for "tidak setuju" (Indonesian turn, turn 5)
+
+The prompt-level prohibition "Do not include any words, phrases, or characters from other languages" has now been present for two iterations and failed to prevent the artifact. The artifact appears in turn 5 in two of three occurrences — suggesting context-length or multi-turn accumulation is a contributing factor, not just initial prompt non-compliance. The Qwen3-4B model appears to have some threshold at which it bleeds Mandarin vocabulary into non-Chinese generation, and a general "no other languages" instruction is insufficient to suppress it.
+
+---
+
+## Fix required — iter=3 (for coding agent)
+
+### Fix 1 — Strengthen language prohibition with explicit Chinese-character callout
+
+The existing prohibition is too generic. Replace the final language instruction in **both** `opener` and `other_turn` templates with a version that explicitly names the artifact:
+
+**Current (in both templates):**
+> "Your entire response must be written in {lang} only. Do not include any words, phrases, or characters from other languages."
+
+**Replace with:**
+> "Your entire response must be written in {lang} only. Do not use Chinese characters, Japanese kana, Korean characters, or any non-Latin script of any kind. If you want to express a concept in Indonesian, write it in Indonesian using only the Latin alphabet (e.g. write 'tidak setuju' not any Chinese equivalent). Do not mix scripts."
+
+Rationale: the general prohibition has failed three times. Naming the specific script class (Chinese/non-Latin) and giving a concrete correct example ("tidak setuju") targets the exact behavior. The instruction also covers any variant of the artifact (Chinese, Japanese, Korean) that might emerge with other vocabulary.
+
+### Fix 2 — No other changes needed
+
+Fix 1 (AGREE/DISAGREE opener) and Fix 2 (block B endorsement) from iter=2 are confirmed working. Item (`society_over_individual`) is confirmed working. Seeds 17/53/89 should be re-run unchanged except for the language prohibition fix.
+
+**Pass count after iter=2: 0 / 3**
+
+---
+
+---
+
+## Previous verdicts — iter=0 and iter=1 — archived below
+
+---
+
 ## Verdict: FAIL — iter=1 (seeds 17, 53, 89)
 
 Batch iter=1. Item: `traditional_culture`. Three transcripts read. Primary failure: **engagement** — Agent A (Indonesian persona) opens at P≈0.5 in all three seeds despite Phase 0 prior of 0.662. No genuine initial opposition in any transcript. Secondary failure (seeds 53, 89): **sycophantic collapse** — Agent B opens by validating Agent A's framing rather than opposing it. Language-holding: PASS across all three (Fix 2 worked).
