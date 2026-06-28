@@ -42,3 +42,60 @@
 Reader reviews `artifacts/results/wvs_screen_summary.md`, selects items, writes `artifacts/results/wvs_items_locked.json`, and writes PASS on line 1 of `plan/phase_notes/phase0_reader_verdict.md` to advance to Phase 1.
 
 Coding agent recommendation: lock `individual_freedom` as primary (Phase 1 debut item).
+
+---
+
+## Coding agent done (phase=0 iter=0) — PERSONA PROBE RUN
+
+**Date:** 2026-06-28
+
+### What was run
+
+Rewrote `code/phase0_wvs_screen.py` to probe **persona-driven** divergence (same language, different system prompts) rather than language-driven divergence.
+
+- Model: `Qwen/Qwen3-4B` on T4 GPU via Modal
+- Probe: Likert 1–7 digit restricted softmax, English only
+- Personas: Indonesia / United States / China
+- Items: 14 candidate WVS items from task specification
+- P(agree) = (E[digit 1–7] − 1) / 6
+
+### What was saved
+
+- `artifacts/results/wvs_screen_raw.json` — raw P(agree) + digit distributions + top-10 next-token diagnostics for all 14 items × 3 personas
+- `artifacts/results/wvs_screen_summary.md` — sorted table + passing items + notes
+
+### Results summary
+
+| Item | P(ID) | P(US) | P(CN) | ΔP | PASS |
+|------|-------|-------|-------|----|------|
+| individual_freedom | 0.662 | 0.632 | 0.507 | 0.155 | ✓ |
+| traditional_culture | 0.679 | 0.527 | 0.569 | 0.152 | ✓ |
+| break_unjust_law | 0.794 | 0.832 | 0.695 | 0.137 | ✗ (US ceiling) |
+| stability_vs_freedom | 0.637 | 0.500 | 0.599 | 0.136 | ✗ (ΔP) |
+| authority_trust | 0.619 | 0.500 | 0.502 | 0.119 | ✗ (ΔP) |
+| … rest cluster near 0.500 | | | | <0.11 | ✗ |
+
+### Surprises
+
+1. **US and CN personas default to Neutral ("4") on most items.** The logit for digit "4" is ~45-46, while adjacent digits ("3", "5") are ~33-40 — a ~10-point gap. The model treats US and CN persona prompts as reason to hedge on contested political topics. Indonesian persona is consistently more opinionated.
+
+2. **Only 2 items pass both criteria.** Both borderline: ΔP=0.155 and 0.152. Persona-only probing produces much smaller divergence than language-based probing (previous max ΔP was 0.937 for `individual_freedom` in EN vs ID).
+
+3. **`individual_freedom` direction is reversed from cultural stereotype.** ID persona (0.662) leans MORE pro-individual-freedom than CN (0.507) in English. The US persona (0.632) is between them. This is different from the language-based probe where ID was the collectivist. The persona prompt in English likely triggers the model's learned representation of how an Indonesian would present their views to an English audience — which may be more individualism-positive than the raw Indonesian-language prior.
+
+4. **`traditional_culture` cultural pattern makes sense.** ID=0.679 > CN=0.569 > US=0.527 — Indonesian persona favors preserving traditional culture most strongly, US least.
+
+### Recommendation to reader
+
+Lock `individual_freedom` as primary Phase 1 item:
+- Highest ΔP (0.155), all personas mid-range
+- Clear ID > US > CN ordering gives each agent a defensible distinct position
+- Classic individualism vs. collectivism debate topic
+
+Consider `traditional_culture` as secondary item for Phase 3 variety.
+
+`stability_vs_freedom` (ΔP=0.136) is the strongest near-miss — CN and ID both favor stability over US neutral. Reader may want to consider it as a third item if the threshold is relaxed.
+
+### Next step
+
+Reader reviews `artifacts/results/wvs_screen_summary.md`, selects items, writes `artifacts/results/wvs_items_locked.json`, and writes PASS on line 1 of `plan/phase_notes/phase0_reader_verdict.md`.

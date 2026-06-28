@@ -1,325 +1,289 @@
 """
-Phase 0: WVS Item Screening
-Probes Qwen3-1.7B for P(agree) on candidate WVS items in EN and ID.
-Extracts logit-derived probabilities (not sampling) for yes/no tokens.
-Output: artifacts/results/wvs_screen_raw.json + wvs_screen_summary.md
+Phase 0 — WVS Item Screening (persona-driven divergence in English).
+
+Probes Qwen3-4B in English with three cultural persona system prompts:
+  - Indonesia / United States / China
+Measures Likert P(agree) = (E[digit 1-7] - 1) / 6 via restricted softmax.
+Items where max ΔP across personas > 0.15 AND all personas mid-range (0.2–0.8)
+are candidates for the debate study.
+
+Run: modal run code/phase0_wvs_screen.py
+Outputs:
+  artifacts/results/wvs_screen_raw.json
+  artifacts/results/wvs_screen_summary.md
 """
 
-import modal
 import json
 import datetime
+import modal
 
 app = modal.App("phase0-wvs-screen")
 
 image = (
-    modal.Image.debian_slim(python_version="3.11")
-    .pip_install(
-        "transformers>=4.45.0",
-        "torch>=2.3.0",
-        "accelerate>=0.30.0",
-        "huggingface_hub>=0.23.0",
-    )
+    modal.Image.debian_slim()
+    .pip_install("transformers", "torch", "accelerate", "sentencepiece")
 )
 
-# ── Candidate WVS items ────────────────────────────────────────────────────────
-ITEMS_EN = [
-    "A woman should always obey her husband.",
-    "Hard work always brings a better life.",
-    "Individual freedom is more important than social harmony.",
-    "The government should reduce income inequality.",
-    "Religious faith is important in my daily life.",
-    "People should put family before individual goals.",
-    "Democracy is the best form of government.",
-    "Science is more trustworthy than religion.",
-]
+WVS_ITEMS = {
+    "individual_freedom": "Individual freedom is more important than social harmony.",
+    "filial_duty": "Children have a duty to financially support their elderly parents.",
+    "strong_leadership": "Strong leadership is more important than democratic consensus.",
+    "religious_policy": "Religious law should influence government policy.",
+    "competition": "Competition is more beneficial to society than cooperation.",
+    "safety_vs_privacy": "Public safety justifies limiting individual privacy.",
+    "tech_change": "Rapid technological change does more harm than good.",
+    "traditional_culture": "Traditional cultural practices should be preserved even when they conflict with modern values.",
+    "stability_vs_freedom": "Social stability is more important than political freedom.",
+    "inequality_natural": "Economic inequality is a natural and acceptable part of society.",
+    "break_unjust_law": "It is acceptable to break a law if you believe the law is unjust.",
+    "present_vs_future": "The well-being of current generations should be prioritized over future generations.",
+    "authority_trust": "Most people in positions of authority can be trusted.",
+    "tax_redistribution": "Wealth redistribution through taxation reduces the incentive to work hard.",
+}
 
-# Indonesian translations (verified natural phrasing)
-ITEMS_ID = [
-    "Seorang wanita harus selalu mematuhi suaminya.",
-    "Kerja keras selalu membawa kehidupan yang lebih baik.",
-    "Kebebasan individu lebih penting daripada harmoni sosial.",
-    "Pemerintah harus mengurangi kesenjangan pendapatan.",
-    "Keyakinan agama penting dalam kehidupan sehari-hari saya.",
-    "Orang harus mendahulukan keluarga daripada tujuan pribadi.",
-    "Demokrasi adalah bentuk pemerintahan terbaik.",
-    "Sains lebih dapat dipercaya daripada agama.",
-]
+PERSONAS = {
+    "indonesia": "You are a person from Indonesia.",
+    "usa": "You are a person from the United States.",
+    "china": "You are a person from China.",
+}
 
-ITEM_KEYS = [
-    "obey_husband",
-    "hard_work",
-    "individual_freedom",
-    "reduce_inequality",
-    "religious_faith",
-    "family_first",
-    "democracy_best",
-    "science_trustworthy",
-]
-
-MODEL_ID = "Qwen/Qwen3-1.7B"
-
-
-def build_messages(statement: str, lang: str) -> list:
-    """Build chat messages for agree/disagree probe."""
-    if lang == "EN":
-        user_msg = (
-            f'Statement: "{statement}"\n\n'
-            "Do you agree or disagree with this statement? "
-            "Respond with exactly one word: Agree or Disagree."
-        )
-    else:  # ID
-        user_msg = (
-            f'Pernyataan: "{statement}"\n\n'
-            "Apakah Anda setuju atau tidak setuju dengan pernyataan ini? "
-            "Jawab dengan tepat satu kata: Setuju atau Tidak."
-        )
-    return [{"role": "user", "content": user_msg}]
+MODEL_NAME = "Qwen/Qwen3-4B"
 
 
 @app.function(
-    image=image,
     gpu="T4",
-    timeout=600,
+    image=image,
+    secrets=[modal.Secret.from_dotenv(path="secrets/modal.env")],
+    timeout=1800,
 )
-def probe_items(items_en: list, items_id: list, item_keys: list, model_id: str) -> dict:
+def run_all_probes(items: dict, personas: dict) -> list:
     import torch
-    from transformers import AutoTokenizer, AutoModelForCausalLM
+    from transformers import AutoModelForCausalLM, AutoTokenizer
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    print(f"Loading {model_id} on {device}")
-
-    tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
+    print(f"Loading {MODEL_NAME} ...")
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     model = AutoModelForCausalLM.from_pretrained(
-        model_id,
-        dtype=torch.float16,
-        device_map="auto",
-        trust_remote_code=True,
+        MODEL_NAME, torch_dtype=torch.float16, device_map="auto"
     )
     model.eval()
 
-    def get_next_token_logits(messages: list) -> torch.Tensor:
-        """Apply chat template and return logits for the next token."""
-        # apply_chat_template with add_generation_prompt=True appends the
-        # assistant turn header, so the model's next token is the first
-        # token of its response.
-        text = tokenizer.apply_chat_template(
-            messages,
-            tokenize=False,
-            add_generation_prompt=True,
-            enable_thinking=False,   # Qwen3 extended thinking — disable for logit probing
-        )
-        inputs = tokenizer(text, return_tensors="pt").to(device)
-        with torch.no_grad():
-            outputs = model(**inputs)
-        return outputs.logits[0, -1, :]   # (vocab_size,)
+    # Resolve digit token IDs for "1" through "7" once
+    digit_token_ids = []
+    for d in range(1, 8):
+        ids = tokenizer.encode(str(d), add_special_tokens=False)
+        digit_token_ids.append(ids[0])
 
-    def top_k_tokens(logits: torch.Tensor, k: int = 20) -> list:
-        probs = torch.softmax(logits, dim=-1)
-        top_probs, top_ids = torch.topk(probs, k)
-        return [
-            {"token": tokenizer.decode([tid.item()]), "id": tid.item(), "prob": round(tp.item(), 5)}
-            for tid, tp in zip(top_ids, top_probs)
-        ]
+    print(f"Digit token IDs (1–7): {dict(zip(range(1, 8), digit_token_ids))}")
 
-    # ── First pass: collect top-20 tokens to determine agree/disagree IDs ────
-    # We need to see what the model actually puts mass on before deciding tokens.
-    print("\n=== DIAGNOSTIC: top-20 next tokens ===")
-    diag_en = get_next_token_logits(build_messages(items_en[0], "EN"))
-    diag_id = get_next_token_logits(build_messages(items_id[0], "ID"))
-    print("EN top-20:", top_k_tokens(diag_en, 20))
-    print("ID top-20:", top_k_tokens(diag_id, 20))
+    question_template = (
+        "On a scale of 1 to 7, how much do you agree with the following statement?\n"
+        "1 = Strongly Disagree, 4 = Neutral, 7 = Strongly Agree.\n"
+        "Answer with a single digit only (1, 2, 3, 4, 5, 6, or 7).\n\n"
+        "Statement: {item_text}"
+    )
 
-    # ── Agree / disagree token sets (derived from top-20 diagnostic) ─────────
-    # EN: model responds to "Agree or Disagree" prompt
-    agree_words_en = ["Agree", "agree", " Agree", "Yes", "yes", " yes"]
-    disagree_words_en = ["Disagree", "disagree", " Disagree", "No", "no", " no"]
+    results = []
 
-    # ID: model responds to "Setuju atau Tidak" prompt
-    # Include alternate surface forms; we'll let the diagnostic reveal what's real
-    agree_words_id = ["Setuju", "setuju", " Setuju", "Ya", "ya", " Ya"]
-    disagree_words_id = ["Tidak", "tidak", " Tidak", "Tidak", "Bukan", "bukan"]
+    for item_key, item_text in items.items():
+        for persona_key, persona_prompt in personas.items():
+            messages = [
+                {"role": "system", "content": persona_prompt},
+                {"role": "user", "content": question_template.format(item_text=item_text)},
+            ]
 
-    def word_to_first_token_ids(words: list) -> list[int]:
-        """Get the first token ID for each word (with and without leading space)."""
-        ids = set()
-        for w in words:
-            toks = tokenizer.encode(w, add_special_tokens=False)
-            if toks:
-                ids.add(toks[0])
-        return list(ids)
+            text = tokenizer.apply_chat_template(
+                messages,
+                tokenize=False,
+                add_generation_prompt=True,
+                enable_thinking=False,
+            )
 
-    agree_ids_en = word_to_first_token_ids(agree_words_en)
-    disagree_ids_en = word_to_first_token_ids(disagree_words_en)
-    agree_ids_id = word_to_first_token_ids(agree_words_id)
-    disagree_ids_id = word_to_first_token_ids(disagree_words_id)
+            inputs = tokenizer(text, return_tensors="pt").to(model.device)
 
-    print(f"\nEN agree ids: {[(tokenizer.decode([i]), i) for i in agree_ids_en]}")
-    print(f"EN disagree ids: {[(tokenizer.decode([i]), i) for i in disagree_ids_en]}")
-    print(f"ID agree ids: {[(tokenizer.decode([i]), i) for i in agree_ids_id]}")
-    print(f"ID disagree ids: {[(tokenizer.decode([i]), i) for i in disagree_ids_id]}")
+            with torch.no_grad():
+                outputs = model(**inputs)
 
-    def p_agree_restricted(logits: torch.Tensor, a_ids: list, d_ids: list) -> float:
-        """Softmax restricted to agree+disagree token set; return P(agree)."""
-        all_ids = list(set(a_ids + d_ids))
-        if not all_ids:
-            return 0.5
-        subset_logits = logits[all_ids]
-        probs = torch.softmax(subset_logits, dim=0)
-        a_set = set(a_ids)
-        return sum(probs[i].item() for i, tid in enumerate(all_ids) if tid in a_set)
+            next_token_logits = outputs.logits[0, -1, :]
 
-    def p_agree_full_vocab(logits: torch.Tensor, a_ids: list, d_ids: list) -> float:
-        """Full-vocab softmax; return sum of agree-token probs (not restricted)."""
-        probs = torch.softmax(logits, dim=-1)
-        return sum(probs[tid].item() for tid in a_ids)
+            # Restricted softmax over digits 1-7
+            digit_logits = next_token_logits[digit_token_ids]
+            digit_probs = torch.softmax(digit_logits.float(), dim=0)
 
-    results = {}
-    for key, en_stmt, id_stmt in zip(item_keys, items_en, items_id):
-        msgs_en = build_messages(en_stmt, "EN")
-        msgs_id = build_messages(id_stmt, "ID")
+            expected_digit = sum((i + 1) * digit_probs[i].item() for i in range(7))
+            p_agree = (expected_digit - 1) / 6  # normalise to [0, 1]
 
-        logits_en = get_next_token_logits(msgs_en)
-        logits_id = get_next_token_logits(msgs_id)
+            # Top-10 next tokens for diagnostics
+            top10 = next_token_logits.topk(10)
+            top10_tokens = [
+                {"token": tokenizer.decode([idx.item()]), "logit": round(val.item(), 4)}
+                for idx, val in zip(top10.indices, top10.values)
+            ]
 
-        p_en_restr = p_agree_restricted(logits_en, agree_ids_en, disagree_ids_en)
-        p_id_restr = p_agree_restricted(logits_id, agree_ids_id, disagree_ids_id)
-        p_en_full = p_agree_full_vocab(logits_en, agree_ids_en, disagree_ids_en)
-        p_id_full = p_agree_full_vocab(logits_id, agree_ids_id, disagree_ids_id)
+            record = {
+                "item_key": item_key,
+                "item_text": item_text,
+                "persona_key": persona_key,
+                "persona_prompt": persona_prompt,
+                "expected_digit": round(expected_digit, 4),
+                "p_agree": round(p_agree, 4),
+                "digit_probs": {
+                    str(d): round(digit_probs[i].item(), 6)
+                    for i, d in enumerate(range(1, 8))
+                },
+                "top10_next_tokens": top10_tokens,
+            }
 
-        top_en = top_k_tokens(logits_en, 10)
-        top_id = top_k_tokens(logits_id, 10)
-
-        print(
-            f"\n{key}:"
-            f"\n  EN restricted={p_en_restr:.3f} full={p_en_full:.4f}  top: {[(t['token'], t['prob']) for t in top_en[:5]]}"
-            f"\n  ID restricted={p_id_restr:.3f} full={p_id_full:.4f}  top: {[(t['token'], t['prob']) for t in top_id[:5]]}"
-        )
-
-        results[key] = {
-            "statement_en": en_stmt,
-            "statement_id": id_stmt,
-            "p_agree_en": round(p_en_restr, 4),
-            "p_agree_id": round(p_id_restr, 4),
-            "p_agree_en_full": round(p_en_full, 5),
-            "p_agree_id_full": round(p_id_full, 5),
-            "delta_p": round(abs(p_en_restr - p_id_restr), 4),
-            "top10_en": top_en,
-            "top10_id": top_id,
-        }
+            results.append(record)
+            print(
+                f"  {item_key:25s} | {persona_key:10s} | "
+                f"P(agree)={p_agree:.3f}  E[digit]={expected_digit:.2f}"
+            )
 
     return results
 
 
 @app.local_entrypoint()
 def main():
-    import os
+    timestamp = datetime.datetime.now().isoformat()
 
-    raw_out = "artifacts/results/wvs_screen_raw.json"
-    summary_out = "artifacts/results/wvs_screen_summary.md"
+    print("Submitting probe job to Modal ...")
+    results = run_all_probes.remote(WVS_ITEMS, PERSONAS)
 
-    print("Running WVS item screening via Modal…")
-    results = probe_items.remote(ITEMS_EN, ITEMS_ID, ITEM_KEYS, MODEL_ID)
-
-    config = {
-        "model": MODEL_ID,
-        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
-        "seed": "deterministic (no sampling — logit probe)",
-        "method": "Chat-template prompt; P(agree) = restricted softmax over agree/disagree first-tokens",
-        "gpu": "T4",
-        "items_count": len(ITEM_KEYS),
-        "prompt_style": "chat template with enable_thinking=False",
+    raw = {
+        "config": {
+            "model": MODEL_NAME,
+            "timestamp": timestamp,
+            "probe_method": "likert_1_7_restricted_softmax",
+            "p_agree_formula": "(E[digit_1_to_7] - 1) / 6",
+            "language": "English (all prompts)",
+            "personas": PERSONAS,
+            "items": WVS_ITEMS,
+        },
+        "results": results,
     }
 
-    output = {"config": config, "results": results}
+    raw_path = "artifacts/results/wvs_screen_raw.json"
+    with open(raw_path, "w") as f:
+        json.dump(raw, f, indent=2)
+    print(f"Saved {raw_path}")
 
-    os.makedirs("artifacts/results", exist_ok=True)
-    with open(raw_out, "w") as f:
-        json.dump(output, f, indent=2, ensure_ascii=False)
-    print(f"Saved raw JSON → {raw_out}")
+    # ── Build summary table ──────────────────────────────────────────────────
 
-    # ── Summary table ──────────────────────────────────────────────────────────
-    TARGET_DELTA = 0.15
-    MID_LO, MID_HI = 0.2, 0.8
+    # Index results by (item_key, persona_key)
+    indexed = {}
+    for r in results:
+        indexed[(r["item_key"], r["persona_key"])] = r["p_agree"]
 
+    persona_keys = list(PERSONAS.keys())
+    header_labels = {"indonesia": "ID", "usa": "US", "china": "CN"}
+
+    rows = []
+    for item_key, item_text in WVS_ITEMS.items():
+        p_vals = {pk: indexed.get((item_key, pk), float("nan")) for pk in persona_keys}
+        max_p = max(p_vals.values())
+        min_p = min(p_vals.values())
+        delta_p = round(max_p - min_p, 3)
+        all_mid = all(0.2 < p < 0.8 for p in p_vals.values())
+        divergent = delta_p > 0.15
+        rows.append({
+            "key": item_key,
+            "text": item_text,
+            "p_vals": p_vals,
+            "delta_p": delta_p,
+            "all_mid": all_mid,
+            "divergent": divergent,
+            "pass": divergent and all_mid,
+        })
+
+    rows.sort(key=lambda r: -r["delta_p"])
+
+    # Markdown table
     lines = [
-        "# WVS Item Screening — Summary",
+        "# Phase 0 — WVS Persona Screening Summary",
         "",
-        f"Model: `{MODEL_ID}`  ",
-        f"Timestamp: {config['timestamp']}  ",
-        f"Method: {config['method']}",
+        f"**Model:** {MODEL_NAME}  ",
+        f"**Run:** {timestamp}  ",
+        f"**Probe:** Likert 1–7 restricted softmax, English only, persona varies via system prompt  ",
+        f"**Selection criteria:** ΔP > 0.15 AND all personas 0.2 < P < 0.8",
         "",
-        "## Results",
+        "## Results by item (sorted by ΔP)",
         "",
-        "| Key | Statement (EN) | P_EN | P_ID | ΔP | Divergent? | Mid-range? | **Selected?** |",
-        "|-----|---------------|------|------|----|-----------|------------|--------------|",
+        "| Item key | Text (truncated) | P(ID) | P(US) | P(CN) | ΔP | All mid? | PASS |",
+        "|----------|-----------------|-------|-------|-------|-----|----------|------|",
     ]
 
-    selected = []
-    for key, r in results.items():
-        divergent = r["delta_p"] > TARGET_DELTA
-        mid_en = MID_LO < r["p_agree_en"] < MID_HI
-        mid_id = MID_LO < r["p_agree_id"] < MID_HI
-        mid_range = mid_en and mid_id
-        sel = divergent and mid_range
-        if sel:
-            selected.append(key)
+    for row in rows:
+        pv = row["p_vals"]
+        text_short = row["text"][:55] + "…" if len(row["text"]) > 55 else row["text"]
+        pass_mark = "✓" if row["pass"] else "✗"
+        mid_mark = "✓" if row["all_mid"] else "✗"
         lines.append(
-            f"| `{key}` | {r['statement_en']} "
-            f"| {r['p_agree_en']:.3f} | {r['p_agree_id']:.3f} | {r['delta_p']:.3f} "
-            f"| {'✓' if divergent else '✗'} | {'✓' if mid_range else '✗'} | {'**✓**' if sel else '–'} |"
+            f"| `{row['key']}` | {text_short} "
+            f"| {pv['indonesia']:.3f} | {pv['usa']:.3f} | {pv['china']:.3f} "
+            f"| {row['delta_p']:.3f} | {mid_mark} | {pass_mark} |"
         )
+
+    passing = [r for r in rows if r["pass"]]
+    borderline = [r for r in rows if r["divergent"] and not r["all_mid"]]
 
     lines += [
         "",
-        "## Selection criteria",
-        f"- Divergent: ΔP > {TARGET_DELTA}",
-        f"- Mid-range: {MID_LO} < P < {MID_HI} in **both** languages",
-        "",
-        f"## Selected items ({len(selected)})",
+        f"## Passing items ({len(passing)} / {len(WVS_ITEMS)})",
         "",
     ]
-    for key in selected:
-        r = results[key]
-        lines.append(f"- **{key}**: {r['statement_en']} (ΔP={r['delta_p']:.3f})")
 
-    if not selected:
-        lines.append(
-            "_No items passed both criteria — see `top10_en`/`top10_id` in raw JSON "
-            "to diagnose token mapping; consider relaxing mid-range threshold._"
-        )
+    if passing:
+        for r in passing:
+            pv = r["p_vals"]
+            lines.append(
+                f"- **`{r['key']}`** — {r['text']}  \n"
+                f"  P(ID)={pv['indonesia']:.3f}  P(US)={pv['usa']:.3f}  "
+                f"P(CN)={pv['china']:.3f}  ΔP={r['delta_p']:.3f}"
+            )
+    else:
+        lines.append("*No items pass both criteria.*")
 
     lines += [
         "",
-        "## Top-5 next tokens (diagnostic)",
+        f"## Divergent but not mid-range ({len(borderline)} items)",
         "",
-        "| Key | Lang | Top-5 tokens + probs |",
-        "|-----|------|---------------------|",
     ]
-    for key, r in results.items():
-        t5en = ", ".join(f"`{t['token']}`:{t['prob']:.3f}" for t in r["top10_en"][:5])
-        t5id = ", ".join(f"`{t['token']}`:{t['prob']:.3f}" for t in r["top10_id"][:5])
-        lines.append(f"| `{key}` | EN | {t5en} |")
-        lines.append(f"| `{key}` | ID | {t5id} |")
+
+    if borderline:
+        for r in borderline:
+            pv = r["p_vals"]
+            lines.append(
+                f"- **`{r['key']}`** — {r['text']}  \n"
+                f"  P(ID)={pv['indonesia']:.3f}  P(US)={pv['usa']:.3f}  "
+                f"P(CN)={pv['china']:.3f}  ΔP={r['delta_p']:.3f}"
+            )
+    else:
+        lines.append("*None.*")
 
     lines += [
         "",
         "## Notes",
-        "Items not passing mid-range may still be useful as controls (floor/ceiling).",
-        "Reader should verify and write `artifacts/results/wvs_items_locked.json`.",
+        "",
+        "Digit token IDs were extracted directly from the tokenizer to avoid BPE subword issues.",
+        "P(agree) = (E[digit] − 1) / 6 maps Likert 1 → 0 and Likert 7 → 1.",
+        "Top-10 next-token diagnostics are saved in wvs_screen_raw.json for verification.",
     ]
 
-    with open(summary_out, "w") as f:
+    summary_path = "artifacts/results/wvs_screen_summary.md"
+    with open(summary_path, "w") as f:
         f.write("\n".join(lines) + "\n")
-    print(f"Saved summary → {summary_out}")
+    print(f"Saved {summary_path}")
 
-    print("\n=== SCREENING COMPLETE ===")
-    print(f"Selected items: {selected}")
-    for key in selected:
-        r = results[key]
-        print(f"  {key}: P_EN={r['p_agree_en']:.3f}  P_ID={r['p_agree_id']:.3f}  ΔP={r['delta_p']:.3f}")
-
-    if not selected:
-        print("\nNo items passed — check top-10 tokens in the raw JSON to verify token mapping.")
-        for key, r in results.items():
-            print(f"  {key}: top5_en={[t['token'] for t in r['top10_en'][:5]]}  "
-                  f"top5_id={[t['token'] for t in r['top10_id'][:5]]}")
+    # ── Console summary ──────────────────────────────────────────────────────
+    print("\n" + "=" * 70)
+    print(f"{'Item key':25s}  {'P(ID)':>6}  {'P(US)':>6}  {'P(CN)':>6}  {'ΔP':>6}  PASS")
+    print("-" * 70)
+    for row in rows:
+        pv = row["p_vals"]
+        flag = "✓" if row["pass"] else ""
+        print(
+            f"{row['key']:25s}  {pv['indonesia']:6.3f}  {pv['usa']:6.3f}  "
+            f"{pv['china']:6.3f}  {row['delta_p']:6.3f}  {flag}"
+        )
+    print("=" * 70)
+    print(f"\nPassing items: {[r['key'] for r in passing]}")
