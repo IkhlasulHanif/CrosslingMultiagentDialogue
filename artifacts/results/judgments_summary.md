@@ -39,3 +39,4 @@
 | phase2_iter8_17.json | indonesia/id | usa/en | 4 | 3 | 4 | 2 | toward_b | null |
 | phase2_iter8_89.json | indonesia/id | usa/en | 4 | 2 | 6 | 4 | toward_b | null |
 | phase2_iter8_97_judgment.json | indonesia/id | usa/en | 5 | 3 | 3 | 1 | toward_b | null |
+| phase2_iter8_113.json | indonesia/id | usa/en | 4 | 2 | 5 | 2 | toward_b | turn 3, agent A: "Saya setuju dengan pendapat bahwa kepentingan individu perlu diperhitungkan." |
