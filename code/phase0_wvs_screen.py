@@ -1,17 +1,16 @@
 """
 Phase 0 — WVS Item Screening (persona-driven divergence in English).
 
-Probes Qwen3-4B in English with two cultural persona system prompts:
-  - Indonesia / United States
+Probes Qwen3-4B in English with three cultural persona system prompts:
+  - Indonesia / United States / China
 Measures Likert P(agree) = (E[digit 1-7] - 1) / 6 via restricted softmax.
-Items where ΔP across personas > 0.15 AND both personas mid-range (0.2–0.8)
+Items where max ΔP across the 3 personas > 0.15 AND all personas mid-range (0.2–0.8)
 are candidates for the debate study.
 
 Design decisions:
   - Anti-neutrality framing in probe to discourage "4" collapse on contested items.
   - Expanded item set (22 items) includes original 14 + US-axis items from reader Fix 1.
-  - Two personas only (ID, US) — CN dropped; previous 3-persona run showed US/CN
-    both collapsing to neutral, making the CN axis undetectable this way.
+  - Three personas (ID, US, CN) per goals.md — China persona restored.
 
 Run: modal run code/phase0_wvs_screen.py
 Outputs:
@@ -61,6 +60,7 @@ WVS_ITEMS = {
 PERSONAS = {
     "indonesia": "You are a person from Indonesia.",
     "usa": "You are a person from the United States.",
+    "china": "You are a person from China.",
 }
 
 MODEL_NAME = "Qwen/Qwen3-4B"
@@ -194,47 +194,48 @@ def main():
     rows = []
     for item_key, item_text in WVS_ITEMS.items():
         p_vals = {pk: indexed.get((item_key, pk), float("nan")) for pk in persona_keys}
-        delta_p = round(p_vals["usa"] - p_vals["indonesia"], 3)  # signed: positive = US>ID
-        abs_delta = abs(delta_p)
+        p_list = list(p_vals.values())
+        max_delta = round(max(p_list) - min(p_list), 3)  # max ΔP across all 3 personas
         all_mid = all(0.2 < p < 0.8 for p in p_vals.values())
-        divergent = abs_delta > 0.15
+        divergent = max_delta > 0.15
         rows.append({
             "key": item_key,
             "text": item_text,
             "p_id": p_vals["indonesia"],
             "p_us": p_vals["usa"],
-            "delta_p": delta_p,
-            "abs_delta": abs_delta,
+            "p_cn": p_vals["china"],
+            "max_delta": max_delta,
             "all_mid": all_mid,
             "divergent": divergent,
             "pass": divergent and all_mid,
         })
 
-    rows.sort(key=lambda r: -r["abs_delta"])
+    rows.sort(key=lambda r: -r["max_delta"])
 
     lines = [
-        "# Phase 0 — WVS Persona Screening Summary (ID vs US)",
+        "# Phase 0 — WVS Persona Screening Summary (ID vs US vs CN)",
         "",
         f"**Model:** {MODEL_NAME}  ",
         f"**Run:** {timestamp}  ",
         "**Probe:** Likert 1–7 restricted softmax, English only, system prompt persona varies  ",
+        "**Personas:** Indonesia / United States / China  ",
         "**Anti-neutrality framing:** yes (discourages default-4 hedging)  ",
-        "**Selection criteria:** |ΔP| > 0.15 AND both personas 0.2 < P < 0.8",
+        "**Selection criteria:** max ΔP across 3 personas > 0.15 AND all personas 0.2 < P < 0.8",
         "",
-        "## Results by item (sorted by |ΔP|)",
+        "## Results by item (sorted by max ΔP)",
         "",
-        "| Item key | Statement (truncated) | P(ID) | P(US) | ΔP (US−ID) | All mid? | PASS |",
-        "|----------|-----------------------|-------|-------|------------|----------|------|",
+        "| Item key | Statement (truncated) | P(ID) | P(US) | P(CN) | max ΔP | All mid? | PASS |",
+        "|----------|-----------------------|-------|-------|-------|--------|----------|------|",
     ]
 
     for row in rows:
-        text_short = row["text"][:55] + "…" if len(row["text"]) > 55 else row["text"]
+        text_short = row["text"][:50] + "…" if len(row["text"]) > 50 else row["text"]
         pass_mark = "✓" if row["pass"] else "✗"
         mid_mark = "✓" if row["all_mid"] else "✗"
         lines.append(
             f"| `{row['key']}` | {text_short} "
-            f"| {row['p_id']:.3f} | {row['p_us']:.3f} | {row['delta_p']:+.3f} "
-            f"| {mid_mark} | {pass_mark} |"
+            f"| {row['p_id']:.3f} | {row['p_us']:.3f} | {row['p_cn']:.3f} "
+            f"| {row['max_delta']:.3f} | {mid_mark} | {pass_mark} |"
         )
 
     passing = [r for r in rows if r["pass"]]
@@ -248,11 +249,10 @@ def main():
 
     if passing:
         for r in passing:
-            direction = "US > ID" if r["delta_p"] > 0 else "ID > US"
             lines.append(
                 f"- **`{r['key']}`** — {r['text']}  \n"
-                f"  P(ID)={r['p_id']:.3f}  P(US)={r['p_us']:.3f}  "
-                f"ΔP={r['delta_p']:+.3f}  ({direction})"
+                f"  P(ID)={r['p_id']:.3f}  P(US)={r['p_us']:.3f}  P(CN)={r['p_cn']:.3f}  "
+                f"max ΔP={r['max_delta']:.3f}"
             )
     else:
         lines.append("*No items pass both criteria.*")
@@ -267,8 +267,8 @@ def main():
         for r in borderline:
             lines.append(
                 f"- **`{r['key']}`** — {r['text']}  \n"
-                f"  P(ID)={r['p_id']:.3f}  P(US)={r['p_us']:.3f}  "
-                f"ΔP={r['delta_p']:+.3f}"
+                f"  P(ID)={r['p_id']:.3f}  P(US)={r['p_us']:.3f}  P(CN)={r['p_cn']:.3f}  "
+                f"max ΔP={r['max_delta']:.3f}"
             )
     else:
         lines.append("*None.*")
@@ -279,7 +279,7 @@ def main():
         "",
         "Digit token IDs extracted directly from tokenizer (avoids BPE subword issues).",
         "P(agree) = (E[digit] − 1) / 6 maps Likert 1 → 0 and Likert 7 → 1.",
-        "ΔP = P(US) − P(ID); positive = US persona agrees more.",
+        "max ΔP = max(P_ID, P_US, P_CN) − min(P_ID, P_US, P_CN).",
         "Top-10 next-token diagnostics are saved in wvs_screen_raw.json for verification.",
     ]
 
@@ -288,14 +288,14 @@ def main():
         f.write("\n".join(lines) + "\n")
     print(f"Saved {summary_path}")
 
-    print("\n" + "=" * 65)
-    print(f"{'Item key':25s}  {'P(ID)':>6}  {'P(US)':>6}  {'ΔP':>7}  PASS")
-    print("-" * 65)
+    print("\n" + "=" * 75)
+    print(f"{'Item key':25s}  {'P(ID)':>6}  {'P(US)':>6}  {'P(CN)':>6}  {'max ΔP':>7}  PASS")
+    print("-" * 75)
     for row in rows:
         flag = "✓" if row["pass"] else ""
         print(
-            f"{row['key']:25s}  {row['p_id']:6.3f}  {row['p_us']:6.3f}  "
-            f"{row['delta_p']:+7.3f}  {flag}"
+            f"{row['key']:25s}  {row['p_id']:6.3f}  {row['p_us']:6.3f}  {row['p_cn']:6.3f}  "
+            f"{row['max_delta']:7.3f}  {flag}"
         )
-    print("=" * 65)
+    print("=" * 75)
     print(f"\nPassing items: {[r['key'] for r in passing]}")

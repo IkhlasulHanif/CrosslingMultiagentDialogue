@@ -2,6 +2,50 @@
 
 ---
 
+## Coding agent done (phase=0 iter=0) — THREE-PERSONA ID vs US vs CN RUN
+
+**Date:** 2026-06-28
+
+### What was run
+
+Restored China persona to `code/phase0_wvs_screen.py` per reader Fix 1 (design spec requires 3 personas). Kept anti-neutrality framing and expanded 22-item set from prior run. Updated summary logic to compute max ΔP across all 3 personas (not signed US−ID). 66 probes (22 items × 3 personas) via Qwen3-4B on T4 GPU.
+
+### What was saved
+
+- `artifacts/results/wvs_screen_raw.json` — raw P(agree) + digit distributions + top-10 next-token diagnostics for all 22 items × 3 personas
+- `artifacts/results/wvs_screen_summary.md` — sorted table with max ΔP, mid-range flags, PASS/FAIL
+
+### Results summary
+
+| Item | P(ID) | P(US) | P(CN) | max ΔP | PASS |
+|------|-------|-------|-------|--------|------|
+| press_freedom | 0.766 | 0.949 | 0.683 | 0.265 | ✗ (US=0.949 ceiling) |
+| **individual_freedom** | **0.644** | **0.637** | **0.429** | **0.215** | **✓** |
+| **traditional_culture** | **0.662** | **0.506** | **0.548** | **0.156** | **✓** |
+| **society_over_individual** | **0.512** | **0.372** | **0.361** | **0.151** | **✓** |
+| present_vs_future | 0.413 | 0.486 | 0.343 | 0.144 | ✗ |
+| stability_vs_freedom | 0.561 | 0.478 | 0.611 | 0.133 | ✗ |
+
+Strict pass count: **3** (`individual_freedom`, `traditional_culture`, `society_over_individual`).
+
+### Surprises
+
+1. **`individual_freedom` passes because CN is the low outlier (0.429), not because of ID-US divergence.** The ID-US gap on this item is only ΔP=0.007 — essentially identical. The item's cultural signal lives in the CN axis (CN disagrees with individual-over-harmony more than ID or US). Reader should note this when designing debate pairs.
+
+2. **`society_over_individual` barely passes at 0.151.** US and CN both lean anti-collective (P≈0.36–0.37) while ID is neutral (0.512). The item works for ID vs (US or CN) debates but not for a US-CN pair.
+
+3. **`press_freedom` remains the strongest diverger but US=0.949 still pins the ceiling.** Max ΔP=0.265 is notable, but unmeasurable post-debate drift from such a high starting point.
+
+4. **China persona restored to functioning alignment with priors.** CN now diverges from US on `individual_freedom` (CN=0.429 vs US=0.637, ΔP=0.208). The prior 3-persona run had CN=0.507 on this item — this run's lower CN value suggests the anti-neutrality framing moved CN off neutral.
+
+### Next step
+
+Reader reviews `artifacts/results/wvs_screen_summary.md` and raw JSON, selects items, writes `artifacts/results/wvs_items_locked.json`, and writes PASS on line 1 of `plan/phase_notes/phase0_reader_verdict.md`.
+
+Coding agent recommendation: lock all 3 passing items (`individual_freedom`, `traditional_culture`, `society_over_individual`). Primary debate item: `individual_freedom` (highest max ΔP=0.215, classic individualism/collectivism axis). Note that `individual_freedom` diverges mainly on the CN axis — ID-US debates on this item start from nearly equal priors.
+
+---
+
 ## Coding agent done (phase=0 iter=0) — TWO-PERSONA ID vs US RUN
 
 **Date:** 2026-06-28
