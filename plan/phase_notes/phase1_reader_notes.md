@@ -1,108 +1,123 @@
 FAIL
 
-## Phase 1 Pilot Debate — Reader Verdict (iter=0, original run)
+## Phase 1 Pilot Debate — Reader Verdict (re-run, seed=45)
 
-**Transcript:** `artifacts/transcripts/phase1_pilot.json` (recovered from commit aa006bf; file was subsequently deleted)
-**Item:** `traditional_culture` — "Traditional cultural practices should be preserved even when they conflict with modern values."
+**Transcript:** `artifacts/transcripts/phase1_pilot.json`
+**Item:** `society_over_individual` — "The interests of society should take priority over the rights of the individual."
 **Agent A:** Indonesia persona / Indonesian language
 **Agent B:** USA persona / English language
-**Model:** Qwen/Qwen3-4B, 6 turns, seed=42
+**Model:** Qwen/Qwen3-4B, 6 turns, seed=45
 
 ---
 
 ## Check 1 — Turn boundaries
 
-**PASS — with one minor issue.**
+**PASS.**
 
-6 turns, clearly labeled. Agent A writes Indonesian throughout (turns 1, 3, 5). Agent B writes English throughout (turns 2, 4, 6). No code-switching. The structure is parseable.
+6 turns, clearly labeled. Agent A writes Indonesian throughout (turns 1, 3, 5). Agent B writes English throughout (turns 2, 4, 6). No mid-word truncation. Boundaries are parseable.
 
-Minor issue: **turn 5 is truncated mid-word.** Text ends: *"Saya berharap kita bisa terus saling bel"* — cut off, almost certainly `belajar` (to learn). This is a max_tokens artifact. The turn is readable but structurally incomplete.
+**Minor artifact flagged (not a Phase 1 failure, but flag for Phase 2):** Turn 4, Agent B (English-language US agent) inserts Mandarin Chinese characters mid-sentence:
+
+> "That doesn't mean集体利益 (collective interest) never matter, but individual freedom is the foundation of our society."
+
+The agent is assigned English. `集体利益` is Mandarin for "collective interests." This is a hallucination artifact — the model reached for a Chinese term rather than the English it was assigned. The turn is still structurally Agent B's and mostly in English, so this doesn't break turn boundaries. But it is a code-switch into a third language from an agent assigned to English and should be monitored.
 
 ---
 
 ## Check 2 — Cultural identity at turn 1
 
-### Agent A (Indonesia/Indonesian) — turn 1: PASS
+### Agent A (Indonesia/Indonesian) — turn 1: FAIL
 
-Opens without declaring "As an Indonesian, I believe..." — goes directly to content. Uses culturally specific vocabulary:
+**The opener is exactly the pattern the criterion prohibits.**
 
-> "Budaya tradisional adalah warisan yang sangat berharga dari **leluk dan nenek moyang kita**."
+Turn 1 begins:
 
-("Traditional culture is a very valuable inheritance from our ancestors/forebears.")
+> "Sebagai orang dari Indonesia, saya setuju bahwa kepentingan masyarakat seharusnya menjadi prioritas utama..."
 
-"Leluk dan nenek moyang" is authentic Indonesian phrasing for ancestral heritage — not textbook language. The turn frames the topic in terms of "membentuk identitas bangsa" (shaping national identity), which is characteristically Indonesian political and cultural discourse. The register is that of a person expressing their genuine view, not someone who was told "defend tradition."
+Translation: *"As a person from Indonesia, I agree that the interests of society should be the main priority..."*
 
-The position (agree with the statement, while also calling for balance) is culturally plausible for an Indonesian persona (P=0.662 per WVS screen). **PASS.**
+"Sebagai orang dari Indonesia" = "As a person from Indonesia." This is the literal form of "a robot saying 'as an Indonesian person, I believe X'" — not a person speaking from their perspective, but someone announcing their label before they speak.
 
-### Agent B (USA/English) — turn 2: FAIL
+Secondary issue: "Indonesia yang full of keragaman" — English "full of" is code-mixed into an otherwise Indonesian sentence. Natural Indonesian would say "penuh dengan keragaman." This is unnatural and reads like the model leaking English into its Indonesian output.
 
-Opens: *"I agree with the statement that traditional cultural practices should be preserved even when they conflict with modern values."*
+Content note: the position itself is culturally plausible (balanced collectivism with individual rights caveat). "Gotong royong" does surface in turn 3 ("nilai-nilai gotong royong") and turn 5 — authentically Indonesian. But at turn 1, that cultural specificity is not present. The opener is a label declaration, not a voice.
 
-The US baseline prior for `traditional_culture` is P(agree)=0.506 — essentially neutral. Agreement is not impossible, but the problem is the **voice**: there is nothing distinctively American in this turn.
-
-The remainder of turn 2:
-
-> "Cultural traditions are indeed a vital part of our heritage, reflecting the identity, history, and values of a people. They carry the wisdom of our ancestors and provide a sense of continuity and belonging, especially in a rapidly changing world."
-
-This is generic Anglo-English cultural commentary. No American framing whatsoever — no reference to American pluralism, immigrant identity, "melting pot," religious diversity, individual liberty, or any specifically US cultural context for thinking about tradition. The turn could have been written by any educated native English speaker (British, Canadian, Australian, or generic global English).
-
-The one phrase that gestures toward an American register — *"preservation doesn't mean rigidly holding on to the past without considering the present"* — is a pragmatic hedge that doesn't identify the speaker as American.
-
-**FAIL.** The US cultural identity does not come through. Agent B at turn 1 sounds like a thoughtful generic English-language commentator, not a person from the United States.
+**FAIL.**
 
 ---
 
-## Additional observations (not required for Phase 1 criteria — flagged because they matter for Phase 2)
+### Agent B (USA/English) — turn 2: PASS (with declaration caveat)
 
-### No genuine disagreement
+**The opener is declarative but the content is genuinely American.**
 
-The `traditional_culture` WVS priors are ID=0.662, US=0.506 — both above 0.5. Both agents open by agreeing with the statement. There is no opposing position, no rebuttal, no friction. The debate becomes mutual affirmation from turn 3 onward:
+Turn 2 begins:
 
-- Turn 4 (B): *"Thank you for your thoughtful response... You're absolutely right—"*
-- Turn 5 (A): *"Terima kasih atas komentar Anda yang sangat mendalam dan penuh makna."* (Thank you for your very deep and meaningful comment.)
-- Turn 6 (B): *"You're very welcome! I'm glad we could have this meaningful conversation."* Ends with 😊.
+> "As someone from the United States, I generally prioritize individual rights and freedoms, which are foundational to our democracy."
 
-This is not a debate. It is a mutual appreciation session from turn 4 onward. The debate item selected (traditional_culture) has both agents leaning agree, so there was nothing to push back against.
+"As someone from the United States" is also a label declaration, parallel to Agent A's problem above. Noted. However, the content that immediately follows is authentically American in a way the prior run's Agent B was not:
 
-### P(agree) trajectory is upward for both, but uninformative
+- *"protecting individual liberties—especially minority ones—is crucial to preventing tyranny and ensuring equal treatment"* — Bill of Rights framing; distinctly American political vocabulary.
+- *"The Indonesian perspective highlights the complexity of balancing group and individual needs"* — Agent B explicitly names and engages with the other agent's cultural frame.
+- *"a strong emphasis on individual rights ultimately leads to greater social harmony and innovation"* — a specifically American claim about why individual rights are instrumentally good for society.
+
+Compared to the prior pilot's Agent B (generic Anglo-English cultural commentary with no American-specific content), this Agent B is recognizably American. The content carries what the label declares.
+
+**PASS on the substance of the criterion** — cultural identity comes through. The declarative opener is noted but the voice that follows is distinctly American.
+
+---
+
+## Additional observations (not Phase 1 criteria — relevant to Phase 2)
+
+### Genuine disagreement: YES
+
+This is the major improvement over the prior run. P(agree) at turn 1:
+- Agent A (ID/id): 0.512 — essentially neutral, leaning agree
+- Agent B (US/en): 0.354 — leaning disagree
+
+Agent B pushes back directly in turn 2: *"I believe that protecting individual liberties—especially minority ones—is crucial to preventing tyranny."* This is a genuine counterposition, not mutual affirmation.
+
+### P(agree) trajectory
 
 | Turn | Agent | Country/Lang | P(agree) |
 |------|-------|--------------|----------|
-| 1 | A | indonesia/id | 0.809 |
-| 2 | B | usa/en | 0.666 |
-| 3 | A | indonesia/id | 0.981 |
-| 4 | B | usa/en | 0.753 |
-| 5 | A | indonesia/id | 0.982 |
-| 6 | B | usa/en | 0.828 |
+| 1 | A | indonesia/id | 0.512 |
+| 2 | B | usa/en | 0.354 |
+| 3 | A | indonesia/id | 0.503 |
+| 4 | B | usa/en | 0.371 |
+| 5 | A | indonesia/id | 0.487 |
+| 6 | B | usa/en | 0.413 |
 
-Both agents drift toward strong agreement. But since both started agreeing, this is mutual reinforcement — not cross-lingual drift. There is nothing to measure here.
+Agent A hovers around 0.49–0.51 (neutral, drifting very slightly downward). Agent B holds at 0.35–0.41 (leaning disagree throughout, small uptick at turn 6). No sycophantic collapse. B does not cave. This is what a real debate looks like — the machinery is working. The trajectory itself will be interesting to measure once Phase 2 is cleared.
+
+### Engagement: YES
+
+Agents reference each other's specific points:
+- Turn 3 A: *"Anda benar bahwa hak minoritas penting"* — "You are right that minority rights matter" — Agent A acknowledges B's point and then pivots rather than abandoning its own position.
+- Turn 4 B: *"The idea of 'gotong royong' resonates, but in America..."* — B picks up A's turn-3 Indonesian cultural concept and engages it directly.
+- Turn 5 A: *"Sistem hukum Amerika yang melindungi minoritas mungkin efektif, tapi di sini..."* — "The American legal system protecting minorities may be effective, but here..." — A is responding to B's specific claims about legal frameworks.
+
+This is genuine cross-agent engagement, not parallel monologue.
 
 ---
 
 ## Root cause
 
-Two separate issues, not one:
+Single clear issue: both agents open with explicit identity declarations ("Sebagai orang dari Indonesia, saya..." / "As someone from the United States, I..."). The opener prompt does not forbid this, and the model defaults to announcing its identity as context for what it's about to say.
 
-**Issue 1 (blocker — Check 2):** Agent B has no American cultural voice. The system prompt ("You are a person from the United States.") is not surfacing US-specific framing. This may be because the topic (`traditional_culture`) is not contested enough in US discourse for the US persona to activate specific cultural markers; or because the debate framing (evaluating a statement) prompts generic agreement rather than cultural positioning.
-
-**Issue 2 (item selection):** `traditional_culture` has P(US)=0.506, P(ID)=0.662. Both priors lean agree. A real debate requires at least one agent to open near disagreement (P < 0.4). Neither does. The item is inapt for the ID-US pair at the Phase 1 machinery check.
-
-Note: Issue 2 was already diagnosed correctly by the coding agent in loop_notes.md. The verdict here is that Issue 1 is also real and distinct — fixing the item alone will not give Agent B an American voice.
+Agent A's version is the more canonical failure: the criteria says "not a robot saying 'as an Indonesian person, I believe X'" and Agent A says exactly that. Agent B's version is less damaging because its subsequent content is genuinely American, but the same opener pattern appears.
 
 ---
 
-## Fix for next run
+## Fix (targeted, one change)
 
-**Fix 1 (Check 2 — blocker):** The US agent needs to produce recognizably American framing. Options in priority order:
-- (a) Add one sentence to the US agent's system prompt anchoring its cultural perspective: e.g., *"When expressing your view, draw on values and experiences typical of someone raised in the United States."* Do not instruct the agent to defend a position.
-- (b) Alternatively: seed the opening user message with a framing that invites cultural specificity, e.g., *"People from different cultures have very different views on this. What is your personal perspective?"*
+Add to the opener prompt (or persona system prompt): *"Do not open your response by stating where you are from. Let your cultural perspective come through in what you say, not through self-identification."*
 
-**Fix 2 (item):** Switch to `society_over_individual` (P(ID)=0.512, P(US)=0.372) — the US persona opens leaning disagree, creating initial tension.
+Suggested revision to `config/prompts.json` opener:
 
-**Fix 3 (minor):** Increase max_new_tokens or cap response length to prevent mid-word truncation. Turn 5 was cut off.
+```
+"opener": "Please share your honest personal perspective in {lang}. Do not open by stating where you are from — express your view directly. Keep your response to 3–5 sentences."
+```
 
----
+This is a minimal, precise fix. The debate machinery is otherwise working well — genuine disagreement, real engagement, language-holding, no sycophantic collapse. The only broken thing at turn 1 is the opener pattern.
 
-## Prior run note
-
-The `phase1_reader_notes.md` file previously contained analysis of a **second** pilot run (`society_over_individual`, seed=43) that had already been run after this FAIL. That run exhibited a verbatim repetition loop (turns 3/5 and 4/6 identical) and sycophantic opening by Agent B, per the prior analysis. That run's FAIL is superseded by this file. Fixes for the history construction bug and sycophantic collapse described there remain valid and should still be applied.
+The Chinese code-switch in turn 4 (Agent B inserting `集体利益`) is a secondary issue to monitor. No fix needed for Phase 1, but should be in Phase 2 rubric.

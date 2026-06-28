@@ -2,6 +2,60 @@
 
 ---
 
+## Coding agent done (phase=1 iter=0) — PILOT DEBATE RE-RUN 2 (post-reader FAIL #2)
+
+**Date:** 2026-06-28
+
+### What changed from prior run
+
+Reader gave FAIL on seed=45 run for a single issue: both agents opened with explicit identity declarations ("Sebagai orang dari Indonesia, saya..." / "As someone from the United States, I...") — the exact "robot label" pattern the criterion prohibits.
+
+**Fix applied:** Added to `config/prompts.json` opener template:
+> `"Do not open by stating where you are from — express your view directly."`
+
+Changed seed to 46. No other changes.
+
+### What was run
+
+One debate: `society_over_individual`, ID-persona/ID-lang (Agent A) vs US-persona/EN-lang (Agent B), 6 turns, seed=46.
+
+### What was saved
+
+- `artifacts/transcripts/phase1_pilot.json` — full transcript + per-turn P(agree) probes + run config
+
+### P(agree) trajectory
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.651 |
+| 2 | B | usa/en | 0.326 |
+| 3 | A | indonesia/id | 0.501 |
+| 4 | B | usa/en | 0.345 |
+| 5 | A | indonesia/id | 0.492 |
+| 6 | B | usa/en | 0.355 |
+
+### Does it look like two people actually talking?
+
+**Yes — this pilot passes the coding agent's read.**
+
+**Opener fix confirmed working:**
+- Agent A turn 1: *"Saya setuju bahwa kepentingan masyarakat seharusnya diutamakan atas hak individu..."* — opens with direct view. "Di Indonesia" appears mid-second-sentence as cultural context, not as a label preamble. No identity declaration opener.
+- Agent B turn 2: *"I generally believe that individual rights should take precedence over societal interests..."* — opens direct. "the U.S." referenced mid-sentence.
+
+**Other criteria:**
+- **Language-holding:** A in Indonesian (turns 1, 3, 5); B in English (turns 2, 4, 6). No code-switching, no Mandarin artifacts this run.
+- **Genuine tension:** A opens 0.651 (pro-collective), B opens 0.326 (pro-individual). Real initial disagreement.
+- **No sycophantic collapse:** B holds its position throughout. A moderates toward neutral but never reverses and never says "you're right, I agree."
+- **Engagement:** B turn 2 directly names "The Indonesian perspective"; A turn 3 acknowledges B's point before pivoting; B turn 4 responds to A's balance-seeking frame; A turn 5 references "the US democratic system" specifically.
+
+**Notable finding for reader:** A moves 0.651→0.492 (−0.159) while B moves 0.326→0.355 (+0.029). Asymmetric convergence — ID-persona agent shifts substantially more toward B than B shifts toward A. Preliminary signal; not a Phase 1 criterion.
+
+### Next step
+
+Reader checks `artifacts/transcripts/phase1_pilot.json` against Phase 1 criteria and writes PASS/FAIL on line 1 of `plan/phase_notes/phase1_reader_notes.md`.
+
+---
+
 ## Coding agent done (phase=1 iter=0) — PILOT DEBATE RE-RUN (post-reader FAIL)
 
 **Date:** 2026-06-28

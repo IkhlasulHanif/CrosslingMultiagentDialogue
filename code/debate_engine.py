@@ -325,9 +325,10 @@ def main():
     other_turn_template  = d["other_turn"]
     probe_template       = cfg["probe"]["likert"]
 
-    # Phase 1 pilot: society_over_individual, ID-persona/ID-lang vs US-persona/EN-lang
+    # Phase 1 pilot (re-run, reader-FAIL fix): society_over_individual
+    # seed=46 (prior seed=45 failed on opener identity-declaration pattern)
+    # Fix: opener template now instructs agents not to open by stating their origin.
     # society_over_individual: P(ID)=0.512 (neutral), P(US)=0.372 (leans disagree)
-    # Agents start from opposite sides of 0.5 — genuine debate tension possible.
     item_key = "society_over_individual"
     item_statement = LOCKED_ITEMS[item_key]
 
@@ -339,7 +340,7 @@ def main():
         "agent_A": {"country": "indonesia", "lang": "id"},
         "agent_B": {"country": "usa", "lang": "en"},
         "n_turns": 6,
-        "seed": 45,
+        "seed": 46,
         "model": MODEL_NAME,
         "timestamp": datetime.datetime.now().isoformat(),
         "prompts": {
@@ -361,6 +362,7 @@ def main():
             "Max new tokens reduced to 600 (format constraint makes 800 unnecessary)",
             "Temperature raised to 0.8 for more natural variation across turns",
             "Debug: message role structure printed for turns 1-4 to verify correctness",
+            "opener: added 'Do not open by stating where you are from — express your view directly'",
         ],
     }
 
@@ -368,7 +370,7 @@ def main():
     print(f"  Item:    {item_key}")
     print(f"  Agent A: indonesia / id")
     print(f"  Agent B: usa / en")
-    print(f"  Turns: 6, seed=45")
+    print(f"  Turns: 6, seed=46")
 
     result = run_debate.remote(
         item_key=item_key,
@@ -378,7 +380,7 @@ def main():
         agent_b_country="usa",
         agent_b_lang="en",
         n_turns=6,
-        seed=45,
+        seed=46,
         persona_template=persona_template,
         lang_template=lang_template,
         task_intro_template=task_intro_template,
