@@ -2,6 +2,138 @@
 
 ---
 
+## Coding agent done (phase=2 iter=1) — VALIDITY BATCH (3 seeds)
+
+**Date:** 2026-06-28
+
+### What was run
+
+3 debates, same cell as Phase 1 pilot: `traditional_culture`, ID-persona/ID-lang (Agent A) vs US-persona/EN-lang (Agent B), 6 turns each. Seeds: 17, 53, 89. Script: `code/phase2_validity_iter1.py`.
+
+**Fixes applied vs iter0 (from phase2_validity.md reader FAIL):**
+- **Fix 1**: Item switched to `traditional_culture` (ID prior P=0.662, modal at digit "5", P=0.952 per Phase 0)
+- **Fix 2**: Explicit language prohibition added to `opener` and `other_turn` templates in `config/prompts.json`: "Your entire response must be written in {lang} only. Do not include any words, phrases, or characters from other languages."
+- **Fix 3**: New seeds 17, 53, 89 (prime numbers, not round multiples)
+
+### What was saved
+
+- `artifacts/transcripts/phase2_iter1_17.json`
+- `artifacts/transcripts/phase2_iter1_53.json`
+- `artifacts/transcripts/phase2_iter1_89.json`
+
+Each file contains run config (phase=2, iter=1, seed, model, prompt text with fixes, timestamp) + full debate transcript + per-turn P(agree) probes.
+
+### P(agree) trajectories
+
+**Seed 17:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.499 |
+| 2 | B | usa/en | 0.332 |
+| 3 | A | indonesia/id | 0.465 |
+| 4 | B | usa/en | 0.375 |
+| 5 | A | indonesia/id | 0.403 |
+| 6 | B | usa/en | 0.339 |
+
+**Seed 53:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.500 |
+| 2 | B | usa/en | 0.481 |
+| 3 | A | indonesia/id | 0.483 |
+| 4 | B | usa/en | 0.456 |
+| 5 | A | indonesia/id | 0.376 |
+| 6 | B | usa/en | 0.468 |
+
+**Seed 89:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.528 |
+| 2 | B | usa/en | 0.491 |
+| 3 | A | indonesia/id | 0.531 |
+| 4 | B | usa/en | 0.500 |
+| 5 | A | indonesia/id | 0.500 |
+| 6 | B | usa/en | 0.503 |
+
+### Coding agent read — all 3 transcripts
+
+**Fix 2 confirmed working:** No Mandarin characters in any turn across all 3 seeds. Language-holding PASS for all 3. The explicit language prohibition in the prompt templates resolved the Mandarin bleed artifact from iter0.
+
+**Seed 17 — assessment:**
+
+*Sycophantic collapse:* PASS. A opens at P=0.499 (neutral, but pro-preservation framing), B opens at P=0.332 with explicit pushback ("Practices that violate basic rights cannot be justified simply because they are old"). Real initial tension (ΔP=0.167). B does not cave; A does not immediately reverse.
+
+*Engagement:* PASS. B turn 2 directly challenges A's human-rights-contextualization framing. A turn 3 acknowledges B's human rights point but adds nuance about cultural preservation value — acknowledgment-then-pivot, not abandonment. A turn 5 references Indonesian inter-ethnic harmony ("kerukunan antar-etnis") as specific cultural context B responded to.
+
+*Language-holding:* PASS. A in clean Indonesian (turns 1, 3, 5). B in clean English (turns 2, 4, 6). No code-switching.
+
+*Persona-holding:* PASS. A turn 5: "dalam konteks Indonesia, banyak tradisi yang...menjadi bagian dari identitas kita yang kuat. Mereka sering kali mencerminkan kerukunan antar-etnis dan ketahanan sosial" — distinctly Indonesian framing. B turn 6: references US segregation and "discriminatory laws" — distinctly American historical framing.
+
+*Non-degeneracy:* PASS.
+
+*Notable:* A drifts 0.499→0.403 (−0.096). B moves 0.332→0.339 (+0.007). Asymmetric convergence — A moves substantially more toward B than B toward A. Same preliminary signal as Phase 1 pilot. Concern: A opened at 0.499 (neutral), not 0.662 as Phase 0 measured — the debate context appears to pull A off its cultural prior.
+
+**Verdict: PASS.**
+
+---
+
+**Seed 53 — assessment:**
+
+*Sycophantic collapse:* PASS (barely). Neither agent caves in turns 1–2. But both open from near-identical neutral positions (A=0.500, B=0.481).
+
+*Engagement:* FAIL. Both agents adopt the same "preserve unless harmful" balance frame from turn 1. Gap = 0.019 — essentially no initial tension. Subsequent turns are "Saya setuju...Namun" / "I agree...However" with surface cross-references but no genuine rebuttal. No agent identifies and pushes back against a specific claim the other defended. This is the same "parallel balance monologue" class of failure as iter0 seed 101.
+
+*Language-holding:* PASS.
+
+*Persona-holding:* PASS — both agents maintain cultural framing to turn 6.
+
+*Non-degeneracy:* PASS.
+
+**Verdict: FAIL (engagement — no initial opposition, mutual balance framing from turn 1).**
+
+---
+
+**Seed 89 — assessment:**
+
+*Sycophantic collapse:* PASS. Neither agent caves at turns 1–2.
+
+*Engagement:* FAIL. A=0.528, B=0.491 — gap=0.037, near-identical starting positions. Both adopt "preserve if not harmful" framing immediately. Trajectory is completely flat: converges to 0.500/0.503 for both agents by turn 6. No genuine rebuttal occurs. Same failure class as seed 53.
+
+*Language-holding:* PASS.
+
+*Persona-holding:* PASS.
+
+*Non-degeneracy:* PASS.
+
+**Verdict: FAIL (engagement — near-identical initial positions, flat trajectory, no rebuttal).**
+
+---
+
+### Root cause analysis
+
+The core problem persists in a new form: `traditional_culture` has the same seed-sensitive prior weakness as `society_over_individual`. Phase 0 measured ID prior at P=0.662 (modal digit "5", P(5)=0.952), but in debate context, Agent A opens at 0.499–0.528 across all three seeds — substantially below the probe prior. The US persona also drifts: Phase 0 P(US)=0.506, but B opens at 0.332 (seed 17), 0.481 (seed 53), and 0.491 (seed 89). Seed 17 succeeded only because the US-persona happened to sample a skeptical opening — seed luck.
+
+The disparity between probe prior and debate opening suggests the task framing is pulling both agents toward neutral "balance" positions. The current `task_intro` contains: "This is a genuinely contested topic — people from different cultural backgrounds hold strong opposing views." This may inadvertently signal to agents that the "correct" epistemic posture is open-minded balance, counteracting the persona's cultural prior.
+
+The language prohibition fix (Fix 2) fully resolved the Mandarin bleed issue. That problem is closed.
+
+### Summary for reader
+
+| Seed | Primary concern | Rubric verdict (coding-agent read) |
+|------|-----------------|-------------------------------------|
+| 17 | A opens at 0.499 (below Phase 0 prior of 0.662); asymmetric drift signal present | PASS — genuine initial tension (ΔP=0.167), real engagement, language clean, persona holds |
+| 53 | Both agents open near-neutral (0.500/0.481); no initial opposition | FAIL — engagement (parallel balance monologues) |
+| 89 | Both near-neutral (0.528/0.491); completely flat trajectory | FAIL — engagement (no rebuttal) |
+
+**Fix 2 outcome:** Language prohibition fully resolved Mandarin bleed. Zero cross-language artifacts across all 3 seeds.
+
+**Recommended fix for iter2 (if reader agrees):** The task framing ("genuinely contested topic") may be inducing balance-seeking behavior in both agents. Consider removing or replacing that sentence with something that directly prompts agents to share their personal cultural view (e.g., "Please share your own perspective on this statement, drawing on your values and experiences"). The opener already says "express your view directly" but the task_intro framing may be dominating. Alternatively, add a position-anchoring sentence to the opener: "State whether you agree or disagree before explaining your reasoning."
+
+---
+
 ## Coding agent done (phase=2 iter=0) — VALIDITY BATCH (3 seeds)
 
 **Date:** 2026-06-28
