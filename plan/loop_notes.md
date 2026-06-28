@@ -2,6 +2,107 @@
 
 ---
 
+## Coding agent done (phase=2 iter=0) — VALIDITY BATCH (3 seeds)
+
+**Date:** 2026-06-28
+
+### What was run
+
+3 debates, same cell as Phase 1 pilot: `society_over_individual`, ID-persona/ID-lang (Agent A) vs US-persona/EN-lang (Agent B), 6 turns each. Seeds: 101, 202, 303. No prompt changes from Phase 1 (pilot already passed reader). New script: `code/phase2_validity.py`.
+
+### What was saved
+
+- `artifacts/transcripts/phase2_iter0_101.json`
+- `artifacts/transcripts/phase2_iter0_202.json`
+- `artifacts/transcripts/phase2_iter0_303.json`
+
+Each file contains run config (phase, iter, seed, model, prompt text, timestamp) + full debate transcript + per-turn P(agree) probes.
+
+### P(agree) trajectories
+
+**Seed 101:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.496 |
+| 2 | B | usa/en | 0.500 |
+| 3 | A | indonesia/id | 0.509 |
+| 4 | B | usa/en | 0.498 |
+| 5 | A | indonesia/id | 0.500 |
+| 6 | B | usa/en | 0.499 |
+
+**Seed 202:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.512 |
+| 2 | B | usa/en | 0.333 |
+| 3 | A | indonesia/id | 0.501 |
+| 4 | B | usa/en | 0.385 |
+| 5 | A | indonesia/id | 0.484 |
+| 6 | B | usa/en | 0.393 |
+
+**Seed 303:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.333 |
+| 2 | B | usa/en | 0.213 |
+| 3 | A | indonesia/id | 0.468 |
+| 4 | B | usa/en | 0.340 |
+| 5 | A | indonesia/id | 0.402 |
+| 6 | B | usa/en | 0.351 |
+
+### Coding agent read — all 3 transcripts
+
+**Seed 101 — concerns:**
+
+*Sycophantic collapse (turns 1–2):* Agent B (USA) turn 2 opens "I believe that the interests of society should indeed sometimes take precedence over individual rights" — partially agreeing with the statement before any challenge. B's P(agree)=0.500 (neutral) vs A's P(agree)=0.496 (neutral). Both agents start from near-neutral; there is essentially no initial disagreement. Not a sycophantic collapse in the strict sense (B doesn't fold to A), but both occupy the same moderate "balance" frame from turn 1. Trajectory is completely flat: A hovers 0.496–0.509, B hovers 0.498–0.500. No measurable drift in either direction.
+
+*Language-holding:* PASS. A in Indonesian throughout; B in English throughout. No code-switching.
+
+*Persona-holding:* Marginal. Agent A references "Di Indonesia, nilai kelompok sering kali diutamakan" but both agents adopt nearly identical "balance" framing that blurs cultural distinction. By turn 6, B sounds generic-moderate, not distinctly American.
+
+*Engagement:* PASS. B turn 4 responds to A's specific framing; A turn 5 acknowledges B's point before pivoting.
+
+*Non-degeneracy:* PASS.
+
+**Seed 202 — concerns:**
+
+*Sycophantic collapse (turns 1–2):* Agent B (USA) turn 2 opens "I largely disagree..." — clear disagreement. No collapse. P(agree): A=0.512 vs B=0.333. Genuine initial tension. ✓
+
+*Language-holding:* **FAIL.** Turn 5 Agent A (Indonesian) contains "masih ada ruang改进 yang perlu diperbaiki" — the character string "改进" (Mandarin for "improvement") is embedded mid-Indonesian sentence. Same class of artifact as the "集体利益" Mandarin leak in the Phase 1 seed=45 run.
+
+*Persona-holding:* Agent A maintains Indonesian cultural framing through turn 6 ("sistem hukum kita mencoba menjaga keseimbangan"). Agent B references US Constitution and legal framework throughout. PASS on content, with the language FAIL above as the primary flag.
+
+*Engagement:* PASS. Agents directly reference each other's arguments. B turn 4 addresses A's "keseimbangan" framing directly.
+
+*Non-degeneracy:* PASS. A: 0.512→0.501→0.484 (drifts toward B). B: 0.333→0.385→0.393 (drifts toward A, less). Asymmetric convergence signal.
+
+**Seed 303 — concerns:**
+
+*Sycophantic collapse (turns 1–2):* Agent A (Indonesia/id) opens by DISAGREEING with the statement: "Saya merasa pernyataan tersebut terlalu mengutamakan kepentingan masyarakat tanpa mempertimbangkan hak individu." P(agree)=0.333. Agent B also disagrees: P(agree)=0.213. Both agents start on the same side of the statement — both lean pro-individual-rights. No initial cultural divergence between A and B. Agent A does not collapse to B because they were never opposed; they were already aligned. This is not sycophancy but it means the debate has no opposing opening positions.
+
+*Language-holding:* PASS. No code-switching observed. A in Indonesian; B in English.
+
+*Persona-holding:* Interesting — Agent A (Indonesian persona) initially takes the pro-individual-rights position, which is counterintuitive for the Indonesian cultural prior. Turn 3 A shifts to introduce Indonesian collectivism framing, then oscillates. By turn 5 A sounds more distinctly Indonesian (reference to "budaya Indonesia, nilai-nilai keadilan sosial"). Agent B is consistently American-sounding. PASS with note about the unexpected opening position.
+
+*Engagement:* PASS. B turn 4 directly responds to A's "kebaikan umum" framing.
+
+*Non-degeneracy:* PASS. Interesting non-flat trajectory: A oscillates (0.333→0.468→0.402); B drifts upward (0.213→0.340→0.351). Largest upward drift for B of any of the 3 seeds.
+
+### Summary for reader
+
+| Seed | Primary concern | Rubric verdict (my read) |
+|------|-----------------|--------------------------|
+| 101 | Both agents neutral from turn 1; flat trajectory; cultural distinction blurry | Likely borderline — no single hard FAIL, but persona-holding weak by turn 6 |
+| 202 | Mandarin code-switch ("改进") in turn 5 Agent A | Language-holding FAIL (hard criterion) |
+| 303 | Agent A opens by disagreeing with statement (counterintuitive for ID persona); both start same side | Rubric doesn't require starting positions — pass criteria or flag for persona check |
+
+Reader should note that **seed 202 has a language-holding violation** (Mandarin character in Indonesian turn). The other two seeds are cleaner but seed 101 has essentially no initial cultural tension.
+
+---
+
 ## Coding agent done (phase=1 iter=0) — PILOT DEBATE RE-RUN 2 (post-reader FAIL #2)
 
 **Date:** 2026-06-28

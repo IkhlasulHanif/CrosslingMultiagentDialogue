@@ -77,17 +77,17 @@ Pairwise debates across the 3 cultures. For each pair, vary generation language 
 
 **Advance when:** `artifacts/results/wvs_items_locked.json` exists AND reader PASS.
 
-- [ ] Write `code/phase0_wvs_screen.py` — Modal, Qwen3-4B, three system prompts, all in English
+- [x] Write `code/phase0_wvs_screen.py` — Modal, Qwen3-4B, three system prompts, all in English
   - Persona A: `"You are a person from Indonesia."`
   - Persona B: `"You are a person from the United States."`
   - Persona C: `"You are a person from China."`
   - Probe: Likert 1–7 on each WVS item, P(agree) = E[digit] via restricted softmax
-- [ ] Run via `modal run code/phase0_wvs_screen.py`
-- [ ] Save raw → `artifacts/results/wvs_screen_raw.json`
-- [ ] Save table → `artifacts/results/wvs_screen_summary.md`
-- [ ] Reader picks items: max ΔP across the 3 personas > 0.15 AND all three personas mid-range (0.2 < P < 0.8)
-- [ ] Reader writes `artifacts/results/wvs_items_locked.json`
-- [ ] Reader writes PASS on line 1 of `plan/phase_notes/phase0_reader_verdict.md`
+- [x] Run via `modal run code/phase0_wvs_screen.py`
+- [x] Save raw → `artifacts/results/wvs_screen_raw.json`
+- [x] Save table → `artifacts/results/wvs_screen_summary.md`
+- [x] Reader picks items: max ΔP across the 3 personas > 0.15 AND all three personas mid-range (0.2 < P < 0.8)
+- [x] Reader writes `artifacts/results/wvs_items_locked.json`
+- [x] Reader writes PASS on line 1 of `plan/phase_notes/phase0_reader_verdict.md`
 
 ---
 
@@ -99,18 +99,18 @@ Pairwise debates across the 3 cultures. For each pair, vary generation language 
 
 **Advance when:** `artifacts/transcripts/phase1_pilot.json` exists AND reader PASS.
 
-- [ ] Write `code/debate_engine.py` — Modal, Qwen3-4B, two agents
+- [x] Write `code/debate_engine.py` — Modal, Qwen3-4B, two agents
   - Params: `item, agent_A_country, agent_A_lang, agent_B_country, agent_B_lang, n_turns, seed`
   - System prompt per agent: `"You are a person from {country}."`
   - Language instruction: `"Please respond in {lang}."` (separate from persona)
   - Each agent sees full conversation history each turn
   - Output per turn: `{turn, agent, country, lang, text}` + Likert P(agree) logits
   - Save run config (model, seed, prompts, item) alongside transcript
-- [ ] Run one debate: ID-persona/ID-lang vs US-persona/EN-lang (start with this pair), most divergent locked item
-- [ ] Save → `artifacts/transcripts/phase1_pilot.json`
-- [ ] Coding agent reads the transcript before handing off — does it look like two people actually talking?
-- [ ] Reader checks: clean turn boundaries + cultural identity comes through naturally at turn 1
-- [ ] Reader writes PASS/FAIL on line 1 of `plan/phase_notes/phase1_reader_notes.md`
+- [x] Run one debate: ID-persona/ID-lang vs US-persona/EN-lang — `society_over_individual`, seed=46
+- [x] Save → `artifacts/transcripts/phase1_pilot.json`
+- [x] Coding agent reads the transcript before handing off — does it look like two people actually talking?
+- [x] Reader checks: clean turn boundaries + cultural identity comes through naturally at turn 1
+- [x] Reader writes PASS/FAIL on line 1 of `plan/phase_notes/phase1_reader_notes.md`
 
 ---
 

@@ -4,3 +4,4 @@
 |------------|-----------------|-----------------|-------|-------|------------|------------|-------|-----------|
 | phase1_pilot.json (old, buggy run) | indonesia/id | usa/en | 4 | 4 | 1 | 1 | none | turn 3, agent A (persona collapse — A copies B's text in Indonesian) |
 | phase1_pilot.json (seed=45, society_over_individual) | indonesia/id | usa/en | 5 | 2 | 3 | 3 | toward_b | null |
+| phase1_pilot.json (seed=46, society_over_individual) | indonesia/id | usa/en | 4 | 2 | 4 | 2 | toward_b | turn 3, agent A: "Saya sepakat dengan pandangan Anda tentang pentingnya hak individu..." |
