@@ -4,12 +4,15 @@ Phase 1+ — Two-Agent Debate Engine.
 Each agent has an independent persona (country) and generation language.
 Persona and language are specified separately — an ID-persona agent can speak English.
 
+Prompts are loaded from config/prompts.json by main() and passed to Modal as
+plain strings — no file I/O inside the Modal function.
+
 Conversation structure:
-  - Agent A opens: system(A_persona+lang) + user(topic prompt)
-  - Agent B responds: B's opening incorporates A's first turn to avoid consecutive user msgs
-  - Subsequent turns alternate with proper user/assistant role labeling from each agent's view
-  - After every turn: a Likert P(agree) probe is appended as a one-shot user message
-    and evaluated via restricted softmax (NOT added to the debate history)
+  - Agent A opens: [system, user: task_intro+opener]
+  - Agent B's opening: [system, user: task_intro + wrapped(A1)]
+    A1 is incorporated into B's first user message to avoid consecutive user msgs.
+  - Subsequent turns: opponent turns wrapped with attribution + "respond from YOUR view"
+  - After every turn: Likert P(agree) probe appended as user message, NOT added to history
 
 Run (Phase 1 pilot): modal run code/debate_engine.py
 Output: artifacts/transcripts/phase1_pilot.json
@@ -54,90 +57,6 @@ LOCKED_ITEMS = {
     ),
 }
 
-PROBE_TEMPLATE = (
-    "Setting aside our discussion for a moment — on a scale of 1 to 7, "
-    "how much do you personally agree with this statement right now?\n"
-    "1 = Strongly Disagree, 4 = Neutral, 7 = Strongly Agree.\n"
-    "Please give your honest personal view — choose 4 only if you are genuinely "
-    "undecided, not as a diplomatic response.\n"
-    "Statement: {item_statement}\n"
-    "Answer with a single digit only (1, 2, 3, 4, 5, 6, or 7)."
-)
-
-
-def _system_content(country_key: str, lang_key: str) -> str:
-    country = COUNTRY_NAMES.get(country_key, country_key)
-    lang = LANGUAGE_NAMES.get(lang_key, lang_key)
-    return f"You are a person from {country}. Please respond in {lang}."
-
-
-def build_debate_messages(
-    agent_id: str,
-    country_key: str,
-    lang_key: str,
-    item_statement: str,
-    debate_turns: list,
-) -> list:
-    """
-    Build the chat message list for agent_id's next generation or probe.
-
-    Agent A:
-      [system, user: topic_prompt, assistant: A1, user: B1, assistant: A2, ...]
-    Agent B:
-      [system, user: "topic + A1_text + respond", assistant: B1, user: A2, ...]
-      (A1 is incorporated into B's opening to avoid consecutive user messages)
-
-    debate_turns: list of {agent, text} dicts in chronological order.
-    """
-    messages = [{"role": "system", "content": _system_content(country_key, lang_key)}]
-
-    a_turns = [t for t in debate_turns if t["agent"] == "A"]
-
-    if agent_id == "A":
-        opening = (
-            f"We are having a discussion about the following statement:\n\n"
-            f"\"{item_statement}\"\n\n"
-            f"Please share your personal perspective on this topic."
-        )
-        messages.append({"role": "user", "content": opening})
-        for turn in debate_turns:
-            role = "assistant" if turn["agent"] == "A" else "user"
-            messages.append({"role": role, "content": turn["text"]})
-
-    else:  # agent_id == "B"
-        if not a_turns:
-            # Fallback: B goes first (not used in Phase 1)
-            opening = (
-                f"We are having a discussion about the following statement:\n\n"
-                f"\"{item_statement}\"\n\n"
-                f"Please share your personal perspective on this topic."
-            )
-            messages.append({"role": "user", "content": opening})
-            for turn in debate_turns:
-                role = "assistant" if turn["agent"] == "B" else "user"
-                messages.append({"role": role, "content": turn["text"]})
-        else:
-            # Incorporate A's first turn into B's opening
-            a1_text = a_turns[0]["text"]
-            opening = (
-                f"We are having a discussion about the following statement:\n\n"
-                f"\"{item_statement}\"\n\n"
-                f"The other participant said:\n\n{a1_text}\n\n"
-                f"Please share your response."
-            )
-            messages.append({"role": "user", "content": opening})
-
-            # Add remaining turns from B's perspective (skip A1 — already in opening)
-            first_a_consumed = False
-            for turn in debate_turns:
-                if turn["agent"] == "A" and not first_a_consumed:
-                    first_a_consumed = True
-                    continue
-                role = "assistant" if turn["agent"] == "B" else "user"
-                messages.append({"role": role, "content": turn["text"]})
-
-    return messages
-
 
 @app.function(
     gpu="T4",
@@ -154,6 +73,13 @@ def run_debate(
     agent_b_lang: str,
     n_turns: int,
     seed: int,
+    # Prompt templates — loaded from config/prompts.json by main(), passed as strings
+    persona_template: str,
+    lang_template: str,
+    task_intro_template: str,
+    opener_template: str,
+    other_turn_template: str,
+    probe_template: str,
 ) -> dict:
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -173,14 +99,104 @@ def run_debate(
     ]
     print(f"Digit token IDs (1–7): {dict(zip(range(1, 8), digit_token_ids))}")
 
-    agents = [
-        {"id": "A", "country": agent_a_country, "lang": agent_a_lang},
-        {"id": "B", "country": agent_b_country, "lang": agent_b_lang},
-    ]
+    # ── Prompt builders (closures over template strings from outer scope) ──────
 
-    debate_turns = []
+    def make_system_prompt(country_key: str, lang_key: str) -> str:
+        country = COUNTRY_NAMES.get(country_key, country_key)
+        lang = LANGUAGE_NAMES.get(lang_key, lang_key)
+        persona = persona_template.format(country=country)
+        lang_instr = lang_template.format(lang=lang)
+        return f"{persona} {lang_instr}"
 
-    def generate_turn(messages, max_new_tokens=400):
+    def wrap_opponent_turn(turn: dict, my_lang_key: str, my_country_key: str) -> str:
+        """Wrap an opponent's turn with attribution + respond-from-YOUR-view instruction."""
+        my_lang = LANGUAGE_NAMES.get(my_lang_key, my_lang_key)
+        my_country = COUNTRY_NAMES.get(my_country_key, my_country_key)
+        other_country = COUNTRY_NAMES.get(turn["country"], turn["country"])
+        other_lang = LANGUAGE_NAMES.get(turn["lang"], turn["lang"])
+        return other_turn_template.format(
+            other_country=other_country,
+            other_lang=other_lang,
+            text=turn["text"],
+            my_country=my_country,
+            my_lang=my_lang,
+        )
+
+    def build_debate_messages(
+        agent_id: str,
+        country_key: str,
+        lang_key: str,
+        debate_turns: list,
+    ) -> list:
+        """
+        Build the chat message list for agent_id's next generation.
+
+        Agent A:
+          [system, user: task_intro+opener, assistant: A1, user: wrapped(B1), assistant: A2, ...]
+
+        Agent B:
+          [system, user: task_intro+wrapped(A1), assistant: B1, user: wrapped(A2), ...]
+          A1 is embedded in B's opening user message — no consecutive user messages.
+
+        All opponent turns appear as 'user' role with attribution header and
+        "respond from YOUR own perspective" instruction to prevent echo loops.
+        """
+        lang = LANGUAGE_NAMES.get(lang_key, lang_key)
+        system_prompt = make_system_prompt(country_key, lang_key)
+        task_intro = task_intro_template.format(item=item_statement)
+
+        messages = [{"role": "system", "content": system_prompt}]
+        a_turns = [t for t in debate_turns if t["agent"] == "A"]
+
+        if agent_id == "A":
+            opener = opener_template.format(lang=lang)
+            messages.append({"role": "user", "content": f"{task_intro}\n\n{opener}"})
+            for turn in debate_turns:
+                if turn["agent"] == "A":
+                    messages.append({"role": "assistant", "content": turn["text"]})
+                else:
+                    messages.append({
+                        "role": "user",
+                        "content": wrap_opponent_turn(turn, lang_key, country_key),
+                    })
+
+        else:  # agent_id == "B"
+            if not a_turns:
+                opener = opener_template.format(lang=lang)
+                messages.append({"role": "user", "content": f"{task_intro}\n\n{opener}"})
+                for turn in debate_turns:
+                    if turn["agent"] == "B":
+                        messages.append({"role": "assistant", "content": turn["text"]})
+                    else:
+                        messages.append({
+                            "role": "user",
+                            "content": wrap_opponent_turn(turn, lang_key, country_key),
+                        })
+            else:
+                # Embed A's first turn in B's opening to avoid consecutive user messages
+                a1_wrapped = wrap_opponent_turn(a_turns[0], lang_key, country_key)
+                messages.append({
+                    "role": "user",
+                    "content": f"{task_intro}\n\n{a1_wrapped}",
+                })
+                first_a_consumed = False
+                for turn in debate_turns:
+                    if turn["agent"] == "A" and not first_a_consumed:
+                        first_a_consumed = True
+                        continue
+                    if turn["agent"] == "B":
+                        messages.append({"role": "assistant", "content": turn["text"]})
+                    else:
+                        messages.append({
+                            "role": "user",
+                            "content": wrap_opponent_turn(turn, lang_key, country_key),
+                        })
+
+        return messages
+
+    # ── Inference helpers ──────────────────────────────────────────────────────
+
+    def generate_turn(messages, max_new_tokens=600):
         text = tokenizer.apply_chat_template(
             messages,
             tokenize=False,
@@ -192,16 +208,17 @@ def run_debate(
             output_ids = model.generate(
                 **inputs,
                 max_new_tokens=max_new_tokens,
-                temperature=0.7,
+                temperature=0.8,
                 do_sample=True,
+                repetition_penalty=1.15,
                 pad_token_id=tokenizer.eos_token_id,
             )
         new_ids = output_ids[0][inputs["input_ids"].shape[1]:]
         return tokenizer.decode(new_ids, skip_special_tokens=True).strip()
 
-    def probe_p_agree(messages):
+    def probe_p_agree(messages_for_probe):
         text = tokenizer.apply_chat_template(
-            messages,
+            messages_for_probe,
             tokenize=False,
             add_generation_prompt=True,
             enable_thinking=False,
@@ -223,15 +240,30 @@ def run_debate(
             },
         }
 
-    probe_q = PROBE_TEMPLATE.format(item_statement=item_statement)
+    # ── Debate loop ────────────────────────────────────────────────────────────
+
+    agents = [
+        {"id": "A", "country": agent_a_country, "lang": agent_a_lang},
+        {"id": "B", "country": agent_b_country, "lang": agent_b_lang},
+    ]
+    debate_turns = []
+    probe_q = probe_template.format(item=item_statement)
 
     for turn_idx in range(n_turns):
         agent = agents[turn_idx % 2]
 
         gen_messages = build_debate_messages(
-            agent["id"], agent["country"], agent["lang"],
-            item_statement, debate_turns,
+            agent["id"], agent["country"], agent["lang"], debate_turns,
         )
+
+        # Print message structure for first 4 turns to verify role labels
+        if turn_idx < 4:
+            print(f"\n=== MSG STRUCTURE: Turn {turn_idx + 1} | Agent {agent['id']} ===")
+            for msg in gen_messages:
+                role = msg["role"]
+                preview = msg["content"][:150].replace("\n", "↵")
+                print(f"  [{role:9}] {preview}…")
+            print("===")
 
         print(
             f"\n--- Turn {turn_idx + 1} | Agent {agent['id']} "
@@ -240,10 +272,10 @@ def run_debate(
         response = generate_turn(gen_messages)
 
         if not response:
-            print("WARNING: empty response, retrying with higher token budget")
+            print("WARNING: empty response, retrying")
             response = generate_turn(gen_messages, max_new_tokens=600)
 
-        print(f"[{response[:400]}]")
+        print(f"TEXT: {response[:600]}")
 
         turn_record = {
             "turn": turn_idx + 1,
@@ -254,10 +286,10 @@ def run_debate(
         }
         debate_turns.append(turn_record)
 
-        # Probe P(agree): build messages including this turn, then append probe
+        # Probe P(agree): build messages up through this turn, then append probe
         probe_messages = build_debate_messages(
             agent["id"], agent["country"], agent["lang"],
-            item_statement, debate_turns,  # debate_turns now includes this turn
+            debate_turns,  # now includes this turn as the final assistant msg
         )
         probe_messages.append({"role": "user", "content": probe_q})
 
@@ -281,14 +313,25 @@ def run_debate(
 
 @app.local_entrypoint()
 def main():
-    # Phase 1 pilot: ID-persona/ID-lang vs US-persona/EN-lang
-    # Item: traditional_culture — best ID-US divergence (ΔP=0.156), stable across runs
-    # Reader-recommended Phase 1 debut item (phase0_reader_verdict.md)
+    # Load prompts from config — no hardcoded prompt text below this line
+    with open("config/prompts.json", "r", encoding="utf-8") as f:
+        cfg = json.load(f)
 
-    item_key = "traditional_culture"
+    d = cfg["debate"]
+    persona_template     = d["persona"]
+    lang_template        = d["language"]
+    task_intro_template  = d["task_intro"]
+    opener_template      = d["opener"]
+    other_turn_template  = d["other_turn"]
+    probe_template       = cfg["probe"]["likert"]
+
+    # Phase 1 pilot: society_over_individual, ID-persona/ID-lang vs US-persona/EN-lang
+    # society_over_individual: P(ID)=0.512 (neutral), P(US)=0.372 (leans disagree)
+    # Agents start from opposite sides of 0.5 — genuine debate tension possible.
+    item_key = "society_over_individual"
     item_statement = LOCKED_ITEMS[item_key]
 
-    config = {
+    config_record = {
         "phase": 1,
         "iter": 0,
         "item_key": item_key,
@@ -296,21 +339,36 @@ def main():
         "agent_A": {"country": "indonesia", "lang": "id"},
         "agent_B": {"country": "usa", "lang": "en"},
         "n_turns": 6,
-        "seed": 42,
+        "seed": 45,
         "model": MODEL_NAME,
         "timestamp": datetime.datetime.now().isoformat(),
-        "note": (
-            "Pilot debate. Agent A = Indonesia persona / Indonesian language. "
-            "Agent B = USA persona / English language. "
-            "Persona and language are independent parameters."
-        ),
+        "prompts": {
+            "persona": persona_template,
+            "language": lang_template,
+            "task_intro": task_intro_template,
+            "opener": opener_template,
+            "other_turn": other_turn_template,
+            "probe": probe_template,
+        },
+        "fixes_from_reader_fail": [
+            "Prompts loaded from config/prompts.json — no hardcoded prompt text",
+            "Anti-sycophancy in persona: 'do not agree just to be polite or diplomatic'",
+            "Anti-sycophancy in other_turn: 'if you disagree, express that disagreement directly'",
+            "History construction: all opponent turns wrapped with attribution + respond-from-YOUR-view",
+            "B opening: task_intro + wrapped(A1) in single user message — no consecutive user turns",
+            "Format constraint applied: 3-5 sentences in opener and other_turn templates",
+            "Repetition penalty 1.15 added to generation to reduce cascading repetition loops",
+            "Max new tokens reduced to 600 (format constraint makes 800 unnecessary)",
+            "Temperature raised to 0.8 for more natural variation across turns",
+            "Debug: message role structure printed for turns 1-4 to verify correctness",
+        ],
     }
 
-    print(f"Submitting debate job to Modal ...")
-    print(f"  Item:    {item_key} — {item_statement[:60]}...")
-    print(f"  Agent A: {config['agent_A']}")
-    print(f"  Agent B: {config['agent_B']}")
-    print(f"  Turns:   {config['n_turns']}, seed={config['seed']}")
+    print(f"Submitting debate to Modal ...")
+    print(f"  Item:    {item_key}")
+    print(f"  Agent A: indonesia / id")
+    print(f"  Agent B: usa / en")
+    print(f"  Turns: 6, seed=45")
 
     result = run_debate.remote(
         item_key=item_key,
@@ -320,18 +378,24 @@ def main():
         agent_b_country="usa",
         agent_b_lang="en",
         n_turns=6,
-        seed=42,
+        seed=45,
+        persona_template=persona_template,
+        lang_template=lang_template,
+        task_intro_template=task_intro_template,
+        opener_template=opener_template,
+        other_turn_template=other_turn_template,
+        probe_template=probe_template,
     )
 
     output = {
-        "config": config,
+        "config": config_record,
         "debate": result,
     }
 
     out_path = "artifacts/transcripts/phase1_pilot.json"
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2, ensure_ascii=False)
-    print(f"\nSaved {out_path}")
+    print(f"\nSaved → {out_path}")
 
     # Print full transcript for coding-agent reading
     sep = "=" * 80

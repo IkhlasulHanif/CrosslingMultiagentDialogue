@@ -53,16 +53,16 @@ Your task: build the debate engine and run exactly one debate.
 
 PERSONA vs LANGUAGE — these are two separate axes, always specify both independently:
   - Persona = cultural identity system prompt → fixes value prior
-      e.g. "You are a person from Indonesia."
+      e.g. \"You are a person from Indonesia.\"
   - Language = what language the agent generates in → fixes the channel
 
   An agent CAN have an Indonesian persona and speak English — that is a valid cell.
   Do NOT conflate them. The debate_engine must accept country and lang as separate params.
 
-  System prompt template: "You are a person from {country}."
+  System prompt template: \"You are a person from {country}.\"
   Then separately instruct the generation language (or let the conversation history guide it,
-  or add: "Please respond in {lang}.")
-  Do NOT say "you strongly agree with X" — identity expresses values naturally.
+  or add: \"Please respond in {lang}.\")
+  Do NOT say \"you strongly agree with X\" — identity expresses values naturally.
 
 Steps:
 1. Write code/debate_engine.py — a Modal app that:
@@ -178,6 +178,20 @@ Skills to load before starting:
 /modal-basic-skills
 /modal-gpu-dev
 /modal-gpu-experiment
+
+═══════════════════════════════════════════════════════
+EXPERIMENT CONFIG — read and edit freely
+═══════════════════════════════════════════════════════
+config/prompts.json controls all system prompts for the debate engine and judge.
+These are experimental — you are expected to change them based on what you observe.
+
+If a previous reader or judge flagged a problem with a prompt:
+  → edit config/prompts.json to fix it
+  → update code/debate_engine.py if the code needs to change too
+  → then rerun
+
+The debate engine (code/debate_engine.py) loads prompts from config/prompts.json at runtime.
+Do not hardcode prompts in the Python code — read them from the config file.
 
 ═══════════════════════════════════════════════════════
 PROJECT CONTEXT

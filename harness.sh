@@ -21,6 +21,8 @@ source "$ROOT/agents/coding.sh"
 source "$ROOT/agents/reader.sh"
 source "$ROOT/agents/discovery.sh"
 source "$ROOT/agents/paper.sh"
+source "$ROOT/agents/judge.sh"
+source "$ROOT/agents/supervisor.sh"
 
 mkdir -p "$ROOT/artifacts/transcripts" \
          "$ROOT/artifacts/results" \
@@ -136,6 +138,8 @@ while true; do
         v=$(verdict "$ROOT/plan/phase_notes/phase0_reader_verdict.md")
         if [[ $v == PASS* ]]; then
             echo "[harness] Phase 0 PASSED — item set locked."
+            prompt=$(prompt_supervisor 0 "$iter" "$ctx")
+            run_agent "supervisor_phase0" "$prompt" || true
             state_set phase 1; state_set iter 0
         else
             echo "[harness] Phase 0 FAILED — retrying immediately."
@@ -155,12 +159,20 @@ while true; do
             run_agent "phase1_coding" "$prompt" || { safe_sleep; continue; }
         fi
 
+        # Judge the pilot transcript
+        if [[ -f "$ROOT/artifacts/transcripts/phase1_pilot.json" ]]; then
+            prompt=$(prompt_judge "$ROOT/artifacts/transcripts/phase1_pilot.json" "$ctx")
+            run_agent "phase1_judge" "$prompt" || true   # judge failure doesn't block
+        fi
+
         prompt=$(prompt_reader 1 "$iter" "$ctx")
         run_agent "phase1_reader" "$prompt" || { safe_sleep; continue; }
 
         v=$(verdict "$ROOT/plan/phase_notes/phase1_reader_notes.md")
         if [[ $v == PASS* ]]; then
             echo "[harness] Phase 1 PASSED — pilot transcript approved."
+            prompt=$(prompt_supervisor 1 "$iter" "$ctx")
+            run_agent "supervisor_phase1" "$prompt" || true
             state_set phase 2; state_set iter 0; state_set pass_count 0
         else
             echo "[harness] Phase 1 FAILED — retrying immediately."
@@ -177,6 +189,13 @@ while true; do
         prompt=$(prompt_coding 2 "$iter" "$ctx")
         run_agent "phase2_coding_iter${iter}" "$prompt" || { safe_sleep; continue; }
 
+        # Judge all new transcripts from this iter
+        for t in "$ROOT/artifacts/transcripts/phase2_iter${iter}"_*.json; do
+            [[ -f "$t" ]] || continue
+            prompt=$(prompt_judge "$t" "$ctx")
+            run_agent "phase2_judge_$(basename "$t" .json)" "$prompt" || true
+        done
+
         # Reader checks against rubric
         prompt=$(prompt_reader 2 "$iter" "$ctx")
         run_agent "phase2_reader_iter${iter}" "$prompt" || { safe_sleep; continue; }
@@ -188,6 +207,8 @@ while true; do
             echo "[harness] Phase 2 iter $iter PASSED ($pass_count/$VALIDITY_PASSES_NEEDED)"
             if [[ $pass_count -ge $VALIDITY_PASSES_NEEDED ]]; then
                 echo "[harness] Phase 2 complete — environment is valid."
+                prompt=$(prompt_supervisor 2 "$iter" "$ctx")
+                run_agent "supervisor_phase2" "$prompt" || true
                 state_set phase 3; state_set iter 0; state_set pass_count 0
             else
                 state_set iter $(( iter + 1 ))
@@ -208,10 +229,22 @@ while true; do
         prompt=$(prompt_coding 3 "$iter" "$ctx")
         run_agent "phase3_coding_iter${iter}" "$prompt" || { safe_sleep; continue; }
 
+        # Judge all new transcripts from this iter
+        for t in "$ROOT/artifacts/transcripts/phase3_iter${iter}"_*.json; do
+            [[ -f "$t" ]] || continue
+            prompt=$(prompt_judge "$t" "$ctx")
+            run_agent "phase3_judge_$(basename "$t" .json)" "$prompt" || true
+        done
+
         # Discovery reader — records phenomena, does NOT fix
         prompt=$(prompt_discovery "$iter" "$ctx")
         run_agent "phase3_discovery_iter${iter}" "$prompt" || { safe_sleep; continue; }
 
+        # Supervisor checks every 3 discovery iters
+        if (( (iter + 1) % 3 == 0 )); then
+            prompt=$(prompt_supervisor 3 "$iter" "$ctx")
+            run_agent "supervisor_phase3_iter${iter}" "$prompt" || true
+        fi
         state_set iter $(( iter + 1 ))
         echo "[harness] Phase 3 iter $iter done. Continuing discovery..."
         # Discovery runs until user stops it (or we manually advance to phase 4)
