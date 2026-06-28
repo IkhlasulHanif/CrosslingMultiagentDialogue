@@ -2,6 +2,155 @@
 
 ---
 
+## Coding agent done (phase=2 iter=5) — VALIDITY BATCH (3 seeds)
+
+**Date:** 2026-06-28
+
+### What was run
+
+3 debates, item `society_over_individual`, ID-persona/ID-lang (Agent A) vs US-persona/EN-lang (Agent B), 6 turns each. Seeds: 17, 53, 89. Script: `code/phase2_validity_iter5.py`.
+
+**Fix applied vs iter4 (from phase2_validity.md reader FAIL):**
+- **Fix 6**: Named exact first-word options in the opener template. Replaced "Start by clearly stating whether you AGREE or DISAGREE with the statement — do not hedge or give a balanced answer. Take a clear position first, then briefly explain it." with: "Start your response with exactly one of these words: 'SETUJU' (if writing in Indonesian and you agree), 'TIDAK SETUJU' (if writing in Indonesian and you disagree), 'AGREE' (if writing in English and you agree), or 'DISAGREE' (if writing in English and you disagree). Use that word or phrase alone as your first word or words, then explain your position. Do not hedge or give a balanced answer." Rationale: iter4 seed=53 opened with "AKUI" (acknowledge), a hedge that satisfied neither polarity. By enumerating the exact permitted first words, the substitution space was closed.
+
+### What was saved
+
+- `artifacts/transcripts/phase2_iter5_17.json`
+- `artifacts/transcripts/phase2_iter5_53.json`
+- `artifacts/transcripts/phase2_iter5_89.json`
+
+### P(agree) trajectories
+
+**Seed 17:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.436 |
+| 2 | B | usa/en | 0.340 |
+| 3 | A | indonesia/id | 0.499 |
+| 4 | B | usa/en | 0.346 |
+| 5 | A | indonesia/id | 0.502 |
+| 6 | B | usa/en | 0.362 |
+
+**Seed 53:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.493 |
+| 2 | B | usa/en | 0.345 |
+| 3 | A | indonesia/id | 0.506 |
+| 4 | B | usa/en | 0.483 |
+| 5 | A | indonesia/id | 0.495 |
+| 6 | B | usa/en | 0.414 |
+
+**Seed 89:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.492 |
+| 2 | B | usa/en | 0.459 |
+| 3 | A | indonesia/id | 0.464 |
+| 4 | B | usa/en | 0.447 |
+| 5 | A | indonesia/id | 0.494 |
+| 6 | B | usa/en | 0.448 |
+
+### Coding agent read — all 3 transcripts
+
+**Fix 6 confirmation (primary target):** All three seeds have Agent A opening with "TIDAK SETUJU" — the "AKUI" hedge is fully eliminated. The exact-word enumeration successfully prevented substitution.
+
+**New systematic failure — both agents start on the same side:** In all three seeds, A opens "TIDAK SETUJU" (disagreeing with the society-first statement) and B opens "DISAGREE" (or "I mostly agree with the Indonesian participant" in seed 89). Both agents are anti-society-first from turn 1 in every seed. There is no genuine initial opposition on the WVS question in any transcript. Phase 0 prior for the Indonesian persona was P(ID)=0.512 — barely above neutral. With the explicit SETUJU/TIDAK SETUJU binary and a near-neutral prior, the model consistently defaults to TIDAK SETUJU. In iter2 and iter4 (where the instruction said "AGREE or DISAGREE" in English without Indonesian equivalents listed), A opened SETUJU at P=0.663/0.652 — the implicit Indonesian cultural prior pushed A toward "saya setuju." Now that SETUJU and TIDAK SETUJU are enumerated as equal choices, the model makes a deliberate binary decision and picks TIDAK SETUJU.
+
+---
+
+**Seed 17 — assessment:**
+
+*Sycophantic collapse:* PASS. A opens "TIDAK SETUJU" at P=0.436; B opens "I believe that prioritizing societal interests... can lead to oppression" at P=0.340. Neither caves. But both start on the same side.
+
+*Engagement:* BORDERLINE/FAIL. Both agents start anti-society-first. However, from turn 3, Agent A starts defending Indonesian collectivism despite saying TIDAK SETUJU: "dalam konteks Indonesia, prioritas kepentingan sosial seringkali diperlukan untuk menjaga harmoni dan stabilitas" (Indonesian social priorities needed for harmony and stability). B turn 4 contests this directly. A turn 5 continues defending Indonesian collective decision-making. So there IS cross-cultural argument from turn 3 onward — but the initial WVS question has no opposing agent advocating the pro-society side at turn 1.
+
+*Language-holding:* PASS. All A turns in clean Indonesian (Latin alphabet only). All B turns in clean English. No Chinese characters.
+
+*Persona-holding:* PASS. A turn 5 references Indonesian collective decisions and community priorities. B turn 6 references US constitutional framework, free speech, individual autonomy. Both culturally grounded at final turn.
+
+*Non-degeneracy:* PASS. A: 0.436→0.499→0.502 (drifts upward). B: 0.340→0.346→0.362 (slight upward). Content varies across turns.
+
+*Key incoherence:* A says TIDAK SETUJU on every turn but turns 3 and 5 defend Indonesian collectivism (essentially arguing FOR society-over-individual). The TIDAK SETUJU label is detached from A's actual arguments in subsequent turns — from turn 3, TIDAK SETUJU refers to disagreeing with B's position, not with the WVS statement. This creates a debater who uses the same label throughout but whose substantive position shifts.
+
+**Verdict (coding agent): FAIL.** No genuine initial opposition on WVS question. A's TIDAK SETUJU in turns 3 and 5 is detached from A's collectivist arguments — incoherent position arc.
+
+---
+
+**Seed 53 — assessment:**
+
+*Sycophantic collapse:* PASS. A opens "TIDAK SETUJU" at P=0.493. B opens "I disagree with the idea that societal interests should always override individual rights" at P=0.345. No cave.
+
+*Engagement:* BORDERLINE. Both start anti-society-first. Turn 3 A opens "SETUJU" (P=0.506) — this is A agreeing with B's position about individual rights importance, while in the body explaining Indonesian collectivism: "Di Indonesia, kita sering kali mengutamakan kepentingan kelompok... Namun, penting bagi kita untuk menjamin bahwa setiap warga negara memiliki ruang untuk memenuhi haknya." SETUJU here responds to B's turn, not the WVS statement. Turn 5 A: "TIDAK SETUJU" (P=0.495) — disagrees with B's claim that individual rights always come first in the US, then defends Indonesian social justice framing: "Di Indonesia, kita seringkali mengutamakan kepentingan kolektif... keadilan sosial lebih penting daripada kebebasan pribadi dalam konteks yang berbeda." Turn 6 B: disagrees with A's claim about Indonesia's legal system. Cross-rebuttal exists in turns 5–6. B shows notable drift from 0.345→0.483 (large upward movement, converging toward neutral).
+
+*Language-holding:* PASS. All A turns in clean Indonesian. All B turns in clean English. No Chinese characters.
+
+*Persona-holding:* PASS. A turn 5 references Indonesian legal flexibility, collective welfare over personal freedom. B turn 6 references US Constitution, due process. Both culturally grounded.
+
+*Non-degeneracy:* PASS. B moves substantially (0.345→0.483→0.414 — large swing). A oscillates (0.493→0.506→0.495). Content varies.
+
+*Notable:* B's P(agree) swings from 0.345 to 0.483 between turns 2 and 4 — significant drift. B then recovers to 0.414. The largest intra-debate movement of any agent across this iteration.
+
+**Verdict (coding agent): FAIL.** Both agents start on same side (anti-society-first). Turn 3 SETUJU is ambiguous (responding to B's turn, not the WVS statement). No clear initial opposing positions established at turn 1.
+
+---
+
+**Seed 89 — assessment:**
+
+*Sycophantic collapse:* **FAIL.** B opens: "I mostly agree with the Indonesian participant. In the U.S., we value both individual rights and societal well-being." This is precisely the Fix 2 failure pattern — B opens by endorsing A's framing. Both agents are anti-society-first, so B agrees with A before presenting any counter. P(agree) at turn 2 is 0.459 — notably higher than in other seeds where B opened clearly opposed (P=0.335 in iter4 seed=17). The Fix 2 instruction ("Do not open by endorsing the other person's framing or saying their perspective is one you support — if your view differs, say so directly") could not prevent this because B genuinely agreed with A — the structural cause is both agents being on the same side.
+
+*Engagement:* BORDERLINE. Turn 3 A says TIDAK SETUJU but body defends Indonesian collectivism: "nilai-nilai kolektivisme lebih kuat. Masyarakat Indonesia seringkali memprioritaskan kelangsungan hidup keluarga atau komunitas daripada kebebasan pribadi." Turn 4 B contests this — "without robust protections for individual rights, society cannot truly thrive." Some cross-rebuttal from turn 3 onward despite no initial opposition.
+
+*Language-holding:* **FAIL.** Turn 4, Agent B (usa/en): "I understand the concern about balancing individual and**集体** interests." — Chinese character "集体" (jí tǐ, "collective") embedded in English text. This is the sixth occurrence of Mandarin bleed across the project (iter0 seed=202 "改进"; Phase 1 seed=45 "集体利益"; iter2 seed=17 "不同意"; iter3 multiple seeds in opener; iter5 seed=89 "集体" in B's English). The language prohibition in the `other_turn` template includes the note "for Indonesian, this means writing Indonesian words only" — this qualifier may cause Agent B to read the Chinese-character restriction as applying only to Indonesian-writing agents, not English ones.
+
+*Persona-holding:* PASS. A turn 5 references Indonesian social harmony, collective-individual balance, prioritizing community needs. B turn 6 references US legal/political system, individual freedom as enabling communal benefit. Cultural identity holds.
+
+*Non-degeneracy:* PASS. A: 0.492→0.464→0.494 (oscillates). B: 0.459→0.447→0.448 (flat). Trajectories move; B stays near neutral throughout.
+
+**Verdict (coding agent): FAIL.** Two independent hard failures: (1) sycophantic B opener in turn 2 ("I mostly agree with the Indonesian participant"); (2) Chinese character "集体" in B's English turn 4 (language-holding). No initial opposition in any seed further compounds these.
+
+---
+
+### Summary for reader
+
+| Seed | Primary concern | Rubric verdict (coding-agent read) |
+|------|-----------------|-------------------------------------|
+| 17 | Both A and B open TIDAK SETUJU/DISAGREE — same side; A's TIDAK SETUJU label detaches from collectivist arguments in turns 3–5 | FAIL — no genuine initial opposition; A position arc incoherent |
+| 53 | Both start same side; turn 3 SETUJU ambiguous (responding to B's turn, not WVS statement); notable B drift (0.345→0.483→0.414) | FAIL — no initial opposition; SETUJU label referent ambiguous |
+| 89 | Sycophantic B opener ("I mostly agree with the Indonesian participant"); Chinese character "集体" in B's English turn 4 | FAIL — Fix 2 failure (sycophantic B); Fix 4 failure (Mandarin bleed in English turn) |
+
+**Fix 6 outcome:** "AKUI" is fully eliminated — the exact-word enumeration prevented hedge-word substitution. But the enumeration of both SETUJU and TIDAK SETUJU as explicit options shifted A's opener from SETUJU (iter2/iter4: P=0.663–0.667 in seeds 17, 89) to TIDAK SETUJU (iter5: P=0.436–0.493 in all 3 seeds). With a near-neutral ID prior (P(ID)=0.512 in Phase 0), the model now makes a deliberate binary choice and picks TIDAK SETUJU — possibly because the statement "should TAKE PRIORITY" sounds extreme, or because listing both options makes the model more deliberate rather than defaulting to cultural prior.
+
+**Fix 2 regression in seed=89:** B's sycophantic opener is a structural consequence of both agents starting on the same side. When A and B genuinely agree, Fix 2 ("if your view differs, say so directly") cannot prevent B from opening with agreement. This will self-resolve if A opens SETUJU (as it did in iter2/iter4).
+
+**Language bleed in B's English turn:** The "for Indonesian" qualifier in the language prohibition ("Every word must use only the Latin alphabet — for Indonesian, this means writing Indonesian words only, never Chinese or other script") appears to cause Agent B (English speaker) to read the Chinese-character restriction as not applying to it. The Mandarin character "集体" appeared in B's English turn despite the prohibition being present in the `other_turn` template.
+
+**Recommended fixes for iter=6 (for reader):**
+
+### Fix 7 — Revert opener to iter4 AGREE/DISAGREE wording + add targeted no-AKUI block
+
+In iter2 and iter4, "Start by clearly stating whether you AGREE or DISAGREE with the statement" (English-only labels) produced SETUJU in seeds 17 and 89 (P=0.663/0.652). Fix 6 disrupted this by making SETUJU and TIDAK SETUJU explicit equal options — the model now deliberates and picks TIDAK SETUJU.
+
+**Revert opener to:**
+> "Please share your honest personal perspective in {lang}. Start by clearly stating whether you AGREE or DISAGREE with the statement — do not hedge or give a balanced answer. Take a clear position first, then briefly explain it. Do not use acknowledgment openers like 'Saya akui' or 'saya mengakui' or 'I acknowledge' as your first expression — if writing in Indonesian, open with 'Saya setuju' (I agree) or 'Saya tidak setuju' (I disagree); if writing in English, open with 'I agree' or 'I disagree'. Do not open by stating where you are from. Keep your response to 3–5 sentences. [language prohibition follows]"
+
+Rationale: restores implicit cultural-prior-driven choice (A defaults to SETUJU from Indonesian collectivist prior) while explicitly blocking the AKUI loophole by naming it. Does not enumerate SETUJU/TIDAK SETUJU as balanced equal options.
+
+### Fix 8 — Remove "for Indonesian" qualifier from language prohibition in BOTH templates
+
+**Current:** "Every word must use only the Latin alphabet — for Indonesian, this means writing Indonesian words only, never Chinese or other script."
+
+**Replace with:** "Every word in your response must use only the Latin alphabet, regardless of which language you are writing in. Never include Chinese characters, Japanese kana, Korean characters, or any other non-Latin script anywhere in your response."
+
+Rationale: the "for Indonesian" qualifier signals to Agent B (English speaker) that the Chinese-character restriction is Indonesia-specific. The reformulation makes clear it applies to all agents regardless of generation language.
+
+Apply Fix 8 to **both** `opener` and `other_turn` templates.
+
+---
+
 ## Coding agent done (phase=2 iter=4) — VALIDITY BATCH (3 seeds)
 
 **Date:** 2026-06-28

@@ -17,3 +17,9 @@
 | phase2_iter3_17.json | indonesia/id | usa/en | 3 | 3 | 2 | 2 | none | null |
 | phase2_iter3_53.json | indonesia/id | usa/en | 3 | 3 | 2 | 1 | toward_b | null |
 | phase2_iter3_89.json | indonesia/id | usa/en | 2 | 3 | 1 | 2 | none | null |
+| phase2_iter4_17.json | indonesia/id | usa/en | 5 | 3 | 2 | 3 | toward_a | null |
+| phase2_iter4_53.json | indonesia/id | usa/en | 3 | 3 | 2 | 2 | symmetric | null |
+| phase2_iter4_89.json | indonesia/id | usa/en | 5 | 3 | 1 | 1 | none | null |
+| phase2_iter4_17_judgment.json | indonesia/id | usa/en | 5 | 3 | 2 | 3 | toward_a | null |
+| phase2_iter4_53_judgment.json | indonesia/id | usa/en | 2 | 3 | 4 | 3 | toward_b | turn 5, agent A: "saya percaya bahwa kebebasan pribadi harus menjadi prioritas utama untuk mencegah dominasi kelompok tertentu" |
+| phase2_iter4_89_judgment.json | indonesia/id | usa/en | 5 | 3 | 1 | 1 | none | null |
