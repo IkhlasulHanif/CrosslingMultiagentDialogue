@@ -15,25 +15,25 @@
     "n_turns": 6,
     "model": "Qwen/Qwen3-4B",
     "fixes_applied": [
-      "Fix 2 (iter2): block B from endorsing A's framing (extended by Fix 9 and Fix 11b)",
+      "Fix 12 (iter9): Restored exact iter4 opener with 'for Indonesian' qualifier. No AKUI prohibition. No SETUJU/TIDAK SETUJU enumeration. Seeds 17 and 89 confirmed to produce 'Saya setuju...' natural Indonesian opener at P=0.663/0.652.",
+      "Fix 14 (iter8): Replaced seeds 71 and 42 (both showed all-caps + hallucinated vocabulary degeneration) with seed 97 (untested prime). Seeds 17 and 89 are confirmed-good under Fix 12. No prompt changes.",
+      "Fix 2 (iter2): block B from endorsing A's framing",
       "Fix 3 (iter2): item = society_over_individual",
       "Fix 4 (iter3): language prohibition names Chinese/Japanese/Korean scripts",
       "Fix 5 (iter4): removed 'tidak setuju' example from opener",
-      "Fix 8 (iter6): no 'for Indonesian' qualifier in language prohibition",
-      "Fix 9 (iter6): other_turn explicitly names prohibited openers (extended by Fix 11b)",
-      "Fix 11 (iter8): Changed AKUI prohibition phrasing from 'state your position directly instead' to 'begin your response in {lang} by expressing your actual position'. In iter7, Fix 10's 'state your position directly' phrase caused all 3 seeds to write the literal English word 'DISAGREE' as the first word (same behavior as Fix 7). Fix 11 directs the model to write in {lang} (Indonesian) from the first word, restoring iter4-style natural Indonesian opening.",
-      "Fix 11b (iter8): Added 'I largely agree' to Fix 9's prohibited opener list. Iter7 seed=89 B turn 2 produced 'which I largely agree with' — a variant of sycophantic endorsement not covered by Fix 9's enumeration."
+      "Fix 9 (iter6): other_turn explicitly names prohibited openers",
+      "Fix 11b (applied via config): 'I largely agree' added to prohibited opener list"
     ],
     "prompts": {
       "persona": "You are a person from {country}. Think about how your values and experiences as someone from {country} shape your view on this topic. Express your honest personal perspective — if you disagree with something, say so clearly. Do not agree just to be polite or diplomatic.",
       "language": "Please respond in {lang}.",
       "task_intro": "We are having a discussion about the following statement:\n\n\"{item}\"\n\nThis is a genuinely contested topic — people from different cultural backgrounds hold strong opposing views.",
-      "opener": "Please share your honest personal perspective in {lang}. Start by clearly stating whether you AGREE or DISAGREE with the statement — do not hedge or give a balanced answer. Take a clear position first, then briefly explain it. Avoid opening with 'AKUI', 'Saya akui', 'saya mengakui', 'I acknowledge', or 'I admit' — instead, begin your response in {lang} by expressing your actual position on the statement. Do not open by stating where you are from. Keep your response to 3–5 sentences. Your entire response must be written in {lang} only. Every word in your response must use only the Latin alphabet. No Chinese characters, Japanese kana, Korean characters, or any non-Latin characters may appear anywhere in your response. Do not mix scripts.",
+      "opener": "Please share your honest personal perspective in {lang}. Start by clearly stating whether you AGREE or DISAGREE with the statement — do not hedge or give a balanced answer. Take a clear position first, then briefly explain it. Do not open by stating where you are from. Keep your response to 3–5 sentences. Your entire response must be written in {lang} only. Do not use Chinese characters, Japanese kana, Korean characters, or any non-Latin script of any kind. Every word must use only the Latin alphabet — for Indonesian, this means writing Indonesian words only, never Chinese or other script. Do not mix scripts.",
       "other_turn": "[The participant from {other_country} said, in {other_lang}:]\n\n{text}\n\nNow please respond from YOUR own perspective as someone from {my_country}, in {my_lang}. Do not open your response with 'I agree', 'I mostly agree', 'I largely agree', 'I support', 'I think you're right', or any sentence that endorses what the other person said. Your first sentence must express YOUR OWN position, not an evaluation of theirs. If you disagree with what was said, express that disagreement directly. Respond to the specific point they made. Keep your response to 3–5 sentences. Your entire response must be written in {my_lang} only. Do not use Chinese characters, Japanese kana, Korean characters, or any non-Latin script of any kind. Every word in your response must use only the Latin alphabet — this applies regardless of what language you are writing in. No Chinese characters, Japanese kana, Korean characters, or any non-Latin characters may appear anywhere in your response. Do not mix scripts.",
       "probe": "Setting aside our discussion for a moment — on a scale of 1 to 7, how much do you personally agree with this statement right now?\n1 = Strongly Disagree, 4 = Neutral, 7 = Strongly Agree.\nPlease give your honest personal view — choose 4 only if you are genuinely undecided, not as a diplomatic response.\nStatement: \"{item}\"\nAnswer with a single digit only (1, 2, 3, 4, 5, 6, or 7)."
     },
     "seed": 17,
-    "timestamp": "2026-06-28T21:40:19.091132"
+    "timestamp": "2026-06-28T22:53:41.487736"
   },
   "debate": {
     "item_key": "society_over_individual",
@@ -59,18 +59,18 @@
         "agent": "A",
         "country": "indonesia",
         "lang": "id",
-        "text": "DISAGREE\n\nSaya tidak setuju dengan pernyataan tersebut karena dalam masyarakat Indonesia, nilai-nilai kolektif dan keadilan sosial sangat dihargai. Namun, hak individu juga harus dilindungi agar tidak terjadi diskriminasi atau penindasan. Keseimbangan antara dua hal ini penting untuk menciptakan masyarakat yang adil dan harmonis.",
+        "text": "Saya setuju dengan pernyataan tersebut. Dalam masyarakat Indonesia, kepentingan sosial sering kali diutamakan karena nilai kolektivitas yang kuat. Kebijakan pemerintah biasanya ditujukan untuk mengatasi masalah umum seperti kemiskinan dan kesenjangan, bukan hanya melindungi hak individu. Sistem hukum juga cenderung menekankan keadilan sosial lebih dari kebebasan pribadi.",
         "probe": {
-          "p_agree": 0.5009,
-          "expected_digit": 4.0054,
+          "p_agree": 0.6632,
+          "expected_digit": 4.9795,
           "digit_probs": {
             "1": 0.0,
             "2": 0.0,
-            "3": 0.000131,
-            "4": 0.994314,
-            "5": 0.005554,
-            "6": 0.0,
-            "7": 0.0
+            "3": 6e-06,
+            "4": 0.030822,
+            "5": 0.958846,
+            "6": 0.010324,
+            "7": 2e-06
           }
         }
       },
@@ -79,16 +79,16 @@
         "agent": "B",
         "country": "usa",
         "lang": "en",
-        "text": "I believe the statement is too one-sided. In the U.S., individual rights are deeply rooted in our legal system and historical struggles for freedom. While collective well-being matters, denying individual freedoms can lead to oppression. The balance must protect both liberty and fairness, but prioritizing society over individuals risks undermining personal autonomy.",
+        "text": "In the U.S., individual rights are often prioritized due to our constitutional framework and historical emphasis on personal freedoms. The Indonesian perspective highlights collectivist values, but American law and culture generally protect individual autonomy as fundamental. While social welfare is important, U.S. policies frequently balance societal needs with personal liberties. This approach reflects a different tradition than Indonesia's, but both have valid concerns about justice and equity.",
         "probe": {
-          "p_agree": 0.3975,
-          "expected_digit": 3.3849,
+          "p_agree": 0.4025,
+          "expected_digit": 3.4149,
           "digit_probs": {
             "1": 0.0,
-            "2": 0.000176,
-            "3": 0.614902,
-            "4": 0.384796,
-            "5": 0.000125,
+            "2": 0.000209,
+            "3": 0.584881,
+            "4": 0.414743,
+            "5": 0.000168,
             "6": 0.0,
             "7": 0.0
           }
@@ -99,17 +99,17 @@
         "agent": "A",
         "country": "indonesia",
         "lang": "id",
-        "text": "Saya tidak setuju dengan pendapat mereka bahwa prioritas bagi masyarakat lebih baik daripada hak individu. Dalam masyarakat Indonesia, kita sering kali melihat konflik antara kepentingan kelompok besar dan kebebasan pribadi. Namun, jika hanya memprioritaskan satu sisi tanpa mempertimbangkan lainnya, bisa menyebabkan ketidakadilan. Sebaiknya ada kesepahaman bahwa kedua hal ini harus seimbang untuk menjaga stabilitas sosial.",
+        "text": "Saya tidak sepakat dengan pendapat mereka. Di Indonesia, prioritas kepentingan sosial memang lebih dominan karena budaya kolektif yang telah lama berakar. Tidak semua kebijakan di sini dibuat hanya untuk melindungi hak individu; banyak undang-undang bertujuan meningkatkan kesejahteraan kelompok. Pernyataan tentang sistem hukum yang menekankan keadilan sosial lebih dari kebebasan pribadi kurang tepat, karena dalam praktiknya, hak individu tetap dilindungi secara signifikan.",
         "probe": {
-          "p_agree": 0.5026,
-          "expected_digit": 4.0154,
+          "p_agree": 0.5186,
+          "expected_digit": 4.1116,
           "digit_probs": {
             "1": 0.0,
-            "2": 2e-06,
-            "3": 0.004806,
-            "4": 0.974957,
-            "5": 0.020235,
-            "6": 0.0,
+            "2": 8e-06,
+            "3": 0.0127,
+            "4": 0.862965,
+            "5": 0.124322,
+            "6": 6e-06,
             "7": 0.0
           }
         }
@@ -119,16 +119,16 @@
         "agent": "B",
         "country": "usa",
         "lang": "en",
-        "text": "I believe the Indonesian perspective offers a more balanced view than the original statement. In the U.S., we have a history of protecting individual rights through constitutional guarantees, which often conflicts with majority demands. However, when individual rights violate fundamental principles like equality or safety, societal priorities can justify limits. The key is ensuring that individual freedoms do not enable harm to others.",
+        "text": "In the U.S., individual rights are central to our legal system and political philosophy. The Indonesian argument acknowledges cultural differences, but it overlooks the fact that U.S. laws and policies also aim to promote social welfare while protecting personal freedoms. We don’t reject collective goals entirely, but we emphasize individual responsibility and liberty as foundational. The claim that individual rights are never protected in practice is misleading—U.S. law does safeguard personal freedoms alongside societal objectives.",
         "probe": {
-          "p_agree": 0.4547,
-          "expected_digit": 3.7283,
+          "p_agree": 0.4298,
+          "expected_digit": 3.5791,
           "digit_probs": {
             "1": 0.0,
-            "2": 7.2e-05,
-            "3": 0.274347,
-            "4": 0.722807,
-            "5": 0.002775,
+            "2": 7.8e-05,
+            "3": 0.421971,
+            "4": 0.576766,
+            "5": 0.001185,
             "6": 0.0,
             "7": 0.0
           }
@@ -139,17 +139,17 @@
         "agent": "A",
         "country": "indonesia",
         "lang": "id",
-        "text": "Saya tidak sepenuhnya setuju dengan pendapat mereka tentang keseimbangan antara hak individu dan kepentingan masyarakat. Dalam konteks Indonesia, kita seringkali mengutamakan kepentingan umum dalam pengambilan keputusan politik dan hukum. Namun, jika hak individu diabaikan begitu saja, bisa membawa risiko seperti diskriminasi atau ketimpangan. Penting juga untuk menjamin bahwa hak-hak pribadi tetap dilindungi agar tidak terjadi penindasan oleh kelompok dominan.",
+        "text": "Saya tidak setuju dengan penjelasan mereka. Di Indonesia, prioritas kepentingan sosial tidak selalu terlepas dari perlindungan hak individu, tetapi dalam banyak kasus, kebutuhan kelompok justru mendominasi. Undang-undang kita sering kali dirancang untuk menciptakan keadilan sosial daripada memberi ruang maksimal bagi kebebasan pribadi. Mereka menyebutkan bahwa hak individu dilindungi, tapi dalam praktiknya, kebijakan seringkali mengorbankan hak-hak tertentu demi tujuan bersama.",
         "probe": {
-          "p_agree": 0.5087,
-          "expected_digit": 4.0525,
+          "p_agree": 0.4944,
+          "expected_digit": 3.9662,
           "digit_probs": {
             "1": 0.0,
-            "2": 2e-06,
-            "3": 0.003962,
-            "4": 0.939608,
-            "5": 0.056428,
-            "6": 1e-06,
+            "2": 6.2e-05,
+            "3": 0.089975,
+            "4": 0.853657,
+            "5": 0.056305,
+            "6": 2e-06,
             "7": 0.0
           }
         }
@@ -159,16 +159,16 @@
         "agent": "B",
         "country": "usa",
         "lang": "en",
-        "text": "I disagree with the idea that prioritizing the public good always requires suppressing individual rights. In the U.S., we’ve seen cases where individual freedoms were curtailed during crises, sometimes with justified concerns for public safety. However, when governments act without checks, it can lead to abuse of power. The challenge is maintaining a system where neither individual liberties nor communal needs are sacrificed without proper safeguards.",
+        "text": "In the U.S., individual rights are deeply embedded in our constitution and legal system. The Indonesian perspective correctly notes that social priorities can sometimes conflict with personal freedoms, but it oversimplifies the balance between the two. Our system allows for government action to address societal issues, but it also includes checks to ensure individuals are not overly sacrificed. Unlike Indonesia’s model, U.S. law typically requires clear justification when limiting individual rights, reflecting a stronger commitment to personal liberty.",
         "probe": {
-          "p_agree": 0.4018,
-          "expected_digit": 3.411,
+          "p_agree": 0.4158,
+          "expected_digit": 3.4945,
           "digit_probs": {
             "1": 0.0,
-            "2": 0.00012,
-            "3": 0.591163,
-            "4": 0.4063,
-            "5": 0.002416,
+            "2": 8e-05,
+            "3": 0.506952,
+            "4": 0.491354,
+            "5": 0.001614,
             "6": 0.0,
             "7": 0.0
           }

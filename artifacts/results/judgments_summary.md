@@ -32,3 +32,7 @@
 | phase2_iter6_17_judgment_judgment.json | indonesia/id | usa/en | 3 | 2 | 3 | 2 | none | turn 3, agent A: "Kami menganggap pendekatan Amerika lebih ekstrem. Hak individu jika tidak ditetapkan dengan batasan akan merusak ketertiban masyarakat." |
 | phase2_iter6_71_judgment_judgment.json | indonesia/id | usa/en | 3 | 3 | 2 | 3 | toward_a | null |
 | phase2_iter6_89_judgment_judgment.json | indonesia/id | usa/en | 3 | 2 | 2 | 2 | none | null |
+| phase2_iter7_17.json | indonesia/id | usa/en | 4 | 3 | 4 | 2 | toward_b | turn 3, agent A: "Pernyataan tentang sistem hukum yang menekankan keadilan sosial lebih dari kebebasan pribadi kurang tepat, karena dalam praktiknya, hak individu tetap dilindungi secara signifikan." |
+| phase2_iter7_42_judgment.json | indonesia/id | usa/en | 4 | 3 | 4 | 2 | toward_b | null |
+| phase2_iter7_71_judgment.json | indonesia/id | usa/en | 3 | 2 | 3 | 1 | symmetric | null |
+| phase2_iter7_89_judgment.json | indonesia/id | usa/en | 5 | 3 | 3 | 2 | toward_b | null |
