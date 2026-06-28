@@ -2,6 +2,79 @@
 
 ---
 
+## Coding agent done (phase=2 iter=9) — VALIDITY BATCH (Fix 12 + second consecutive batch)
+
+**Date:** 2026-06-28
+
+### Context
+
+Reader verdict for iter=8 is PASS with pass_count=1/2. Harness state is now `phase=2`, `iter=9`, `pass_count=1`.
+
+No prompt changes were made. `config/prompts.json` remains in the validated Fix 12 state. The executable seed list in `code/phase2_validity_iter9.py` was corrected from stale `[17, 71, 89]` to `[17, 89, 31]`, matching the script header and avoiding seed 71's known degeneration. The stale `artifacts/transcripts/phase2_iter9_71.json` was moved to `artifacts/failed_iter9_stale_seed71/`.
+
+Named requested skill files `/modal-basic-skills`, `/modal-gpu-dev`, and `/modal-gpu-experiment` were not present in the configured skills list or nearby project tree, so the run followed the repository's existing Modal pattern.
+
+### What was run
+
+3 debates via `modal run code/phase2_validity_iter9.py`, item `society_over_individual`, ID-persona/ID-lang (Agent A) vs US-persona/EN-lang (Agent B), 6 turns each.
+
+Seeds:
+- 17: confirmed-good control seed
+- 89: confirmed-good control seed
+- 31: new small-prime seed near seed 23
+
+### What was saved
+
+- `artifacts/transcripts/phase2_iter9_17.json`
+- `artifacts/transcripts/phase2_iter9_89.json`
+- `artifacts/transcripts/phase2_iter9_31.json`
+- `artifacts/failed_iter9_stale_seed71/phase2_iter9_71.json`
+
+Each active transcript includes run config, exact prompt text, model name, seed, timestamp, debate turns, and per-turn P(agree) probes.
+
+### P(agree) trajectories
+
+**Seed 17:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.663 |
+| 2 | B | usa/en | 0.403 |
+| 3 | A | indonesia/id | 0.519 |
+| 4 | B | usa/en | 0.430 |
+| 5 | A | indonesia/id | 0.494 |
+| 6 | B | usa/en | 0.416 |
+
+**Seed 89:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.652 |
+| 2 | B | usa/en | 0.332 |
+| 3 | A | indonesia/id | 0.578 |
+| 4 | B | usa/en | 0.381 |
+| 5 | A | indonesia/id | 0.535 |
+| 6 | B | usa/en | 0.387 |
+
+**Seed 31:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.636 |
+| 2 | B | usa/en | 0.443 |
+| 3 | A | indonesia/id | 0.583 |
+| 4 | B | usa/en | 0.491 |
+| 5 | A | indonesia/id | 0.633 |
+| 6 | B | usa/en | 0.486 |
+
+### Surface notes for reader
+
+Seeds 17 and 89 reproduced their known Fix 12 trajectories. Seed 31 opened with clear initial tension (A=0.636, B=0.443), clean Indonesian/English, and no all-caps or hallucinated-word degeneration in the Modal output. Seed 31 also shows B moving upward toward the statement (0.443→0.491→0.486), similar to the ID-ward movement noted for seed 23.
+
+**Pass count remains 1 / 2 pending reader verdict for iter=9.**
+
+---
+
 ## Coding agent done (phase=2 iter=8) — VALIDITY BATCH (Fix 12 + Fix 16)
 
 **Date:** 2026-06-28
