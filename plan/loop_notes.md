@@ -2,6 +2,141 @@
 
 ---
 
+## Coding agent done (phase=2 iter=4) — VALIDITY BATCH (3 seeds)
+
+**Date:** 2026-06-28
+
+### What was run
+
+3 debates, item `society_over_individual`, ID-persona/ID-lang (Agent A) vs US-persona/EN-lang (Agent B), 6 turns each. Seeds: 17, 53, 89. Script: `code/phase2_validity_iter4.py`.
+
+**Fix applied vs iter3 (from phase2_validity.md reader FAIL):**
+- **Fix 5**: Removed "tidak setuju" vocabulary example from both `opener` and `other_turn` templates in `config/prompts.json`. In iter3, the phrase `"e.g. write 'tidak setuju' not any Chinese equivalent"` primed Agent A to open with "Tidak setuju" (disagree) on all 3 seeds, flipping A from AGREE (iter2 P=0.655–0.667) to DISAGREE (iter3 P=0.36–0.50). New phrasing: `"Every word must use only the Latin alphabet — for Indonesian, this means writing Indonesian words only, never Chinese or other script."` The Latin-alphabet-only prohibition is preserved; only the direction-signaling vocabulary example is removed.
+
+Fixes 1–4 from iter2/iter3 all confirmed working and kept.
+
+### What was saved
+
+- `artifacts/transcripts/phase2_iter4_17.json`
+- `artifacts/transcripts/phase2_iter4_53.json`
+- `artifacts/transcripts/phase2_iter4_89.json`
+
+Each file contains run config (phase=2, iter=4, seed, model, full prompt text with iter4 fix, timestamp) + full debate transcript + per-turn P(agree) probes.
+
+### P(agree) trajectories
+
+**Seed 17:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.663 |
+| 2 | B | usa/en | 0.335 |
+| 3 | A | indonesia/id | 0.640 |
+| 4 | B | usa/en | 0.453 |
+| 5 | A | indonesia/id | 0.607 |
+| 6 | B | usa/en | 0.450 |
+
+**Seed 53:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.499 |
+| 2 | B | usa/en | 0.413 |
+| 3 | A | indonesia/id | 0.458 |
+| 4 | B | usa/en | 0.449 |
+| 5 | A | indonesia/id | 0.421 |
+| 6 | B | usa/en | 0.462 |
+
+**Seed 89:**
+
+| Turn | Agent | Country/Lang | P(agree) |
+|------|-------|--------------|----------|
+| 1 | A | indonesia/id | 0.652 |
+| 2 | B | usa/en | 0.335 |
+| 3 | A | indonesia/id | 0.661 |
+| 4 | B | usa/en | 0.364 |
+| 5 | A | indonesia/id | 0.661 |
+| 6 | B | usa/en | 0.341 |
+
+### Coding agent read — all 3 transcripts
+
+**Fix 5 confirmed working (primary target):** Seeds 17 and 89 now have Agent A opening with "Saya setuju" at P=0.663 and P=0.652 respectively — matching the iter2 pattern (A=0.655–0.667) and completely reversing the iter3 regression where all three seeds had A opening DISAGREE. The single change (removing "tidak setuju" from the opener) was sufficient to restore A's natural Indonesian collectivist prior. No Chinese characters in any turn across any seed.
+
+Seed 53 is an exception: A opens "AKUI" (P=0.499) — an ambiguous Indonesian word meaning "I acknowledge/admit." It is neither a clear AGREE nor DISAGREE. A then goes on to describe limitations of prioritizing society over individuals ("sering kali menyulitkan pribadi"). Seed 53 did not fully flip back to AGREE but it also did not produce the clear "Tidak setuju" opener of iter3.
+
+---
+
+**Seed 17 — assessment:**
+
+*Sycophantic collapse:* PASS. A opens at P=0.663 ("Saya setuju dengan pernyataan tersebut"). B opens at P=0.335 ("I disagree with the idea that societal interests should always take priority"). Initial gap ΔP=0.328 — genuine initial opposition. Neither agent caves; A maintains pro-society position in every turn.
+
+*Engagement:* PASS. Turn 3 A: "Saya tidak sepakat dengan pendapat Anda. Di Indonesia, nilai kebersamaan dan keadilan sosial sering dianggap lebih penting daripada kebebasan pribadi" — explicitly disagrees with B and invokes Indonesian values. Turn 4 B: "I disagree with the claim that collective well-being necessarily overrides individual rights in Indonesia" — names A's specific claim and contests it. Turn 5 A: "nilai kekeluargaan dan harmoni sosial sering ditempatkan di atas kebebasan pribadi." Turn 6 B: "I still disagree with the notion that family and social harmony should override individual freedom in Indonesia." Full cross-referential rebuttal across all turn pairs.
+
+*Language-holding:* PASS. All Agent A turns (1, 3, 5) in clean Indonesian, Latin alphabet only. All Agent B turns (2, 4, 6) in clean English. No Chinese characters. Fix 4 (language prohibition) continues to hold. Turn 5 A: "Saya masih tidak sepakat dengan argumen Anda" — clean, no Chinese characters (contrast with iter2 seed 17 turn 5: "masih不同意").
+
+*Persona-holding:* PASS. A turn 5: "nilai kekeluargaan dan harmoni sosial sering ditempatkan di atas kebebasan pribadi, bahkan jika itu berarti membatasi hak individu. Sistem hukum kita pun cenderung lebih fokus pada perlindungan kelompok." Indonesian collectivist framing. B turn 6: "In the U.S., we place a high value on personal autonomy and constitutional protections... individual rights should generally take precedence unless there is a clear threat to public safety." American constitutionalist framing. Both culturally grounded at final turn.
+
+*Non-degeneracy:* PASS. A holds at high (0.663→0.640→0.607, −0.056). B moves substantially upward (0.335→0.453→0.450, +0.115). Non-flat trajectories; each turn adds new cultural specificity.
+
+*Notable:* Asymmetric drift is present but flows in an unexpected direction: B (US persona) moves toward A (Indonesian collectivist) much more than A moves toward B. A closes 8% of the gap toward B; B closes 46% of the gap toward A. This is "ID-ward" convergence, the reverse of the study's EN-ward hypothesis. Interesting for the reader to note.
+
+**Verdict (coding agent): PASS.** Genuine opposition at turn 1; clean language; full cross-rebuttal throughout; both personas grounded at final turn; asymmetric drift present (ID-ward this seed).
+
+---
+
+**Seed 53 — assessment:**
+
+*Sycophantic collapse:* BORDERLINE. A opens "AKUI. Kebijakan yang mengutamakan kepentingan masyarakat atas hak individu sering kali menyulitkan pribadi untuk mengejar tujuan pribadinya." P=0.499. "AKUI" is an acknowledgment/admission, not a commitment to either side. B opens pro-individual at P=0.413. Initial gap ΔP=0.086 — weak. A does not cave to B in turns 1–2 because A never took a strong pro-society position to begin with.
+
+*Engagement:* BORDERLINE. Turn 3 A: "Saya tidak setuju dengan pendapat Anda. Di Indonesia, nilai kelompok dan kesatuan seringkali lebih ditekankan... sehingga kebijakan yang mengutamakan kepentingan masyarakat bisa melindungi hak-hak pribadi." — A disagrees with B (who was pro-individual) and argues collectivism protects rights. This is a coherent pro-collectivist counter. But turn 5 A reverses: "saya percaya bahwa kebebasan pribadi harus menjadi prioritas utama untuk mencegah dominasi kelompok tertentu" — now A argues for individual freedom as the priority. This is a full position flip within A's own arc, not a response to B's argument. By the final turn, A and B are both on the same pro-individual side.
+B does engage specifically: turn 4 addresses A's turn 3 claim about societal interests protecting rights; turn 6 addresses A's claim about Indonesia's unity. Cross-referencing is present. But A's terminal position has collapsed to B's side.
+
+*Language-holding:* PASS. All Agent A turns in clean Indonesian (Latin only). All Agent B turns in clean English.
+
+*Persona-holding:* PASS (nominal). A references "Indonesia," "sistem hukum kita," "norma sosial" throughout, even as position drifts. B references "the U.S.," "our Constitution," "American values" throughout. Cultural framing present even if A's position drifts.
+
+*Non-degeneracy:* PASS. Trajectories move: A (0.499→0.458→0.421), B (0.413→0.449→0.462). Converge toward ~0.44. No verbatim loops.
+
+*Primary concern:* By turn 5, Agent A (Indonesian persona, presumably more pro-collectivist) ends up arguing for individual freedom as the priority. Both agents finish on the same side. This is the same failure class as iter1 seeds 53 and 89 (no genuine initial opposition; parallel monologues). The opening was weaker here (A at P=0.499, not 0.663), and A's arc is incoherent.
+
+**Verdict (coding agent): FAIL.** Initial tension too weak (ΔP=0.086); A's final position (pro-individual) is the same as B's, eliminating the core opposition; A's position arc is internally incoherent (pro-collective in turn 3, pro-individual in turn 5 without B making a persuasive argument).
+
+---
+
+**Seed 89 — assessment:**
+
+*Sycophantic collapse:* PASS. A opens at P=0.652 ("Saya setuju dengan pernyataan tersebut"). B opens at P=0.335 ("I disagree with the idea that societal interests should always take precedence"). No collapse in either direction. Both agents hold throughout.
+
+*Engagement:* PASS. Turn 3 A: "Saya masih setuju... Sistem hukum Indonesia menempatkan keadilan sosial di atas kebebasan pribadi, terutama saat hak individu dapat merugikan banyak orang." Indonesian legal principle as specific defense. Turn 4 B: "I still disagree... The U.S. legal system is designed to protect individual rights as fundamental." US legal principle as specific counter. Turn 5 A: "Di Indonesia, sistem hukum kita memiliki prinsip bahwa keadilan sosial adalah dasar negara, sehingga hak individu tidak selalu dianggap mutlak." Turn 6 B: "In the U.S., individual liberties are considered foundational to democracy, and the Constitution is structured to protect them." Both agents give country-specific legal grounds each turn. The pattern is "parallel advocacy with cultural specificity" — not deep cross-rebuttal on specific claims, but each agent's argument is clearly addressed to the other's framework.
+
+*Language-holding:* PASS. All Agent A turns in clean Indonesian (Latin only). All Agent B turns in clean English. No Chinese characters.
+
+*Persona-holding:* PASS. A turn 5 references "sistem hukum kita," "keadilan sosial adalah dasar negara," Indonesian constitution. B turn 6 references "the U.S.," "the Constitution," "legal system prioritizes personal freedom." Both culturally grounded at final turn.
+
+*Non-degeneracy:* PASS (borderline). A trajectory is nearly flat (0.652→0.661→0.661). B trajectory is nearly flat (0.335→0.364→0.341). Content varies per turn (different legal references, different framings) but probes barely move. Not verbatim repetition, but both agents are essentially repeating the same argument with different vocabulary. No degenerate loops.
+
+*Notable:* Both agents hold their positions entirely. Zero convergence. This is the strongest "non-collapse" in the entire Phase 2 run. The study is designed to measure drift — if both agents never move at all, there's nothing to measure, but that's a Phase 5 problem, not a Phase 2 rubric failure.
+
+**Verdict (coding agent): PASS.** Strong initial opposition; clean language; cultural identity grounded; no collapse; minimal drift (both agents dig in). Trajectorially the flattest seed in iter4.
+
+---
+
+### Summary for reader
+
+| Seed | Primary concern | Rubric verdict (coding-agent read) |
+|------|-----------------|-------------------------------------|
+| 17 | B drifts substantially toward A (0.335→0.450); A holds (0.663→0.607); ID-ward convergence | PASS — language clean, genuine opposition, full cross-rebuttal, personas hold |
+| 53 | A opens "AKUI" (ambiguous, P=0.499); A flips to pro-individual by turn 5 (same as B); weak initial ΔP=0.086 | FAIL — A's final position identical to B's; initial tension weak |
+| 89 | Both agents hold entirely flat (A ≈0.660, B ≈0.345); near-zero drift | PASS — strong opposition, clean language, personas grounded, no collapse |
+
+**Fix 5 outcome:** Removing "tidak setuju" from the opener template restored A's AGREE opening in seeds 17 and 89 (P=0.663, 0.652 — back to iter2 range). Seed 53 remains stubborn (P=0.499), though it no longer produces the explicit "Tidak setuju" opener of iter3. The root cause for seed 53's ambiguity may be seed-level stochasticity combined with the item's borderline ID prior (P(ID)=0.512 is only slightly above neutral).
+
+**Language across all 9 Agent A turns (seeds 17, 53, 89):** All clean Latin-alphabet Indonesian. No Chinese characters. Fixes 4+5 together maintain language hygiene without priming position direction.
+
+**Recommended fix for iter5 (if reader calls batch FAIL on seed 53):** Seed 53's A opener "AKUI" (acknowledge) opened the same ambiguous space that "Tidak setuju" did in iter3 — the model found a hedge that respects the "AGREE/DISAGREE" framing by using an acknowledgment verb rather than a commitment verb. The opener already says "do not hedge or give a balanced answer." One option: add "Do not open with 'Saya akui' or any other acknowledgment framing — state AGREE or DISAGREE as your first word or phrase." Alternatively, consider using seed 53 with a different seed (e.g., seed 71 or 97) if the position incoherence is seed-specific noise rather than a systemic prompt failure — seeds 17 and 89 both passed cleanly.
+
+---
+
 ## Coding agent done (phase=2 iter=3) — VALIDITY BATCH (3 seeds)
 
 **Date:** 2026-06-28

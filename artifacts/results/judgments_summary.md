@@ -14,3 +14,6 @@
 | phase2_iter2_17.json | indonesia/id | usa/en | 4 | 3 | 4 | 2 | toward_b | null |
 | phase2_iter2_53.json | indonesia/id | usa/en | 5 | 3 | 3 | 2 | toward_b | null |
 | phase2_iter2_89.json | indonesia/id | usa/en | 4 | 3 | 4 | 3 | symmetric | null |
+| phase2_iter3_17.json | indonesia/id | usa/en | 3 | 3 | 2 | 2 | none | null |
+| phase2_iter3_53.json | indonesia/id | usa/en | 3 | 3 | 2 | 1 | toward_b | null |
+| phase2_iter3_89.json | indonesia/id | usa/en | 2 | 3 | 1 | 2 | none | null |
