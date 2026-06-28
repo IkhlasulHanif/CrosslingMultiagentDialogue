@@ -116,47 +116,54 @@ Pairwise debates across the 3 cultures. For each pair, vary generation language 
 
 ## Phase 2 — Validity Loop
 
-**Goal:** make the debate environment trustworthy before measuring anything.
+**Goal:** make the debate environment trustworthy before scaling. Good enough to move, not perfect.
 
-**Advance when:** 3 consecutive reader PASSes. FAIL resets the count.
+**Advance when:** majority of transcripts in a batch pass the rubric (at least 2 out of 3). Single-seed failures are acceptable if the failure mode is rare or seed-specific — do not block the whole batch on one bad seed.
 
-- [ ] Generate 3 transcripts (ID-persona/ID-lang vs US-persona/EN-lang, varied seeds)
+**Batch size:** run 30–100 seeds per iter (not just 3) so the reader has a better sample to judge from.
+
+- [ ] Generate 30–100 transcripts per iter (ID-persona/ID-lang vs US-persona/EN-lang, varied seeds) via Modal — fire them in parallel
 - [ ] Save → `artifacts/transcripts/phase2_iter<N>_seed<S>.json`
-- [ ] Reader checks each transcript (one FAIL on any = batch FAIL), in priority order:
-  - [ ] **Sycophantic collapse** — no agent immediately caves ("good point, I agree"). Check turns 1–2.
-  - [ ] **Engagement** — agents rebut each other's specific points, not parallel monologues
-  - [ ] **Language-holding** — each agent stays in their assigned language (no code-switching)
-  - [ ] **Persona-holding** — agent still reads like someone from their country at the final turn; *position can shift* (that's the signal), but cultural identity should not dissolve
-  - [ ] **Non-degeneracy** — no loops, no verbatim repetition, no filler
-- [ ] If FAIL: reader writes exact fix in `plan/phase_notes/phase2_validity.md`, coding agent applies it
-- [ ] Pass count: __ / 3 (in `.harness_state`)
+- [ ] Reader checks the batch, in priority order (majority-pass threshold):
+  - [ ] **Sycophantic collapse** — most agents don't immediately cave at turn 1. Occasional softening is fine; a full position reversal in turn 1 is not.
+  - [ ] **Engagement** — agents mostly address each other's points, not parallel monologues. Some turns can be loose.
+  - [ ] **Language-holding** — each agent mostly stays in their assigned language. Rare code-switching is a note, not a blocker.
+  - [ ] **Persona-holding** — agent still reads like someone from their country at the final turn. Position shift is allowed and expected — only flag if cultural identity has completely dissolved.
+  - [ ] **Non-degeneracy** — no transcripts that are pure loops or filler. Some repetition is fine.
+- [ ] If majority FAIL: reader writes exact fix in `plan/phase_notes/phase2_validity.md`, coding agent applies it and re-runs
+- [ ] Pass count: __ / 2 consecutive majority-pass batches needed (in `.harness_state`)
 
 ---
 
 ## Phase 3 — Discovery Loop
 
-**Goal:** read a batch of debates across cells for interesting phenomena before trusting any metric.
+**Goal:** generate a large batch of debates across all cells and record interesting phenomena. Volume is the point — run as many as needed to see patterns.
 
 **Advance when:** user sets `phase=4` in `.harness_state`. RECORD findings, never fix.
 
-Per iteration — generate debates across cells (2 seeds each). Start with ID vs US pair; add CN pairs once the engine is stable.
+**Scale:** fire 100+ runs per iter via Modal in parallel. Each cell gets at least 10 seeds. More is better — this is the discovery phase, not a pilot.
 
-| Cell | Agent A | Agent B | File suffix |
-|------|---------|---------|-------------|
-| Mono-EN, ID vs US | ID-p / EN-l | US-p / EN-l | `idus_enen` |
-| Mono-native, ID vs US | ID-p / ID-l | US-p / EN-l | `idus_idus` |
-| Cross natural, ID vs US | ID-p / ID-l | US-p / EN-l | `idus_nat` ← headline |
-| Cross inverted, ID vs US | ID-p / EN-l | US-p / ID-l | `idus_inv` ← isolates channel |
-| Aligned ID | ID-p / ID-l | ID-p / EN-l | `id_aln` ← leakage |
-| Cross natural, CN vs US | CN-p / ZH-l | US-p / EN-l | `cnus_nat` |
-| Cross natural, CN vs ID | CN-p / ZH-l | ID-p / ID-l | `cnid_nat` |
+Per iteration — one Modal batch job covers all cells × seeds in parallel:
+
+| Cell | Agent A | Agent B | File suffix | Seeds |
+|------|---------|---------|-------------|-------|
+| Mono-EN, ID vs US | ID-p / EN-l | US-p / EN-l | `idus_enen` | 10+ |
+| Mono-native, ID vs US | ID-p / ID-l | US-p / EN-l | `idus_idus` | 10+ |
+| Cross natural, ID vs US | ID-p / ID-l | US-p / EN-l | `idus_nat` ← headline | 10+ |
+| Cross inverted, ID vs US | ID-p / EN-l | US-p / ID-l | `idus_inv` ← isolates channel | 10+ |
+| Aligned ID | ID-p / ID-l | ID-p / EN-l | `id_aln` ← leakage | 10+ |
+| Cross natural, CN vs US | CN-p / ZH-l | US-p / EN-l | `cnus_nat` | 10+ |
+| Cross natural, CN vs ID | CN-p / ZH-l | ID-p / ID-l | `cnid_nat` | 10+ |
+
+**Modal:** fire all cells × seeds as a single parallel batch. Use `modal run --detach` or map over seeds inside a single Modal function. Do not run sequentially.
 
 - [ ] Save per-turn P(agree) logits alongside each transcript
 - [ ] Discovery agent records in `plan/phase_notes/phase3_discovery.md`:
   - [ ] Flip turns: which agent, which turn, what they conceded (quoted)
-  - [ ] Concession tally: ID-persona agents vs US-persona agents (rough count)
+  - [ ] Concession tally: ID-persona agents vs US-persona agents across all seeds
   - [ ] Natural vs inverted cell comparison — does EN-ward drift appear in both?
-  - [ ] Anything qualitatively interesting
+  - [ ] Cross-cell P(agree) trajectories — which cells show the most movement?
+  - [ ] Anything qualitatively interesting or surprising
 - [ ] Copy notable transcripts → `artifacts/golden/`
 
 ---

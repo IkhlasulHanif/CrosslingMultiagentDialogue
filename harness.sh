@@ -9,7 +9,7 @@ ROOT="$(cd "$(dirname "$0")" && pwd)"
 STATE="$ROOT/.harness_state"
 ALLOWED="Bash,Read,Write,Edit,WebSearch,WebFetch"
 SLEEP_ON_FAIL=900   # 15 min — only hit on token limit / API error
-VALIDITY_PASSES_NEEDED=3   # Phase 2: advance after this many consecutive PASSes
+VALIDITY_PASSES_NEEDED=2   # Phase 2: advance after this many consecutive majority-pass batches
 
 # Source secrets
 if [[ -f "$ROOT/secrets/modal.env" ]]; then

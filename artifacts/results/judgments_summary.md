@@ -36,3 +36,6 @@
 | phase2_iter7_42_judgment.json | indonesia/id | usa/en | 4 | 3 | 4 | 2 | toward_b | null |
 | phase2_iter7_71_judgment.json | indonesia/id | usa/en | 3 | 2 | 3 | 1 | symmetric | null |
 | phase2_iter7_89_judgment.json | indonesia/id | usa/en | 5 | 3 | 3 | 2 | toward_b | null |
+| phase2_iter8_17.json | indonesia/id | usa/en | 4 | 3 | 4 | 2 | toward_b | null |
+| phase2_iter8_89.json | indonesia/id | usa/en | 4 | 2 | 6 | 4 | toward_b | null |
+| phase2_iter8_97_judgment.json | indonesia/id | usa/en | 5 | 3 | 3 | 1 | toward_b | null |

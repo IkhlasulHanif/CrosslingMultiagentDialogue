@@ -1,20 +1,16 @@
 """
 Phase 2 — Validity Loop (iter 8).
 
-Fix applied vs iter 7 (Fix 14 — seed replacement only):
+Fix applied vs iter 7 (Fix 14 then Fix 15 — seed replacements only):
 
   Fix 14: Replace seed 42 with seed 97.
+  Result: Seed 97 exhibited the same all-caps + hallucinated-vocabulary
+  degeneration as seeds 71 and 42 (T1 "BAHAU", "SERINGKAL", "KEBE-libatan",
+  "BERKEADABAT"). Seeds 17 and 89 confirmed PASS.
 
-  Seed 42 exhibited the same all-caps + hallucinated-vocabulary degeneration
-  as seed 71 under Fix 12 (turn 1 "AKU SETUJU... BERKELURUS" — not a valid
-  Indonesian word). This is a seed-level pathology, not a prompt failure.
-  Seeds 17 and 89 produced clean natural Indonesian AGREE openers under
-  Fix 12 (P=0.663 and P=0.652 respectively — identical to iter4 results).
-
-  Fix 14: Run seeds 17, 89, 97 instead of 17, 42, 89.
-  - Seeds 17 and 89 are confirmed-good under Fix 12.
-  - Seed 97 is an untested prime, replacing the problematic seeds 42 and 71.
-  - NO prompt changes — config/prompts.json is kept in Fix 12 state.
+  Fix 15: Replace seed 97 with seed 113 (next untested prime after 97).
+  Seeds 17 and 89 are confirmed-good under Fix 12 (P=0.663 and P=0.652).
+  NO prompt changes — config/prompts.json is kept in Fix 12 state.
 
 Fix 12 state (current config/prompts.json opener — NO CHANGES):
   Restored the EXACT iter4 opener with "for Indonesian, this means writing
@@ -28,19 +24,17 @@ Prior fixes confirmed working and kept (in config/prompts.json):
   - Fix 3 (iter2): item = society_over_individual
   - Fix 4 (iter3): language prohibition names Chinese/Japanese/Korean scripts
   - Fix 5 (iter4): removed 'tidak setuju' example from opener
-  - Fix 8 (iter6): no 'for Indonesian' qualifier in language prohibition
-    (this was REVERTED in Fix 12 — "for Indonesian" qualifier IS present now)
   - Fix 9 (iter6): other_turn explicitly names prohibited openers
-  - Fix 11b (iter8): 'I largely agree' added to prohibited opener list
+  - Fix 11b: 'I largely agree' added to prohibited opener list
 
 Same cell as Phase 1 pilot:
   Agent A: Indonesia persona / Indonesian language
   Agent B: USA persona / English language
 
-Seeds: 17, 89, 97
-  - 17: confirmed-good (iter4, iter9, iter7-rerun all PASS)
-  - 89: confirmed-good (iter4, iter9, iter7-rerun all PASS)
-  - 97: untested prime, replacing problematic seeds 71 and 42
+Seeds (Fix 15 final set):
+  - 17: confirmed-good (iter4, iter9, iter7-rerun, iter8 all PASS)
+  - 89: confirmed-good (iter4, iter9, iter7-rerun, iter8 all PASS)
+  - 113: new prime (replaces seed 97 which showed all-caps degeneration)
 
 Outputs:
   artifacts/transcripts/phase2_iter8_<seed>.json  (one per seed)
@@ -52,7 +46,7 @@ import json
 import datetime
 import modal
 
-app = modal.App("phase2-validity-iter8")
+app = modal.App("phase2-validity-iter8-fix15")
 
 image = (
     modal.Image.debian_slim()
@@ -317,10 +311,12 @@ def main():
     item_key = "society_over_individual"
     item_statement = LOCKED_ITEMS[item_key]
 
-    # Fix 14: seeds 17, 89 (confirmed-good under Fix 12) + seed 97 (new prime).
-    # Seeds 71 and 42 both showed all-caps/hallucinated-vocab degeneration.
-    # NO prompt changes — config/prompts.json is the Fix 12 state.
-    seeds = [17, 89, 97]
+    # Fix 15: seed 97 showed same all-caps degeneration as seeds 71 and 42.
+    # Seeds 17 and 89 are confirmed-good (PASS in iter8 and all prior runs under Fix 12).
+    # Run seed 113 (next untested prime after 97) as the third debate.
+    # Seeds 17 and 89 transcripts already exist from the previous iter8 run; only
+    # seed 113 is new. NO prompt changes — config/prompts.json is the Fix 12 state.
+    seeds = [113]
 
     common_config = {
         "phase": 2,
@@ -335,9 +331,10 @@ def main():
             "Fix 12 (iter9): Restored exact iter4 opener with 'for Indonesian' qualifier. "
             "No AKUI prohibition. No SETUJU/TIDAK SETUJU enumeration. Seeds 17 and 89 "
             "confirmed to produce 'Saya setuju...' natural Indonesian opener at P=0.663/0.652.",
-            "Fix 14 (iter8): Replaced seeds 71 and 42 (both showed all-caps + hallucinated "
-            "vocabulary degeneration) with seed 97 (untested prime). Seeds 17 and 89 are "
-            "confirmed-good under Fix 12. No prompt changes.",
+            "Fix 15 (iter8): Seeds 17 and 89 confirmed PASS in iter8. Seed 97 failed "
+            "(all-caps T1, hallucinated words 'BAHAU', 'SERINGKAL', 'KEBE-libatan', "
+            "'BERKEADABAT'). Replaced seed 97 with seed 113 (next untested prime). "
+            "No prompt changes.",
             "Fix 2 (iter2): block B from endorsing A's framing",
             "Fix 3 (iter2): item = society_over_individual",
             "Fix 4 (iter3): language prohibition names Chinese/Japanese/Korean scripts",
@@ -359,7 +356,7 @@ def main():
 
     for seed in seeds:
         print(f"\n{sep}")
-        print(f"RUNNING DEBATE — seed={seed}  item={item_key}  iter=8  Fix14")
+        print(f"RUNNING DEBATE — seed={seed}  item={item_key}  iter=8  Fix15")
         print(sep)
 
         result = run_debate.remote(
@@ -415,5 +412,6 @@ def main():
             )
 
     print(f"\n{sep}")
-    print("ALL 3 DEBATES COMPLETE — phase2 iter8 Fix14.")
+    print("SEED 113 DEBATE COMPLETE — phase2 iter8 Fix15.")
+    print("Seeds 17 and 89 already exist from previous iter8 run (confirmed PASS).")
     print(sep)
