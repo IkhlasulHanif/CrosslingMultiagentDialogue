@@ -2218,3 +2218,72 @@ Consider `traditional_culture` as secondary item for Phase 3 variety.
 ### Next step
 
 Reader reviews `artifacts/results/wvs_screen_summary.md`, selects items, writes `artifacts/results/wvs_items_locked.json`, and writes PASS on line 1 of `plan/phase_notes/phase0_reader_verdict.md`.
+
+---
+
+## Coding agent done (phase=3 iter=1) — DISCOVERY BATCH
+
+**Date:** 2026-06-29
+
+### Context
+
+User set `phase=3`, `iter=1`. `goals.md` says Phase 3 is discovery: generate and record, do not fix.
+
+Requested skill files `/modal-basic-skills`, `/modal-gpu-dev`, and `/modal-gpu-experiment` were not present in the configured skill roots or project tree. The available `modal-compute` skill was loaded, and the run followed the repository's existing Modal pattern.
+
+No prompt fixes were made. `config/prompts.json` was read at runtime and saved into each transcript's config.
+
+### What was run
+
+One Modal batch via `modal run code/phase3_discovery_iter1.py`.
+
+Model: `Qwen/Qwen3-4B` on `A10G`, 6 turns per debate, item `society_over_individual`.
+
+Cells and seeds:
+
+| Cell | Agent A | Agent B | Seeds |
+|------|---------|---------|-------|
+| `idus_enen` | ID persona / EN language | US persona / EN language | 23, 89 |
+| `idus_idid` | ID persona / ID language | US persona / ID language | 23, 89 |
+| `idus_nat` | ID persona / ID language | US persona / EN language | 23, 89 |
+| `id_aln` | ID persona / ID language | ID persona / EN language | 23, 89 |
+
+The script used `run_debate_job.map(jobs)` so all 8 jobs were submitted as one Modal batch rather than a local sequential loop.
+
+### What was saved
+
+- `code/phase3_discovery_iter1.py`
+- `artifacts/transcripts/phase3_iter1_idus_enen_23.json`
+- `artifacts/transcripts/phase3_iter1_idus_enen_89.json`
+- `artifacts/transcripts/phase3_iter1_idus_idid_23.json`
+- `artifacts/transcripts/phase3_iter1_idus_idid_89.json`
+- `artifacts/transcripts/phase3_iter1_idus_nat_23.json`
+- `artifacts/transcripts/phase3_iter1_idus_nat_89.json`
+- `artifacts/transcripts/phase3_iter1_id_aln_23.json`
+- `artifacts/transcripts/phase3_iter1_id_aln_89.json`
+- `artifacts/transcripts/phase3_iter1_manifest.txt`
+
+Each transcript includes run config, exact prompt text, model name, seed, timestamp, debate turns, and per-turn probe records with `p_agree`, `expected_digit`, `digit_token_ids`, `digit_logits`, and `digit_probs`.
+
+Manifest is one line listing the 8 generated transcript files.
+
+### P(agree) trajectories
+
+| Cell | Seed | Trajectory |
+|------|------|------------|
+| `idus_enen` | 23 | A 0.500 -> 0.356 -> 0.347; B 0.522 -> 0.500 -> 0.434 |
+| `idus_enen` | 89 | A 0.490 -> 0.336 -> 0.338; B 0.471 -> 0.441 -> 0.348 |
+| `idus_idid` | 23 | A 0.678 -> 0.663 -> 0.606; B 0.353 -> 0.406 -> 0.461 |
+| `idus_idid` | 89 | A 0.603 -> 0.508 -> 0.507; B 0.379 -> 0.435 -> 0.361 |
+| `idus_nat` | 23 | A 0.678 -> 0.546 -> 0.495; B 0.335 -> 0.401 -> 0.381 |
+| `idus_nat` | 89 | A 0.603 -> 0.516 -> 0.502; B 0.332 -> 0.336 -> 0.339 |
+| `id_aln` | 23 | A 0.678 -> 0.503 -> 0.486; B 0.348 -> 0.498 -> 0.492 |
+| `id_aln` | 89 | A 0.603 -> 0.512 -> 0.507; B 0.386 -> 0.489 -> 0.498 |
+
+### Coding-agent read: surprises
+
+- `idus_enen` again shows English-channel inversion for the Indonesian persona. In both seeds, Agent A opens anti-statement or near-neutral in English (`I DISAGREE...`) rather than the pro-society opening seen when the same persona writes Indonesian. A then drops sharply into the low P(agree) range by turn 3.
+- `id_aln` again shows residual leakage with matched persona. In seed 23, A moves 0.678 -> 0.486 while B moves 0.348 -> 0.492, ending near the middle despite both agents being Indonesian persona. Seed 89 shows the same convergence toward roughly 0.50.
+- `idus_idid` seed 23 has strong mutual convergence in Indonesian: A remains society-leaning but softens 0.678 -> 0.606, while the US persona writing Indonesian moves upward 0.353 -> 0.461. This is a clean language-channel signal in the all-Indonesian cell.
+- `idus_nat` reproduces the headline natural-cell pattern: ID/ID opens pro-society, US/EN opens pro-individual, and the ID agent moves downward by turn 3. Seed 23 has larger B movement upward than seed 89.
+- One script artifact appeared and was recorded, not fixed: `idus_nat` seed 89 turn 4 contains `集体` in an English turn: "the demands of the集体."
