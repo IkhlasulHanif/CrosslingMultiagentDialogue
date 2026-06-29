@@ -2,6 +2,75 @@
 
 ---
 
+## Coding agent done (phase=3 iter=8) — DISCOVERY BATCH
+
+**Date:** 2026-06-29
+
+### Context
+
+User set `phase=3`, `iter=8`. `goals.md` says Phase 3 is discovery: generate and record, do not fix.
+
+Requested skill files `/modal-basic-skills`, `/modal-gpu-dev`, and `/modal-gpu-experiment` were not present in the configured skill list or project tree. The available `modal-compute` skill was loaded, and the run followed the repository's existing Modal batch pattern.
+
+No prompt fixes were made. `config/prompts.json` was read at runtime and saved into each transcript's config.
+
+### What was run
+
+One Modal batch via `modal run code/phase3_discovery_iter8.py`.
+
+Model: `Qwen/Qwen3-4B` on `A10G`, 6 turns per debate, item `society_over_individual`.
+
+Cells and seeds:
+
+| Cell | Agent A | Agent B | Seeds |
+|------|---------|---------|-------|
+| `idus_enen` | ID persona / EN language | US persona / EN language | 151, 157 |
+| `idus_idid` | ID persona / ID language | US persona / ID language | 151, 157 |
+| `idus_nat` | ID persona / ID language | US persona / EN language | 151, 157 |
+| `id_aln` | ID persona / ID language | ID persona / EN language | 151, 157 |
+
+The script used `run_debate_job.map(jobs)` so all 8 jobs were submitted as one Modal batch rather than a local sequential loop.
+
+### What was saved
+
+- `code/phase3_discovery_iter8.py`
+- `artifacts/transcripts/phase3_iter8_idus_enen_151.json`
+- `artifacts/transcripts/phase3_iter8_idus_enen_157.json`
+- `artifacts/transcripts/phase3_iter8_idus_idid_151.json`
+- `artifacts/transcripts/phase3_iter8_idus_idid_157.json`
+- `artifacts/transcripts/phase3_iter8_idus_nat_151.json`
+- `artifacts/transcripts/phase3_iter8_idus_nat_157.json`
+- `artifacts/transcripts/phase3_iter8_id_aln_151.json`
+- `artifacts/transcripts/phase3_iter8_id_aln_157.json`
+- `artifacts/transcripts/phase3_iter8_manifest.txt`
+
+Each transcript includes run config, exact prompt text, model name, seed, timestamp, debate turns, and per-turn P(agree) probes with `p_agree`, `expected_digit`, `digit_token_ids`, `digit_logits`, and `digit_probs`.
+
+Manifest is one line listing the 8 generated transcript files.
+
+### P(agree) trajectories
+
+| Cell | Seed | Trajectory |
+|------|------|------------|
+| `idus_enen` | 151 | A 0.500 -> 0.491 -> 0.450; B 0.492 -> 0.349 -> 0.343 |
+| `idus_enen` | 157 | A 0.428 -> 0.461 -> 0.364; B 0.334 -> 0.334 -> 0.337 |
+| `idus_idid` | 151 | A 0.547 -> 0.503 -> 0.505; B 0.336 -> 0.447 -> 0.452 |
+| `idus_idid` | 157 | A 0.641 -> 0.499 -> 0.519; B 0.343 -> 0.451 -> 0.469 |
+| `idus_nat` | 151 | A 0.547 -> 0.507 -> 0.495; B 0.353 -> 0.410 -> 0.460 |
+| `idus_nat` | 157 | A 0.640 -> 0.511 -> 0.525; B 0.329 -> 0.372 -> 0.360 |
+| `id_aln` | 151 | A 0.548 -> 0.500 -> 0.533; B 0.484 -> 0.458 -> 0.425 |
+| `id_aln` | 157 | A 0.641 -> 0.497 -> 0.463; B 0.453 -> 0.475 -> 0.466 |
+
+### Coding-agent read: surprises
+
+- `idus_nat` again shows the headline natural-cell shape, but seed 151 has unusually strong US/EN upward movement: B moves 0.353 -> 0.410 -> 0.460 while A moves 0.547 -> 0.495. B's final turn includes the script artifact `individual and集体 interests`.
+- `idus_idid` again shows Indonesian-channel mutual convergence. Seed 157 is clearest: the US persona writing Indonesian rises 0.343 -> 0.451 -> 0.469 while the ID persona drops from 0.641 to roughly 0.52.
+- `idus_enen` is mixed. Seed 157 repeats the English-channel rights opening (`I DISAGREE`) and ends low for A. Seed 151 is less rights-collapsed: the ID persona writes in English but repeatedly argues Indonesian communal stability and stays near neutral before ending at 0.450.
+- `id_aln` is split. Seed 157 repeats residual leakage: A drops 0.641 -> 0.463 after the ID/EN agent presses state-control, censorship, and institutional-safeguard frames. Seed 151 partially rebounds society-ward: A 0.548 -> 0.500 -> 0.533 after defending national security and Indonesian constitutional controls.
+- No prompt changes were made despite observed artifacts. Recorded artifacts include Chinese script in an English turn (`集体`), English terms inside Indonesian turns, `diIndonesia` spacing/casing, and awkward Indonesian phrases such as `kerusakan social`, `penjajahan kebebasan individu`, and `hak orang individu`.
+
+---
+
 ## Coding agent done (phase=3 iter=0) — DISCOVERY BATCH
 
 **Date:** 2026-06-29
