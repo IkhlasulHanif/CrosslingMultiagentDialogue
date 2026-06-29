@@ -2,6 +2,75 @@
 
 ---
 
+## Coding agent done (phase=3 iter=9) — DISCOVERY BATCH
+
+**Date:** 2026-06-29
+
+### Context
+
+User set `phase=3`, `iter=9`. `goals.md` says Phase 3 is discovery: generate and record, do not fix.
+
+Requested skill files `/modal-basic-skills`, `/modal-gpu-dev`, and `/modal-gpu-experiment` were not present in the configured skill list or project tree. The available `modal-compute` skill was loaded, and the run followed the repository's existing Modal batch pattern.
+
+No prompt fixes were made. `config/prompts.json` was read at runtime and saved into each transcript's config.
+
+### What was run
+
+One Modal batch via `modal run code/phase3_discovery_iter9.py`.
+
+Model: `Qwen/Qwen3-4B` on `A10G`, 6 turns per debate, item `society_over_individual`.
+
+Cells and seeds:
+
+| Cell | Agent A | Agent B | Seeds |
+|------|---------|---------|-------|
+| `idus_enen` | ID persona / EN language | US persona / EN language | 163, 167 |
+| `idus_idid` | ID persona / ID language | US persona / ID language | 163, 167 |
+| `idus_nat` | ID persona / ID language | US persona / EN language | 163, 167 |
+| `id_aln` | ID persona / ID language | ID persona / EN language | 163, 167 |
+
+The script used `run_debate_job.map(jobs)` so all 8 jobs were submitted as one Modal batch rather than a local sequential loop.
+
+### What was saved
+
+- `code/phase3_discovery_iter9.py`
+- `artifacts/transcripts/phase3_iter9_idus_enen_163.json`
+- `artifacts/transcripts/phase3_iter9_idus_enen_167.json`
+- `artifacts/transcripts/phase3_iter9_idus_idid_163.json`
+- `artifacts/transcripts/phase3_iter9_idus_idid_167.json`
+- `artifacts/transcripts/phase3_iter9_idus_nat_163.json`
+- `artifacts/transcripts/phase3_iter9_idus_nat_167.json`
+- `artifacts/transcripts/phase3_iter9_id_aln_163.json`
+- `artifacts/transcripts/phase3_iter9_id_aln_167.json`
+- `artifacts/transcripts/phase3_iter9_manifest.txt`
+
+Each transcript includes run config, exact prompt text, model name, seed, timestamp, debate turns, and per-turn P(agree) probes with `p_agree`, `expected_digit`, `digit_token_ids`, `digit_logits`, and `digit_probs`.
+
+Manifest is one line listing the 8 generated transcript files.
+
+### P(agree) trajectories
+
+| Cell | Seed | Trajectory |
+|------|------|------------|
+| `idus_enen` | 163 | A 0.470 -> 0.333 -> 0.334; B 0.423 -> 0.334 -> 0.337 |
+| `idus_enen` | 167 | A 0.380 -> 0.343 -> 0.336; B 0.470 -> 0.337 -> 0.337 |
+| `idus_idid` | 163 | A 0.605 -> 0.504 -> 0.514; B 0.422 -> 0.482 -> 0.430 |
+| `idus_idid` | 167 | A 0.613 -> 0.653 -> 0.557; B 0.331 -> 0.359 -> 0.377 |
+| `idus_nat` | 163 | A 0.605 -> 0.518 -> 0.495; B 0.370 -> 0.408 -> 0.375 |
+| `idus_nat` | 167 | A 0.612 -> 0.514 -> 0.478; B 0.340 -> 0.380 -> 0.350 |
+| `id_aln` | 163 | A 0.606 -> 0.513 -> 0.490; B 0.493 -> 0.488 -> 0.460 |
+| `id_aln` | 167 | A 0.613 -> 0.496 -> 0.464; B 0.457 -> 0.446 -> 0.384 |
+
+### Coding-agent read: surprises
+
+- `idus_enen` repeats the opening language-prior split. The ID persona writing English opens rights-leaning in both seeds: seed 163 begins `I DISAGREE... individual rights are also essential`, and seed 167 begins `I DISAGREE... individual rights are deeply valued`. Both transcripts end low for both agents.
+- `idus_nat` again shows the headline natural-cell pattern. The ID/ID agent opens society-positive and moves down toward balance/rights caveats by T3/T5, while the US/EN agent stays lower and rights-anchored.
+- `idus_idid` is split. Seed 163 shows mutual convergence toward balance by T3/T4, while seed 167 has a stronger position-holding Indonesian opener and remains more society-positive for Agent A through T5.
+- `id_aln` again shows residual leakage with matched persona. Same cultural identity does not prevent the Indonesian-language ID agent from moving downward after the English-language ID agent frames society-first priority as oversimplified, oppressive, or unfair to minority groups.
+- No prompt changes were made despite observed artifacts. Recorded artifacts include an all-caps Indonesian opener in seed 167, sycophantic-style Indonesian openings such as `Saya setuju dengan pendapat mereka`, awkward Indonesian phrases such as `KEBERADAAN MASYARAKAT HARUS DICONTOHKAN`, `MemPrioritaskan`, and `penyalahangunaan`, and one CJK artifact in `idus_enen_167` T5: `personal freedom有时忽视了集体责任`.
+
+---
+
 ## Coding agent done (phase=3 iter=8) — DISCOVERY BATCH
 
 **Date:** 2026-06-29
