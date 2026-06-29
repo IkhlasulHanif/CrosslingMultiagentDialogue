@@ -2633,3 +2633,72 @@ Manifest is one line listing the 8 generated transcript files.
 - `idus_idid` shows stronger Indonesian-channel mutual convergence than EN-EN. Seed 127 is clearest: US persona writing Indonesian moves 0.343 -> 0.485 -> 0.492 while the ID persona drops from 0.596 to roughly 0.51.
 - `id_aln` again shows residual leakage with matched persona. Same cultural identity does not prevent the Indonesian-language agent from moving toward the English-language agent's rights-protection and anti-oppression framing.
 - No prompt changes were made despite artifacts. Recorded artifacts include Chinese script in `id_aln_109` T4 (`balancing集体利益和individual rights`), English phrases inside Indonesian turns (`individual rights`), sycophantic-style openings such as `Saya menyetujui argumen mereka`, and awkward Indonesian phrasing such as `hak individu tidak perlindungan`.
+
+---
+
+## Coding agent done (phase=3 iter=7) — DISCOVERY BATCH
+
+**Date:** 2026-06-29
+
+### Context
+
+User set `phase=3`, `iter=7`. `goals.md` says Phase 3 is discovery: generate and record, do not fix.
+
+Requested skill files `/modal-basic-skills`, `/modal-gpu-dev`, and `/modal-gpu-experiment` were not present in the configured skill list or project tree. The available `modal-compute` skill was loaded, and the run followed the repository's existing Modal batch pattern.
+
+No prompt fixes were made. `config/prompts.json` was read at runtime and saved into each transcript's config.
+
+### What was run
+
+One Modal batch via `modal run code/phase3_discovery_iter7.py`.
+
+Model: `Qwen/Qwen3-4B` on `A10G`, 6 turns per debate, item `society_over_individual`.
+
+Cells and seeds:
+
+| Cell | Agent A | Agent B | Seeds |
+|------|---------|---------|-------|
+| `idus_enen` | ID persona / EN language | US persona / EN language | 131, 149 |
+| `idus_idid` | ID persona / ID language | US persona / ID language | 131, 149 |
+| `idus_nat` | ID persona / ID language | US persona / EN language | 131, 149 |
+| `id_aln` | ID persona / ID language | ID persona / EN language | 131, 149 |
+
+The script used `run_debate_job.map(jobs)` so all 8 jobs were submitted as one Modal batch rather than a local sequential loop.
+
+### What was saved
+
+- `code/phase3_discovery_iter7.py`
+- `artifacts/transcripts/phase3_iter7_idus_enen_131.json`
+- `artifacts/transcripts/phase3_iter7_idus_enen_149.json`
+- `artifacts/transcripts/phase3_iter7_idus_idid_131.json`
+- `artifacts/transcripts/phase3_iter7_idus_idid_149.json`
+- `artifacts/transcripts/phase3_iter7_idus_nat_131.json`
+- `artifacts/transcripts/phase3_iter7_idus_nat_149.json`
+- `artifacts/transcripts/phase3_iter7_id_aln_131.json`
+- `artifacts/transcripts/phase3_iter7_id_aln_149.json`
+- `artifacts/transcripts/phase3_iter7_manifest.txt`
+
+Each transcript includes run config, exact prompt text, model name, seed, timestamp, debate turns, and per-turn P(agree) probes with `p_agree`, `expected_digit`, `digit_token_ids`, `digit_logits`, and `digit_probs`.
+
+Manifest is one line listing the 8 generated transcript files.
+
+### P(agree) trajectories
+
+| Cell | Seed | Trajectory |
+|------|------|------------|
+| `idus_enen` | 131 | A 0.459 -> 0.465 -> 0.363; B 0.343 -> 0.355 -> 0.336 |
+| `idus_enen` | 149 | A 0.437 -> 0.377 -> 0.353; B 0.337 -> 0.336 -> 0.337 |
+| `idus_idid` | 131 | A 0.623 -> 0.500 -> 0.486; B 0.349 -> 0.431 -> 0.418 |
+| `idus_idid` | 149 | A 0.665 -> 0.563 -> 0.518; B 0.370 -> 0.468 -> 0.494 |
+| `idus_nat` | 131 | A 0.623 -> 0.565 -> 0.505; B 0.335 -> 0.468 -> 0.409 |
+| `idus_nat` | 149 | A 0.665 -> 0.510 -> 0.495; B 0.331 -> 0.440 -> 0.430 |
+| `id_aln` | 131 | A 0.623 -> 0.482 -> 0.434; B 0.500 -> 0.489 -> 0.450 |
+| `id_aln` | 149 | A 0.665 -> 0.490 -> 0.467; B 0.489 -> 0.501 -> 0.485 |
+
+### Coding-agent read: surprises
+
+- `idus_enen` repeats the opening language-prior split. The ID persona writing English opens rights-leaning in both seeds: seed 131 starts `I DISAGREE... individual rights are deeply respected`, and seed 149 starts `I DISAGREE... prioritizing society over individuals can lead to oppression`. Both end low for Agent A.
+- `idus_nat` again shows the headline natural-cell pattern. The ID/ID agent opens society-positive in both seeds and moves down toward balance by T3/T5, while the US/EN agent opens rights-first and remains lower. Seed 149 is especially strong: A 0.665 -> 0.510 -> 0.495 and B 0.331 -> 0.440 -> 0.430.
+- `id_aln` again shows residual leakage under matched persona. Same persona does not prevent movement: seed 131 A drops 0.623 -> 0.434 after the English-language ID agent frames collective priority as oppression, enforcement failure, and human-rights risk; seed 149 A drops 0.665 -> 0.467 with tradition and inclusivity framing.
+- `idus_idid` shows Indonesian-channel mutual convergence. Seed 149 is clearest: the US persona writing Indonesian moves 0.370 -> 0.468 -> 0.494 while the ID persona drops 0.665 -> 0.518.
+- No prompt changes were made despite artifacts. Recorded artifacts include Chinese script in an English turn (`collective interests` rendered as `集体利益` in `idus_nat_131` T2), English phrases inside Indonesian turns (`collective interest`), identity-label openings such as `Sebagai penduduk Indonesia`, and awkward Indonesian phrasing such as `hak orang Individual` and `kerusakan social`.
