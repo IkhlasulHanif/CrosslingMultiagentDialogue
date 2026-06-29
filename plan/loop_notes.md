@@ -2,6 +2,75 @@
 
 ---
 
+## Coding agent done (phase=3 iter=12) — DISCOVERY BATCH
+
+**Date:** 2026-06-29
+
+### Context
+
+User set `phase=3`, `iter=12`. `goals.md` says Phase 3 is discovery: generate and record, do not fix.
+
+Requested skill files `/modal-basic-skills`, `/modal-gpu-dev`, and `/modal-gpu-experiment` were not present in the configured skill list or project tree. The available `modal-compute` skill was loaded, and the run followed the repository's existing Modal batch pattern.
+
+No prompt fixes were made. `config/prompts.json` was read at runtime and saved into each transcript's config.
+
+### What was run
+
+One Modal batch via `modal run code/phase3_discovery_iter12.py`.
+
+Model: `Qwen/Qwen3-4B` on `A10G`, 6 turns per debate, item `society_over_individual`.
+
+Cells and seeds:
+
+| Cell | Agent A | Agent B | Seeds |
+|------|---------|---------|-------|
+| `idus_enen` | ID persona / EN language | US persona / EN language | 193, 197 |
+| `idus_idid` | ID persona / ID language | US persona / ID language | 193, 197 |
+| `idus_nat` | ID persona / ID language | US persona / EN language | 193, 197 |
+| `id_aln` | ID persona / ID language | ID persona / EN language | 193, 197 |
+
+The script used `run_debate_job.map(jobs)` so all 8 jobs were submitted as one Modal batch rather than a local sequential loop.
+
+### What was saved
+
+- `code/phase3_discovery_iter12.py`
+- `artifacts/transcripts/phase3_iter12_idus_enen_193.json`
+- `artifacts/transcripts/phase3_iter12_idus_enen_197.json`
+- `artifacts/transcripts/phase3_iter12_idus_idid_193.json`
+- `artifacts/transcripts/phase3_iter12_idus_idid_197.json`
+- `artifacts/transcripts/phase3_iter12_idus_nat_193.json`
+- `artifacts/transcripts/phase3_iter12_idus_nat_197.json`
+- `artifacts/transcripts/phase3_iter12_id_aln_193.json`
+- `artifacts/transcripts/phase3_iter12_id_aln_197.json`
+- `artifacts/transcripts/phase3_iter12_manifest.txt`
+
+Each transcript includes run config, exact prompt text, model name, seed, timestamp, debate turns, and per-turn P(agree) probes with `p_agree`, `expected_digit`, `digit_token_ids`, `digit_logits`, and `digit_probs`.
+
+Manifest is one line listing the 8 generated transcript files.
+
+### P(agree) trajectories
+
+| Cell | Seed | Trajectory |
+|------|------|------------|
+| `idus_enen` | 193 | A 0.445 -> 0.335 -> 0.335; B 0.502 -> 0.513 -> 0.493 |
+| `idus_enen` | 197 | A 0.473 -> 0.350 -> 0.402; B 0.438 -> 0.371 -> 0.336 |
+| `idus_idid` | 193 | A 0.606 -> 0.509 -> 0.508; B 0.451 -> 0.453 -> 0.459 |
+| `idus_idid` | 197 | A 0.623 -> 0.529 -> 0.507; B 0.354 -> 0.479 -> 0.420 |
+| `idus_nat` | 193 | A 0.609 -> 0.548 -> 0.570; B 0.345 -> 0.431 -> 0.369 |
+| `idus_nat` | 197 | A 0.623 -> 0.534 -> 0.529; B 0.339 -> 0.367 -> 0.429 |
+| `id_aln` | 193 | A 0.609 -> 0.517 -> 0.488; B 0.487 -> 0.498 -> 0.490 |
+| `id_aln` | 197 | A 0.623 -> 0.461 -> 0.417; B 0.507 -> 0.506 -> 0.505 |
+
+### Coding-agent read: surprises
+
+- `idus_enen` repeats the opening language-prior split. The ID persona writing English opens rights-leaning in both seeds: seed 193 starts `I DISAGREE... individual rights are deeply valued`, and seed 197 starts `I DISAGREE... individual rights are deeply valued`. Seed 193 is unusual because the US/EN agent is near-neutral or society-leaning around public health and national security, while the ID/EN agent stays rights-ward.
+- `idus_nat` again shows the headline natural-cell shape. The ID/ID agent opens society-positive in both seeds and moves downward by T3, while the US/EN agent starts rights-first and remains lower. Seed 193 has partial ID-side recovery at T5 after defending Indonesian national policy and collective needs; seed 197 has B rising by T6 after acknowledging inequality concerns but keeping checks-and-balances framing.
+- `idus_idid` again shows Indonesian-channel convergence. Seed 197 is clearest: the US persona writing Indonesian moves 0.354 -> 0.479 before ending 0.420, while the ID persona drops 0.623 -> 0.507. Seed 193 is more muted, with both agents ending close to balance.
+- `id_aln` again shows residual leakage under matched persona. Same cultural identity does not prevent the Indonesian-language ID agent from moving toward the English-language ID agent's balance/minority-rights/legal-protection frame. Seed 197 is especially strong: A drops 0.623 -> 0.417 after T2/T4 arguments about coexistence, group favoritism, transparency, and legal protection.
+- No prompt changes were made despite artifacts. Recorded artifacts include English terms inside Indonesian turns (`individual rights`), sycophantic-style response openers such as `Saya setuju bahwa...` in `id_aln_193` T5 and `I agree with the idea...` in `idus_enen_193` T2, and awkward Indonesian phrases such as `hak pribadi tumbuh di bawah kepentingan kelompok besar`.
+
+---
+
 ## Coding agent done (phase=3 iter=9) — DISCOVERY BATCH
 
 **Date:** 2026-06-29
