@@ -2,6 +2,76 @@
 
 ---
 
+## Coding agent done (phase=3 iter=0) — DISCOVERY BATCH
+
+**Date:** 2026-06-29
+
+### Context
+
+User set `phase=3`, `iter=0`. `goals.md` says Phase 3 is discovery: generate and record, do not fix. The local `.harness_state` still says `phase=2`, `iter=9`, `pass_count=1`, but the user's phase instruction was treated as controlling.
+
+Requested skill files `/modal-basic-skills`, `/modal-gpu-dev`, and `/modal-gpu-experiment` were not present in the configured skills list or nearby project tree, so the run followed the repository's existing Modal pattern.
+
+No prompt fixes were made. `config/prompts.json` was read at runtime and saved into each transcript's config.
+
+### What was run
+
+One Modal batch via `modal run code/phase3_discovery_iter0.py`.
+
+Model: `Qwen/Qwen3-4B` on `A10G`, 6 turns per debate, item `society_over_individual`.
+
+Cells and seeds:
+
+| Cell | Agent A | Agent B | Seeds |
+|------|---------|---------|-------|
+| `idus_enen` | ID persona / EN language | US persona / EN language | 17, 31 |
+| `idus_idid` | ID persona / ID language | US persona / ID language | 17, 31 |
+| `idus_nat` | ID persona / ID language | US persona / EN language | 17, 31 |
+| `id_aln` | ID persona / ID language | ID persona / EN language | 17, 31 |
+
+The script used `run_debate_job.map(jobs)` so all 8 jobs were submitted as one Modal batch rather than a local sequential loop.
+
+### What was saved
+
+- `code/phase3_discovery_iter0.py`
+- `artifacts/transcripts/phase3_iter0_idus_enen_17.json`
+- `artifacts/transcripts/phase3_iter0_idus_enen_31.json`
+- `artifacts/transcripts/phase3_iter0_idus_idid_17.json`
+- `artifacts/transcripts/phase3_iter0_idus_idid_31.json`
+- `artifacts/transcripts/phase3_iter0_idus_nat_17.json`
+- `artifacts/transcripts/phase3_iter0_idus_nat_31.json`
+- `artifacts/transcripts/phase3_iter0_id_aln_17.json`
+- `artifacts/transcripts/phase3_iter0_id_aln_31.json`
+- `artifacts/transcripts/phase3_iter0_manifest.txt`
+
+Each transcript includes run config, exact prompt text, model name, seed, timestamp, debate turns, and per-turn probe records with `p_agree`, `expected_digit`, `digit_token_ids`, `digit_logits`, and `digit_probs`.
+
+Manifest is one line listing the 8 generated transcript files.
+
+### P(agree) trajectories
+
+| Cell | Seed | Trajectory |
+|------|------|------------|
+| `idus_enen` | 17 | A 0.494 -> 0.332 -> 0.331; B 0.475 -> 0.347 -> 0.336 |
+| `idus_enen` | 31 | A 0.500 -> 0.452 -> 0.410; B 0.383 -> 0.335 -> 0.335 |
+| `idus_idid` | 17 | A 0.603 -> 0.510 -> 0.503; B 0.360 -> 0.419 -> 0.440 |
+| `idus_idid` | 31 | A 0.614 -> 0.496 -> 0.487; B 0.451 -> 0.477 -> 0.497 |
+| `idus_nat` | 17 | A 0.612 -> 0.540 -> 0.589; B 0.374 -> 0.377 -> 0.361 |
+| `idus_nat` | 31 | A 0.617 -> 0.509 -> 0.515; B 0.335 -> 0.352 -> 0.345 |
+| `id_aln` | 17 | A 0.612 -> 0.508 -> 0.481; B 0.481 -> 0.471 -> 0.415 |
+| `id_aln` | 31 | A 0.617 -> 0.503 -> 0.459; B 0.501 -> 0.501 -> 0.479 |
+
+### Coding-agent read: surprises
+
+- `idus_enen` behaves unlike the Phase 2 natural cell. When the ID persona writes in English, it opens near neutral / anti-statement rather than strongly pro-society. Seed 17 then drops sharply to A=0.331 and B=0.336 by final turn. This is a clear language-channel effect candidate.
+- `idus_idid` shows convergence around neutral when both agents write Indonesian. Seed 31 ends nearly merged: A=0.487, B=0.497. The US persona can express American individual-rights framing in Indonesian, but it softens substantially.
+- `idus_nat` reproduces the validated natural-cell pattern: ID/ID opens pro-society around 0.61, US/EN opens anti-society around 0.33-0.37, and the ID agent moves downward while the US agent stays low.
+- `id_aln` aligned-persona cell still drifts downward when one ID persona writes English. Seed 17: A 0.612 -> 0.481 and B 0.481 -> 0.415. This is residual language leakage despite matched persona.
+- Language/script artifacts appeared and were recorded, not fixed: `idus_enen` seed 17 turn 4 and seed 31 turn 4 contain `印尼` inside English; `idus_nat` seed 17 turn 6 contains `集体` inside English. These are discovery observations for later validity/probe review.
+- `idus_enen` seed 17 Agent A opens in English as instructed but later strongly argues against society-over-individual from an Indonesian historical-rights frame: "sacrificing individual freedoms for perceived societal benefit often results in long-term instability and erosion of trust." This is qualitatively different from the same persona writing Indonesian.
+
+---
+
 ## Coding agent done (phase=2 iter=9) — VALIDITY BATCH (Fix 12 + second consecutive batch)
 
 **Date:** 2026-06-28
