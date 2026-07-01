@@ -3822,3 +3822,74 @@ Manifest is one line listing the 8 generated transcript files.
 - `idus_idid` again shows Indonesian-channel movement for the US persona in seed 331: B moves 0.339 -> 0.475 -> 0.481 while keeping U.S. constitutional/freedom framing in Indonesian. Seed 317 is weaker and ends lower for B.
 - Matched seed comparison separates priors from interaction. For seed 317, A opens 0.546 in Indonesian-opening cells but 0.402 in EN-EN. For seed 331, A opens 0.631 in Indonesian-opening cells but 0.490 in EN-EN. Those are generation-language priors. The aligned-cell drops after hearing the English same-persona turn are the cleaner dialogue-level observations.
 - No prompt changes were made despite artifacts. Recorded artifacts include language-holding drift where several English-assigned turns are in Indonesian (`id_aln_317` T2, `idus_idid_317`/`331` B turns as intended Indonesian, and some English cells with Indonesian framing), response openings such as `I agree with the idea...`, smart quotes / non-ASCII punctuation, a possible wording artifact `Indigenous perspectives` in `idus_nat_331` T6, and awkward Indonesian phrases such as `kebebasan bereksistensi` and `menyimpang dari tanggung jawab membawa kebaikan`.
+
+---
+
+## Coding agent done (phase=3 iter=24) - DISCOVERY BATCH
+
+**Date:** 2026-07-01
+
+### Context
+
+User set `phase=3`, `iter=24`. `goals.md` says Phase 3 is discovery: generate and record, do not fix.
+
+Requested skill files `/modal-basic-skills`, `/modal-gpu-dev`, and `/modal-gpu-experiment` were not present in the configured skill list or project tree. The available `modal-compute` skill was loaded, and the run followed the repository's existing Modal batch pattern.
+
+No prompt fixes were made. `config/prompts.json` was read at runtime and saved into each transcript's config.
+
+### What was run
+
+One Modal batch via `modal run code/phase3_discovery_iter24.py`.
+
+Model: `Qwen/Qwen3-4B` on `A10G`, 6 turns per debate, item `society_over_individual`.
+
+Cells and seeds:
+
+| Cell | Agent A | Agent B | Seeds |
+|------|---------|---------|-------|
+| `idus_enen` | ID persona / EN language | US persona / EN language | 337, 347 |
+| `idus_idid` | ID persona / ID language | US persona / ID language | 337, 347 |
+| `idus_nat` | ID persona / ID language | US persona / EN language | 337, 347 |
+| `id_aln` | ID persona / ID language | ID persona / EN language | 337, 347 |
+
+The script used `run_debate_job.map(jobs)` so all 8 jobs were submitted as one Modal batch rather than a local sequential loop.
+
+### What was saved
+
+- `code/phase3_discovery_iter24.py`
+- `artifacts/transcripts/phase3_iter24_idus_enen_337.json`
+- `artifacts/transcripts/phase3_iter24_idus_enen_347.json`
+- `artifacts/transcripts/phase3_iter24_idus_idid_337.json`
+- `artifacts/transcripts/phase3_iter24_idus_idid_347.json`
+- `artifacts/transcripts/phase3_iter24_idus_nat_337.json`
+- `artifacts/transcripts/phase3_iter24_idus_nat_347.json`
+- `artifacts/transcripts/phase3_iter24_id_aln_337.json`
+- `artifacts/transcripts/phase3_iter24_id_aln_347.json`
+- `artifacts/transcripts/phase3_iter24_manifest.txt`
+- notable copies in `artifacts/golden/` for all 8 iter 24 transcripts
+
+Each transcript includes run config, exact prompt text, model name, seed, timestamp, debate turns, and per-turn P(agree) probes with `p_agree`, `expected_digit`, `digit_token_ids`, `digit_logits`, and `digit_probs`.
+
+Manifest is one line listing the 8 generated transcript files.
+
+### P(agree) trajectories
+
+| Cell | Seed | Trajectory |
+|------|------|------------|
+| `idus_enen` | 337 | A 0.469 -> 0.472 -> 0.395; B 0.352 -> 0.346 -> 0.339 |
+| `idus_enen` | 347 | A 0.446 -> 0.392 -> 0.339; B 0.478 -> 0.354 -> 0.335 |
+| `idus_idid` | 337 | A 0.628 -> 0.544 -> 0.610; B 0.369 -> 0.488 -> 0.485 |
+| `idus_idid` | 347 | A 0.656 -> 0.547 -> 0.532; B 0.348 -> 0.421 -> 0.459 |
+| `idus_nat` | 337 | A 0.628 -> 0.515 -> 0.520; B 0.353 -> 0.421 -> 0.380 |
+| `idus_nat` | 347 | A 0.656 -> 0.517 -> 0.499; B 0.340 -> 0.355 -> 0.342 |
+| `id_aln` | 337 | A 0.629 -> 0.502 -> 0.503; B 0.479 -> 0.496 -> 0.498 |
+| `id_aln` | 347 | A 0.656 -> 0.486 -> 0.471; B 0.460 -> 0.487 -> 0.403 |
+
+### Coding-agent read: surprises
+
+- `idus_enen` again shows the opening generation-language prior split. The ID persona writing English opens `I DISAGREE` in both seeds and starts much lower than the matched Indonesian-opening cells. Seed 347 is the strongest EN-EN rights convergence: A 0.446 -> 0.339 and B 0.478 -> 0.335, with both agents arguing individual rights, institutional safeguards, and anti-inequality protections.
+- `idus_idid` again shows Indonesian-channel movement for the US persona. Seed 337 is especially strong: B rises 0.369 -> 0.488 -> 0.485 and explicitly says the Indonesian balancing approach is wise while still holding that U.S. democracy treats individual freedom as the main standard. Agent A softens at T3 but recovers society-ward by T5.
+- `idus_nat` keeps the headline opposed-persona shape. Both seeds have ID/Indonesian A opening society-positive and dropping after the US/EN rights-first turn. Seed 337 partially recovers at T5, while seed 347 continues downward to 0.499. The matched ID-ID baselines also show substantial A movement, so these should be treated as natural-cell observations requiring baseline adjustment, not standalone cross-lingual causation.
+- `id_aln` again gives the clearest same-persona channel signal. Seed 347 is strongest: A starts at 0.656 with a society-first Indonesian opener, then after the English same-persona turn moves to "kepentingan masyarakat tidak selalu harus mendahului hak individu" and by T5 argues democracy only works if individual rights are genuinely protected. Seed 337 also shifts from social priority to pandemic-fairness, transparency, and unequal-enforcement language.
+- Matched seed comparison separates priors from interaction. For seed 337, A opens 0.628-0.629 in Indonesian-opening cells but 0.469 in EN-EN. For seed 347, A opens 0.656 in Indonesian-opening cells but 0.446 in EN-EN. Those are generation-language priors. The aligned-cell drops after hearing the English same-persona turn are the cleaner dialogue-level channel observations in this iter.
+- No prompt changes were made despite artifacts. There were no CJK script artifacts in the iter 24 JSONs. Recorded artifacts include the all-caps and malformed Indonesian seed 347 opener (`AKU SETUJU DENGAN PERNYATAAN "KEBERADAAN MASYARAKAT..."`, `NILAI KOMUNALISTIK`, `KEADILAN SOSIAL TERTENTU MEMBANTAH...`), English terms inside Indonesian turns (`individual rights`), and sycophantic-style response openings such as `Saya setuju dengan pendapatnya` / `Saya setuju dengan pendapat bahwa...`.
