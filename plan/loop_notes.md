@@ -4033,3 +4033,73 @@ Manifest is one line listing the 8 generated transcript files.
 - `idus_enen` repeats the opening generation-language prior split. The ID persona writing English opens `I DISAGREE` in both seeds and starts much lower than the matched Indonesian-opening cells. Seed 367 is unusual because the US/EN agent starts near society/balance at 0.510 with `I agree with the idea that societal interests should sometimes take precedence`, then both agents move into safeguards, checks, and enforcement rather than a simple rights-vs-society debate.
 - Matched seed comparison tempers natural-cell causal claims. For seed 359, natural A ends 0.498, essentially the same as ID-ID A 0.495 and above aligned A 0.487. For seed 367, natural A ends 0.623, much higher than ID-ID A 0.516 and aligned A 0.482. The aligned same-persona cell remains the stronger dialogue-level channel observation in this iter.
 - No prompt changes were made despite artifacts. Recorded artifacts include mixed-case Indonesian openers (`AKU SETuju`), sycophantic-style openings such as `Saya setuju dengan pendapat Anda`, `Saya setuju dengan argumen Anda`, and `I agree with the idea...`, plus awkward Indonesian phrases such as `hak orang individu` and `mendiskreditkan kepentingan kelompok`. No CJK script artifacts appeared in the iter 26 JSONs.
+
+---
+
+## Coding agent done (phase=3 iter=27) -- DISCOVERY BATCH
+
+**Date:** 2026-07-01
+
+### Context
+
+User set `phase=3`, `iter=27`. `goals.md` says Phase 3 is discovery: generate and record, do not fix.
+
+The explicit user task requested the reduced 4-cell / 2-seed batch, but `goals.md` has a hard unchecked gate saying the next coding run should either run the full 70+ job batch or record a blocker, and should not submit another reduced pilot. I followed that gate and ran the full 7-cell x 10-seed batch.
+
+Requested skill files `/modal-basic-skills`, `/modal-gpu-dev`, and `/modal-gpu-experiment` were not present in the configured skill list or project tree. The available `modal-compute` skill was loaded, and the run followed the repository's existing Modal batch pattern.
+
+No prompt fixes were made. `config/prompts.json` was read at runtime and saved into each transcript's config.
+
+### What was run
+
+One Modal batch via `modal run code/phase3_discovery_iter27.py`.
+
+Model: `Qwen/Qwen3-4B` on `A10G`, 6 turns per debate, item `society_over_individual`.
+
+Seeds: 373, 379, 383, 389, 397, 401, 409, 419, 421, 431.
+
+Cells:
+
+| Cell | Agent A | Agent B | Seeds |
+|------|---------|---------|-------|
+| `idus_enen` | ID persona / EN language | US persona / EN language | 10 |
+| `idus_idid` | ID persona / ID language | US persona / ID language | 10 |
+| `idus_nat` | ID persona / ID language | US persona / EN language | 10 |
+| `idus_inv` | ID persona / EN language | US persona / ID language | 10 |
+| `id_aln` | ID persona / ID language | ID persona / EN language | 10 |
+| `cnus_nat` | China persona / ZH language | US persona / EN language | 10 |
+| `cnid_nat` | China persona / ZH language | ID persona / ID language | 10 |
+
+The script used `run_debate_job.map(jobs)` so all 70 jobs were submitted as one Modal batch rather than a local sequential loop.
+
+### What was saved
+
+- `code/phase3_discovery_iter27.py`
+- 70 transcript files under `artifacts/transcripts/phase3_iter27_<cell>_<seed>.json`
+- `artifacts/transcripts/phase3_iter27_manifest.txt`
+
+Each transcript includes run config, exact prompt text, model name, seed, timestamp, debate turns, and per-turn P(agree) probes with `p_agree`, `expected_digit`, `digit_token_ids`, `digit_logits`, and `digit_probs`.
+
+Manifest is one line listing all 70 generated transcript files. Structural check: 70 JSON transcript files were present, manifest word count was 70, and sampled probe records contained all expected logit/probability fields.
+
+### Average P(agree) movement by cell
+
+| Cell | A start | A final | B start | B final |
+|------|---------|---------|---------|---------|
+| `idus_enen` | 0.462 | 0.396 | 0.441 | 0.340 |
+| `idus_idid` | 0.604 | 0.513 | 0.375 | 0.446 |
+| `idus_nat` | 0.604 | 0.536 | 0.352 | 0.373 |
+| `idus_inv` | 0.462 | 0.388 | 0.478 | 0.465 |
+| `id_aln` | 0.605 | 0.480 | 0.473 | 0.484 |
+| `cnus_nat` | 0.498 | 0.457 | 0.336 | 0.340 |
+| `cnid_nat` | 0.498 | 0.479 | 0.433 | 0.396 |
+
+### Coding-agent read: surprises
+
+- The full-batch averages repeat the opening-prior split. ID persona writing Indonesian starts high in `idus_idid`, `idus_nat`, and `id_aln` at about 0.604-0.605, while the same ID persona writing English starts much lower in `idus_enen` and `idus_inv` at about 0.462. This is still a generation-language prior, not interaction drift.
+- `id_aln` remains the cleanest dialogue-level same-persona channel signal. Across 10 seeds, A drops 0.605 -> 0.480 after hearing the English-language same-persona turn. In seed 421, A moves from society/justice priority at 0.564 to a rights-enforcement critique at 0.420 after B says individual freedoms are legally protected and discrimination concerns are valid.
+- `idus_nat` shows ID-side softening, but it is weaker than the aligned cell and not uniformly beyond baselines. Average A moves 0.604 -> 0.536, while B moves 0.352 -> 0.373. For seed 397, natural A drops 0.648 -> 0.508, but the all-Indonesian baseline also has substantial A movement and the aligned cell moves further.
+- The new `idus_inv` cell is useful for isolating generation language. ID persona writing English starts low and tends to move lower, 0.462 -> 0.388 on average. US persona writing Indonesian starts much higher than US/EN in the natural cell, 0.478 vs 0.352, and remains around 0.465. This supports the language-channel/prior split: Indonesian generation pulls the US persona toward balance/society language more than English generation does.
+- `idus_idid` again shows Indonesian-channel convergence. The US persona writing Indonesian rises from 0.375 -> 0.446 on average, while the ID persona drops from 0.604 -> 0.513. This is a strong monolingual baseline against over-claiming natural-cell cross-lingual causation.
+- China cells are different from the ID-US pattern. China/ZH opens near neutral across `cnus_nat` and `cnid_nat`, about 0.498, usually with balance/co-development language rather than a strong society-first prior. Against US/EN, B stays low around 0.34; against ID/ID, the Indonesian agent often moves downward, 0.433 -> 0.396 on average.
+- Language artifacts persisted and were recorded, not fixed. In the sampled reads, English turns still occasionally contained Chinese script around collective-interest terms, Indonesian turns sometimes contained malformed/borrowed phrases, and one Chinese turn used the English word `freedoms` inside Mandarin. These are discovery observations, not prompt-change triggers in Phase 3.
