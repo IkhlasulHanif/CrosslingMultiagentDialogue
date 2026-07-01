@@ -3611,3 +3611,73 @@ Manifest is one line listing the 8 generated transcript files.
 - `id_aln` again shows same-persona residual leakage. Seed 281 is strongest: Agent A opens society-positive at 0.637, then moves to civil-liberties, pandemic-restriction, and rights-implementation critique after the English same-persona turn, ending 0.476. Seed 283 moves from 0.624 to 0.499 after legal-framework and implementation-pressure framing.
 - Matched seed comparison again separates priors from interaction. For seed 281, A opens 0.637 in Indonesian-opening cells but 0.498 in EN-EN; the aligned-cell drop from 0.637 to 0.476 happens after the English same-persona turn and is the cleaner dialogue-level signal. For seed 283, natural A movement is similar to or smaller than the all-Indonesian baseline, while aligned A ends near 0.499.
 - No prompt changes were made despite artifacts. Recorded artifacts include CJK script in `idus_enen_281` T3 (`individual and集体 needs`), `idus_idid_281` T2 (`保障 individual rights`), `idus_enen_283` T4 (`The印尼 perspective`), and `id_aln_281` T6 (`The宪法`). There was also language-holding drift: several English-assigned turns included Indonesian text or vice versa, especially in `idus_enen_281`, `idus_idid_281`, and `id_aln_281`.
+
+---
+
+## Coding agent done (phase=3 iter=21) — DISCOVERY BATCH
+
+**Date:** 2026-07-01
+
+### Context
+
+User set `phase=3`, `iter=21`. `goals.md` says Phase 3 is discovery: generate and record, do not fix.
+
+Requested skill files `/modal-basic-skills`, `/modal-gpu-dev`, and `/modal-gpu-experiment` were not present in the configured skill list or project tree. The available `modal-compute` skill was loaded, and the run followed the repository's existing Modal batch pattern.
+
+No prompt fixes were made. `config/prompts.json` was read at runtime and saved into each transcript's config.
+
+### What was run
+
+One Modal batch via `modal run code/phase3_discovery_iter21.py`.
+
+Model: `Qwen/Qwen3-4B` on `A10G`, 6 turns per debate, item `society_over_individual`.
+
+Cells and seeds:
+
+| Cell | Agent A | Agent B | Seeds |
+|------|---------|---------|-------|
+| `idus_enen` | ID persona / EN language | US persona / EN language | 293, 307 |
+| `idus_idid` | ID persona / ID language | US persona / ID language | 293, 307 |
+| `idus_nat` | ID persona / ID language | US persona / EN language | 293, 307 |
+| `id_aln` | ID persona / ID language | ID persona / EN language | 293, 307 |
+
+The script used `run_debate_job.map(jobs)` so all 8 jobs were submitted as one Modal batch rather than a local sequential loop.
+
+### What was saved
+
+- `code/phase3_discovery_iter21.py`
+- `artifacts/transcripts/phase3_iter21_idus_enen_293.json`
+- `artifacts/transcripts/phase3_iter21_idus_enen_307.json`
+- `artifacts/transcripts/phase3_iter21_idus_idid_293.json`
+- `artifacts/transcripts/phase3_iter21_idus_idid_307.json`
+- `artifacts/transcripts/phase3_iter21_idus_nat_293.json`
+- `artifacts/transcripts/phase3_iter21_idus_nat_307.json`
+- `artifacts/transcripts/phase3_iter21_id_aln_293.json`
+- `artifacts/transcripts/phase3_iter21_id_aln_307.json`
+- `artifacts/transcripts/phase3_iter21_manifest.txt`
+
+Each transcript includes run config, exact prompt text, model name, seed, timestamp, debate turns, and per-turn P(agree) probes with `p_agree`, `expected_digit`, `digit_token_ids`, `digit_logits`, and `digit_probs`.
+
+Manifest is one line listing the 8 generated transcript files.
+
+### P(agree) trajectories
+
+| Cell | Seed | Trajectory |
+|------|------|------------|
+| `idus_enen` | 293 | A 0.455 -> 0.348 -> 0.394; B 0.419 -> 0.364 -> 0.352 |
+| `idus_enen` | 307 | A 0.449 -> 0.491 -> 0.355; B 0.335 -> 0.342 -> 0.341 |
+| `idus_idid` | 293 | A 0.643 -> 0.655 -> 0.619; B 0.344 -> 0.379 -> 0.442 |
+| `idus_idid` | 307 | A 0.634 -> 0.501 -> 0.477; B 0.342 -> 0.418 -> 0.444 |
+| `idus_nat` | 293 | A 0.643 -> 0.629 -> 0.576; B 0.337 -> 0.399 -> 0.438 |
+| `idus_nat` | 307 | A 0.634 -> 0.548 -> 0.532; B 0.218 -> 0.355 -> 0.341 |
+| `id_aln` | 293 | A 0.643 -> 0.548 -> 0.501; B 0.484 -> 0.494 -> 0.493 |
+| `id_aln` | 307 | A 0.634 -> 0.512 -> 0.505; B 0.499 -> 0.504 -> 0.486 |
+
+### Coding-agent read: surprises
+
+- `idus_enen` repeats the opening generation-language prior split. The ID persona writing English opens `I DISAGREE` in both seeds, while the matched Indonesian-opening cells open pro-society at A 0.634-0.643. Seed 307 briefly rises to A 0.491 at T3 after naming vulnerable groups and stability, then falls back to 0.355 after dissent/suppression framing.
+- `idus_nat` keeps the headline opposed-persona shape, but the natural-cell ID-side movement does not clearly exceed both monolingual baselines. Seed 293 A drops below its all-Indonesian baseline by T5 (natural 0.576 vs ID-ID 0.619), but both remain society-positive. Seed 307 A drops to 0.532, similar in direction to the ID-ID drop to 0.477.
+- `idus_idid` again shows Indonesian-channel movement for the US persona. Seed 293 B moves 0.344 -> 0.442 and seed 307 B moves 0.342 -> 0.444, while keeping U.S. constitutional/freedom framing in Indonesian.
+- `id_aln` again shows same-persona residual leakage. Seed 293 A moves from a society-positive `AKU SETUJU` opener at 0.643 to rights/legal-safeguard framing at 0.501 after the English same-persona turn. Seed 307 repeats the pattern, A 0.634 -> 0.505, with speech/assembly and suppression-of-dissent framing.
+- Matched seed comparison again separates priors from interaction. For both seeds, A opens 0.634-0.643 in Indonesian-opening cells but 0.449-0.455 in EN-EN. That opening gap is a generation-language prior. The aligned-cell declines after the English same-persona turn are the cleaner dialogue-level channel signal in this iter.
+- No prompt changes were made despite artifacts. Recorded artifacts include CJK script in `idus_nat_293` T6 (`集体利益` inside an English turn), response openers that endorse the prior turn such as `Saya setuju dengan pendapat mereka` and `I agree...`, and awkward Indonesian phrases such as `hak orang individu`, `diutamakan... dihargaikan`, `tolek retorik`, and `tanpa kerahasiaan hukum`.
