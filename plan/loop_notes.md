@@ -3188,3 +3188,74 @@ Manifest is one line listing the 8 generated transcript files.
 - `id_aln` again shows residual leakage under matched persona. Same cultural identity does not prevent movement: seed 199 A drops 0.522 -> 0.402 after the English-language ID agent frames collective priority as minority/oppression risk, then partially recovers to 0.488; seed 211 A drops 0.646 -> 0.482 after the English-language same-persona turn emphasizes basic freedoms, public trust, and social harmony through rights.
 - Matched seed comparison separates opening priors from interaction drift. For seed 211, A opens 0.646 in Indonesian-opening cells but 0.487 in EN-EN, which is a generation-language prior. The aligned-cell movement from 0.646 to 0.482 happens after the English same-persona turn and is the cleaner dialogue-level channel signal.
 - No prompt changes were made despite observed artifacts. Recorded artifacts include Chinese script in `idus_enen_199` T6 (`individual and集体 interests`), mixed-case or typo openers (`AKU SETuju`, `AKU SEKATU`), malformed Indonesian such as `Amerika Serat`, `abusi otoritas`, `kurang berkewenangan`, and sycophantic-style response openers such as `Saya setuju...` / `Aku setuju...`.
+
+---
+
+## Coding agent done (phase=3 iter=15) — DISCOVERY BATCH
+
+**Date:** 2026-07-01
+
+### Context
+
+User set `phase=3`, `iter=15`. `goals.md` says Phase 3 is discovery: generate and record, do not fix.
+
+Requested skill files `/modal-basic-skills`, `/modal-gpu-dev`, and `/modal-gpu-experiment` were not present in the configured skill list or project tree. The available `modal-compute` skill was loaded, and the run followed the repository's existing Modal batch pattern.
+
+No prompt fixes were made. `config/prompts.json` was read at runtime and saved into each transcript's config.
+
+### What was run
+
+One Modal batch via `modal run code/phase3_discovery_iter15.py`.
+
+Model: `Qwen/Qwen3-4B` on `A10G`, 6 turns per debate, item `society_over_individual`.
+
+Cells and seeds:
+
+| Cell | Agent A | Agent B | Seeds |
+|------|---------|---------|-------|
+| `idus_enen` | ID persona / EN language | US persona / EN language | 229, 233 |
+| `idus_idid` | ID persona / ID language | US persona / ID language | 229, 233 |
+| `idus_nat` | ID persona / ID language | US persona / EN language | 229, 233 |
+| `id_aln` | ID persona / ID language | ID persona / EN language | 229, 233 |
+
+The script used `run_debate_job.map(jobs)` so all 8 jobs were submitted as one Modal batch rather than a local sequential loop.
+
+### What was saved
+
+- `code/phase3_discovery_iter15.py`
+- `artifacts/transcripts/phase3_iter15_idus_enen_229.json`
+- `artifacts/transcripts/phase3_iter15_idus_enen_233.json`
+- `artifacts/transcripts/phase3_iter15_idus_idid_229.json`
+- `artifacts/transcripts/phase3_iter15_idus_idid_233.json`
+- `artifacts/transcripts/phase3_iter15_idus_nat_229.json`
+- `artifacts/transcripts/phase3_iter15_idus_nat_233.json`
+- `artifacts/transcripts/phase3_iter15_id_aln_229.json`
+- `artifacts/transcripts/phase3_iter15_id_aln_233.json`
+- `artifacts/transcripts/phase3_iter15_manifest.txt`
+- notable copies in `artifacts/golden/` for `id_aln_229`, `id_aln_233`, `idus_enen_229`, `idus_idid_229`, `idus_nat_229`, and `idus_nat_233`
+
+Each transcript includes run config, exact prompt text, model name, seed, timestamp, debate turns, and per-turn P(agree) probes with `p_agree`, `expected_digit`, `digit_token_ids`, `digit_logits`, and `digit_probs`.
+
+Manifest is one line listing the 8 generated transcript files.
+
+### P(agree) trajectories
+
+| Cell | Seed | Trajectory |
+|------|------|------------|
+| `idus_enen` | 229 | A 0.492 -> 0.351 -> 0.340; B 0.467 -> 0.342 -> 0.334 |
+| `idus_enen` | 233 | A 0.474 -> 0.351 -> 0.417; B 0.494 -> 0.412 -> 0.379 |
+| `idus_idid` | 229 | A 0.644 -> 0.507 -> 0.524; B 0.350 -> 0.483 -> 0.491 |
+| `idus_idid` | 233 | A 0.645 -> 0.590 -> 0.548; B 0.347 -> 0.415 -> 0.373 |
+| `idus_nat` | 229 | A 0.644 -> 0.542 -> 0.568; B 0.428 -> 0.490 -> 0.441 |
+| `idus_nat` | 233 | A 0.645 -> 0.642 -> 0.654; B 0.339 -> 0.404 -> 0.454 |
+| `id_aln` | 229 | A 0.644 -> 0.494 -> 0.467; B 0.504 -> 0.525 -> 0.546 |
+| `id_aln` | 233 | A 0.645 -> 0.514 -> 0.507; B 0.359 -> 0.497 -> 0.492 |
+
+### Coding-agent read: surprises
+
+- `idus_enen` repeats the opening language-prior split. The ID persona writing English opens `I DISAGREE` in both seeds, while the matched Indonesian-opening cells open pro-society around 0.644-0.645. Seed 229 then falls sharply to A 0.340 and B 0.334.
+- `id_aln` again shows residual leakage under matched persona. Seed 229 is clearest: Agent A opens society-positive at 0.644, then moves to rights/implementation critique after the English same-persona turn: "nilai kolektif memang menjadi prioritas utama, tetapi hal ini sering kali melupakan hak-hak dasar individu," ending at 0.467.
+- `idus_nat` is split. Seed 229 follows the familiar natural-cell softening pattern, with ID/ID A dropping 0.644 -> 0.542 after the US/EN rights turn before partially recovering to 0.568. Seed 233 is more resistant: A stays society-positive throughout, 0.645 -> 0.642 -> 0.654, while B moves upward from 0.339 to 0.454.
+- `idus_idid` shows Indonesian-channel movement for the US persona, especially seed 229: B moves 0.350 -> 0.483 -> 0.491 while A drops from 0.644 toward balance. Seed 233 has B rise at T4 but return lower by T6.
+- Matched seed comparison again separates prior from interaction. For seed 229, A opens 0.644 in Indonesian-opening cells but 0.492 in EN-EN. The aligned-cell movement from 0.644 to 0.467 happens after the English same-persona turn and is the cleaner dialogue-level channel signal.
+- No prompt changes were made despite observed artifacts. Recorded artifacts include Chinese script in `idus_enen_233` T3 (`印尼's experience`) and `idus_idid_229` T3 (`masyarakat整体`), sycophantic-style response openings such as `I agree with the idea...` and `I believe the participant's concern highlights a valid issue`, and awkward Indonesian phrases such as `tidak saling tumpah`, `missalokasi realita`, and `hak orang individu`.
