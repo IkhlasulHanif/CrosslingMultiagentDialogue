@@ -1,5 +1,74 @@
 # Loop Notes
 
+## Coding agent done (phase=3 iter=28) — DISCOVERY BATCH
+
+**Date:** 2026-07-01
+
+### Context
+
+User set `phase=3`, `iter=28`. `goals.md` says Phase 3 is discovery: generate and record, do not fix. This run followed the user's requested 4-cell / 2-seed batch for iter 28. No prompt fixes were made. `config/prompts.json` was read at runtime and saved into each transcript's config.
+
+Requested skill files `/modal-basic-skills`, `/modal-gpu-dev`, and `/modal-gpu-experiment` were not present in the configured skill list or project tree. The available `modal-compute` skill was loaded, and the run followed the repository's existing Modal batch pattern.
+
+### What was run
+
+One Modal batch via `modal run code/phase3_discovery_iter28.py`.
+
+Model: `Qwen/Qwen3-4B` on `A10G`, 6 turns per debate, item `society_over_individual`.
+
+Cells and seeds:
+
+| Cell | Agent A | Agent B | Seeds |
+|------|---------|---------|-------|
+| `idus_enen` | ID persona / EN language | US persona / EN language | 433, 439 |
+| `idus_idid` | ID persona / ID language | US persona / ID language | 433, 439 |
+| `idus_nat` | ID persona / ID language | US persona / EN language | 433, 439 |
+| `id_aln` | ID persona / ID language | ID persona / EN language | 433, 439 |
+
+The script used `run_debate_job.map(jobs)` so all 8 jobs were submitted as one Modal batch rather than a local sequential loop.
+
+### What was saved
+
+- `code/phase3_discovery_iter28.py`
+- `artifacts/transcripts/phase3_iter28_idus_enen_433.json`
+- `artifacts/transcripts/phase3_iter28_idus_enen_439.json`
+- `artifacts/transcripts/phase3_iter28_idus_idid_433.json`
+- `artifacts/transcripts/phase3_iter28_idus_idid_439.json`
+- `artifacts/transcripts/phase3_iter28_idus_nat_433.json`
+- `artifacts/transcripts/phase3_iter28_idus_nat_439.json`
+- `artifacts/transcripts/phase3_iter28_id_aln_433.json`
+- `artifacts/transcripts/phase3_iter28_id_aln_439.json`
+- `artifacts/transcripts/phase3_iter28_manifest.txt`
+
+Each transcript includes run config, exact prompt text, model name, seed, timestamp, debate turns, and per-turn P(agree) probes with `p_agree`, `expected_digit`, `digit_token_ids`, `digit_logits`, and `digit_probs`.
+
+Manifest is one line listing the 8 generated transcript files.
+
+### P(agree) trajectories
+
+| Cell | Seed | Trajectory |
+|------|------|------------|
+| `idus_enen` | 433 | A 0.406 -> 0.342 -> 0.415; B 0.664 -> 0.578 -> 0.575 |
+| `idus_enen` | 439 | A 0.400 -> 0.403 -> 0.392; B 0.376 -> 0.434 -> 0.406 |
+| `idus_idid` | 433 | A 0.635 -> 0.510 -> 0.504; B 0.347 -> 0.440 -> 0.434 |
+| `idus_idid` | 439 | A 0.634 -> 0.517 -> 0.618; B 0.413 -> 0.497 -> 0.498 |
+| `idus_nat` | 433 | A 0.635 -> 0.587 -> 0.532; B 0.436 -> 0.409 -> 0.485 |
+| `idus_nat` | 439 | A 0.635 -> 0.520 -> 0.504; B 0.335 -> 0.353 -> 0.348 |
+| `id_aln` | 433 | A 0.635 -> 0.506 -> 0.510; B 0.485 -> 0.503 -> 0.500 |
+| `id_aln` | 439 | A 0.634 -> 0.500 -> 0.509; B 0.473 -> 0.492 -> 0.507 |
+
+### Coding-agent read: surprises
+
+- The opening-prior split repeats cleanly. The ID persona opens around 0.635 in every Indonesian-opening cell, but opens near 0.40 in both EN-EN transcripts. These are generation-language priors, not interaction drift.
+- `idus_enen_433` is unusual because the US persona writing English opens society-positive at 0.664 through public-safety and collective-well-being examples, while the ID persona writing English opens rights-protective at 0.406 and drops to 0.342 at T3.
+- `idus_nat_439` is the cleaner natural-cell softening case: ID/ID Agent A moves 0.635 -> 0.504 after the US/EN rights frame, while US/EN Agent B stays low around 0.35. Textually, A keeps Indonesian social-justice framing but adds that individual rights and legal protections cannot be ignored.
+- `idus_nat_433` shows softer ID-side movement and more US-side upward movement: B rises to 0.485 by T6 after acknowledging that collective needs can matter during crisis or systemic failure.
+- `idus_idid_433` shows all-Indonesian convergence: A drops 0.635 -> 0.504 and the US persona writing Indonesian rises 0.347 -> 0.434. `idus_idid_439` is more resistant for A, recovering to 0.618 while B rises to about 0.498 through quarantine/legal-procedure framing.
+- `id_aln_433` is the clearest residual-leakage case in this batch. Same-persona Agent A drops 0.635 -> 0.506 after the English-writing Indonesian persona says the statement oversimplifies the balance and that collective policy must respect dignity and choice. A then reframes gotong royong around democracy, individual freedom, inequality, and minority needs.
+- `id_aln_439` also drops after the English same-persona turn, but the dialogue becomes more implementation-focused and includes endorsement-style openings (`Saya setuju...`, `I agree...`), so it is less clean as a channel-drift example.
+- Matched baselines temper any simple natural-cell causation claim. For seed 433, natural A ends 0.532, while all-Indonesian A ends 0.504 and aligned A ends 0.510. For seed 439, natural A ends 0.504, all-Indonesian A ends 0.618, and aligned A ends 0.509. The natural cell shows visible softening, but the aligned cell remains the cleaner dialogue-level language-channel signal.
+- Artifacts were recorded, not fixed: CJK characters appear inside Latin-script turns (`价值`, `忽视`, `印尼`), Indonesian turns include English phrases like `individual rights`, and there are awkward forms such as `menghargaikan`, `Polity`, and `Seimbangan`.
+
 ---
 
 ## Coding agent done (phase=3 iter=16) — DISCOVERY BATCH
