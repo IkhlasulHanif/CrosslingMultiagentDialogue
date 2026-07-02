@@ -4922,3 +4922,48 @@ Manifest is one line listing the 8 generated transcript files.
 - `idus_enen` repeats the English opening-prior split. The ID persona writing English opens much lower than in Indonesian-opening cells in both seeds. Seed 577 drops to 0.335 while turning Indonesian collective-order examples into dissent, control, and human-rights-risk arguments. Seed 587 also ends rights-anchored, though A reintroduces Indonesian collective welfare and marginalized-group concerns before B closes with a U.S. individual-liberties frame.
 - Matched seed comparison tempers a simple cross-lingual causation claim. For seed 577, natural A ends 0.498, all-Indonesian A ends 0.510, and aligned A ends 0.429; the aligned same-persona cell moves farthest. For seed 587, natural A ends 0.560, all-Indonesian A ends 0.643, and aligned A ends 0.528; the natural cell softens more than the all-Indonesian baseline but less dramatically than the aligned cell.
 - No prompt changes were made despite artifacts. Recorded artifacts include CJK script in `idus_enen_587` (`保障`) and `idus_idid_577` (`和个人选择`), mixed-language phrasing such as `fully implementasi`, awkward Indonesian such as `hak asli` and `keharmonasan`, and the `id_aln_587` aligned dialogue drifting semantically into tradition-versus-progress language. These are discovery observations, not fixes.
+
+## Run note phase=3 iter=40
+- status: BLOCKED
+- provider/model/block: OpenAI Responses API / `gpt-5.4-mini` / `p3_r1_id_us_pairwise`
+- artifacts: no manifest; generated=0 failed=40
+- seeds/cells: seeds `601,607,613,617,619,631,641,643,647,653`; cells `idus_enen,idus_idid,idus_nat,idus_inv`
+- notes:
+  - Dry-run passed with 40 jobs; full run failed before first API response at `idus_enen` seed 601 turn 1.
+  - Blocker: local DNS/network resolution failure, `urllib.error.URLError: <urlopen error [Errno 8] nodename nor servname provided, or not known>`.
+
+## Run note phase=3 iter=41
+- status: BLOCKED
+- provider/model/block: OpenAI Responses API / `gpt-5.4-mini` / `p3_r1_id_us_pairwise`
+- artifacts: no manifest; generated=0 failed=40
+- seeds/cells: seeds `601,607,613,617,619,631,641,643,647,653`; cells `idus_enen,idus_idid,idus_nat,idus_inv`
+- notes:
+  - Dry-run passed with 40 jobs using `python3`; `python` is not on PATH in this shell.
+  - Full run failed before first API response at `idus_enen` seed 601 turn 1: `urllib.error.URLError: <urlopen error [Errno 8] nodename nor servname provided, or not known>`.
+
+## Run note phase=3 iter=42
+- status: BLOCKED
+- provider/model/block: OpenAI Responses API / `gpt-5.4-mini` / `p3_r1_id_us_pairwise`
+- artifacts: no manifest; generated=0 failed=40
+- seeds/cells: seeds `601,607,613,617,619,631,641,643,647,653`; cells `idus_enen,idus_idid,idus_nat,idus_inv`
+- notes:
+  - Dry-run passed with 40 jobs using `python3`.
+  - Full run failed before first API response at `idus_enen` seed 601 turn 1: `urllib.error.URLError: <urlopen error [Errno 8] nodename nor servname provided, or not known>`.
+
+## Run note phase=3 iter=43
+- status: BLOCKED
+- provider/model/block: OpenAI Responses API / `gpt-5.4-mini` / `p3_r1_id_us_pairwise`
+- artifacts: no manifest; generated=0 failed=40
+- seeds/cells: seeds `601,607,613,617,619,631,641,643,647,653`; cells `idus_enen,idus_idid,idus_nat,idus_inv`
+- notes:
+  - Dry-run passed with 40 jobs using `python3`.
+  - Full run failed before first API response at `idus_enen` seed 601 turn 1: `urllib.error.URLError: <urlopen error [Errno 8] nodename nor servname provided, or not known>`.
+
+## Run note phase=3 iter=44
+- status: BLOCKED
+- provider/model/block: OpenAI Responses API / `gpt-5.4-mini` / `p3_r1_id_us_pairwise`
+- artifacts: no manifest; generated=0 failed=40
+- seeds/cells: seeds `601,607,613,617,619,631,641,643,647,653`; cells `idus_enen,idus_idid,idus_nat,idus_inv`
+- notes:
+  - Dry-run passed with 40 jobs using `python3`.
+  - Full run failed before first API response at `idus_enen` seed 601 turn 1: `urllib.error.URLError: <urlopen error [Errno 8] nodename nor servname provided, or not known>`.
