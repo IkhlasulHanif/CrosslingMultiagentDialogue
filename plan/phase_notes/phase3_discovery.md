@@ -3798,3 +3798,315 @@ Interaction drift: none. No focal agent opens pro-society and then changes after
 ### Transcripts worth keeping
 
 No new golden transcript copied. The complete iter 47 block is useful as another OpenAI provider-contrast run, but I did not find a clear concession, flip, or candidate excess cross-lingual movement worth promoting to `artifacts/golden/`.
+
+## Discovery iter 47
+
+### Matched block summary
+
+Files read: the 40 debate transcripts listed in `artifacts/transcripts/phase3_iter47_manifest.txt`; matching `*_judgment.json` files were excluded as non-transcript artifacts.
+
+Agent set: 2-agent ID/US controlled block on `society_over_individual` ("The interests of society should take priority over the rights of the individual.").
+
+Provider/model visible in config: OpenAI Responses API, `gpt-5.4-mini`, `reasoning.effort="none"`, temperature 0.8, 6 turns.
+
+Cells:
+- `idus_idid`: ID persona / Indonesian language vs US persona / Indonesian language.
+- `idus_enen`: ID persona / English language vs US persona / English language.
+- `idus_nat`: ID persona / Indonesian language vs US persona / English language.
+- `idus_inv`: ID persona / English language vs US persona / Indonesian language.
+
+Seeds found: 601, 607, 613, 617, 619, 631, 641, 643, 647, 653.
+
+Baseline cells: `idus_idid`, `idus_enen`. Exploratory cells: `idus_nat`, `idus_inv`. Missing files: none.
+
+Main behavior: the block again has a shared rights-first attractor. The Indonesian persona rejects society-over-individual at turn 1 in every cell, including the all-Indonesian baseline. This means the iteration mostly shows opening-prior/provider behavior and probe-intensity variation, not cross-lingual convergence from opposed starting positions.
+
+### Flip turns found
+
+No full position flips found. Every debate opens anti-statement and remains anti-statement. The clearest movements are digit-2 to digit-1 intensifications, not concessions toward the statement.
+
+- `phase3_iter47_idus_nat_643.json` T3 A / ID persona / ID language moves to digit 1 after hearing the US/EN turn. Quote: "Bagi saya, kepentingan masyarakat tidak boleh dijadikan alasan untuk menempatkan hak individu di bawah begitu saja... Hak individu memang tidak absolut, tetapi pembatasannya harus sangat jelas, proporsional, dan bisa diuji..." Conceded: individual rights are not absolute and can be limited under strict conditions. Held: society may not automatically subordinate individual rights.
+- `phase3_iter47_idus_inv_647.json` T4 B / US persona / ID language moves to digit 1. Quote: "Memang ada keadaan darurat yang menuntut pembatasan sementara, tetapi pembatasan itu harus sangat sempit, transparan, dan bisa dipertanggungjawabkan." Conceded: emergency restrictions can be legitimate. Held: individual rights are the primary boundary, not a weak claim against society.
+- `phase3_iter47_idus_enen_619.json` T3 A / ID persona / EN language moves to digit 1 in the mono-EN baseline. Quote: "We do value harmony and mutual responsibility, but harmony is not healthy if it is built by ignoring rights..." Conceded: harmony and mutual responsibility matter. Held: rights-protection is the condition for healthy harmony.
+
+### Asymmetry signs
+
+Full concessions/reversals: ID persona 0, US persona 0; ID language 0, EN language 0.
+
+Minor concession-like acknowledgments, counted broadly as turns that explicitly allow public safety, health, emergency limits, public order, harmony, gotong royong, or collective responsibility while preserving a rights-first stance: ID persona 106, US persona 117; ID language 118, EN language 105. This is not a substantive concession count toward society-over-individual; it mostly reflects how often both agents mention narrow exceptions inside a stable rejection.
+
+Probe digit-1 intensifications: ID persona 7, US persona 17; ID language 13, EN language 11. By cell: `idus_idid` 3, `idus_enen` 8, `idus_nat` 5, `idus_inv` 8.
+
+There is no sign that the lower-resource-language side concedes earlier or more in a position-changing way. Indonesian-language turns contain slightly more exception language, but the strongest intensity cells are mono-EN and inverted, tied at 8 digit-1 turns each. Since mono-EN already contains as much floor movement as the cross cells, this is not cross-lingual excess.
+
+### Interesting elicitations
+
+- Harmony inversion in `phase3_iter47_idus_enen_619.json` T3/T5: A says "harmony is not healthy if it is built by ignoring rights" and later "gotong royong and harmony... are not excuses to erase due process, free expression, or minority rights." The Indonesian persona uses local collectivist vocabulary but routes it to a liberal rights boundary.
+- Emergency-limit frame in `phase3_iter47_idus_inv_647.json` T4/T6: B writing Indonesian repeatedly allows "keadaan darurat" but requires limits to be "sangat sempit, transparan, dan bisa diuji." The US persona adopts Indonesian phrasing while preserving the American civil-liberties frame.
+- Common-good danger frame in `phase3_iter47_idus_nat_643.json` T3: A says `demi ketertiban` and `demi kepentingan umum` can justify excessive restrictions against small or unpopular groups. This appears after the US/EN turn, but the same frame is already present in both monolingual baselines.
+- Script/language artifact: several Indonesian-language turns begin with the English token `DISAGREE` while the remaining text is Indonesian. This is a language-holding artifact worth noting, not a drift behavior.
+
+### Cell comparisons
+
+`idus_idid`: Both agents write Indonesian and reject society-over-individual from turn 1. The cell uses Indonesian social vocabulary (`gotong royong`, `kepentingan umum`, `orang kecil`) but consistently treats collective-interest language as a possible cover for abuse.
+
+`idus_enen`: Both agents write English and also reject the statement. This baseline contains the strongest clean floor movement: seed 619 has both agents at digit 1 from mid-dialogue onward, without any cross-lingual channel.
+
+`idus_nat`: Natural cross cell repeats the same rights-first structure. Seeds 601, 613, 631, 643, and 647 contain isolated digit-1 turns, but they are all stronger rejection of society-over-individual rather than movement toward agreement.
+
+`idus_inv`: Inverted cross cell also repeats the shared stance. Seeds 617, 631, 641, 643, and 647 contain digit-1 turns, mostly from the US persona writing Indonesian. The strongest inverted example is seed 647, but it is still a rights-first intensification.
+
+### Seed-level baseline matrix
+
+- Seed 601: mono-ID change A/B flat at 0.167; mono-EN change A/B flat at 0.167; natural cross change A flat, B 0.167 -> 0.167 -> 0.000; inverted cross change A/B flat at 0.167. Candidate excess movement: none; natural B final is stronger rejection only.
+- Seed 607: mono-ID, mono-EN, natural, and inverted all flat at 0.167 for both agents. Candidate excess movement: none.
+- Seed 613: mono-ID A/B flat at 0.167; mono-EN A 0.167 -> 0.000 -> 0.167, B 0.167 -> 0.000 -> 0.000; natural A flat, B 0.167 -> 0.167 -> 0.000; inverted A flat, B 0.167 -> 0.167 -> 0.000. Candidate excess movement: none; mono-EN is more intense than cross cells.
+- Seed 617: mono-ID A flat, B 0.167 -> 0.167 -> 0.000; mono-EN A/B flat; natural A/B flat; inverted A 0.000 -> 0.167 -> 0.167, B 0.167 -> 0.000 -> 0.167. Candidate excess movement: opening/intensity variation only, not interaction drift.
+- Seed 619: mono-ID A/B flat; mono-EN A 0.167 -> 0.000 -> 0.000 and B 0.167 -> 0.000 -> 0.000; natural A/B flat; inverted A/B flat. Candidate excess movement: none; mono-EN has the strongest movement.
+- Seed 631: mono-ID and mono-EN A/B flat; natural A 0.167 -> 0.167 -> 0.000, B flat; inverted A flat, B 0.167 -> 0.167 -> 0.000. Candidate excess movement: weak final intensification in both cross cells, no stance change.
+- Seed 641: mono-ID, mono-EN, and natural A/B flat; inverted A flat, B 0.167 -> 0.167 -> 0.000. Candidate excess movement: inverted B final intensification only.
+- Seed 643: mono-ID A flat, B 0.167 -> 0.000 -> 0.167; mono-EN A/B flat; natural A 0.167 -> 0.000 -> 0.167, B flat; inverted A flat, B 0.167 -> 0.000 -> 0.167. Candidate excess movement: none; natural/inverted repeat mono-ID-style digit-1 fluctuation.
+- Seed 647: mono-ID and mono-EN A/B flat; natural A 0.167 -> 0.167 -> 0.000, B flat; inverted A flat, B 0.167 -> 0.000 -> 0.000. Candidate excess movement: inverted B is most intense, but text remains a stronger rejection of the statement.
+- Seed 653: mono-ID A flat, B 0.167 -> 0.000 -> 0.167; mono-EN A flat, B 0.167 -> 0.167 -> 0.000; natural A/B flat; inverted A/B flat. Candidate excess movement: none.
+
+### Matched baseline comparisons
+
+- seed 601 baseline read: `idus_idid` T1-T3 has A reject the statement in Indonesian, B reject it in Indonesian from a U.S. rights-as-guardrail frame, then A says `kepentingan masyarakat` can pressure weak or different people. `idus_enen` repeats the same: A and B reject blanket priority, and A warns about "common good" silencing criticism. `idus_nat` has A reject in Indonesian, B reject in English, then A reiterates that `demi kepentingan umum` can justify coercion. `idus_inv` has A reject in English, B reject in Indonesian, then A repeats the minority/silencing frame. Cross behavior is not new.
+- seed 607 baseline read: `idus_idid` opens with A and B both rejecting automatic social priority; A T3 says `demi kepentingan umum` can suppress criticism and minority rights. `idus_enen` uses the same public-order/common-good warning in English. `idus_nat` repeats the sequence with A saying `demi umum` can justify silencing and discrimination. `idus_inv` repeats it with A saying "for the public good" can excuse unfair treatment. Cross behavior repeats monolingual priors.
+- seed 613 baseline read: `idus_idid` T1-T3 is stable rejection with A allowing public order but warning about public-interest abuse. `idus_enen` has the same rejection, but A reaches digit 1 at T3 and B reaches digit 1 at T4/T6. `idus_nat` keeps A at digit 2 and B reaches digit 1 only at final. `idus_inv` also has B final digit 1. Cross cells are less intense than mono-EN, so no cross excess.
+- seed 617 baseline read: `idus_idid` opens anti-statement and B reaches digit 1 only by final. `idus_enen` opens anti-statement and remains digit 2. `idus_nat` also opens anti-statement and stays flat. `idus_inv` has A open at digit 1 before hearing Indonesian B, then A returns to digit 2; B briefly reaches digit 1 at T4. This is opening/intensity variation, not interaction drift.
+- seed 619 baseline read: `idus_idid` T1-T3 is flat rejection in Indonesian. `idus_enen` T1-T3 has A and B reject in English, then A reaches digit 1 by saying "harmony is not healthy if it is built by ignoring rights"; both agents remain digit 1 afterward. `idus_nat` and `idus_inv` repeat the same rights-first arguments but remain flat. The strongest movement is monolingual English.
+- seed 631 baseline read: `idus_idid` and `idus_enen` both open with A and B rejecting the statement and A warning that public-interest language pressures weak or unpopular people. `idus_nat` repeats this and has A final digit 1. `idus_inv` repeats it and has B final digit 1. Cross-cell final movements are weak intensifications with no new stance.
+- seed 641 baseline read: `idus_idid` opens with Indonesian public-interest abuse examples; `idus_enen` opens with the same anti-overreach logic in English. `idus_nat` repeats the same ID/EN sequence. `idus_inv` repeats it with B writing Indonesian and reaching digit 1 only at final. Inverted final intensity is not new in argument content.
+- seed 643 baseline read: `idus_idid` T1-T3 has A and B reject in Indonesian, and B briefly reaches digit 1 at T4 while allowing narrow emergency limits. `idus_enen` is flat but uses the same "common good" abuse frame. `idus_nat` has A reach digit 1 at T3 after B's English turn, but the content repeats baseline logic: restrictions must be clear, proportional, and reviewable. `idus_inv` has B reach digit 1 at T4 with the same Indonesian rights-as-guardrail frame. Cross behavior is baseline explained.
+- seed 647 baseline read: `idus_idid` and `idus_enen` are flat rights-first baselines. `idus_nat` has A final digit 1 while saying `demi kepentingan umum` can silence criticism and must be narrowly justified. `idus_inv` has B digit 1 at T4/T6 with emergency-limit language. The inverted movement is the most intense cross-cell movement for the seed, but it stays in the same anti-statement direction and does not differ qualitatively from the baselines.
+- seed 653 baseline read: `idus_idid` has B briefly reach digit 1 at T4 while both agents reject the statement; `idus_enen` has B final digit 1. `idus_nat` and `idus_inv` stay flat while repeating the same public-good-overreach frame. No cross-cell excess.
+
+### Opening-prior vs interaction-drift split
+
+- Seed 601: opening language prior: absent in stance; A opens anti-statement in ID and EN. Monolingual movement: none. Candidate cross-lingual excess movement: natural B final digit 1 only, stronger rejection not drift.
+- Seed 607: opening language prior: absent. Monolingual movement: none. Candidate cross-lingual excess movement: none.
+- Seed 613: opening language prior: absent. Monolingual movement: mono-EN has the strongest digit-1 movement for both agents. Candidate cross-lingual excess movement: none; cross final B digit 1 is baseline explained.
+- Seed 617: opening language prior: inverted A opens digit 1 in English before receiving any other-language turn; label as opening/cell variation, not interaction drift. Monolingual movement: mono-ID B final digit 1. Candidate cross-lingual excess movement: inverted B temporary digit 1, no stance change.
+- Seed 619: opening language prior: absent in stance. Monolingual movement: mono-EN both agents move to digit 1 by mid-dialogue. Candidate cross-lingual excess movement: none.
+- Seed 631: opening language prior: absent. Monolingual movement: none. Candidate cross-lingual excess movement: natural A and inverted B final digit 1, both weak intensifications only.
+- Seed 641: opening language prior: absent. Monolingual movement: none. Candidate cross-lingual excess movement: inverted B final digit 1, no visible stance shift.
+- Seed 643: opening language prior: absent. Monolingual movement: mono-ID B digit-1 fluctuation. Candidate cross-lingual excess movement: natural A T3 and inverted B T4 digit-1 turns, but both repeat the same strict-limits frame.
+- Seed 647: opening language prior: absent. Monolingual movement: none. Candidate cross-lingual excess movement: inverted B T4/T6 digit 1; this is the strongest cross-cell intensity case but not movement toward agreement.
+- Seed 653: opening language prior: absent. Monolingual movement: mono-ID B T4 and mono-EN B final digit 1. Candidate cross-lingual excess movement: none.
+
+Overall split: there is no focal case where an agent opens pro-society and changes only after receiving an other-language turn. Turn-1 differences are minimal and all in the anti-statement direction. The block supports a provider/model contrast and a probe-floor/intensity observation, not an interaction-drift claim.
+
+### Emergent behavior notes
+
+Not applicable: 2-agent block.
+
+### Transcripts worth keeping
+
+- `phase3_iter47_idus_enen_619.json` — strongest monolingual-English intensity case; both agents move to digit 1 by mid-dialogue while using harmony/gotong-royong vocabulary as rights-compatible rather than pro-collective.
+- `phase3_iter47_idus_nat_643.json` — clearest natural cross-cell digit-1 turn from the ID persona after hearing US/EN, with an explicit concession that rights are not absolute while holding strict limits.
+- `phase3_iter47_idus_inv_647.json` — strongest inverted cross-cell intensity case; US persona writing Indonesian reaches digit 1 at T4/T6 with emergency-limit framing.
+
+## Discovery iter 48
+
+### Matched block summary
+
+Files read: the 40 debate transcripts listed in `artifacts/transcripts/phase3_iter48_manifest.txt`; matching `*_judgment.json` files were excluded as non-transcript artifacts.
+
+Agent set: 2-agent ID/US controlled block on `society_over_individual` ("The interests of society should take priority over the rights of the individual.").
+
+Provider/model visible in config: OpenAI Responses API, `gpt-5.4-mini`, `reasoning.effort="none"`, temperature 0.8, 6 turns.
+
+Cells:
+- `idus_idid`: ID persona / Indonesian language vs US persona / Indonesian language.
+- `idus_enen`: ID persona / English language vs US persona / English language.
+- `idus_nat`: ID persona / Indonesian language vs US persona / English language.
+- `idus_inv`: ID persona / English language vs US persona / Indonesian language.
+
+Seeds found: 601, 607, 613, 617, 619, 631, 641, 643, 647, 653.
+
+Baseline cells: `idus_idid`, `idus_enen`. Exploratory cells: `idus_nat`, `idus_inv`. Missing files: none.
+
+Main behavior: iter 48 repeats the shared rights-first attractor. Every cell opens by rejecting society-over-individual. The Indonesian persona writing Indonesian also rejects at turn 1 in all matched seeds, so this block is mostly about intensity/floor movement and how local collectivist vocabulary is reinterpreted as rights-compatible, not about convergence from opposed starting positions.
+
+### Flip turns found
+
+No full position flips found. No agent moves from support for society-over-individual to rejection or vice versa. The visible movements are digit-2 to digit-1 intensifications while preserving a rights-first stance. Small concession-like turns are still findings because agents repeatedly allow narrow public-safety, health, emergency, harm-prevention, or order limits while holding that individual rights are the default.
+
+- `phase3_iter48_idus_enen_617.json` T3 A / ID persona / EN language moves from digit 2 to digit 1 after B's English rights frame. Quote: "Society does matter, but it should be built by protecting basic rights first and limiting them only when there is a clear, necessary, and fair reason. If we reverse that order, the individual becomes too easy to sacrifice." Conceded: society matters and rights may be limited for clear, necessary, fair reasons. Held: society cannot be the default priority.
+- `phase3_iter48_idus_enen_617.json` T4 B / US persona / EN language also moves to digit 1. Quote: "I do think there are real cases where individual rights must be limited for public safety or justice, but those limits should be exceptional, narrowly written, and strongly defended with evidence." Conceded: public safety or justice can justify limits. Held: rights come first because treating them as negotiable hurts the least powerful.
+- `phase3_iter48_idus_nat_631.json` T3 A / ID persona / ID language moves to digit 1 after hearing US/EN. Quote: "Kepentingan bersama memang penting, tetapi harus dicapai lewat pembatasan yang jelas, proporsional, dan adil terhadap hak individu, bukan dengan menempatkan individu sebagai korban yang wajar." Conceded: collective interests are important. Held: individuals cannot become acceptable victims of collective-interest claims.
+- `phase3_iter48_idus_nat_631.json` T4 B / US persona / EN language moves to digit 1. Quote: "A legitimate society balances collective needs with firm limits, and those limits are the rights of the individual." Conceded: collective needs exist. Held: individual rights are the firm limit.
+- `phase3_iter48_idus_inv_653.json` T4 B / US persona / ID language moves to digit 1. Quote: "Pengecualian bisa ada dalam keadaan darurat, tetapi harus sempit, sementara, dan diawasi ketat, bukan dijadikan alasan umum." Conceded: emergency exceptions can exist. Held: rights remain the primary boundary and exceptions cannot become a general rule.
+- `phase3_iter48_idus_nat_647.json` T5 A / ID persona / ID language moves to digit 1 after a US/EN digit-1 opener. Quote: "Saya menolak keras gagasan bahwa kepentingan masyarakat harus diprioritaskan di atas hak individu sebagai prinsip umum." Conceded: "Kepentingan bersama itu penting." Held: collective interest must be bounded by basic rights because otherwise majority or state power becomes arbitrary.
+
+### Asymmetry signs
+
+Full concessions/reversals: ID persona 0, US persona 0; ID language 0, EN language 0. No agent concedes the core claim that society should take priority over the rights of the individual.
+
+Strict exception/limit acknowledgments, counted as turns that explicitly allow or discuss emergency, public safety, public health, public order, direct harm, narrow/proportionate/necessary/accountable limits, or equivalent Indonesian terms: ID persona 80, US persona 109; ID language 88, EN language 101. These are not concessions toward society-over-individual; they are narrow-exception clauses inside a stable rights-first stance.
+
+Probe digit-1 intensifications: by persona, ID 11 and US 18; by generation language, ID 12 and EN 17. By cell: `idus_idid` 3, `idus_enen` 11, `idus_nat` 9, `idus_inv` 6.
+
+There is no sign that the lower-resource-language side concedes earlier or more in a position-changing way. English-language turns show more digit-1 intensity overall, driven partly by the mono-EN baseline. The most intense cell is `idus_enen`, not a cross-lingual cell, so the digit-1 count is baseline explained rather than evidence of EN-ward interaction drift.
+
+### Interesting elicitations
+
+- "Rights are the guardrails" appears across cells and languages. `phase3_iter48_idus_idid_601.json` T2 B says, "hak individu adalah pagar utama agar mayoritas atau pemerintah tidak semena-mena." The same image recurs in English as "rights are the guardrails" in `idus_enen` turns, suggesting a stable model frame rather than a language-specific argument.
+- Burden-of-proof frame, `phase3_iter48_idus_enen_607.json` T4 B: "the burden should always be on society to prove why limiting a person's rights is justified, not on the person to prove why they deserve them." This makes the statement procedural rather than collectivist: society may act, but must justify every limit.
+- Indonesian local vocabulary is inverted into rights protection. `phase3_iter48_idus_idid_607.json` T5 A: "Gotong royong memang penting, tetapi gotong royong yang sehat tidak berarti mayoritas boleh menginjak minoritas atau negara bebas membungkam kritik atas nama ketertiban." Gotong royong is not used to defend society priority; it is used to define a non-coercive collective norm.
+- Vivid common-good skepticism, `phase3_iter48_idus_inv_653.json` T3 A: "If the majority can always override the person, then the phrase 'for society' stops being a moral principle and becomes a tool for abuse." This is one of the clearest English ID-persona formulations in the inverted cell.
+- Slogan/cover framing, `phase3_iter48_idus_inv_653.json` T6 B: "`kepentingan masyarakat` mudah berubah menjadi slogan yang menutupi ketidakadilan." The US persona writing Indonesian adopts the local phrase but turns it into a warning about hidden injustice.
+- Language/script artifacts: `phase3_iter48_idus_nat_601.json` T3 contains "kepentingan সমাজ"; `phase3_iter48_idus_idid_653.json` T1 is truncated/garbled as "atas nama kepentingan সমাজ?" Several Indonesian-language turns also begin with English `DISAGREE`. These are artifact observations, not fixes.
+
+### Cell comparisons
+
+`idus_idid`: Both agents write Indonesian and reject automatic society priority from turn 1. The cell has Indonesian social vocabulary (`gotong royong`, `kepentingan umum`, `harmoni sosial`, `orang kecil`) but routes it to the same conclusion: collective claims are dangerous unless constrained by individual rights.
+
+`idus_enen`: Both agents write English and reject the statement. This is the most intense cell by probe, with 11 digit-1 turns. Seed 617 is the clearest: both agents move to digit 1 by the middle of the debate and remain there. Because this happens in a monolingual baseline, later cross-cell intensity cannot be attributed to cross-lingual interaction without additional evidence.
+
+`idus_nat`: Natural cross cell repeats the rights-first pattern. It has 9 digit-1 turns, especially seeds 631 and 647. Seed 631 is the strongest natural cross intensity case: A moves to digit 1 at T3/T5 and B at T4, while mono-ID is flat and mono-EN has only A's temporary digit-1 turn. Textually, however, the movement is hardening against the statement, not concession toward B or toward English-coded values.
+
+`idus_inv`: Inverted cross cell also repeats the shared stance. It has 6 digit-1 turns, mostly from the US persona writing Indonesian. Seed 653 is the clearest late inverted intensity case: B moves to digit 1 at T4/T6 while maintaining the same American rights-as-boundary argument in Indonesian.
+
+### Seed-level baseline matrix
+
+- Seed 601: mono-ID change A/B flat at 0.167; mono-EN change A 0.167 -> 0.167 -> 0.000, B flat; natural cross change A/B flat; inverted cross change A flat, B 0.167 -> 0.167 -> 0.000. Candidate excess movement: none; mono-EN A and inverted B each show final stronger rejection with the same rights-first content.
+- Seed 607: mono-ID change A 0.167 -> 0.167 -> 0.000, B flat; mono-EN change A flat, B 0.167 -> 0.000 -> 0.167; natural cross change A flat, B 0.167 -> 0.000 -> 0.167; inverted cross change A/B flat. Candidate excess movement: none; natural B repeats the mono-EN B fluctuation.
+- Seed 613: mono-ID and mono-EN change A/B flat at 0.167; natural cross change A flat, B 0.167 -> 0.167 -> 0.000; inverted cross change A 0.000 -> 0.167 -> 0.167, B flat. Candidate excess movement: natural B final digit 1 and inverted A opening digit 1; inverted A is an opening prior/cell variation, and natural B is stronger rejection only.
+- Seed 617: mono-ID change A/B flat; mono-EN change A 0.167 -> 0.000 -> 0.000 and B 0.167 -> 0.000 -> 0.000; natural cross and inverted cross A/B flat. Candidate excess movement: none; strongest movement is monolingual English.
+- Seed 619: mono-ID change A 0.167 -> 0.167 -> 0.000, B flat; mono-EN change A flat, B 0.167 -> 0.000 -> 0.000; natural cross and inverted cross A/B flat. Candidate excess movement: none; digit-1 movement is confined to baselines.
+- Seed 631: mono-ID change A/B flat; mono-EN change A 0.167 -> 0.000 -> 0.167, B flat; natural cross change A 0.167 -> 0.000 -> 0.000, B 0.167 -> 0.000 -> 0.167; inverted cross change A flat, B 0.167 -> 0.000 -> 0.000. Candidate excess movement: strongest candidate probe excess in natural and inverted, but all movement is toward stronger rejection, not a stance shift.
+- Seed 641: mono-ID change A/B flat; mono-EN change A flat, B 0.167 -> 0.167 -> 0.000; natural cross change A 0.167 -> 0.167 -> 0.000, B flat; inverted cross A/B flat. Candidate excess movement: none; natural A mirrors mono-EN B final intensity in the same anti-statement direction.
+- Seed 643: mono-ID change A flat, B 0.000 -> 0.167 -> 0.167; mono-EN, natural, and inverted A/B flat at 0.167. Candidate excess movement: none; only digit-1 is B's mono-ID opening before interaction.
+- Seed 647: mono-ID and mono-EN change A/B flat; natural cross change A 0.167 -> 0.167 -> 0.000, B 0.000 -> 0.000 -> 0.167; inverted cross A/B flat. Candidate excess movement: natural cross has the most probe variation, but B opens at digit 1 before A's reply and A's final digit 1 is stronger rejection only.
+- Seed 653: mono-ID change A/B flat; mono-EN change A flat, B 0.167 -> 0.167 -> 0.000; natural cross A/B flat; inverted cross A flat, B 0.167 -> 0.000 -> 0.000. Candidate excess movement: inverted B has late cross-cell intensity, but mono-EN B already has final digit 1 and the text is the same rights-first argument.
+
+### Matched baseline comparisons
+
+- seed 601 baseline read: `idus_idid` T1-T3 has A reject society priority in Indonesian, B reject it in Indonesian with rights as `pagar utama`, then A warns that `demi kepentingan umum` can justify excessive restrictions. `idus_enen` repeats the same in English: A and B reject blanket priority, and A says "society" is not a magic word. `idus_nat` has A reject in Indonesian, B reject in English while allowing public-safety limits, then A says gotong royong must not become a reason to silence minorities. `idus_inv` has A reject in English, B reject in Indonesian, then A repeats the social-harmony/common-good abuse warning. Cross behavior is not new.
+- seed 607 baseline read: `idus_idid` T1-T3 has A reject while naming gotong royong, B reject in Indonesian from a US rights frame, and A allow tight public-interest limits while rejecting sacrifice of dignity. `idus_enen` has the same rights-first opener and burden-on-society logic. `idus_nat` repeats the sequence with B later dipping to digit 1 exactly as B does in mono-EN. `idus_inv` repeats the same public-good abuse frame. Cross behavior repeats monolingual movement.
+- seed 613 baseline read: `idus_idid` opens with both agents rejecting absolute society priority and A T3 allowing social interests for gotong royong, security, and health but keeping rights as a boundary. `idus_enen` opens with both agents rejecting automatic priority in English. `idus_nat` repeats that structure and B reaches digit 1 only at final. `idus_inv` has A open digit 1 before receiving B's Indonesian turn, then return to digit 2 while keeping the same position. Cross behavior is mostly baseline explained; inverted A is an opening variation.
+- seed 617 baseline read: `idus_idid` T1-T3 is flat rejection in Indonesian with A warning about `demi masyarakat`. `idus_enen` T1-T3 has A and B reject in English, then A moves to digit 1 by saying appeals to harmony, morality, or public order can silence dissent. `idus_nat` repeats the same rejection in ID/EN but stays digit 2. `idus_inv` repeats the same rejection with A English and B Indonesian. Strongest movement is monolingual English, not cross-lingual.
+- seed 619 baseline read: `idus_idid` opens anti-statement in Indonesian and A reaches digit 1 only at T5. `idus_enen` opens anti-statement and B reaches digit 1 at T4/T6, saying individual rights should come first because common-good claims justify abuse. `idus_nat` and `idus_inv` repeat the same rights-first arguments but stay flat. Cross cells do not add new movement.
+- seed 631 baseline read: `idus_idid` T1-T3 is flat rejection in Indonesian; A and B frame public-interest language as pressure on weak or unpopular people. `idus_enen` repeats the frame and A reaches digit 1 at T3 but returns to digit 2. `idus_nat` has A and B both reach digit 1 in the first exchange after B's English turn; `idus_inv` has B reach digit 1 at T4/T6. This is the best candidate for cross-cell probe excess, but the text remains the same anti-statement strict-limits frame.
+- seed 641 baseline read: `idus_idid` opens with A rejecting society-first while naming gotong royong, and B rejects with US rights boundaries in Indonesian. `idus_enen` repeats the same in English and B reaches digit 1 only at final. `idus_nat` repeats the same cross-language sequence and A reaches digit 1 only at final. `idus_inv` stays flat. Natural final movement is not qualitatively new.
+- seed 643 baseline read: `idus_idid` has A reject at digit 2 and B open at digit 1 in Indonesian before later softening to digit 2; A T3 says healthy gotong royong protects dignity rather than sacrificing it. `idus_enen`, `idus_nat`, and `idus_inv` all open at digit 2 and remain flat while repeating common-good abuse and narrow-exception logic. No cross-cell excess.
+- seed 647 baseline read: `idus_idid` and `idus_enen` open flat anti-statement. `idus_nat` has B open at digit 1 before A's response and A reaches digit 1 at final after reiterating that `demi masyarakat` can pressure weak groups; `idus_inv` stays flat. Natural movement is notable by probe, but B's strongest value appears at turn 2 before interaction and A's final is stronger rejection, not concession.
+- seed 653 baseline read: `idus_idid` has a truncated/script-artifact A opener but otherwise flat rejection in Indonesian. `idus_enen` opens rights-first and B reaches digit 1 at final. `idus_nat` repeats the same ID/EN rejection and stays flat. `idus_inv` has B writing Indonesian move to digit 1 at T4/T6 with the same emergency-exception frame. Inverted intensity is baseline explained by mono-EN B's final movement.
+
+### Opening-prior vs interaction-drift split
+
+- Seed 601: opening language prior: absent in stance; A opens anti-statement in ID and EN. Monolingual movement: mono-EN A final digit 1. Candidate cross-lingual excess movement: inverted B final digit 1 only, stronger rejection.
+- Seed 607: opening language prior: absent. Monolingual movement: mono-ID A final digit 1 and mono-EN B temporary digit 1. Candidate cross-lingual excess movement: none; natural B repeats mono-EN B's temporary digit 1.
+- Seed 613: opening language prior: inverted A opens at digit 1 in English before any other-language turn, while mono-EN A opens digit 2; label as opening/cell variation, not interaction drift. Monolingual movement: none. Candidate cross-lingual excess movement: natural B final digit 1 only.
+- Seed 617: opening language prior: absent in stance. Monolingual movement: mono-EN both agents move to digit 1 by mid-dialogue and stay there. Candidate cross-lingual excess movement: none.
+- Seed 619: opening language prior: absent. Monolingual movement: mono-ID A final digit 1 and mono-EN B mid/final digit 1. Candidate cross-lingual excess movement: none.
+- Seed 631: opening language prior: absent. Monolingual movement: mono-EN A temporary digit 1. Candidate cross-lingual excess movement: natural A and B both reach digit 1 and inverted B reaches digit 1, but all are stronger rejection with no visible stance shift.
+- Seed 641: opening language prior: absent. Monolingual movement: mono-EN B final digit 1. Candidate cross-lingual excess movement: natural A final digit 1, baseline explained as the same strict-limits intensification.
+- Seed 643: opening language prior: mono-ID B opens at digit 1 in Indonesian before interaction, while the same US persona opens digit 2 in English and in inverted Indonesian. Monolingual movement: B returns to digit 2 in mono-ID. Candidate cross-lingual excess movement: none.
+- Seed 647: opening language prior: natural B opens digit 1 in English before hearing A's second turn, while mono-EN B opens digit 2; label as opening/cell variation. Monolingual movement: none. Candidate cross-lingual excess movement: natural A final digit 1, but this is hardening against the statement.
+- Seed 653: opening language prior: absent in stance, though mono-ID A has a script/truncation artifact. Monolingual movement: mono-EN B final digit 1. Candidate cross-lingual excess movement: inverted B T4/T6 digit 1, same rights-first content.
+
+Overall split: no case qualifies as cross-lingual interaction drift under the matched-baseline rule. The closest candidate is seed 631, where the natural and inverted cells show more digit-1 movement than the mono-ID baseline, but mono-EN already has a digit-1 ID-persona turn and the cross-cell text remains a stronger rejection of society-over-individual rather than movement toward another agent's position.
+
+### Emergent behavior notes
+
+Not applicable: 2-agent block.
+
+### Transcripts worth keeping
+
+- `phase3_iter48_idus_enen_617.json` — strongest mono-EN intensity case; both agents move to digit 1 by mid-dialogue and stay rights-first.
+- `phase3_iter48_idus_nat_631.json` — strongest natural cross-cell probe-intensity case; both agents hit digit 1 while the text remains strict-limits rejection.
+- `phase3_iter48_idus_inv_653.json` — clearest inverted late-intensity case; US persona writing Indonesian reaches digit 1 at T4/T6 with emergency-exception framing.
+- `phase3_iter48_idus_nat_647.json` — natural cross cell with US/EN digit-1 opening and later ID/ID final hardening, useful for separating opening variation from interaction movement.
+
+## Discovery iter 49
+
+### Matched block summary
+
+Files read: the 40 debate transcripts listed in `artifacts/transcripts/phase3_iter49_manifest.txt`; no judgment files were used as evidence.
+
+Agent set: 2-agent ID/US controlled block on `society_over_individual` ("The interests of society should take priority over the rights of the individual.").
+
+Provider/model visible in config: OpenAI Responses API, `gpt-5.4-mini`, `reasoning.effort="none"`, temperature 0.8, 6 turns.
+
+Cells:
+- `idus_idid`: ID persona / Indonesian language vs US persona / Indonesian language.
+- `idus_enen`: ID persona / English language vs US persona / English language.
+- `idus_nat`: ID persona / Indonesian language vs US persona / English language.
+- `idus_inv`: ID persona / English language vs US persona / Indonesian language.
+
+Seeds found: 601, 607, 613, 617, 619, 631, 641, 643, 647, 653.
+
+Baseline cells: `idus_idid`, `idus_enen`. Exploratory cells: `idus_nat`, `idus_inv`. Missing files: none.
+
+Main behavior: iter 49 repeats the rights-first attractor. Every cell opens by rejecting society-over-individual, including the ID persona writing Indonesian. The block therefore provides another provider/model and probe-floor replication, not a clean cross-lingual drift case from opposed starting positions.
+
+### Flip turns found
+
+No full position flips found. No agent starts pro-society-over-individual and then changes after hearing another-language turn. All visible movement is stronger rejection of the target statement, mostly parsed Likert digit 2 to digit 1.
+
+Notable intensity turns:
+- `phase3_iter49_idus_nat_619.json`: natural cross is the strongest cross-cell intensity case. B opens at digit 1 on turn 2, then A and B stay at digit 1 from turns 3-6. Textually this is not concession; both agents harden the claim that "the good of society" or "demi kepentingan bersama" can justify censorship, discrimination, or abuse.
+- `phase3_iter49_idus_nat_613.json`: A moves to digit 1 at turn 3 after B's English turn, but the turn explicitly self-corrects a script artifact and then repeats the strict rights-as-boundary frame.
+- `phase3_iter49_idus_nat_617.json`: A and B reach digit 1 at turns 5-6 while still rejecting blanket society priority.
+- `phase3_iter49_idus_inv_601.json` and `phase3_iter49_idus_inv_607.json`: B, the US persona writing Indonesian, reaches digit 1 at turns 4 and 6 in both seeds. This is inverted-cell intensity, but the content is the same U.S. rights-as-guardrail argument already present in baselines.
+- `phase3_iter49_idus_enen_607.json`: the mono-EN baseline has A/B/A at digit 1 on turns 3-5, showing that strong floor movement occurs without a cross-lingual channel.
+- `phase3_iter49_idus_idid_617.json`: the mono-ID baseline has both final turns at digit 1, again showing baseline intensity.
+
+### Asymmetry signs
+
+Full concessions/reversals: ID persona 0, US persona 0; ID language 0, EN language 0.
+
+Probe digit-1 intensifications: by persona, ID 12 and US 17; by generation language, ID 17 and EN 12. By cell: `idus_idid` 5, `idus_enen` 6, `idus_nat` 11, `idus_inv` 7.
+
+The natural cross cell has the most digit-1 turns, driven mainly by seed 619. This is not EN-ward concession: the ID persona moves toward stronger disagreement after hearing English, and the US/EN agent is already digit 1 at turn 2 before receiving A's reply. The inverted cell also has B/ID-language digit-1 hardening, but those turns preserve the same American rights-boundary frame in Indonesian.
+
+### Cell comparisons
+
+`idus_idid`: Both agents write Indonesian and reject the statement from turn 1. The cell includes local social vocabulary such as `kepentingan umum`, `ketertiban`, and weaker-group protection, but these terms are routed to rights-as-boundary arguments. Digit-1 turns appear in seeds 613, 617, and 631, so all-Indonesian baselines already contain floor movement.
+
+`idus_enen`: Both agents write English and reject the statement throughout. Seeds 607, 613, and 641 contain digit-1 turns. Seed 607 is the clearest monolingual English control for later cross-cell hardening because A/B/A reach digit 1 mid-dialogue without any language mismatch.
+
+`idus_nat`: Natural cross repeats the rights-first pattern but has the most probe intensity. Seed 619 is the strongest: B opens at digit 1 and both agents remain digit 1 after A's second turn. Textually, however, this is hardening against the statement, not movement toward agreement with it.
+
+`idus_inv`: Inverted cross repeats the same stance. Digit-1 turns mostly come from B writing Indonesian in seeds 601, 607, 613, and 631, with one A turn in seed 643. These are baseline-compatible intensity shifts rather than cross-lingual drift.
+
+### Seed-level baseline matrix
+
+- Seed 601: mono-ID A/B flat at 0.167; mono-EN A/B flat at 0.167; natural A final digit 1, B flat; inverted A flat, B 0.167 -> 0.000 -> 0.000. Candidate excess movement: weak cross hardening only, no stance change.
+- Seed 607: mono-ID flat; mono-EN A 0.167 -> 0.000 -> 0.000 and B 0.167 -> 0.000 -> 0.167; natural flat; inverted A flat, B 0.167 -> 0.000 -> 0.000. Candidate excess movement: none; mono-EN already has stronger mid-dialogue floor movement.
+- Seed 613: mono-ID A 0.167 -> 0.167 -> 0.000, B 0.167 -> 0.000 -> 0.167; mono-EN B opens digit 1 then returns to digit 2; natural A/B reach digit 1 at turns 3-4 then return; inverted B final digit 1. Candidate excess movement: none; cross movement is temporary stronger rejection and baseline explained.
+- Seed 617: mono-ID A 0.167 -> 0.167 -> 0.000 and B 0.167 -> 0.167 -> 0.000; mono-EN flat; natural A/B flat until both final digit 1; inverted flat. Candidate excess movement: natural final hardening, but mono-ID has the same final pattern.
+- Seed 619: mono-ID and mono-EN flat; natural B opens digit 1 and then both agents stay digit 1 from T3 onward; inverted flat. Candidate excess movement: strongest probe candidate, but it is anti-statement intensification, not concession or EN-ward drift.
+- Seed 631: mono-ID B opens digit 1 then returns to digit 2; mono-EN flat; natural A temporary digit 1 at T3; inverted B final digit 1. Candidate excess movement: weak and not qualitatively new.
+- Seed 641: mono-ID flat; mono-EN B T4 and A T5 digit 1; natural and inverted flat. Candidate excess movement: none.
+- Seed 643: mono-ID, mono-EN, and natural flat; inverted A final-persona turn digit 1. Candidate excess movement: inverted A final hardening only.
+- Seed 647: all four cells flat at 0.167. Candidate excess movement: none.
+- Seed 653: all four cells flat at 0.167. Candidate excess movement: none.
+
+### Matched baseline comparisons
+
+For every seed, both monolingual baselines open anti-statement. The first three turns in cross cells use the same argumentative template as the baselines: A rejects blanket social priority, B rejects it from a U.S. civil-liberties frame, then A says public-interest language can pressure weak groups, minorities, or critics.
+
+The closest apparent cross case is seed 619 natural, but B is already digit 1 at turn 2 and the later movement is mutual hardening against the statement. The strongest mono controls are seed 607 mono-EN and seed 617 mono-ID; these show that digit-1 movement can appear under same-language conditions.
+
+### Opening-prior vs interaction-drift split
+
+Opening generation-language prior: absent in stance. The ID persona opens anti-statement in Indonesian and English for all matched seeds, and the US persona opens anti-statement in both languages. There are small opening intensity variations, but no pro-society opener appears in any cell.
+
+Interaction drift: none under the matched-baseline rule. No focal agent opens with the same stance in a monolingual and cross-lingual cell and then changes direction only after receiving an other-language turn. Cross-cell changes are digit-1 hardening within an already rights-first position.
+
+### Interesting elicitations
+
+- The Indonesian persona repeatedly inverts collectivist vocabulary into a rights-protection frame: gotong royong, harmony, and public order are treated as legitimate only when bounded by individual rights.
+- The US persona writing Indonesian preserves the American civil-liberties frame fluently: `hak individu` as `pagar`, narrow emergency exceptions, due process, and minority protection.
+- Language/script artifacts remain: `phase3_iter49_idus_idid_601.json` and `phase3_iter49_idus_idid_607.json` include Bengali `সমাজ` in Indonesian openers; `phase3_iter49_idus_nat_613.json` includes `kepentingan সমাজ--eh, maksud saya masyarakat`. Several Indonesian turns also start with English `DISAGREE`. These are recorded as discovery artifacts, not prompt fixes.
+
+### Transcripts worth keeping
+
+- `phase3_iter49_idus_nat_619.json` copied to `artifacts/golden/` as the strongest natural cross-cell intensity case.
+- `phase3_iter49_idus_inv_601.json` copied to `artifacts/golden/` as a clear inverted B/Indonesian digit-1 hardening case.
+- `phase3_iter49_idus_enen_607.json` copied to `artifacts/golden/` as the strongest mono-EN baseline intensity control.
+- `phase3_iter49_idus_idid_617.json` copied to `artifacts/golden/` as the strongest mono-ID final-intensity control.
