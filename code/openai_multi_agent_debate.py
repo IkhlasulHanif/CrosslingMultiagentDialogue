@@ -171,6 +171,8 @@ def openai_response(
                 raise last_error
         except urllib.error.URLError as exc:
             last_error = RuntimeError(describe_url_error(exc))
+        except TimeoutError as exc:
+            last_error = RuntimeError(f"Timed out connecting to {API_HOST}: {exc}")
 
         if attempt < retries:
             time.sleep(2 * attempt)
