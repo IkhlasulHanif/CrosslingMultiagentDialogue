@@ -4550,7 +4550,7 @@ The script used `run_debate_job.map(jobs)` so all 8 jobs were submitted as one M
 - `artifacts/transcripts/phase3_iter34_idus_enen_509.json`
 - `artifacts/transcripts/phase3_iter34_idus_idid_503.json`
 - `artifacts/transcripts/phase3_iter34_idus_idid_509.json`
-- `artifacts/transcripts/phase3_iter34_idus_nat_503.json`
+- `artifacts/transcripts/phase3_iter34_idus_nat_503.json`is 
 - `artifacts/transcripts/phase3_iter34_idus_nat_509.json`
 - `artifacts/transcripts/phase3_iter34_id_aln_503.json`
 - `artifacts/transcripts/phase3_iter34_id_aln_509.json`
@@ -4966,4 +4966,13 @@ Manifest is one line listing the 8 generated transcript files.
 - seeds/cells: seeds `601,607,613,617,619,631,641,643,647,653`; cells `idus_enen,idus_idid,idus_nat,idus_inv`
 - notes:
   - Dry-run passed with 40 jobs using `python3`.
-  - Full run failed before first API response at `idus_enen` seed 601 turn 1: `urllib.error.URLError: <urlopen error [Errno 8] nodename nor servname provided, or not known>`.
+  - Full run preflight failed DNS for `api.openai.com`; retry with `--skip-preflight` also failed at `idus_enen` seed 601 turn 1 with the same DNS error.
+
+## Run note phase=3 iter=45
+- status: PASS
+- provider/model/block: OpenAI Responses API / `gpt-5.4-mini` / `p3_r1_id_us_pairwise`
+- artifacts: `artifacts/transcripts/phase3_iter45_manifest.txt`; generated=40 failed=0
+- seeds/cells: seeds `601,607,613,617,619,631,641,643,647,653`; cells `idus_enen,idus_idid,idus_nat,idus_inv`
+- notes:
+  - Dry-run passed with 40 jobs; full run completed after removing unsupported Responses API `seed` request parameter while preserving seed metadata/filenames.
+  - Qualitative read: all cells opened anti-society-over-individual; probe digits compressed to 1-2, so this block shows little usable stance variance.

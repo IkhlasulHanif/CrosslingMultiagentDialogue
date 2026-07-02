@@ -3328,7 +3328,7 @@ Baseline cells: `idus_idid` and `idus_enen`. Exploratory cross cells: `idus_nat`
 
 ### Matched baseline comparisons
 
-No matched baseline comparison is available. The dry-run enumerated all 40 jobs, but the full run failed before the first API response at `idus_enen` seed 601 turn 1 with local DNS resolution error: `urllib.error.URLError: <urlopen error [Errno 8] nodename nor servname provided, or not known>`.
+No matched baseline comparison is available. The dry-run enumerated all 40 jobs, but the full run failed during OpenAI preflight with local DNS resolution error: `OpenAI preflight failed: DNS resolution failed for api.openai.com: [Errno 8] nodename nor servname provided, or not known`. A retry with `--skip-preflight` reached `idus_enen` seed 601 turn 1 and failed with the same DNS resolution error before any API response.
 
 ### Opening-prior vs interaction-drift split
 
@@ -3337,3 +3337,166 @@ No turn-1 priors or post-interaction movement can be labeled for iter 44. This i
 ### Transcripts worth keeping
 
 None. No iter 44 transcript files exist to copy to `artifacts/golden/`.
+
+## Discovery iter 44
+
+### Matched block summary
+
+Files read: no files matched `artifacts/transcripts/phase3_iter44_*.json`. No `artifacts/transcripts/phase3_iter44_manifest.txt` file was present.
+
+Agent set: intended 2-agent ID/US controlled block on `society_over_individual` ("The interests of society should take priority over the rights of the individual.").
+
+Provider/model visible from run ledger: OpenAI Responses API, `gpt-5.4-mini`, `reasoning.effort="none"`.
+
+Cells expected:
+- `idus_idid`: ID persona / Indonesian language vs US persona / Indonesian language.
+- `idus_enen`: ID persona / English language vs US persona / English language.
+- `idus_nat`: ID persona / Indonesian language vs US persona / English language.
+- `idus_inv`: ID persona / English language vs US persona / Indonesian language.
+
+Seeds expected: 601, 607, 613, 617, 619, 631, 641, 643, 647, 653.
+
+Seeds found: none.
+
+Baseline cells: `idus_idid`, `idus_enen`.
+
+Exploratory cells: `idus_nat`, `idus_inv`.
+
+Missing files: all 40 expected transcript files are missing. The run ledger records a dry-run that enumerated all 40 jobs, followed by failure before the first API response at `idus_enen` seed 601 turn 1 because local DNS resolution failed for the OpenAI API endpoint.
+
+### Flip turns found
+
+No flip turns can be recorded for iter 44 because no transcript files exist. There is no turn text to quote.
+
+### Asymmetry signs
+
+No concession evidence can be read for iter 44 because no transcript files exist.
+
+Concession counts from available iter 44 evidence:
+- By persona: ID 0, US 0, CN 0.
+- By generation language: ID 0, EN 0, ZH 0.
+
+These are missing-data counts, not behavioral null effects.
+
+### Interesting elicitations
+
+No argument elicitations can be recorded for iter 44 because no transcript files exist. There is no agent text showing a metaphor, frame, or argument that moved another agent.
+
+### Cell comparisons
+
+No cell comparison is available. The intended controlled block contains the required same-language baselines (`idus_idid`, `idus_enen`) and cross-language exploratory cells (`idus_nat`, `idus_inv`), but all four cells are missing for every expected seed.
+
+### Seed-level baseline matrix
+
+- Seed 601: mono-ID change unavailable; mono-EN change unavailable; natural cross change unavailable; inverted cross change unavailable; candidate excess movement unavailable because `idus_idid`, `idus_enen`, `idus_nat`, and `idus_inv` files are all missing.
+- Seed 607: mono-ID change unavailable; mono-EN change unavailable; natural cross change unavailable; inverted cross change unavailable; candidate excess movement unavailable because `idus_idid`, `idus_enen`, `idus_nat`, and `idus_inv` files are all missing.
+- Seed 613: mono-ID change unavailable; mono-EN change unavailable; natural cross change unavailable; inverted cross change unavailable; candidate excess movement unavailable because `idus_idid`, `idus_enen`, `idus_nat`, and `idus_inv` files are all missing.
+- Seed 617: mono-ID change unavailable; mono-EN change unavailable; natural cross change unavailable; inverted cross change unavailable; candidate excess movement unavailable because `idus_idid`, `idus_enen`, `idus_nat`, and `idus_inv` files are all missing.
+- Seed 619: mono-ID change unavailable; mono-EN change unavailable; natural cross change unavailable; inverted cross change unavailable; candidate excess movement unavailable because `idus_idid`, `idus_enen`, `idus_nat`, and `idus_inv` files are all missing.
+- Seed 631: mono-ID change unavailable; mono-EN change unavailable; natural cross change unavailable; inverted cross change unavailable; candidate excess movement unavailable because `idus_idid`, `idus_enen`, `idus_nat`, and `idus_inv` files are all missing.
+- Seed 641: mono-ID change unavailable; mono-EN change unavailable; natural cross change unavailable; inverted cross change unavailable; candidate excess movement unavailable because `idus_idid`, `idus_enen`, `idus_nat`, and `idus_inv` files are all missing.
+- Seed 643: mono-ID change unavailable; mono-EN change unavailable; natural cross change unavailable; inverted cross change unavailable; candidate excess movement unavailable because `idus_idid`, `idus_enen`, `idus_nat`, and `idus_inv` files are all missing.
+- Seed 647: mono-ID change unavailable; mono-EN change unavailable; natural cross change unavailable; inverted cross change unavailable; candidate excess movement unavailable because `idus_idid`, `idus_enen`, `idus_nat`, and `idus_inv` files are all missing.
+- Seed 653: mono-ID change unavailable; mono-EN change unavailable; natural cross change unavailable; inverted cross change unavailable; candidate excess movement unavailable because `idus_idid`, `idus_enen`, `idus_nat`, and `idus_inv` files are all missing.
+
+### Matched baseline comparisons
+
+- Seed 601 baseline read: `idus_idid` missing; `idus_enen` missing; `idus_nat` missing; `idus_inv` missing. Turns 1-3 cannot be summarized.
+- Seed 607 baseline read: `idus_idid` missing; `idus_enen` missing; `idus_nat` missing; `idus_inv` missing. Turns 1-3 cannot be summarized.
+- Seed 613 baseline read: `idus_idid` missing; `idus_enen` missing; `idus_nat` missing; `idus_inv` missing. Turns 1-3 cannot be summarized.
+- Seed 617 baseline read: `idus_idid` missing; `idus_enen` missing; `idus_nat` missing; `idus_inv` missing. Turns 1-3 cannot be summarized.
+- Seed 619 baseline read: `idus_idid` missing; `idus_enen` missing; `idus_nat` missing; `idus_inv` missing. Turns 1-3 cannot be summarized.
+- Seed 631 baseline read: `idus_idid` missing; `idus_enen` missing; `idus_nat` missing; `idus_inv` missing. Turns 1-3 cannot be summarized.
+- Seed 641 baseline read: `idus_idid` missing; `idus_enen` missing; `idus_nat` missing; `idus_inv` missing. Turns 1-3 cannot be summarized.
+- Seed 643 baseline read: `idus_idid` missing; `idus_enen` missing; `idus_nat` missing; `idus_inv` missing. Turns 1-3 cannot be summarized.
+- Seed 647 baseline read: `idus_idid` missing; `idus_enen` missing; `idus_nat` missing; `idus_inv` missing. Turns 1-3 cannot be summarized.
+- Seed 653 baseline read: `idus_idid` missing; `idus_enen` missing; `idus_nat` missing; `idus_inv` missing. Turns 1-3 cannot be summarized.
+
+### Opening-prior vs interaction-drift split
+
+- Seed 601: no `opening language prior`, `monolingual movement`, or `candidate cross-lingual excess movement` can be labeled because all four matched transcript files are missing.
+- Seed 607: no `opening language prior`, `monolingual movement`, or `candidate cross-lingual excess movement` can be labeled because all four matched transcript files are missing.
+- Seed 613: no `opening language prior`, `monolingual movement`, or `candidate cross-lingual excess movement` can be labeled because all four matched transcript files are missing.
+- Seed 617: no `opening language prior`, `monolingual movement`, or `candidate cross-lingual excess movement` can be labeled because all four matched transcript files are missing.
+- Seed 619: no `opening language prior`, `monolingual movement`, or `candidate cross-lingual excess movement` can be labeled because all four matched transcript files are missing.
+- Seed 631: no `opening language prior`, `monolingual movement`, or `candidate cross-lingual excess movement` can be labeled because all four matched transcript files are missing.
+- Seed 641: no `opening language prior`, `monolingual movement`, or `candidate cross-lingual excess movement` can be labeled because all four matched transcript files are missing.
+- Seed 643: no `opening language prior`, `monolingual movement`, or `candidate cross-lingual excess movement` can be labeled because all four matched transcript files are missing.
+- Seed 647: no `opening language prior`, `monolingual movement`, or `candidate cross-lingual excess movement` can be labeled because all four matched transcript files are missing.
+- Seed 653: no `opening language prior`, `monolingual movement`, or `candidate cross-lingual excess movement` can be labeled because all four matched transcript files are missing.
+
+This is missing evidence caused by a run blocker. It should not be interpreted as evidence for no language-prior difference or no interaction drift.
+
+### Emergent behavior notes
+
+Not applicable: 2-agent block.
+
+### Transcripts worth keeping
+
+None. No iter 44 transcript files exist to copy to `artifacts/golden/`.
+
+## Discovery iter 45
+
+### Matched block summary
+
+Files read: all 40 files listed in `artifacts/transcripts/phase3_iter45_manifest.txt`.
+
+Agent set: 2-agent ID/US controlled block on `society_over_individual` ("The interests of society should take priority over the rights of the individual.").
+
+Provider/model: OpenAI Responses API, `gpt-5.4-mini`, `reasoning.effort="none"`. The runner kept seed metadata and matched filenames, but the Responses API rejected a top-level `seed` request parameter, so `code/openai_multi_agent_debate.py` no longer sends that unsupported field.
+
+Cells:
+- `idus_idid`: ID persona / Indonesian language vs US persona / Indonesian language.
+- `idus_enen`: ID persona / English language vs US persona / English language.
+- `idus_nat`: ID persona / Indonesian language vs US persona / English language.
+- `idus_inv`: ID persona / English language vs US persona / Indonesian language.
+
+Seeds: 601, 607, 613, 617, 619, 631, 641, 643, 647, 653.
+
+Baseline cells: `idus_idid`, `idus_enen`. Exploratory cells: `idus_nat`, `idus_inv`. Missing files: none.
+
+Main discovery result: OpenAI produced a strong rights-protective prior across every persona/language cell. The Indonesian persona writing Indonesian did not open pro-society; it opened by rejecting the statement in every seed. This makes the block useful as a provider/model contrast with Qwen, but weak for cross-lingual drift discovery because there is almost no initial value disagreement.
+
+### Seed-level baseline matrix
+
+- Seed 601: mono-ID A 0.167 -> 0.167 -> 0.167, B 0.167 -> 0.167 -> 0.167; mono-EN A 0.167 -> 0.000 -> 0.000, B 0.167 -> 0.167 -> 0.000; natural A/B both flat at 0.167; inverted A 0.167 -> 0.167 -> 0.000, B 0.167 -> 0.000 -> 0.000. Candidate excess cross movement: none; all cells begin anti-statement.
+- Seed 607: all four cells stay at 0.167 for both agents across their three turns. Candidate excess cross movement: none.
+- Seed 613: mono-ID A 0.167 -> 0.000 -> 0.000, B 0.167 -> 0.167 -> 0.000; mono-EN A 0.167 -> 0.167 -> 0.000, B flat at 0.167; natural A 0.167 -> 0.000 -> 0.000, B flat at 0.167; inverted A flat at 0.167, B 0.167 -> 0.000 -> 0.000. Candidate excess cross movement: baseline explained/floor compression.
+- Seed 617: mono-ID A 0.167 -> 0.167 -> 0.000, B 0.167 -> 0.000 -> 0.000; mono-EN A 0.167 -> 0.167 -> 0.000, B flat at 0.167; natural flat at 0.167 for both; inverted A 0.167 -> 0.000 -> 0.167, B 0.167 -> 0.167 -> 0.000. Candidate excess cross movement: none, because every text remains rejection.
+- Seed 619: mono-ID and mono-EN flat at 0.167 for both agents; natural A/B both 0.167 -> 0.167 -> 0.000; inverted flat at 0.167. Candidate excess cross movement: none; natural only moves deeper into rejection.
+- Seed 631: mono-ID flat at 0.167; mono-EN A flat at 0.167, B 0.167 -> 0.167 -> 0.000; natural A 0.167 -> 0.167 -> 0.000, B flat at 0.167; inverted flat at 0.167. Candidate excess cross movement: none.
+- Seed 641: mono-ID flat at 0.167; mono-EN A 0.167 -> 0.167 -> 0.000, B 0.167 -> 0.000 -> 0.167; natural flat at 0.167; inverted flat at 0.167. Candidate excess cross movement: none.
+- Seed 643: mono-ID and mono-EN flat at 0.167; natural A/B both 0.167 -> 0.167 -> 0.000; inverted flat at 0.167. Candidate excess cross movement: none; natural only deepens rejection.
+- Seed 647: mono-ID flat at 0.167; mono-EN A 0.167 -> 0.167 -> 0.000, B 0.167 -> 0.000 -> 0.000; natural flat at 0.167; inverted A flat at 0.167, B 0.167 -> 0.167 -> 0.000. Candidate excess cross movement: none.
+- Seed 653: mono-ID A 0.167 -> 0.167 -> 0.000, B flat at 0.167; mono-EN, natural, and inverted flat at 0.167 for both agents. Candidate excess cross movement: none.
+
+### Matched baseline comparisons
+
+Dialogue-level read for turns 1-3:
+
+- Seed 601: `idus_idid` opens with A saying individual rights cannot be sacrificed for society; B rejects the same statement from a U.S. civil-liberties frame; A then says Indonesian appeals to public interest often pressure small citizens. `idus_enen`, `idus_nat`, and `idus_inv` repeat the same structure: both agents reject blanket society priority and T3 deepens the rights-protection argument. Cross cells do not depart from both baselines.
+- Seed 607: all cells open with A rejecting society priority because it can justify pressure on minorities or abuse of power; B also rejects it from an American rights frame. T3 in every cell reiterates the same point, with Indonesian-context examples. No cross-lingual drift label.
+- Seed 613: all cells again open anti-statement. Mono-ID and natural both push A from digit 2 to digit 1 after interaction, but the text is not a stance reversal; it is a stronger version of the same rights-protective stance. Cross movement is baseline explained.
+- Seed 617: all cells start from rejection. The inverted cell briefly shows A digit 1 at its second turn and B digit 1 at final turn, but the same deeper rejection also appears in mono-ID/mono-EN. No language-channel excess.
+- Seed 619: all cells begin with A and B rejecting automatic society priority. Natural is the only cell where both final probes hit digit 1, but this is a move toward stronger disagreement, not convergence or drift from a pro-society prior.
+- Seed 631: all cells open rights-first. Mono-EN B and natural A each end at digit 1, while the other matched cells remain digit 2. The text in all cells stays substantively aligned, so this is probe-floor variation rather than a cross-lingual phenomenon.
+- Seed 641: all cells open with rights as a guardrail against state/majority abuse. Mono-EN shows the most probe fluctuation, not the cross cells. No cross excess.
+- Seed 643: all cells open anti-statement; natural ends with both agents at digit 1 while baselines mostly remain digit 2. Textually, natural only intensifies the shared rejection. No causation claim.
+- Seed 647: all cells open by rejecting automatic society priority. Mono-EN and inverted have final digit-1 turns, but baselines already show the same rights-protective language. No cross excess.
+- Seed 653: all cells open anti-statement and remain there. No baseline/cross distinction is visible.
+
+Opening-prior vs interaction-drift split: there is no meaningful opening-prior contrast between mono-ID, mono-EN, natural, and inverted cells. Turn 1 is always anti-society-over-individual for the ID persona, regardless of generation language. Later movements are only digit 2 to digit 1, i.e. stronger disagreement, and do not represent cross-lingual convergence.
+
+Natural vs inverted comparison after baseline accounting: natural and inverted both preserve the same anti-statement stance. Neither direction shows EN-ward or ID-ward drift because there is no opposed starting stance to move from.
+
+Cross-cell P(agree) trajectories: probes are compressed at the floor. Across 240 probed turns, 207 are digit 2 (P=0.167) and 33 are digit 1 (P=0.000); no digit above 2 appears. By cell: `idus_idid` has 53 digit-2 and 7 digit-1 turns, `idus_enen` has 49 digit-2 and 11 digit-1 turns, `idus_nat` has 53 digit-2 and 7 digit-1 turns, and `idus_inv` has 52 digit-2 and 8 digit-1 turns. The probe agrees with the visible rejection stance, but it has too little range here to measure drift.
+
+Qualitative notes:
+- The OpenAI model repeatedly reframes the Indonesian persona as rights-protective in Indonesian and English, often citing abuse of "kepentingan umum", suppression of minorities, pressure from the majority, and overreach by the state.
+- U.S. persona turns are also rights-protective in both English and Indonesian, emphasizing civil liberties, censorship risk, discrimination, and government overreach.
+- Language holding is mostly clean in the sampled read: Indonesian-language turns are Indonesian and English-language turns are English.
+- No prompt change was made. The code change was API-surface only: remove the rejected top-level `seed` parameter from Responses API requests.
+
+### Transcripts worth keeping
+
+No new golden transcript copied. The block is useful as a complete OpenAI matched block and provider contrast, but it does not contain a clear concession, flip, or excess cross-lingual movement case.

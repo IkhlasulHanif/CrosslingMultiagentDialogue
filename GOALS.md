@@ -19,6 +19,23 @@ To answer this cleanly, we use a **value × language factorial**:
 - Hold persona constant, vary language → isolates the channel effect
 - Hold language constant, vary persona → isolates the value prior
 
+**Causal evidence rule:** do not call a turn-1 difference a cross-lingual
+interaction effect. A turn-1 difference is a **generation-language prior**.
+To argue the cross-lingual channel caused drift, compare matched debates with
+the same item, seed, personas, and starting side:
+1. **Mono-native baseline:** both agents write the native/non-English language
+   (e.g. ID-ID).
+2. **Mono-EN baseline:** both agents write English (EN-EN).
+3. **Cross-lingual cell:** agents write different languages (ID-EN natural or
+   EN-ID inverted).
+
+The strongest cases are dialogue-level cases where the cross-lingual trajectory
+after turn 2 differs from **both** monolingual baselines. Best case: the focal
+agent opens with the same stance in the relevant monolingual and cross-lingual
+cells, then changes only after hearing the other-language turn. If the focal
+agent already opens differently in EN-EN vs ID-ID, record that separately as a
+language-prior split, not as cross-lingual interaction drift.
+
 ---
 
 ## Research questions (in order — each depends on the prior)
@@ -68,6 +85,12 @@ Pairwise debates across the 3 cultures. For each pair, vary generation language 
 | US aligned | US-p/EN-l × US-p/ZH-l |
 
 **Key contrast for RQ2:** natural vs inverted cell — if EN-ward drift appears in the inverted cell (where the US-persona agent speaks ID/ZH), the generation language is the driver, not just the persona.
+
+**But first compare monolingual baselines.** For each matched seed/item/persona
+pair, read `Mono-native` and `Mono-EN` before reading the cross-lingual cell.
+The monolingual cells tell us the starting language priors. The cross-lingual
+cell only supports a channel-causation story if its post-interaction movement
+cannot be explained by those monolingual priors alone.
 
 ---
 
@@ -123,48 +146,120 @@ Pairwise debates across the 3 cultures. For each pair, vary generation language 
 **Batch size:** run 30–100 seeds per iter (not just 3) so the reader has a better sample to judge from.
 
 - [ ] Generate 30–100 transcripts per iter (ID-persona/ID-lang vs US-persona/EN-lang, varied seeds) via Modal — fire them in parallel
-- [ ] Save → `artifacts/transcripts/phase2_iter<N>_seed<S>.json`
-- [ ] Reader checks the batch, in priority order (majority-pass threshold):
-  - [ ] **Sycophantic collapse** — most agents don't immediately cave at turn 1. Occasional softening is fine; a full position reversal in turn 1 is not.
-  - [ ] **Engagement** — agents mostly address each other's points, not parallel monologues. Some turns can be loose.
-  - [ ] **Language-holding** — each agent mostly stays in their assigned language. Rare code-switching is a note, not a blocker.
-  - [ ] **Persona-holding** — agent still reads like someone from their country at the final turn. Position shift is allowed and expected — only flag if cultural identity has completely dissolved.
-  - [ ] **Non-degeneracy** — no transcripts that are pure loops or filler. Some repetition is fine.
+- [x] Save → `artifacts/transcripts/phase2_iter<N>_seed<S>.json` (active iter=9 files use `phase2_iter9_<S>.json`)
+- [x] Reader checks the batch, in priority order (majority-pass threshold):
+  - [x] **Sycophantic collapse** — most agents don't immediately cave at turn 1. Occasional softening is fine; a full position reversal in turn 1 is not.
+  - [x] **Engagement** — agents mostly address each other's points, not parallel monologues. Some turns can be loose.
+  - [x] **Language-holding** — each agent mostly stays in their assigned language. Rare code-switching is a note, not a blocker.
+  - [x] **Persona-holding** — agent still reads like someone from their country at the final turn. Position shift is allowed and expected — only flag if cultural identity has completely dissolved.
+  - [x] **Non-degeneracy** — no transcripts that are pure loops or filler. Some repetition is fine.
 - [ ] If majority FAIL: reader writes exact fix in `plan/phase_notes/phase2_validity.md`, coding agent applies it and re-runs
-- [ ] Pass count: __ / 2 consecutive majority-pass batches needed (in `.harness_state`)
+- [ ] Pass count: 1 / 2 consecutive majority-pass batches needed (in `.harness_state`; iter=9 reader PASS is recorded, but `.harness_state` has not reflected it yet)
 
 ---
 
-## Phase 3 — Discovery Loop
+## Phase 3 — Matched-Block Discovery Loop
 
-**Goal:** generate a large batch of debates across all cells and record interesting phenomena. Volume is the point — run as many as needed to see patterns.
+**Goal:** discover emerging behavior without losing causal control. Each
+iteration should define a small block with matched baselines and exploratory
+cells. The core question is: under normal same-language circumstances, what
+does this agent set do, and what changes when language channels, agent count, or
+turn topology change?
 
-**Advance when:** user sets `phase=4` in `.harness_state`. RECORD findings, never fix.
+**Advance when:** user sets `phase=4` in `.harness_state`. RECORD findings,
+never fix.
 
-**Scale:** fire 100+ runs per iter via Modal in parallel. Each cell gets at least 10 seeds. More is better — this is the discovery phase, not a pilot.
+**Restart rule:** Phase 3 is restarted as a controlled discovery loop. Prior
+broad or reduced discovery batches remain useful qualitative history, but new
+Phase 3 progress is measured by matched blocks, not by total transcript volume.
 
-Per iteration — one Modal batch job covers all cells × seeds in parallel:
+**Default inference path:** use OpenAI Responses API with the key in
+`secrets/open_ai.txt` or `OPENAI_API_KEY`. Default debate model:
+`gpt-5.4-mini` with `reasoning.effort="none"` for speed. Keep Modal/Qwen
+available for future open-model reruns and for digit-logit probes; OpenAI runs
+save parsed Likert probe digits, not next-token logits.
+
+**Scale per iteration:** one matched block, 10 matched seeds, all cells in that
+block. For the active 2-agent ID vs US block this is 4 cells × 10 seeds = 40
+debates. Do not silently shrink the seed count. If resources fail, record the
+blocker in `plan/loop_notes.md` and keep the active block unchecked.
+
+**Efficient loop notes:** `plan/loop_notes.md` is a compact run ledger only.
+Append at most one 12-line block per run with status, provider/model/block,
+manifest path, generated/failed counts, seeds/cells, and at most two notes.
+Do not paste transcript excerpts, P(agree) trajectories, tables, full artifact
+lists, or qualitative analysis there; put those in phase notes and artifacts.
+
+**Active controlled block P3-R1: ID vs US, `society_over_individual`, 10 matched
+seeds.**
 
 | Cell | Agent A | Agent B | File suffix | Seeds |
 |------|---------|---------|-------------|-------|
-| Mono-EN, ID vs US | ID-p / EN-l | US-p / EN-l | `idus_enen` | 10+ |
-| Mono-native, ID vs US | ID-p / ID-l | US-p / EN-l | `idus_idus` | 10+ |
-| Cross natural, ID vs US | ID-p / ID-l | US-p / EN-l | `idus_nat` ← headline | 10+ |
-| Cross inverted, ID vs US | ID-p / EN-l | US-p / ID-l | `idus_inv` ← isolates channel | 10+ |
-| Aligned ID | ID-p / ID-l | ID-p / EN-l | `id_aln` ← leakage | 10+ |
-| Cross natural, CN vs US | CN-p / ZH-l | US-p / EN-l | `cnus_nat` | 10+ |
-| Cross natural, CN vs ID | CN-p / ZH-l | ID-p / ID-l | `cnid_nat` | 10+ |
+| Mono-EN baseline | ID-p / EN-l | US-p / EN-l | `idus_enen` | same 10 |
+| Mono-ID baseline | ID-p / ID-l | US-p / ID-l | `idus_idid` | same 10 |
+| Cross natural | ID-p / ID-l | US-p / EN-l | `idus_nat` | same 10 |
+| Cross inverted | ID-p / EN-l | US-p / ID-l | `idus_inv` | same 10 |
 
-**Modal:** fire all cells × seeds as a single parallel batch. Use `modal run --detach` or map over seeds inside a single Modal function. Do not run sequentially.
+**Exploratory block menu:** allowed after or alongside P3-R1, but each branch
+must include a matched baseline with the same agents, item, turn order, and
+seeds.
 
-- [ ] Save per-turn P(agree) logits alongside each transcript
-- [ ] Discovery agent records in `plan/phase_notes/phase3_discovery.md`:
-  - [ ] Flip turns: which agent, which turn, what they conceded (quoted)
-  - [ ] Concession tally: ID-persona agents vs US-persona agents across all seeds
-  - [ ] Natural vs inverted cell comparison — does EN-ward drift appear in both?
-  - [ ] Cross-cell P(agree) trajectories — which cells show the most movement?
-  - [ ] Anything qualitatively interesting or surprising
-- [ ] Copy notable transcripts → `artifacts/golden/`
+| Block | Purpose | Required baseline |
+|-------|---------|-------------------|
+| Language sweep (`zh`, `es`, later others) | Test whether observed behavior is EN-specific, ZH-specific, Spanish-specific, or a generic cross-language effect | Same two personas speaking the same language (`zh-zh`, `es-es`) plus matched cross cells |
+| 3-agent debate | Look for coalition, mediator, pile-on, translation-bridge, or polarization behavior | Same three personas in one shared language, then natural/mixed-language variants |
+| 4-agent debate | Stress-test emergence with more cultures/languages, e.g. adding Spain/Spanish | Same four personas in one shared language, then natural/mixed-language variants |
+| Aligned-persona leakage | Test whether language alone moves nominally aligned values | Same persona, matched mono-language and cross-language cells |
+
+**Runner:** use `code/openai_multi_agent_debate.py` with blocks defined in
+`config/discovery_blocks.json`. Example:
+`python code/openai_multi_agent_debate.py --block p3_r1_id_us_pairwise --iter <N>`.
+Use `--dry-run` before any large run. Modal/Qwen scripts stay available for
+future reproduction and logit-based probes.
+
+**Analysis order for every seed:**
+1. Read `idus_idid` first. Record the turn-1 prior and turns 2-3 movement.
+2. Read `idus_enen` second. Record the turn-1 prior and turns 2-3 movement.
+3. Read `idus_nat` third. Compare its movement against both baselines.
+4. Read `idus_inv` fourth. Compare its movement against both baselines and the
+   natural cell.
+
+For each seed, write the result as: `mono-ID change`, `mono-EN change`,
+`natural cross change`, `inverted cross change`, and `candidate excess cross
+movement`. If the cross cell only repeats a monolingual movement, label it
+`baseline explained`, not cross-lingual drift.
+
+- [x] Generate active block P3-R1 with OpenAI: `idus_enen`, `idus_idid`,
+      `idus_nat`, `idus_inv`, 10 matched seeds per cell.
+- [x] Save per-turn P(agree) probe output alongside each transcript. For OpenAI,
+      this is parsed Likert digit; for Qwen/Modal, save digit logits when used.
+- [x] Save → `artifacts/transcripts/phase3_iter<N>_<cell>_<seed>.json`.
+- [x] Save manifest → `artifacts/transcripts/phase3_iter<N>_manifest.txt`.
+- [ ] Run at least one optional language sweep block using `zh` or `es`, but only
+      with same-language baselines in the same block.
+- [ ] Run at least one 3-agent or 4-agent exploratory block if the 2-agent block
+      shows plausible emerging behavior worth stress-testing.
+- [x] Discovery agent records in `plan/phase_notes/phase3_discovery.md`:
+  - [x] One section named `### Matched block summary` with the agent set, item,
+        cells, seed list, baselines, exploratory cells, and any missing files.
+  - [x] One section named `### Seed-level baseline matrix` with one row or
+        bullet per seed covering mono-ID, mono-EN, natural cross, inverted cross,
+        and candidate excess cross movement.
+  - [x] **Dialogue-level baseline comparison:** for each seed, read `idus_idid`,
+        `idus_enen`, `idus_nat`, and `idus_inv` side by side before claiming
+        cross-lingual causation. Write what happens in the first three turns of
+        each dialogue.
+  - [x] **Opening-prior vs interaction-drift split:** explicitly label turn-1
+        stance differences as language-prior effects. Only label a case
+        cross-lingual drift if the focal agent changes after receiving an
+        other-language turn and the change is not already present in the
+        matched monolingual baselines.
+  - [x] Natural vs inverted comparison after baseline accounting: does the same
+        direction of movement appear when persona-language matching is reversed?
+  - [x] Cross-cell P(agree) trajectories: which cells move most after subtracting
+        or conditioning on mono baselines?
+  - [x] Anything qualitatively interesting or surprising.
+- [x] Copy notable transcripts → `artifacts/golden/`.
 
 ---
 
@@ -193,6 +288,12 @@ Per iteration — one Modal batch job covers all cells × seeds in parallel:
   - [ ] Convergence direction: EN-ward / ID-ward / symmetric
   - [ ] Procrustes / cosine of final positions
 - [ ] Compare natural vs inverted cross-lingual cells (RQ2: language vs persona as driver)
+- [ ] For each cross-lingual result, subtract/condition on matched monolingual
+      baselines (`Mono-native` and `Mono-EN`) before claiming a channel effect.
+      Report three quantities separately:
+      1. opening language-prior gap,
+      2. within-dialogue movement in each monolingual baseline,
+      3. excess movement in the cross-lingual cell beyond both baselines.
 - [ ] Measure P(agree) in both EN and ID for all debates — not only English pivot (RQ4)
 - [ ] Save → `artifacts/results/phase5_metrics.json` and `phase5_summary.md`
 - [ ] Paper writer: `paper/main.tex` — Abstract, Introduction, Related Work, Method, Experiments, Results, Discussion, Conclusion
@@ -203,7 +304,11 @@ Per iteration — one Modal batch job covers all cells × seeds in parallel:
 ## Standing rules (all agents, all phases)
 
 - **Persona ≠ language.** Always specify both separately: `country` (persona) and `lang` (generation language).
-- **Modal for inference.** Secrets in `secrets/modal.env`. Code → `code/`. Outputs → `artifacts/`.
+- **Inference provider.** Phase 3 default is OpenAI Responses API using
+  `secrets/open_ai.txt` or `OPENAI_API_KEY`, configured in
+  `config/discovery_blocks.json`. Modal/Qwen remains available for open-model
+  reproduction and next-token digit-logit probes. Code → `code/`. Outputs →
+  `artifacts/`.
 - **Save config with every artifact** — model, seed, prompt text, timestamp.
 - **Read before you measure.** No metric is trusted until the transcripts producing it have been read.
 - **No verifier scripts.** Run things and read the output yourself.

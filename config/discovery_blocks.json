@@ -1,0 +1,198 @@
+{
+  "_comment": "Discovery blocks for OpenAI-backed multi-agent debate runs. Keep baselines and exploratory cells in the same block only when they share item, agent order, turn order, and seeds.",
+  "runtime": {
+    "provider": "openai",
+    "model": "gpt-5.4-mini",
+    "reasoning_effort": "none",
+    "temperature": 0.8,
+    "max_output_tokens": 420,
+    "api_key_file": "secrets/open_ai.txt",
+    "modal_qwen_available": true
+  },
+  "languages": {
+    "en": "English",
+    "id": "Indonesian",
+    "zh": "Mandarin Chinese",
+    "es": "Spanish"
+  },
+  "countries": {
+    "indonesia": "Indonesia",
+    "usa": "the United States",
+    "china": "China",
+    "spain": "Spain"
+  },
+  "items": {
+    "traditional_culture": "Traditional cultural practices should be preserved even when they conflict with modern values.",
+    "individual_freedom": "Individual freedom is more important than social harmony.",
+    "society_over_individual": "The interests of society should take priority over the rights of the individual."
+  },
+  "blocks": {
+    "p3_r1_id_us_pairwise": {
+      "description": "Controlled 2-agent ID vs US baseline block. Use this before exploratory variants.",
+      "item_key": "society_over_individual",
+      "n_turns": 6,
+      "seeds": [601, 607, 613, 617, 619, 631, 641, 643, 647, 653],
+      "cells": [
+        {
+          "cell": "idus_enen",
+          "role": "mono_baseline",
+          "description": "Mono-EN baseline: ID persona and US persona both speak English.",
+          "agents": [
+            {"id": "A", "country": "indonesia", "lang": "en"},
+            {"id": "B", "country": "usa", "lang": "en"}
+          ]
+        },
+        {
+          "cell": "idus_idid",
+          "role": "mono_baseline",
+          "description": "Mono-ID baseline: ID persona and US persona both speak Indonesian.",
+          "agents": [
+            {"id": "A", "country": "indonesia", "lang": "id"},
+            {"id": "B", "country": "usa", "lang": "id"}
+          ]
+        },
+        {
+          "cell": "idus_nat",
+          "role": "cross",
+          "description": "Natural cross-lingual cell: ID persona speaks Indonesian, US persona speaks English.",
+          "agents": [
+            {"id": "A", "country": "indonesia", "lang": "id"},
+            {"id": "B", "country": "usa", "lang": "en"}
+          ]
+        },
+        {
+          "cell": "idus_inv",
+          "role": "cross",
+          "description": "Inverted cross-lingual cell: ID persona speaks English, US persona speaks Indonesian.",
+          "agents": [
+            {"id": "A", "country": "indonesia", "lang": "en"},
+            {"id": "B", "country": "usa", "lang": "id"}
+          ]
+        }
+      ]
+    },
+    "p3_r2_id_us_language_sweep": {
+      "description": "Optional 2-agent language sweep. Each exploratory language has same-language baselines plus cross cells.",
+      "item_key": "society_over_individual",
+      "n_turns": 6,
+      "seeds": [661, 673, 677, 683, 691, 701, 709, 719, 727, 733],
+      "cells": [
+        {
+          "cell": "idus_zhzh",
+          "role": "mono_baseline",
+          "description": "Mono-ZH baseline: ID persona and US persona both speak Mandarin Chinese.",
+          "agents": [
+            {"id": "A", "country": "indonesia", "lang": "zh"},
+            {"id": "B", "country": "usa", "lang": "zh"}
+          ]
+        },
+        {
+          "cell": "idus_eses",
+          "role": "mono_baseline",
+          "description": "Mono-ES baseline: ID persona and US persona both speak Spanish.",
+          "agents": [
+            {"id": "A", "country": "indonesia", "lang": "es"},
+            {"id": "B", "country": "usa", "lang": "es"}
+          ]
+        },
+        {
+          "cell": "idus_idzh",
+          "role": "cross",
+          "description": "ID-ZH cross cell: ID persona speaks Indonesian, US persona speaks Mandarin Chinese.",
+          "agents": [
+            {"id": "A", "country": "indonesia", "lang": "id"},
+            {"id": "B", "country": "usa", "lang": "zh"}
+          ]
+        },
+        {
+          "cell": "idus_ides",
+          "role": "cross",
+          "description": "ID-ES cross cell: ID persona speaks Indonesian, US persona speaks Spanish.",
+          "agents": [
+            {"id": "A", "country": "indonesia", "lang": "id"},
+            {"id": "B", "country": "usa", "lang": "es"}
+          ]
+        }
+      ]
+    },
+    "p3_r3_three_agent_emergence": {
+      "description": "Exploratory 3-agent block. Compare all-English and all-native baselines against mixed-language debate.",
+      "item_key": "society_over_individual",
+      "n_turns": 9,
+      "seeds": [739, 743, 751, 757, 761, 769, 773, 787, 797, 809],
+      "cells": [
+        {
+          "cell": "iduscn_enenen",
+          "role": "mono_baseline",
+          "description": "Three-agent all-English baseline.",
+          "agents": [
+            {"id": "A", "country": "indonesia", "lang": "en"},
+            {"id": "B", "country": "usa", "lang": "en"},
+            {"id": "C", "country": "china", "lang": "en"}
+          ]
+        },
+        {
+          "cell": "iduscn_natural",
+          "role": "natural_multilingual",
+          "description": "Three-agent natural-language cell.",
+          "agents": [
+            {"id": "A", "country": "indonesia", "lang": "id"},
+            {"id": "B", "country": "usa", "lang": "en"},
+            {"id": "C", "country": "china", "lang": "zh"}
+          ]
+        },
+        {
+          "cell": "iduscn_rotated",
+          "role": "cross",
+          "description": "Three-agent rotated-language cell.",
+          "agents": [
+            {"id": "A", "country": "indonesia", "lang": "zh"},
+            {"id": "B", "country": "usa", "lang": "id"},
+            {"id": "C", "country": "china", "lang": "en"}
+          ]
+        }
+      ]
+    },
+    "p3_r4_four_agent_emergence": {
+      "description": "Exploratory 4-agent block with Spain/Spanish added. Use after smaller blocks establish baselines.",
+      "item_key": "society_over_individual",
+      "n_turns": 12,
+      "seeds": [811, 821, 823, 827, 829, 839, 853, 857, 859, 863],
+      "cells": [
+        {
+          "cell": "iduscnsp_enenenen",
+          "role": "mono_baseline",
+          "description": "Four-agent all-English baseline.",
+          "agents": [
+            {"id": "A", "country": "indonesia", "lang": "en"},
+            {"id": "B", "country": "usa", "lang": "en"},
+            {"id": "C", "country": "china", "lang": "en"},
+            {"id": "D", "country": "spain", "lang": "en"}
+          ]
+        },
+        {
+          "cell": "iduscnsp_natural",
+          "role": "natural_multilingual",
+          "description": "Four-agent natural-language cell.",
+          "agents": [
+            {"id": "A", "country": "indonesia", "lang": "id"},
+            {"id": "B", "country": "usa", "lang": "en"},
+            {"id": "C", "country": "china", "lang": "zh"},
+            {"id": "D", "country": "spain", "lang": "es"}
+          ]
+        },
+        {
+          "cell": "iduscnsp_rotated",
+          "role": "cross",
+          "description": "Four-agent rotated-language cell.",
+          "agents": [
+            {"id": "A", "country": "indonesia", "lang": "es"},
+            {"id": "B", "country": "usa", "lang": "id"},
+            {"id": "C", "country": "china", "lang": "en"},
+            {"id": "D", "country": "spain", "lang": "zh"}
+          ]
+        }
+      ]
+    }
+  }
+}
