@@ -5399,3 +5399,12 @@ Manifest is one line listing the 8 generated transcript files.
 - notes:
   - Dry-run passed with 40 jobs using `python3`; full run completed and wrote all 40 transcript files plus manifest.
   - Integrity check found 10 files per cell, six turns per file, and 240 parsed Likert digit probes.
+
+## Run note phase=3 iter=94
+- status: BLOCKED
+- provider/model/block: OpenAI Responses API / `gpt-5.4-mini` / `p3_r2_id_cn_native_english`
+- artifacts: `artifacts/transcripts/phase3_iter94_manifest.txt` not written; generated=0 failed=40
+- seeds/cells: seeds `661,673,677,683,691,701,709,719,727,733`; cells `idcn_enen,idcn_idzh,idcn_iden,idcn_enzh`
+- notes:
+  - Dry-run passed with 40 jobs using `python3`; full run stopped on OpenAI HTTP 429 `insufficient_quota` during `idcn_idzh` seed 727.
+  - Runner writes outputs only after all jobs finish, so no complete iter 94 transcript or manifest files were produced.
