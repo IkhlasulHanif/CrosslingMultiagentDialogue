@@ -5138,3 +5138,12 @@ Manifest is one line listing the 8 generated transcript files.
 - notes:
   - Dry-run passed with 40 jobs using `python3`; full run completed and wrote all 40 transcript files plus manifest.
   - Integrity check found 10 files per cell, six turns per file, and no missing parsed Likert probe records.
+
+## Run note phase=3 iter=64
+- status: PASS
+- provider/model/block: OpenAI Responses API / `gpt-5.4-mini` / `p3_r1_id_us_pairwise`
+- artifacts: `artifacts/transcripts/phase3_iter64_manifest.txt`; generated=40 failed=0
+- seeds/cells: seeds `601,607,613,617,619,631,641,643,647,653`; cells `idus_enen,idus_idid,idus_nat,idus_inv`
+- notes:
+  - Dry-run passed with 40 jobs using `python3`; full run completed and wrote all 40 transcript files plus manifest.
+  - Integrity check found 10 files per cell, six turns per file, and no missing parsed Likert probe records.
