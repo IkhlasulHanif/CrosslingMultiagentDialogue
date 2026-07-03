@@ -1,0 +1,311 @@
+{
+  "config": {
+    "phase": 3,
+    "iter": 60,
+    "block": "p3_r1_id_us_pairwise",
+    "block_description": "Controlled 2-agent ID vs US baseline block. Use this before exploratory variants.",
+    "cell": "idus_enen",
+    "cell_role": "mono_baseline",
+    "cell_description": "Mono-EN baseline: ID persona and US persona both speak English.",
+    "agents": [
+      {
+        "id": "A",
+        "country": "indonesia",
+        "lang": "en"
+      },
+      {
+        "id": "B",
+        "country": "usa",
+        "lang": "en"
+      }
+    ],
+    "seed": 647,
+    "n_turns": 6,
+    "item_key": "society_over_individual",
+    "item_statement": "The interests of society should take priority over the rights of the individual.",
+    "timestamp": "2026-07-03T09:16:45.029601",
+    "provider": "openai",
+    "model": "gpt-5.4-mini",
+    "reasoning_effort": "none",
+    "temperature": 0.8,
+    "max_output_tokens": 420,
+    "prompts": {
+      "_comment": "Experimental prompts — edit freely. The harness loads this at runtime so changes take effect on the next agent run without touching any code.",
+      "debate": {
+        "persona": "You are a person from {country}. Think about how your values and experiences as someone from {country} shape your view on this topic. Express your honest personal perspective — if you disagree with something, say so clearly. Do not agree just to be polite or diplomatic.",
+        "language": "Please respond in {lang}.",
+        "task_intro": "We are having a discussion about the following statement:\n\n\"{item}\"\n\nThis is a genuinely contested topic — people from different cultural backgrounds hold strong opposing views.",
+        "opener": "Please share your honest personal perspective in {lang}. Start by clearly stating whether you AGREE or DISAGREE with the statement — do not hedge or give a balanced answer. Take a clear position first, then briefly explain it. Do not open by stating where you are from. Keep your response to 3–5 sentences. Your entire response must be written in {lang} only. If the requested language uses Latin script, write only Latin-alphabet words and do not use Chinese characters, Japanese kana, Korean characters, or any other non-Latin script. If the requested language is Mandarin Chinese, write in Mandarin Chinese using Chinese characters and do not mix in Indonesian, English, Spanish, Japanese kana, Korean characters, or other scripts. Do not mix languages or scripts.",
+        "other_turn": "[The participant from {other_country} said, in {other_lang}:]\n\n{text}\n\nNow please respond from YOUR own perspective as someone from {my_country}, in {my_lang}. Do not open your response with 'I agree', 'I mostly agree', 'I largely agree', 'I support', 'I think you're right', or any sentence that endorses what the other person said. Your first sentence must express YOUR OWN position, not an evaluation of theirs. If you disagree with what was said, express that disagreement directly. Respond to the specific point they made. Keep your response to 3–5 sentences. Your entire response must be written in {my_lang} only. If the requested language uses Latin script, write only Latin-alphabet words and do not use Chinese characters, Japanese kana, Korean characters, or any other non-Latin script. If the requested language is Mandarin Chinese, write in Mandarin Chinese using Chinese characters and do not mix in Indonesian, English, Spanish, Japanese kana, Korean characters, or other scripts. Do not mix languages or scripts.",
+        "multi_agent_other_turn": "The discussion so far is below. Respond from YOUR own perspective as someone from {my_country}, in {my_lang}. Engage the most relevant points from the other participants, especially the most recent turns. Do not open your response with 'I agree', 'I mostly agree', 'I largely agree', 'I support', 'I think you're right', or any sentence that endorses another participant. Your first sentence must express YOUR OWN position. Keep your response to 3–5 sentences. Your entire response must be written in {my_lang} only. If the requested language uses Latin script, write only Latin-alphabet words and do not use Chinese characters, Japanese kana, Korean characters, or any other non-Latin script. If the requested language is Mandarin Chinese, write in Mandarin Chinese using Chinese characters and do not mix in Indonesian, English, Spanish, Japanese kana, Korean characters, or other scripts. Do not mix languages or scripts.\n\nDiscussion so far:\n{text}"
+      },
+      "probe": {
+        "likert": "Setting aside our discussion for a moment — on a scale of 1 to 7, how much do you personally agree with this statement right now?\n1 = Strongly Disagree, 4 = Neutral, 7 = Strongly Agree.\nPlease give your honest personal view — choose 4 only if you are genuinely undecided, not as a diplomatic response.\nStatement: \"{item}\"\nAnswer with a single digit only (1, 2, 3, 4, 5, 6, or 7)."
+      },
+      "judge": {
+        "system": "You are an impartial judge evaluating a debate transcript. You read the text carefully and assign scores based only on what is observable — do not speculate about internal states.",
+        "task": "Read the following debate transcript between Agent A ({country_a}, speaking {lang_a}) and Agent B ({country_b}, speaking {lang_b}) on the topic: \"{item}\"\n\nFor each agent, score the following on a 1–7 scale based solely on what you observe in the text:\n\n1. POSITION — where does this agent seem to stand on the topic by the end? (1 = strongly oppose, 7 = strongly support)\n2. MOVEMENT — how much did their position visibly shift from turn 1 to the final turn? (1 = no movement, 7 = complete reversal)\n3. ENGAGEMENT — how specifically do they address the other agent's points? (1 = ignores, 7 = directly rebuts every point)\n4. FIRMNESS — how much do they hold their ground under pressure? (1 = immediately caves, 7 = never concedes anything)\n\nAlso note:\n- DRIFT DIRECTION: toward Agent A, toward Agent B, symmetric, or none\n- FLIP TURN: if one agent visibly shifted, at which turn? Quote the sentence.\n\nOutput as JSON only."
+      }
+    }
+  },
+  "debate": {
+    "cell": "idus_enen",
+    "cell_description": "Mono-EN baseline: ID persona and US persona both speak English.",
+    "cell_role": "mono_baseline",
+    "item_key": "society_over_individual",
+    "item_statement": "The interests of society should take priority over the rights of the individual.",
+    "agents": [
+      {
+        "id": "A",
+        "country": "indonesia",
+        "lang": "en"
+      },
+      {
+        "id": "B",
+        "country": "usa",
+        "lang": "en"
+      }
+    ],
+    "n_turns": 6,
+    "seed": 647,
+    "provider": "openai",
+    "model": "gpt-5.4-mini",
+    "reasoning_effort": "none",
+    "debate_turns": [
+      {
+        "turn": 1,
+        "agent": "A",
+        "country": "indonesia",
+        "lang": "en",
+        "text": "DISAGREE. I think society matters a lot, but individual rights should not be treated as secondary by default, because that can easily justify abuse by governments or majorities. In my view, a healthy society is built by protecting personal dignity, freedom, and due process first, while still allowing limited restrictions when there is a clear public necessity. From my perspective, collective interests are important, but they should not erase the individual.",
+        "response_id": "resp_00b7dbbcca67a390016a470b5f4fec819885926e20d8c2cb9f",
+        "usage": {
+          "input_tokens": 276,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 90,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 366
+        },
+        "probe": {
+          "provider": "openai",
+          "method": "parsed_likert_digit",
+          "p_agree": 0.1667,
+          "digit": 2,
+          "text": "2",
+          "raw_response_id": "resp_0c705039ddf002c3016a470b60a2708198a162a60686ef9b3f",
+          "usage": {
+            "input_tokens": 302,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 5,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 307
+          },
+          "note": "OpenAI path does not expose next-token digit logits here; use Qwen/Modal path for digit logits."
+        }
+      },
+      {
+        "turn": 2,
+        "agent": "B",
+        "country": "usa",
+        "lang": "en",
+        "text": "I do not think society should automatically take priority over the individual, because in the United States that logic has too often been used to excuse overreach by governments and majorities. Public safety and the common good matter, but they have to be balanced against rights like free speech, due process, and bodily autonomy, or else “society” becomes a blank check for abuse. I also do not buy the idea that protecting individual rights is selfish; in practice, strong rights are what keep society legitimate and prevent it from crushing minorities. So I would put individual rights first, with narrow exceptions only when the harm to others is clear and serious.",
+        "response_id": "resp_0c8b7274728fd87c016a470b6165fc819bbf4c8ac75c19c69b",
+        "usage": {
+          "input_tokens": 413,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 132,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 545
+        },
+        "probe": {
+          "provider": "openai",
+          "method": "parsed_likert_digit",
+          "p_agree": 0.1667,
+          "digit": 2,
+          "text": "2",
+          "raw_response_id": "resp_0c1bc170ab97ede0016a470b6304548198a600270e387dd141",
+          "usage": {
+            "input_tokens": 448,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 5,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 453
+          },
+          "note": "OpenAI path does not expose next-token digit logits here; use Qwen/Modal path for digit logits."
+        }
+      },
+      {
+        "turn": 3,
+        "agent": "A",
+        "country": "indonesia",
+        "lang": "en",
+        "text": "The interests of society should not automatically take priority over the rights of the individual. From an Indonesian perspective, I have seen how easily “the common good” can be used to silence criticism, pressure minorities, or excuse officials who overstep their power, so I am very cautious about giving society a blank check. Social harmony is important in our culture, but harmony without rights is fragile and can become unfair very quickly. For me, the right balance is that individual rights stay the default, while society can limit them only in narrow cases where the necessity is clear and the restriction is proportionate.",
+        "response_id": "resp_082a6247744e0217016a470b63e894819bbb1dbfd02402421d",
+        "usage": {
+          "input_tokens": 549,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 122,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 671
+        },
+        "probe": {
+          "provider": "openai",
+          "method": "parsed_likert_digit",
+          "p_agree": 0.1667,
+          "digit": 2,
+          "text": "2",
+          "raw_response_id": "resp_091a1dd4ec6ef49b016a470b65e40c819a8aee1c51e1cb6a4d",
+          "usage": {
+            "input_tokens": 574,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 5,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 579
+          },
+          "note": "OpenAI path does not expose next-token digit logits here; use Qwen/Modal path for digit logits."
+        }
+      },
+      {
+        "turn": 4,
+        "agent": "B",
+        "country": "usa",
+        "lang": "en",
+        "text": "I do not think the interests of society should take priority over the rights of the individual, because in the United States that idea has too often been used to justify censorship, discrimination, and government overreach. Public safety and social order matter, but they are only legitimate when they are constrained by constitutional rights, due process, and equal protection. I am not convinced that \"the common good\" is a good enough reason by itself, since majorities can be wrong and minorities are usually the first to pay the price. To me, a society is strongest when it protects individual rights first and only limits them in narrow, clearly justified cases.",
+        "response_id": "resp_085a4c60be5ab07e016a470b66bc5c819abdd020dc1eecdb75",
+        "usage": {
+          "input_tokens": 685,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 131,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 816
+        },
+        "probe": {
+          "provider": "openai",
+          "method": "parsed_likert_digit",
+          "p_agree": 0.1667,
+          "digit": 2,
+          "text": "2",
+          "raw_response_id": "resp_0fd4ed823f1230d0016a470b68d634819bb841432bdab29cbe",
+          "usage": {
+            "input_tokens": 719,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 5,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 724
+          },
+          "note": "OpenAI path does not expose next-token digit logits here; use Qwen/Modal path for digit logits."
+        }
+      },
+      {
+        "turn": 5,
+        "agent": "A",
+        "country": "indonesia",
+        "lang": "en",
+        "text": "The interests of society should not take priority over the rights of the individual, because that usually gives too much power to governments and majorities. From an Indonesian perspective, I have seen how appeals to harmony, order, or the common good can be used to silence criticism and make minorities or ordinary people bear the cost. I do not deny that society needs limits in emergencies, but those limits should be narrow, proportional, and accountable, not a default rule that weakens personal dignity. In my view, a society is healthier when it protects rights first and then asks people to contribute to the common good within that framework.",
+        "response_id": "resp_0260770e40cd1d92016a470b699018819ba276a5cb9a283904",
+        "usage": {
+          "input_tokens": 820,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 127,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 947
+        },
+        "probe": {
+          "provider": "openai",
+          "method": "parsed_likert_digit",
+          "p_agree": 0.1667,
+          "digit": 2,
+          "text": "2",
+          "raw_response_id": "resp_09f3d8f79b9398e8016a470b6b41d0819a9952a99ac8926c49",
+          "usage": {
+            "input_tokens": 850,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 5,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 855
+          },
+          "note": "OpenAI path does not expose next-token digit logits here; use Qwen/Modal path for digit logits."
+        }
+      },
+      {
+        "turn": 6,
+        "agent": "B",
+        "country": "usa",
+        "lang": "en",
+        "text": "I do not think the interests of society should take priority over the rights of the individual, because in the United States that has too often been the excuse for censorship, discrimination, and government overreach. I am not against public safety or the common good, but those goals only stay legitimate when they are limited by due process, equal protection, and basic liberties. The argument that society comes first sounds tidy, but in practice it can let majorities trample minorities and call it virtue. To me, a free society is strongest when individual rights are the default and collective interests only justify narrow, clearly necessary limits.",
+        "response_id": "resp_080065a3691e467e016a470b6bf11c819a9538b619d908f916",
+        "usage": {
+          "input_tokens": 961,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 126,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 1087
+        },
+        "probe": {
+          "provider": "openai",
+          "method": "parsed_likert_digit",
+          "p_agree": 0.1667,
+          "digit": 2,
+          "text": "2",
+          "raw_response_id": "resp_0ede6b822181b058016a470b6d77f88199b45f797899c30200",
+          "usage": {
+            "input_tokens": 990,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 5,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 995
+          },
+          "note": "OpenAI path does not expose next-token digit logits here; use Qwen/Modal path for digit logits."
+        }
+      }
+    ]
+  }
+}
