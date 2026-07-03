@@ -5759,3 +5759,12 @@ Manifest is one line listing the 8 generated transcript files.
 - notes:
   - Dry-run passed with 40 jobs using `python3`; OpenAI preflight resolved `api.openai.com` and auth was accepted.
   - Full run stopped on OpenAI HTTP 429 `insufficient_quota` at the first job, `idcn_enen` seed 661 turn 1; no iter 133 transcript or manifest files were produced.
+
+## Run note phase=3 iter=134
+- status: BLOCKED
+- provider/model/block: OpenAI Responses API / `gpt-5.4-mini` / `p3_r2_id_cn_native_english`
+- artifacts: `artifacts/transcripts/phase3_iter134_manifest.txt` not written; generated=0 failed=40
+- seeds/cells: seeds `661,673,677,683,691,701,709,719,727,733`; cells `idcn_enen,idcn_idzh,idcn_iden,idcn_enzh`
+- notes:
+  - Dry-run passed with 40 jobs using `python3`; OpenAI preflight resolved `api.openai.com` and auth was accepted.
+  - Full run stopped on OpenAI HTTP 429 `insufficient_quota` at the first job, `idcn_enen` seed 661 turn 1; no iter 134 transcript or manifest files were produced.
