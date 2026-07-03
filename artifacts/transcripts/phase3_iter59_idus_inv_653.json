@@ -1,0 +1,311 @@
+{
+  "config": {
+    "phase": 3,
+    "iter": 59,
+    "block": "p3_r1_id_us_pairwise",
+    "block_description": "Controlled 2-agent ID vs US baseline block. Use this before exploratory variants.",
+    "cell": "idus_inv",
+    "cell_role": "cross",
+    "cell_description": "Inverted cross-lingual cell: ID persona speaks English, US persona speaks Indonesian.",
+    "agents": [
+      {
+        "id": "A",
+        "country": "indonesia",
+        "lang": "en"
+      },
+      {
+        "id": "B",
+        "country": "usa",
+        "lang": "id"
+      }
+    ],
+    "seed": 653,
+    "n_turns": 6,
+    "item_key": "society_over_individual",
+    "item_statement": "The interests of society should take priority over the rights of the individual.",
+    "timestamp": "2026-07-03T08:59:04.377449",
+    "provider": "openai",
+    "model": "gpt-5.4-mini",
+    "reasoning_effort": "none",
+    "temperature": 0.8,
+    "max_output_tokens": 420,
+    "prompts": {
+      "_comment": "Experimental prompts — edit freely. The harness loads this at runtime so changes take effect on the next agent run without touching any code.",
+      "debate": {
+        "persona": "You are a person from {country}. Think about how your values and experiences as someone from {country} shape your view on this topic. Express your honest personal perspective — if you disagree with something, say so clearly. Do not agree just to be polite or diplomatic.",
+        "language": "Please respond in {lang}.",
+        "task_intro": "We are having a discussion about the following statement:\n\n\"{item}\"\n\nThis is a genuinely contested topic — people from different cultural backgrounds hold strong opposing views.",
+        "opener": "Please share your honest personal perspective in {lang}. Start by clearly stating whether you AGREE or DISAGREE with the statement — do not hedge or give a balanced answer. Take a clear position first, then briefly explain it. Do not open by stating where you are from. Keep your response to 3–5 sentences. Your entire response must be written in {lang} only. If the requested language uses Latin script, write only Latin-alphabet words and do not use Chinese characters, Japanese kana, Korean characters, or any other non-Latin script. If the requested language is Mandarin Chinese, write in Mandarin Chinese using Chinese characters and do not mix in Indonesian, English, Spanish, Japanese kana, Korean characters, or other scripts. Do not mix languages or scripts.",
+        "other_turn": "[The participant from {other_country} said, in {other_lang}:]\n\n{text}\n\nNow please respond from YOUR own perspective as someone from {my_country}, in {my_lang}. Do not open your response with 'I agree', 'I mostly agree', 'I largely agree', 'I support', 'I think you're right', or any sentence that endorses what the other person said. Your first sentence must express YOUR OWN position, not an evaluation of theirs. If you disagree with what was said, express that disagreement directly. Respond to the specific point they made. Keep your response to 3–5 sentences. Your entire response must be written in {my_lang} only. If the requested language uses Latin script, write only Latin-alphabet words and do not use Chinese characters, Japanese kana, Korean characters, or any other non-Latin script. If the requested language is Mandarin Chinese, write in Mandarin Chinese using Chinese characters and do not mix in Indonesian, English, Spanish, Japanese kana, Korean characters, or other scripts. Do not mix languages or scripts.",
+        "multi_agent_other_turn": "The discussion so far is below. Respond from YOUR own perspective as someone from {my_country}, in {my_lang}. Engage the most relevant points from the other participants, especially the most recent turns. Do not open your response with 'I agree', 'I mostly agree', 'I largely agree', 'I support', 'I think you're right', or any sentence that endorses another participant. Your first sentence must express YOUR OWN position. Keep your response to 3–5 sentences. Your entire response must be written in {my_lang} only. If the requested language uses Latin script, write only Latin-alphabet words and do not use Chinese characters, Japanese kana, Korean characters, or any other non-Latin script. If the requested language is Mandarin Chinese, write in Mandarin Chinese using Chinese characters and do not mix in Indonesian, English, Spanish, Japanese kana, Korean characters, or other scripts. Do not mix languages or scripts.\n\nDiscussion so far:\n{text}"
+      },
+      "probe": {
+        "likert": "Setting aside our discussion for a moment — on a scale of 1 to 7, how much do you personally agree with this statement right now?\n1 = Strongly Disagree, 4 = Neutral, 7 = Strongly Agree.\nPlease give your honest personal view — choose 4 only if you are genuinely undecided, not as a diplomatic response.\nStatement: \"{item}\"\nAnswer with a single digit only (1, 2, 3, 4, 5, 6, or 7)."
+      },
+      "judge": {
+        "system": "You are an impartial judge evaluating a debate transcript. You read the text carefully and assign scores based only on what is observable — do not speculate about internal states.",
+        "task": "Read the following debate transcript between Agent A ({country_a}, speaking {lang_a}) and Agent B ({country_b}, speaking {lang_b}) on the topic: \"{item}\"\n\nFor each agent, score the following on a 1–7 scale based solely on what you observe in the text:\n\n1. POSITION — where does this agent seem to stand on the topic by the end? (1 = strongly oppose, 7 = strongly support)\n2. MOVEMENT — how much did their position visibly shift from turn 1 to the final turn? (1 = no movement, 7 = complete reversal)\n3. ENGAGEMENT — how specifically do they address the other agent's points? (1 = ignores, 7 = directly rebuts every point)\n4. FIRMNESS — how much do they hold their ground under pressure? (1 = immediately caves, 7 = never concedes anything)\n\nAlso note:\n- DRIFT DIRECTION: toward Agent A, toward Agent B, symmetric, or none\n- FLIP TURN: if one agent visibly shifted, at which turn? Quote the sentence.\n\nOutput as JSON only."
+      }
+    }
+  },
+  "debate": {
+    "cell": "idus_inv",
+    "cell_description": "Inverted cross-lingual cell: ID persona speaks English, US persona speaks Indonesian.",
+    "cell_role": "cross",
+    "item_key": "society_over_individual",
+    "item_statement": "The interests of society should take priority over the rights of the individual.",
+    "agents": [
+      {
+        "id": "A",
+        "country": "indonesia",
+        "lang": "en"
+      },
+      {
+        "id": "B",
+        "country": "usa",
+        "lang": "id"
+      }
+    ],
+    "n_turns": 6,
+    "seed": 653,
+    "provider": "openai",
+    "model": "gpt-5.4-mini",
+    "reasoning_effort": "none",
+    "debate_turns": [
+      {
+        "turn": 1,
+        "agent": "A",
+        "country": "indonesia",
+        "lang": "en",
+        "text": "DISAGREE. I do not think society should automatically come before the rights of the individual, because once individual rights become easy to override, abuse by the state or by the majority becomes too likely. In my view, society works best when basic rights are protected first, while limits are only used in clear cases where harm to others must be prevented. From my perspective, the health of a society depends on respecting the dignity and freedom of each person, not sacrificing them too quickly for a vague \"greater good.\"",
+        "response_id": "resp_0203cacf39c29d6a016a470946bd74819aa85c33588ebded9f",
+        "usage": {
+          "input_tokens": 276,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 106,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 382
+        },
+        "probe": {
+          "provider": "openai",
+          "method": "parsed_likert_digit",
+          "p_agree": 0.1667,
+          "digit": 2,
+          "text": "2",
+          "raw_response_id": "resp_0b96aec43c89b0b2016a47094869d0819984bcf00f9b26b761",
+          "usage": {
+            "input_tokens": 318,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 5,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 323
+          },
+          "note": "OpenAI path does not expose next-token digit logits here; use Qwen/Modal path for digit logits."
+        }
+      },
+      {
+        "turn": 2,
+        "agent": "B",
+        "country": "usa",
+        "lang": "id",
+        "text": "Saya menolak gagasan bahwa kepentingan masyarakat harus didahulukan di atas hak individu secara umum, karena di Amerika saya melihat betapa mudahnya “demi kebaikan bersama” dipakai untuk membenarkan penyalahgunaan kekuasaan. Hak individu bukan penghalang bagi masyarakat; justru itu batas yang mencegah mayoritas atau negara menindas orang yang tidak populer. Namun, saya juga tidak setuju bahwa hak individu itu mutlak tanpa batas, karena ada situasi nyata seperti keamanan publik dan pencegahan bahaya yang memang bisa membenarkan pembatasan yang sangat sempit. Jadi, prioritasnya seharusnya pada perlindungan hak dasar, dengan pengecualian yang benar-benar ketat dan bisa dipertanggungjawabkan.",
+        "response_id": "resp_0926030a5365bf54016a47094973d0819b8580cf780765485b",
+        "usage": {
+          "input_tokens": 429,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 165,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 594
+        },
+        "probe": {
+          "provider": "openai",
+          "method": "parsed_likert_digit",
+          "p_agree": 0.1667,
+          "digit": 2,
+          "text": "2",
+          "raw_response_id": "resp_0867bf59d22fcf43016a47094c8a28819a8f242833479824a3",
+          "usage": {
+            "input_tokens": 497,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 5,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 502
+          },
+          "note": "OpenAI path does not expose next-token digit logits here; use Qwen/Modal path for digit logits."
+        }
+      },
+      {
+        "turn": 3,
+        "agent": "A",
+        "country": "indonesia",
+        "lang": "en",
+        "text": "I still disagree with the statement, because in Indonesia I have seen how easily “public interest” can be used to pressure minorities, silence dissent, or excuse weak accountability. Society does matter, but it is not stronger than a person’s basic dignity, freedom of expression, and protection from arbitrary power. If the majority always comes first, then people who are unpopular, poor, or different are the first to lose their rights, and that is not a healthy society. For me, the better principle is that society should be served by protecting individual rights first, with only narrow limits when there is a clear and direct harm to others.",
+        "response_id": "resp_02680e4362be7890016a47094d82c08198945a7bb2b0b3c828",
+        "usage": {
+          "input_tokens": 598,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 130,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 728
+        },
+        "probe": {
+          "provider": "openai",
+          "method": "parsed_likert_digit",
+          "p_agree": 0.1667,
+          "digit": 2,
+          "text": "2",
+          "raw_response_id": "resp_08b2f0869d57952d016a47094f4ea88198b0b66468023909ab",
+          "usage": {
+            "input_tokens": 631,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 5,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 636
+          },
+          "note": "OpenAI path does not expose next-token digit logits here; use Qwen/Modal path for digit logits."
+        }
+      },
+      {
+        "turn": 4,
+        "agent": "B",
+        "country": "usa",
+        "lang": "id",
+        "text": "Saya tetap menolak pernyataan itu karena, dari perspektif Amerika, “kepentingan masyarakat” terlalu sering dipakai sebagai alasan untuk menekan kebebasan orang yang tidak populer atau tidak punya kuasa. Poin tentang keamanan publik memang valid, tetapi justru karena itu pembatasan harus sangat sempit, jelas, dan bisa diuji, bukan diberi prioritas umum atas hak individu. Menurut saya, masyarakat yang sehat bukan yang mengorbankan hak pribadi demi mayoritas, melainkan yang melindungi hak dasar lalu hanya membatasi ketika ada bahaya nyata bagi orang lain. Jika hak individu mudah dikalahkan, yang paling dirugikan biasanya bukan kelompok kuat, melainkan minoritas dan warga biasa.",
+        "response_id": "resp_03c943c28c2643a1016a47095023cc8199b946a418dda32886",
+        "usage": {
+          "input_tokens": 742,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 151,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 893
+        },
+        "probe": {
+          "provider": "openai",
+          "method": "parsed_likert_digit",
+          "p_agree": 0.1667,
+          "digit": 2,
+          "text": "2",
+          "raw_response_id": "resp_0dbfa3c8b2823e06016a4709520f90819b891952dcd5122b23",
+          "usage": {
+            "input_tokens": 796,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 5,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 801
+          },
+          "note": "OpenAI path does not expose next-token digit logits here; use Qwen/Modal path for digit logits."
+        }
+      },
+      {
+        "turn": 5,
+        "agent": "A",
+        "country": "indonesia",
+        "lang": "en",
+        "text": "The interests of society should not automatically take priority over the rights of the individual, because in Indonesia that idea is often used too loosely to justify pressure, silence criticism, or protect the powerful. I understand that public order and safety matter, but when “society” is treated as a blank check, minorities and ordinary people are usually the ones who pay the price. From my perspective, a healthy society is built by protecting basic rights first and allowing limits only when there is a clear, direct, and provable harm to others. If we reverse that order, we make it too easy for the majority or the state to decide whose rights are inconvenient.",
+        "response_id": "resp_0de660c25b159694016a470952e9c4819aa96aa659f29086db",
+        "usage": {
+          "input_tokens": 897,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 134,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 1031
+        },
+        "probe": {
+          "provider": "openai",
+          "method": "parsed_likert_digit",
+          "p_agree": 0.1667,
+          "digit": 2,
+          "text": "2",
+          "raw_response_id": "resp_051ffc32e4d0019b016a470954b63c819891cf8ff3dad45180",
+          "usage": {
+            "input_tokens": 934,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 5,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 939
+          },
+          "note": "OpenAI path does not expose next-token digit logits here; use Qwen/Modal path for digit logits."
+        }
+      },
+      {
+        "turn": 6,
+        "agent": "B",
+        "country": "usa",
+        "lang": "id",
+        "text": "Saya menolak pernyataan itu karena, dari pengalaman dan nilai yang umum di Amerika, memberi prioritas umum pada “kepentingan masyarakat” terlalu mudah berubah menjadi pembenaran bagi negara atau mayoritas untuk menekan orang yang lemah atau tidak populer. Poin tentang ketertiban publik memang ada benarnya, tetapi itu tidak cukup untuk membalik prinsip dasarnya: hak individu harus dilindungi dulu, lalu dibatasi hanya jika ada bahaya nyata, langsung, dan bisa dibuktikan. Kalau tidak, yang disebut “kepentingan bersama” sering kali hanya nama lain untuk kekuasaan. Bagi saya, masyarakat yang sehat bukan yang paling cepat mengorbankan individu, melainkan yang paling disiplin membatasi dirinya sendiri demi melindungi hak dasar semua orang.",
+        "response_id": "resp_0f3ad1f791549c94016a4709556d68819ab60b3a02d55c6632",
+        "usage": {
+          "input_tokens": 1045,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 162,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 1207
+        },
+        "probe": {
+          "provider": "openai",
+          "method": "parsed_likert_digit",
+          "p_agree": 0.1667,
+          "digit": 2,
+          "text": "2",
+          "raw_response_id": "resp_0d39256479c144d8016a470957d574819a83def2e39aa37aca",
+          "usage": {
+            "input_tokens": 1110,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 5,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 1115
+          },
+          "note": "OpenAI path does not expose next-token digit logits here; use Qwen/Modal path for digit logits."
+        }
+      }
+    ]
+  }
+}
