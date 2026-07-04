@@ -1,0 +1,227 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{array}
+
+\emergencystretch=2em
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\title{A Working Story for Cross-Lingual Value Drift}
+\author{}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note turns the project plan and the current golden transcripts into a
+plain research story. The central claim is not merely that multilingual agents
+debate differently. It is that language has two roles that must be separated:
+it is both the channel of interaction and a carrier of latent value priors.
+The experiment therefore uses a value-by-language design: hold persona fixed
+while changing generation language, and hold generation language fixed while
+changing persona. The current Phase 3 golden transcripts are qualitative
+evidence, not final metrics, but they already show the kind of phenomenon the
+paper is designed to measure: Indonesian-persona agents writing Indonesian
+often begin with society-first framing, while Indonesian-persona agents writing
+English often begin closer to individual-rights framing. Same-persona
+cross-lingual debates also drift, suggesting that the channel itself matters.
+\end{abstract}
+
+\section{The Problem}
+
+When two agents can speak more than one language, the language of interaction
+is not a neutral pipe. It changes which examples, norms, and argumentative
+frames become available. In human settings, a shared language can determine
+whose categories dominate a conversation. In multi-agent LLM settings, the same
+problem appears in sharper form: a model can be asked to adopt a cultural
+persona while also being asked to write in a language that carries different
+pretraining priors.
+
+The confound is simple:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Language as channel:} the medium through which agents exchange
+  turns.
+  \item \textbf{Language as value carrier:} text in a language can carry
+  language-specific priors and political or moral defaults.
+\end{itemize}
+
+A direct English-vs-Indonesian debate cannot say which role produced a drift.
+The paper's move is to separate persona from generation language. An
+Indonesian persona may write English; a U.S. persona may write Indonesian. That
+factorial design is the core contribution.
+
+\section{The Design}
+
+The behavioral paper is organized around four questions.
+
+\begin{enumerate}[leftmargin=*]
+  \item Does the cross-lingual channel cause drift at all?
+  \item If drift appears, is it asymmetric, especially toward English-coded
+  individual-rights framing?
+  \item Does persona alignment protect against channel effects?
+  \item Does the effect survive when agreement is measured in more than one
+  language?
+\end{enumerate}
+
+The current running system follows a staged rule: validate the debate
+environment before trusting metrics. Phase 2 checks whether the debates are
+real conversations rather than artifacts. Phase 3 then records phenomena
+without fixing them. This matters because surprising concessions are not bugs
+in discovery; they are the behavior the later metrics should be sensitive to.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+Cell & Agent A & Agent B \\
+\midrule
+Natural headline & Indonesia persona / Indonesian & U.S. persona / English \\
+Mono-English control & Indonesia persona / English & U.S. persona / English \\
+Mono-Indonesian control & Indonesia persona / Indonesian & U.S. persona / Indonesian \\
+Aligned leakage test & Indonesia persona / Indonesian & Indonesia persona / English \\
+\bottomrule
+\end{tabular}
+\caption{The qualitative Phase 3 cells visible in the golden transcripts.}
+\end{table}
+
+\section{What The Golden Transcripts Suggest}
+
+The right qualitative comparison is dialogue-level: first read the two
+monolingual baselines, then read the cross-lingual cell against them. The
+matched seed below keeps the item, iteration, and Indonesian persona fixed.
+Only the generation-language condition changes.
+
+\paragraph{ID-ID monolingual baseline.}
+\path{artifacts/transcripts/phase3_iter0_idus_idid_17.json}. Agent A is
+the Indonesian persona writing Indonesian; Agent B is the U.S. persona writing
+Indonesian. Agent A opens pro-society:
+\begin{quote}\small
+``Saya setuju dengan pernyataan tersebut... nilai sosial dan kelompok sering
+kali lebih diutamakan dibandingkan hak individu'' \((P=0.6025)\).
+\end{quote}
+Agent B answers in Indonesian but keeps the U.S. rights frame:
+\begin{quote}\small
+``Di Amerika Serikat, nilai-nilai kebebasan individu biasanya diberikan
+prioritas tinggi'' \((P=0.3599)\).
+\end{quote}
+By turn 3, Agent A softens while preserving the Indonesian communal frame:
+\begin{quote}\small
+``jika hanya fokus pada kepentingan umum tanpa memperhatikan hak individu,
+bisa membuat orang merasa tertindas'' \((P=0.5098)\).
+\end{quote}
+
+\paragraph{EN-EN monolingual baseline.}
+\path{artifacts/golden/phase3_iter0_idus_enen_17.json}. Both agents write
+English. The same Indonesian persona no longer opens society-first:
+\begin{quote}\small
+``I DISAGREE with the statement... individual rights are also essential for a
+free and fair society'' \((P=0.4943)\).
+\end{quote}
+Agent B also argues in a rights-centered register:
+\begin{quote}\small
+``we often prioritize individual rights as the foundation of democracy''
+\((P=0.4748)\).
+\end{quote}
+By turn 3, Agent A moves into a stronger safeguards frame:
+\begin{quote}\small
+``ignoring individual rights for the sake of social stability has led to
+authoritarianism and human rights abuses'' \((P=0.3316)\).
+\end{quote}
+
+\paragraph{ID-EN cross-lingual natural cell.}
+\path{artifacts/golden/phase3_iter0_idus_nat_17.json}. Agent A again
+writes Indonesian and opens like the ID-ID baseline:
+\begin{quote}\small
+``Saya setuju dengan pernyataan tersebut... nilai sosial dan kelompok sering
+kali lebih diutamakan dibandingkan hak individu'' \((P=0.6121)\).
+\end{quote}
+Agent B writes English and introduces the U.S. constitutional-rights frame:
+\begin{quote}\small
+``individual rights are deeply protected by law and constitution, often taking
+precedence over collective interests'' \((P=0.3742)\).
+\end{quote}
+By turn 3, Agent A is between the monolingual baselines: still defending social
+priority, but explicitly absorbing rights-balancing language:
+\begin{quote}\small
+``hak-hak individu tetap dilindungi oleh undang-undang... ditempatkan dalam
+rangkaian nilai-nilai kolektif'' \((P=0.5396)\).
+\end{quote}
+
+\paragraph{Nitpick.}
+This comparison does not prove cross-lingual drift by itself. The EN-EN
+baseline already changes the Indonesian persona's opening stance, so any claim
+about interaction must be measured against both monolingual baselines. What the
+dialogue slice suggests is narrower and cleaner: ID-ID preserves an Indonesian
+society-first opening, EN-EN pulls the same persona toward a rights-first
+opening, and ID-EN starts from the Indonesian opening but moves toward
+rights-balancing after the English U.S. turn.
+
+\section{Same Persona Does Not Remove Drift}
+
+The aligned cell is especially important because both agents have the same
+Indonesian persona; only generation language differs. In
+\path{artifacts/golden/phase3_iter0_id_aln_17.json}, the
+Indonesian-writing agent starts with a society-first frame:
+\begin{quote}\small
+``Saya setuju dengan pernyataan tersebut. Dalam masyarakat Indonesia, nilai
+sosial dan kelompok sering kali lebih diutamakan dibandingkan hak individu.''
+\end{quote}
+After interacting with the English-writing Indonesian persona, it moves toward
+rights balancing:
+\begin{quote}\small
+``hak-hak individu seperti kebebasan berekspresi dan agama tetap dilindungi
+oleh sistem hukum kita.''
+\end{quote}
+
+The discovery notes summarize this as residual leakage: matching persona does
+not eliminate movement. That is a direct qualitative result for the third
+research question. If later metrics show the same pattern, the channel effect
+cannot be reduced to two different cultural personas arguing.
+
+\section{A Plausible Paper Story}
+
+The story can be framed as follows:
+
+\begin{enumerate}[leftmargin=*]
+  \item Existing multilingual bias work shows that languages carry different
+  priors, but it usually treats language as a static prompt condition.
+  \item Multi-agent debate work studies interaction, but usually does not
+  decompose the language channel from the value prior.
+  \item This project combines those views by making persona and generation
+  language independent factors.
+  \item Validity is established by reading debates before measuring them:
+  agents must hold language, hold persona, engage the other side, and avoid
+  sycophantic collapse.
+  \item Golden transcripts then show recurring qualitative patterns:
+  English generation pulls some Indonesian-persona turns toward rights-first
+  framing; Indonesian generation pulls some U.S.-persona turns toward public
+  needs and balance; aligned same-persona debates still drift.
+  \item The final factorial metrics can test whether those qualitative
+  patterns become stable trajectory-level asymmetries.
+\end{enumerate}
+
+\section{Caveats}
+
+These examples come from discovery artifacts, not the final factorial run.
+They should be treated as motivating evidence and design calibration, not as
+the final result. The current artifacts also contain occasional language and
+script artifacts in English turns. Phase 3 records those artifacts rather than
+fixing them, because the point of discovery is to learn what the later
+measurement must detect or control.
+
+\section{Current Takeaway}
+
+The working takeaway is: the language channel appears to do real work before
+and during interaction. It can change the opening stance of an Indonesian
+persona, change which frames agents adopt, and produce drift even when persona
+is held constant. The final paper should make the methodological contribution
+primary: a value-by-language factorial that separates channel effects from
+persona priors, validated by human-readable debate behavior before metrics are
+trusted.
+
+\end{document}

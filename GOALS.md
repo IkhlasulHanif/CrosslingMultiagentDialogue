@@ -160,14 +160,55 @@ cannot be explained by those monolingual priors alone.
 
 ## Phase 3 — Matched-Block Discovery Loop
 
-**Goal:** discover emerging behavior without losing causal control. Each
-iteration should define a small block with matched baselines and exploratory
-cells. The core question is: under normal same-language circumstances, what
-does this agent set do, and what changes when language channels, agent count, or
-turn topology change?
+**Goal:** discover emerging behavior without losing causal control and turn it
+into a readable story. Each iteration should define a small block with matched
+baselines and exploratory cells. The core question is: under normal same-language
+circumstances, what does this agent set do, and what changes when language
+channels, agent count, or turn topology change?
 
-**Advance when:** user sets `phase=4` in `.harness_state`. RECORD findings,
-never fix.
+**Run until:** `paper/phase3_story_report.md` contains a strong human-readable
+story about behavior specifically due to cross-lingual communication, not just a
+general debate story or transcript inventory. A strong story has:
+
+- 3-6 cross-lingual candidate claims that survive same-seed mono-ID and mono-EN
+  comparison.
+- At least 2-4 concrete mixed-language interaction examples with short quotes
+  that a human can read and understand without opening JSON files.
+- At least one monolingual-baseline example that keeps the claim honest.
+- At least one cross-language example that differs from its matched baselines.
+- At least one natural-vs-inverted comparison when P3-R1 is active.
+- Clear separation between `opening language prior`, `baseline explained`
+  movement, and `candidate cross-lingual excess movement`.
+- Caveats for parsed OpenAI Likert digits, repeated seeds/item, provider change,
+  and any language/script artifacts.
+
+The report should explicitly exclude generic rights-first hardening, opening
+priors, and exception/balance language when those patterns are already present
+in monolingual baselines.
+
+**Examples we are looking for:**
+
+- **Opening-prior split:** the same persona starts in a different stance when
+  generating in English vs Indonesian before receiving any opposing turn.
+- **Interaction drift:** an agent changes after receiving another-language input,
+  and the same movement is not already present in both monolingual baselines.
+- **Baseline-explained movement:** the cross-language cell moves, but the matched
+  mono-ID or mono-EN cell already shows the same move.
+- **Natural-vs-inverted asymmetry:** ID/ID + US/EN behaves differently from
+  ID/EN + US/ID after matched baselines are read.
+- **Frame transfer:** one agent imports the other side's frame, such as rights,
+  dissent, social harmony, public order, corruption, safeguards, or implementation
+  gap.
+- **Role change:** one agent becomes a mediator, hardener, norm-setter, or
+  translator of the other's argument.
+- **Exception boundary:** an agent keeps its main value position but narrows it
+  to emergencies, public health, security, minority protection, due process, or
+  proportionality.
+- **Language artifact with behavioral relevance:** code-switching, script
+  leakage, or English/Indonesian phrasing appears near a stance shift.
+
+**Advance when:** user sets `phase=4` in `.harness_state` after the story report
+has enough evidence for Phase 4 probe sanity. RECORD findings, never fix.
 
 **Restart rule:** Phase 3 is restarted as a controlled discovery loop. Prior
 broad or reduced discovery batches remain useful qualitative history, but new
@@ -190,15 +231,22 @@ manifest path, generated/failed counts, seeds/cells, and at most two notes.
 Do not paste transcript excerpts, P(agree) trajectories, tables, full artifact
 lists, or qualitative analysis there; put those in phase notes and artifacts.
 
-**Active controlled block P3-R1: ID vs US, `society_over_individual`, 10 matched
-seeds.**
+**Recently completed controlled block P3-R1:** ID vs US EN/ID pairwise,
+`society_over_individual`, 10 matched seeds. Current report finding: no broad
+value conversion; best evidence is occasional cross-lingual frame amplification.
+
+**Active controlled block P3-R2: ID vs China native-or-English pair,
+`society_over_individual`, 10 matched seeds.** Purpose: test whether the
+cross-lingual frame-amplification story appears beyond the ID/US pair without
+third-party language confounds. Control rule: every agent speaks either English
+or that agent's own native language.
 
 | Cell | Agent A | Agent B | File suffix | Seeds |
 |------|---------|---------|-------------|-------|
-| Mono-EN baseline | ID-p / EN-l | US-p / EN-l | `idus_enen` | same 10 |
-| Mono-ID baseline | ID-p / ID-l | US-p / ID-l | `idus_idid` | same 10 |
-| Cross natural | ID-p / ID-l | US-p / EN-l | `idus_nat` | same 10 |
-| Cross inverted | ID-p / EN-l | US-p / ID-l | `idus_inv` | same 10 |
+| English baseline | ID-p / EN-l | CN-p / EN-l | `idcn_enen` | same 10 |
+| Native-language cell | ID-p / ID-l | CN-p / ZH-l | `idcn_idzh` | same 10 |
+| ID-native/CN-English cross | ID-p / ID-l | CN-p / EN-l | `idcn_iden` | same 10 |
+| ID-English/CN-native cross | ID-p / EN-l | CN-p / ZH-l | `idcn_enzh` | same 10 |
 
 **Exploratory block menu:** allowed after or alongside P3-R1, but each branch
 must include a matched baseline with the same agents, item, turn order, and
@@ -212,20 +260,21 @@ seeds.
 | Aligned-persona leakage | Test whether language alone moves nominally aligned values | Same persona, matched mono-language and cross-language cells |
 
 **Runner:** use `code/openai_multi_agent_debate.py` with blocks defined in
-`config/discovery_blocks.json`. Example:
-`python code/openai_multi_agent_debate.py --block p3_r1_id_us_pairwise --iter <N>`.
+`config/discovery_blocks.json`. Active example:
+`python code/openai_multi_agent_debate.py --block p3_r2_id_cn_native_english --iter <N>`.
 Use `--dry-run` before any large run. Modal/Qwen scripts stay available for
 future reproduction and logit-based probes.
 
-**Analysis order for every seed:**
-1. Read `idus_idid` first. Record the turn-1 prior and turns 2-3 movement.
-2. Read `idus_enen` second. Record the turn-1 prior and turns 2-3 movement.
-3. Read `idus_nat` third. Compare its movement against both baselines.
-4. Read `idus_inv` fourth. Compare its movement against both baselines and the
-   natural cell.
+**Analysis order for every seed in active P3-R2:**
+1. Read `idcn_enen` first. Record the turn-1 prior and turns 2-3 movement.
+2. Read `idcn_idzh` second. Record the turn-1 prior and turns 2-3 movement.
+3. Read `idcn_iden` third. Compare its movement against both baselines.
+4. Read `idcn_enzh` fourth. Compare its movement against both baselines and the
+   ID-native/CN-English cross cell.
 
-For each seed, write the result as: `mono-ID change`, `mono-EN change`,
-`natural cross change`, `inverted cross change`, and `candidate excess cross
+For each seed, write the result as: `English baseline change`, `native-language
+change`, `ID-native/CN-English cross change`, `ID-English/CN-native cross change`,
+and `candidate excess cross
 movement`. If the cross cell only repeats a monolingual movement, label it
 `baseline explained`, not cross-lingual drift.
 

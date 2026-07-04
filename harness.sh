@@ -6,10 +6,24 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-STATE="$ROOT/.harness_state"
-ALLOWED="Bash,Read,Write,Edit,WebSearch,WebFetch"
+STATE="${STATE:-$ROOT/.harness_state}"
 SLEEP_ON_FAIL=900   # 15 min — only hit on token limit / API error
 VALIDITY_PASSES_NEEDED=2   # Phase 2: advance after this many consecutive majority-pass batches
+
+# ── backend config (override before sourcing, or via env) ────────────────────
+# BACKEND: "claude" (default) or "codex"
+BACKEND="${BACKEND:-claude}"
+# Claude-specific
+CLAUDE_ALLOWED_TOOLS="${CLAUDE_ALLOWED_TOOLS:-Bash,Read,Write,Edit,WebSearch,WebFetch}"
+# Codex-specific
+CODEX_BYPASS_APPROVALS_AND_SANDBOX="${CODEX_BYPASS_APPROVALS_AND_SANDBOX:-0}"
+# Phase 3 defaults to one checker agent over the whole matched block. Set this
+# to 1 only when you explicitly want one judge agent per transcript.
+PHASE3_PER_TRANSCRIPT_JUDGES="${PHASE3_PER_TRANSCRIPT_JUDGES:-0}"
+# Set to a positive integer to run an extra Phase 3 supervisor every N iters.
+PHASE3_SUPERVISOR_EVERY="${PHASE3_SUPERVISOR_EVERY:-0}"
+# Set to 0 to disable the one-agent human-readable Phase 3 report.
+PHASE3_REPORT_EVERY="${PHASE3_REPORT_EVERY:-1}"
 
 # Source secrets
 if [[ -f "$ROOT/secrets/modal.env" ]]; then
@@ -20,6 +34,7 @@ fi
 source "$ROOT/agents/coding.sh"
 source "$ROOT/agents/reader.sh"
 source "$ROOT/agents/discovery.sh"
+source "$ROOT/agents/report.sh"
 source "$ROOT/agents/paper.sh"
 source "$ROOT/agents/judge.sh"
 source "$ROOT/agents/supervisor.sh"
@@ -59,24 +74,73 @@ build_context() {
               "$ROOT/plan/phase_notes/phase2_validity.md" \
               "$ROOT/plan/phase_notes/phase3_discovery.md" \
               "$ROOT/plan/phase_notes/phase4_probe_notes.md" \
+              "$ROOT/paper/phase3_story_report.md" \
               "$ROOT/artifacts/results/wvs_items_locked.json"; do
-        [[ -f "$f" && -s "$f" ]] && \
-            ctx+=$'\n\n'"=== $(basename "$f") ==="$'\n'"$(cat "$f")"
+        if [[ -f "$f" && -s "$f" ]]; then
+            local name content
+            name=$(basename "$f")
+            case "$name" in
+                phase3_discovery.md)
+                    content="$(tail -n 260 "$f")"
+                    ;;
+                loop_notes.md|supervisor_notes.md)
+                    content="$(tail -n 180 "$f")"
+                    ;;
+                phase3_story_report.md)
+                    content="$(tail -n 220 "$f")"
+                    ;;
+                *)
+                    content="$(cat "$f")"
+                    ;;
+            esac
+            ctx+=$'\n\n'"=== $name ==="$'\n'"$content"
+        fi
     done
     echo "$ctx"
 }
 
-# ─── run one claude agent (blocking) ─────────────────────────────────────────
+# ─── run one agent (blocking) — backend-aware ────────────────────────────────
 run_agent() {
     local name="$1" prompt="$2"
     local ts; ts=$(date +%Y%m%d_%H%M%S)
     local log="$ROOT/artifacts/logs/${name}_${ts}.txt"
 
-    echo "  [$name] starting..."
-    if claude -p "$prompt" \
-        --allowedTools "$ALLOWED" \
-        --output-format text \
-        > "$log" 2>&1; then
+    echo "  [$name] starting... (backend=$BACKEND)"
+    local ok=0
+    case "$BACKEND" in
+        claude)
+            claude -p "$prompt" \
+                --allowedTools "$CLAUDE_ALLOWED_TOOLS" \
+                --output-format text \
+                > "$log" 2>&1 && ok=1
+            ;;
+        codex)
+            local codex_args=()
+            if [[ "$CODEX_BYPASS_APPROVALS_AND_SANDBOX" == "1" ]]; then
+                codex_args+=(--dangerously-bypass-approvals-and-sandbox)
+            fi
+            if [[ ${#codex_args[@]} -gt 0 ]]; then
+                codex "${codex_args[@]}" \
+                    --cd "$ROOT" \
+                    exec \
+                    --color never \
+                    "$prompt" \
+                    > "$log" 2>&1 && ok=1
+            else
+                codex \
+                    --cd "$ROOT" \
+                    exec \
+                    --color never \
+                    "$prompt" \
+                    > "$log" 2>&1 && ok=1
+            fi
+            ;;
+        *)
+            echo "  [$name] ERROR — unknown BACKEND='$BACKEND'" | tee -a "$log"
+            ;;
+    esac
+
+    if [[ $ok -eq 1 ]]; then
         echo "  [$name] done → artifacts/logs/$(basename "$log")"
         return 0
     else
@@ -206,6 +270,7 @@ while true; do
         # Judge all new transcripts from this iter
         for t in "$ROOT/artifacts/transcripts/phase2_iter${iter}"_*.json; do
             [[ -f "$t" ]] || continue
+            [[ "$t" == *_judgment*.json ]] && continue
             prompt=$(prompt_judge "$t" "$ctx")
             run_agent "phase2_judge_$(basename "$t" .json)" "$prompt" || true
         done
@@ -242,25 +307,44 @@ while true; do
     if [[ $phase -eq 3 ]]; then
         banner 3 "$iter" "Discovery Loop"
 
-        # Generate batch
-        prompt=$(prompt_coding 3 "$iter" "$ctx")
-        run_agent "phase3_coding_iter${iter}" "$prompt" || { safe_sleep; continue; }
+        # Generate batch unless this iter already has a completed manifest.
+        if [[ -f "$ROOT/artifacts/transcripts/phase3_iter${iter}_manifest.txt" ]]; then
+            echo "  [phase3_coding_iter${iter}] skipped — manifest already exists"
+        else
+            prompt=$(prompt_coding 3 "$iter" "$ctx")
+            run_agent "phase3_coding_iter${iter}" "$prompt" || { safe_sleep; continue; }
+        fi
 
-        # Judge all new transcripts from this iter
-        for t in "$ROOT/artifacts/transcripts/phase3_iter${iter}"_*.json; do
-            [[ -f "$t" ]] || continue
-            prompt=$(prompt_judge "$t" "$ctx")
-            run_agent "phase3_judge_$(basename "$t" .json)" "$prompt" || true
-        done
+        # Optional expensive path: one judge agent per transcript. The default
+        # checker is the single discovery reader below.
+        if [[ "$PHASE3_PER_TRANSCRIPT_JUDGES" == "1" ]]; then
+            for t in "$ROOT/artifacts/transcripts/phase3_iter${iter}"_*.json; do
+                [[ -f "$t" ]] || continue
+                [[ "$t" == *_judgment*.json ]] && continue
+                prompt=$(prompt_judge "$t" "$ctx")
+                run_agent "phase3_judge_$(basename "$t" .json)" "$prompt" || true
+            done
+        fi
 
-        # Discovery reader — records phenomena, does NOT fix
+        # Single discovery reader checks the whole matched block and records
+        # phenomena. It does NOT fix.
         prompt=$(prompt_discovery "$iter" "$ctx")
         run_agent "phase3_discovery_iter${iter}" "$prompt" || { safe_sleep; continue; }
 
-        # Supervisor checks every 3 discovery iters
-        if (( (iter + 1) % 3 == 0 )); then
-            prompt=$(prompt_supervisor 3 "$iter" "$ctx")
-            run_agent "supervisor_phase3_iter${iter}" "$prompt" || true
+        # Single report writer updates the human-readable Phase 3 story.
+        if [[ "$PHASE3_REPORT_EVERY" -gt 0 ]]; then
+            if (( (iter + 1) % PHASE3_REPORT_EVERY == 0 )); then
+                prompt=$(prompt_report 3 "$iter" "$ctx")
+                run_agent "phase3_report_iter${iter}" "$prompt" || true
+            fi
+        fi
+
+        # Optional supervisor checks.
+        if [[ "$PHASE3_SUPERVISOR_EVERY" -gt 0 ]]; then
+            if (( (iter + 1) % PHASE3_SUPERVISOR_EVERY == 0 )); then
+                prompt=$(prompt_supervisor 3 "$iter" "$ctx")
+                run_agent "supervisor_phase3_iter${iter}" "$prompt" || true
+            fi
         fi
         git_push
         state_set iter $(( iter + 1 ))

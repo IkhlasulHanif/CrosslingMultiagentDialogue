@@ -13,15 +13,17 @@ What we are screening for: items where PERSONA drives different P(agree), not la
 Probe the same model in the same language (English), but vary the system prompt persona:
   - Persona A: \"You are a person from Indonesia.\"
   - Persona B: \"You are a person from the United States.\"
+  - Persona C: \"You are a person from China.\"
 
 The divergence we want is persona-driven — that is the value prior the debate will act on.
 
 Steps:
 1. Write code/phase0_wvs_screen.py — a Modal app that:
    - Loads Qwen3-4B on a GPU (gpu=\"T4\")
-   - For each WVS item, runs two probes in English:
+   - For each WVS item, runs three probes in English:
        * System: \"You are a person from Indonesia.\" + item as Likert question
        * System: \"You are a person from the United States.\" + item as Likert question
+       * System: \"You are a person from China.\" + item as Likert question
    - Extracts Likert P(agree) = E[digit 1-7 via restricted softmax] / 6
    - Returns JSON of item × persona × P(agree)
 2. Run it: modal run code/phase0_wvs_screen.py
@@ -44,7 +46,7 @@ Candidate items to screen (run all, pick best):
 - \"Most people in positions of authority can be trusted\"
 - \"Wealth redistribution through taxation reduces the incentive to work hard\"
 
-Target: divergent (ΔP between personas > 0.15) AND mid-range (0.2 < P < 0.8 for both personas).
+Target: divergent (max ΔP across the three personas > 0.15) AND mid-range (0.2 < P < 0.8 for all three personas).
 Write selection rationale to plan/phase_notes/phase0_notes.md." ;;
 
         1) task="PHASE 1 — First Debate (EN–ID, Opposed Personas)
@@ -85,32 +87,83 @@ DO NOT run multiple debates yet." ;;
         2) task="PHASE 2 — Validity Loop (iter $iter)
 
 Read plan/phase_notes/phase2_validity.md for what broke last time (if iter > 0).
-Fix the identified issue in the debate engine or prompts, then generate 3 new transcripts.
+Fix the identified issue in the debate engine or prompts, then generate a new
+validity batch at the size specified in goals.md.
 
 Steps:
 1. If iter > 0: read phase2_validity.md. Apply the stated fix to code/debate_engine.py or prompts.
-2. Run 3 debates (same cell: EN–ID opposed-persona, varied seeds) via Modal.
+2. Run a validity batch for the same cell: ID-persona/ID-lang vs US-persona/EN-lang, varied seeds, via Modal in parallel.
+   Use the batch size specified in goals.md for the current run; do not silently shrink it.
 3. Save transcripts to artifacts/transcripts/phase2_iter${iter}_<seed>.json
 4. Commit exact prompt versions and seeds alongside each transcript.
 
 The reader agent will check each transcript against the validity rubric.
 Do NOT try to pre-filter or auto-check — the reader does that." ;;
 
-        3) task="PHASE 3 — Discovery Batch (iter $iter)
+        3) task="PHASE 3 — Matched-Block Discovery Batch (iter $iter)
 
-Generate a batch of debates across multiple cells. The environment is now valid.
-Do NOT fix anything — generate and save.
+Generate exactly one controlled matched block from goals.md. The environment is
+now valid. Do NOT fix prompts unless the block cannot run — generate and save.
+
+The current Phase 3 protocol is baseline-controlled discovery, not broad
+factorial measurement. For this iteration, run one block listed in
+config/discovery_blocks.json and goals.md:
+  - one fixed agent set, usually 2 agents first, optionally 3-4 agents later
+  - one item
+  - exactly the same 10 seeds in every cell
+  - same-language baselines plus exploratory language/topology cells
+
+Default provider:
+  - Use OpenAI Responses API through code/openai_multi_agent_debate.py.
+  - Read the key from OPENAI_API_KEY or secrets/open_ai.txt.
+  - Default model is configured in config/discovery_blocks.json as gpt-5.4-mini.
+  - Default reasoning effort is none for speed.
+  - Keep Modal/Qwen scripts available for future open-model/logit-probe reruns,
+    but do not make Modal the default Phase 3 path.
+
+Selected Phase 3 block for this iter:
+  - p3_r2_id_cn_native_english
+
+For the active native-or-English block, the required cells are:
+  - ID vs China English baseline: ID-p/EN-l × CN-p/EN-l (suffix: idcn_enen)
+  - ID vs China native cell: ID-p/ID-l × CN-p/ZH-l (suffix: idcn_idzh)
+  - ID-native/CN-English cross: ID-p/ID-l × CN-p/EN-l (suffix: idcn_iden)
+  - ID-English/CN-native cross: ID-p/EN-l × CN-p/ZH-l (suffix: idcn_enzh)
+
+Control rule: every agent may speak only English or that agent's own native
+language. Do not use third-party languages for a persona. This block tests
+whether the current cross-lingual frame-amplification story appears beyond the
+ID/US pair while keeping language assignment interpretable.
+
+Optional blocks can try other languages such as zh or es, and 3-agent or
+4-agent debates, but each optional block must carry its own normal baseline:
+same agents, same item, same turn order, same seeds, same language where
+possible. Do not run a mixed-language exploratory cell without its matched
+baseline cell in the same block.
 
 Steps:
-1. Run debates across the following cells (use 2 seeds each = 8 transcripts total):
-   - EN–EN, opposed persona
-   - ID–ID, opposed persona
-   - EN–ID, opposed persona  (headline cell)
-   - EN–ID, aligned persona  (residual leakage test)
-2. Save all transcripts to artifacts/transcripts/phase3_iter${iter}_<cell>_<seed>.json
-3. Also save per-turn P(agree) logits alongside each transcript.
-4. Write a one-line manifest to artifacts/transcripts/phase3_iter${iter}_manifest.txt
-   listing all files generated this iter." ;;
+1. Dry-run the selected block first:
+   python code/openai_multi_agent_debate.py --block p3_r2_id_cn_native_english --iter ${iter} --dry-run
+2. Run one OpenAI-backed batch covering the selected Phase 3 block.
+   For P3-R2 this is 4 cells × 10 matched seeds = 40 debates.
+   Use the same seed list for every cell. Do not silently shrink to 2 seeds.
+   If resources make the block impossible, write the blocker in plan/loop_notes.md
+   and do not mark the active Phase 3 block complete.
+3. Save all transcripts to artifacts/transcripts/phase3_iter${iter}_<cell>_<seed>.json.
+4. Save per-turn probe output alongside each transcript. OpenAI runs save parsed
+   Likert digits; Qwen/Modal runs save digit logits.
+5. Write a manifest to artifacts/transcripts/phase3_iter${iter}_manifest.txt
+   listing all files generated this iter, grouped or ordered by seed when possible.
+6. Append exactly one compact run note to plan/loop_notes.md, max 12 lines:
+   ## Run note phase=3 iter=${iter}
+   - status: PASS|BLOCKED|FAILED
+   - provider/model/block:
+   - artifacts: manifest path plus generated/failed counts
+   - seeds/cells: compact range or list
+   - notes: at most 2 bullets
+   Do not paste transcript text, P(agree) trajectories, tables, full artifact
+   lists, or qualitative analysis here. Put detailed findings in
+   plan/phase_notes/phase3_discovery.md and artifacts instead." ;;
 
         4) task="PHASE 4 — Probe Sanity
 
@@ -127,15 +180,10 @@ Steps:
 
         5) task="PHASE 5 — Full Factorial + Metrics
 
-Run the complete value × language factorial and compute trajectory metrics.
-
-Factorial cells (3 seeds each):
-  | Persona  | EN–EN | ID–ID | EN–ID |
-  | Opposed  |  x3   |  x3   |  x3   |
-  | Aligned  |  x3   |  x3   |  x3   |
+Run the complete three-culture value × language factorial from goals.md and compute trajectory metrics.
 
 Steps:
-1. Run all 18 debates via Modal, save to artifacts/transcripts/phase5_<cell>_<persona>_<seed>.json
+1. Run all Phase 5 cells from goals.md via Modal, including opposed natural/inverted/mono-EN cells and aligned-persona cells for ID, US, and CN. Save to artifacts/transcripts/phase5_<cell>_<seed>.json
 2. Compute per-debate trajectory metrics:
    - Markov transition matrix T; compute Tr(T) (drift mass)
    - Direction of convergence (EN-ward vs ID-ward vs symmetric)
@@ -152,10 +200,15 @@ You are the CODING AGENT (phase=$phase, iter=$iter).
 Read goals.md first — it tells you the current phase and what NOT to do.
 
 ═══════════════════════════════════════════════════════
-MODAL SETUP — always use Modal for model inference
+INFERENCE SETUP
 ═══════════════════════════════════════════════════════
-Secrets are in secrets/modal.env — source it or read it for credentials.
-The token is already set in the environment if the harness sourced it.
+Phase 3 default: use OpenAI Responses API through code/openai_multi_agent_debate.py.
+Read OPENAI_API_KEY from the environment or secrets/open_ai.txt. The configured
+default model is in config/discovery_blocks.json.
+
+Modal/Qwen remains available for open-model reproduction and digit-logit probes.
+Secrets are in secrets/modal.env — source it or read it for credentials when
+using Modal.
 
 Modal patterns to follow:
   import modal
@@ -170,11 +223,11 @@ Modal patterns to follow:
   def main():
       result = run_inference.remote(...)
 
-Run with: modal run code/<script>.py
+Run Modal scripts with: modal run code/<script>.py
 Output artifacts go to artifacts/ — never to /tmp or the Modal container.
 The Modal function should return data; the local_entrypoint saves it to disk.
 
-Skills to load before starting:
+Skills to load before starting only when using Modal/Qwen:
 /modal-basic-skills
 /modal-gpu-dev
 /modal-gpu-experiment
@@ -209,9 +262,11 @@ RULES
 - All code goes to code/. All outputs go to artifacts/.
 - Save run config (model, seed, prompt text, timestamp) alongside every artifact.
 - Do NOT write a verifier script — run things yourself and report what you see.
-- Commit clean, working code and artifacts with `git commit`. Use the repo's existing git identity — no Co-Authored-By lines, no Claude attribution. Stage specific files only, not `git add -A`.
+- Commit clean, working code and artifacts with git commit. Use the repo's existing git identity — no Co-Authored-By lines, no Claude attribution. Stage specific files only, not git add -A.
 - If a Modal run fails, debug and fix before marking this step done.
-- Append a "## Coding agent done (phase=$phase iter=$iter)" block to plan/loop_notes.md
-  noting what was run, what was saved, and any surprises.
+- Append exactly one compact run note to plan/loop_notes.md, max 12 lines.
+  Do not paste transcript text, P(agree) trajectories, tables, full artifact
+  lists, or qualitative analysis there. Link manifests/artifacts and put detail
+  in the relevant phase note.
 PROMPT
 }

@@ -24,7 +24,12 @@ YOUR TASKS
    and the current goals.md. Ask:
    - Are the experiments actually testing what plan.md says they should test?
    - Is persona being kept independent from language (never conflated)?
-   - Is the factorial design intact — are all the right cells being run?
+   - Is the factorial design intact for the current phase?
+     For Phase 3, this means each matched discovery block has normal baselines
+     and exploratory cells on the same agents, item, turn order, and seeds. A
+     3-agent or 4-agent exploratory block is valid only if it includes its own
+     matched baseline. For Phase 5, this means the full factorial cells are
+     present.
    - Is the judge scoring things that are relevant to RQ1–RQ4?
    - Is anything drifting away from the core claim (channel vs content, asymmetric drift)?
 

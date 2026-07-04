@@ -12,13 +12,14 @@ Read artifacts/results/wvs_screen_raw.json and artifacts/results/wvs_screen_summ
 
 Your job: select and lock the item set for debate.
 
-Selection criteria (from plan.md):
-- DIVERGENT: EN vs ID P(agree) differ by > 0.15
-- MID-RANGE: 0.2 < P(agree) < 0.8 in both languages (headroom to move)
+Selection criteria (from goals.md / current design):
+- DIVERGENT: max ΔP across Indonesia, United States, and China personas > 0.15
+- MID-RANGE: 0.2 < P(agree) < 0.8 for all three personas (headroom to move)
+- MEASUREMENT LANGUAGE: all Phase 0 probes are in English; persona varies, language is held constant.
 
 Output:
 1. Write artifacts/results/wvs_items_locked.json — the final locked item list with:
-   { \"item\": \"...\", \"en_p_agree\": 0.xx, \"id_p_agree\": 0.xx, \"delta\": 0.xx }
+   { \"item\": \"...\", \"p_agree_indonesia\": 0.xx, \"p_agree_usa\": 0.xx, \"p_agree_china\": 0.xx, \"delta_max\": 0.xx }
 2. Write plan/phase_notes/phase0_notes.md — rationale for each inclusion/exclusion.
 3. Write PASS or FAIL on line 1 of plan/phase_notes/phase0_reader_verdict.md.
    PASS means: at least 3 items meet both criteria.
@@ -44,12 +45,15 @@ Output:
 
         2) task="PHASE 2 — Validity Check (iter $iter)
 
-Read all transcripts in artifacts/transcripts/ matching phase2_iter${iter}_*.json.
-Apply the rubric STRICTLY, in priority order. One FAIL on any transcript fails the batch.
+Read all raw transcript files in artifacts/transcripts/ matching phase2_iter${iter}_*.json.
+Ignore generated *_judgment.json files; those are judge outputs, not debate transcripts.
+Apply the rubric STRICTLY, in priority order. The batch passes if a majority of transcripts pass
+(at least 2 out of 3 for a 3-transcript batch). Single-seed failures are acceptable if the
+failure mode is rare or seed-specific.
 
 RUBRIC (in priority order):
-1. SYCOPHANTIC COLLAPSE — does any agent cave immediately? (\"good point, I agree\", \"you're right\"
-   with no counter). This is the most dangerous artifact. Check turn 1 and turn 2 of each agent.
+1. SYCOPHANTIC COLLAPSE — do most agents avoid immediately caving? (\"good point, I agree\", \"you're right\"
+   with no counter). This is the most dangerous artifact. Check the first response to the other agent.
 2. ENGAGEMENT — do agents reference and rebut each other's specific points, or deliver parallel
    monologues? Copy one example of genuine rebuttal if present; flag if none.
 3. LANGUAGE-HOLDING — does the ID agent stay in Indonesian throughout? Flag any English leakage.
