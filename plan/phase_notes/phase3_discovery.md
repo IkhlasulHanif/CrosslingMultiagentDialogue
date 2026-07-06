@@ -12964,3 +12964,303 @@ not applicable: 2-agent block
 ### Transcripts worth keeping
 
 None. No iter 150 transcripts were present, so no files were copied to `artifacts/golden/`.
+
+## Discovery iter 151
+
+### Matched block summary
+
+Files read: none. No files matching `artifacts/transcripts/phase3_iter151_*.json` were present, and `artifacts/transcripts/phase3_iter151_manifest.txt` was not written.
+
+Expected active block from `plan/loop_notes.md` and `config/discovery_blocks.json`: 2-agent Indonesia persona vs China persona controlled block `p3_r2_id_cn_native_english` on `society_over_individual` ("The interests of society should take priority over the rights of the individual.").
+
+Provider/model visible in the run ledger and project config: OpenAI Responses API, `gpt-5.4-mini`, `reasoning.effort="none"` per project default.
+
+Expected cells for this matched block:
+- `idcn_enen`: English baseline, Indonesia persona / English language vs China persona / English language.
+- `idcn_idzh`: native-language cell, Indonesia persona / Indonesian language vs China persona / Mandarin Chinese language.
+- `idcn_iden`: ID-native/CN-English cross, Indonesia persona / Indonesian language vs China persona / English language.
+- `idcn_enzh`: ID-English/CN-native cross, Indonesia persona / English language vs China persona / Mandarin Chinese language.
+
+Seeds found: none in transcript artifacts. Expected seeds from the run ledger and config: 661, 673, 677, 683, 691, 701, 709, 719, 727, 733. Baseline cells available: none. Exploratory cells available: none. Missing files: all iter 151 transcript files and the iter 151 manifest.
+
+Run-ledger context: iter 151 is marked `BLOCKED`; generated=0 failed=40. Dry-run passed with 40 jobs using `python3`; OpenAI preflight resolved `api.openai.com` and auth was accepted. The full run stopped on OpenAI HTTP 429 `insufficient_quota` at the first job, `idcn_enen` seed 661 turn 1. No complete iter 151 transcripts or manifest files were produced.
+
+### Flip turns found
+
+None recorded because no iter 151 transcripts were present. No turn text was available to quote.
+
+### Asymmetry signs
+
+No concession or hardening counts were computed because no iter 151 transcripts were present.
+
+Concession-like turns toward society priority: Indonesia persona 0 observed / China persona 0 observed; Indonesian language 0 observed / English language 0 observed / Mandarin Chinese 0 observed. These are absence-of-data counts, not behavioral zeros.
+
+Same-side rights-first hardening turns: Indonesia persona 0 observed / China persona 0 observed; Indonesian language 0 observed / English language 0 observed / Mandarin Chinese 0 observed. These are absence-of-data counts, not behavioral zeros.
+
+### Interesting elicitations
+
+None recorded because no iter 151 transcript text was available.
+
+### Cell comparisons
+
+Unavailable. The required matched comparisons were `idcn_enen` and `idcn_idzh` as baselines against `idcn_iden` and `idcn_enzh` as cross cells, but no iter 151 files were present for any cell.
+
+### Seed-level baseline matrix
+
+- No matched seeds available. English baseline change: unavailable. Native-language change: unavailable. ID-native/CN-English cross change: unavailable. ID-English/CN-native cross change: unavailable. Candidate excess movement: unavailable.
+
+### Matched baseline comparisons
+
+- seed unavailable baseline read: missing: `idcn_enen`; missing: `idcn_idzh`; missing: `idcn_iden`; missing: `idcn_enzh`. No turns 1-3 could be compared.
+
+### Opening-prior vs interaction-drift split
+
+- No seed-level opening-prior or interaction-drift labels can be assigned for iter 151 because no turn-1 or post-interaction turns were present. Opening language prior: unavailable. Monolingual movement: unavailable. Candidate cross-lingual excess movement: unavailable.
+
+### Emergent behavior notes
+
+not applicable: 2-agent block
+
+### Transcripts worth keeping
+
+None. No iter 151 transcripts were present, so no files were copied to `artifacts/golden/`.
+
+## Discovery iter 152
+
+### Matched block summary
+
+Files read: none. No files matching `artifacts/transcripts/phase3_iter152_*.json` were present, and `artifacts/transcripts/phase3_iter152_manifest.txt` was not written.
+
+Expected active block from `plan/loop_notes.md` and `config/discovery_blocks.json`: 2-agent Indonesia persona vs China persona controlled block `p3_r2_id_cn_native_english` on `society_over_individual` ("The interests of society should take priority over the rights of the individual.").
+
+Provider/model visible in the run ledger and project config: OpenAI Responses API, `gpt-5.4-mini`, `reasoning.effort="none"` per project default.
+
+Expected cells for this matched block:
+- `idcn_enen`: English baseline, Indonesia persona / English language vs China persona / English language.
+- `idcn_idzh`: native-language cell, Indonesia persona / Indonesian language vs China persona / Mandarin Chinese language.
+- `idcn_iden`: ID-native/CN-English cross, Indonesia persona / Indonesian language vs China persona / English language.
+- `idcn_enzh`: ID-English/CN-native cross, Indonesia persona / English language vs China persona / Mandarin Chinese language.
+
+Seeds found: none in transcript artifacts. Expected seeds from the run ledger and config: 661, 673, 677, 683, 691, 701, 709, 719, 727, 733. Baseline cells available: none. Exploratory cells available: none. Missing files: all iter 152 transcript files and the iter 152 manifest.
+
+Run-ledger context: iter 152 is marked `BLOCKED`; generated=0 failed=40. Dry-run passed with 40 jobs using `python3`; OpenAI preflight resolved `api.openai.com` and auth was accepted. The full run stopped on OpenAI HTTP 429 `insufficient_quota` at the first job, `idcn_enen` seed 661 turn 1. No complete iter 152 transcripts or manifest files were produced.
+
+### Flip turns found
+
+None recorded because no iter 152 transcripts were present. No turn text was available to quote.
+
+### Asymmetry signs
+
+No concession or hardening counts were computed because no iter 152 transcripts were present.
+
+Concession-like turns toward society priority: Indonesia persona 0 observed / China persona 0 observed; Indonesian language 0 observed / English language 0 observed / Mandarin Chinese 0 observed. These are absence-of-data counts, not behavioral zeros.
+
+Same-side rights-first hardening turns: Indonesia persona 0 observed / China persona 0 observed; Indonesian language 0 observed / English language 0 observed / Mandarin Chinese 0 observed. These are absence-of-data counts, not behavioral zeros.
+
+### Interesting elicitations
+
+None recorded because no iter 152 transcript text was available.
+
+### Cell comparisons
+
+Unavailable. The required matched comparisons were `idcn_enen` and `idcn_idzh` as baselines against `idcn_iden` and `idcn_enzh` as cross cells, but no iter 152 files were present for any cell.
+
+### Seed-level baseline matrix
+
+- No matched seeds available. English baseline change: unavailable. Native-language change: unavailable. ID-native/CN-English cross change: unavailable. ID-English/CN-native cross change: unavailable. Candidate excess movement: unavailable.
+
+### Matched baseline comparisons
+
+- seed unavailable baseline read: missing: `idcn_enen`; missing: `idcn_idzh`; missing: `idcn_iden`; missing: `idcn_enzh`. No turns 1-3 could be compared.
+
+### Opening-prior vs interaction-drift split
+
+- No seed-level opening-prior or interaction-drift labels can be assigned for iter 152 because no turn-1 or post-interaction turns were present. Opening language prior: unavailable. Monolingual movement: unavailable. Candidate cross-lingual excess movement: unavailable.
+
+### Emergent behavior notes
+
+not applicable: 2-agent block
+
+### Transcripts worth keeping
+
+None. No iter 152 transcripts were present, so no files were copied to `artifacts/golden/`.
+
+## Discovery iter 153
+
+### Matched block summary
+
+Files read: none. No files matching `artifacts/transcripts/phase3_iter153_*.json` were present, and `artifacts/transcripts/phase3_iter153_manifest.txt` was not written.
+
+Expected active block from `plan/loop_notes.md` and `config/discovery_blocks.json`: 2-agent Indonesia persona vs China persona controlled block `p3_r2_id_cn_native_english` on `society_over_individual` ("The interests of society should take priority over the rights of the individual.").
+
+Provider/model visible in the run ledger and project config: OpenAI Responses API, `gpt-5.4-mini`, `reasoning.effort="none"` per project default.
+
+Expected cells for this matched block:
+- `idcn_enen`: English baseline, Indonesia persona / English language vs China persona / English language.
+- `idcn_idzh`: native-language cell, Indonesia persona / Indonesian language vs China persona / Mandarin Chinese language.
+- `idcn_iden`: ID-native/CN-English cross, Indonesia persona / Indonesian language vs China persona / English language.
+- `idcn_enzh`: ID-English/CN-native cross, Indonesia persona / English language vs China persona / Mandarin Chinese language.
+
+Seeds found: none in transcript artifacts. Expected seeds from the run ledger and config: 661, 673, 677, 683, 691, 701, 709, 719, 727, 733. Baseline cells available: none. Exploratory cells available: none. Missing files: all iter 153 transcript files and the iter 153 manifest.
+
+Run-ledger context: iter 153 is marked `BLOCKED`; generated=0 failed=40. Dry-run passed with 40 jobs using `python3`; OpenAI preflight resolved `api.openai.com` and auth was accepted. The full run stopped on OpenAI HTTP 429 `insufficient_quota` at the first job, `idcn_enen` seed 661 turn 1. No complete iter 153 transcripts or manifest files were produced.
+
+### Flip turns found
+
+None recorded because no iter 153 transcripts were present. No turn text was available to quote.
+
+### Asymmetry signs
+
+No concession or hardening counts were computed because no iter 153 transcripts were present.
+
+Concession-like turns toward society priority: Indonesia persona 0 observed / China persona 0 observed; Indonesian language 0 observed / English language 0 observed / Mandarin Chinese 0 observed. These are absence-of-data counts, not behavioral zeros.
+
+Same-side rights-first hardening turns: Indonesia persona 0 observed / China persona 0 observed; Indonesian language 0 observed / English language 0 observed / Mandarin Chinese 0 observed. These are absence-of-data counts, not behavioral zeros.
+
+### Interesting elicitations
+
+None recorded because no iter 153 transcript text was available.
+
+### Cell comparisons
+
+Unavailable. The required matched comparisons were `idcn_enen` and `idcn_idzh` as baselines against `idcn_iden` and `idcn_enzh` as cross cells, but no iter 153 files were present for any cell.
+
+### Seed-level baseline matrix
+
+- No matched seeds available. English baseline change: unavailable. Native-language change: unavailable. ID-native/CN-English cross change: unavailable. ID-English/CN-native cross change: unavailable. Candidate excess movement: unavailable.
+
+### Matched baseline comparisons
+
+- seed unavailable baseline read: missing: `idcn_enen`; missing: `idcn_idzh`; missing: `idcn_iden`; missing: `idcn_enzh`. No turns 1-3 could be compared.
+
+### Opening-prior vs interaction-drift split
+
+- No seed-level opening-prior or interaction-drift labels can be assigned for iter 153 because no turn-1 or post-interaction turns were present. Opening language prior: unavailable. Monolingual movement: unavailable. Candidate cross-lingual excess movement: unavailable.
+
+### Emergent behavior notes
+
+not applicable: 2-agent block
+
+### Transcripts worth keeping
+
+None. No iter 153 transcripts were present, so no files were copied to `artifacts/golden/`.
+
+## Discovery iter 154
+
+### Matched block summary
+
+Files read: none. No files matching `artifacts/transcripts/phase3_iter154_*.json` were present, and `artifacts/transcripts/phase3_iter154_manifest.txt` was not written.
+
+Expected active block from `plan/loop_notes.md` and `config/discovery_blocks.json`: 2-agent Indonesia persona vs China persona controlled block `p3_r2_id_cn_native_english` on `society_over_individual` ("The interests of society should take priority over the rights of the individual.").
+
+Provider/model visible in the run ledger and project config: OpenAI Responses API, `gpt-5.4-mini`, `reasoning.effort="none"` per project default.
+
+Expected cells for this matched block:
+- `idcn_enen`: English baseline, Indonesia persona / English language vs China persona / English language.
+- `idcn_idzh`: native-language cell, Indonesia persona / Indonesian language vs China persona / Mandarin Chinese language.
+- `idcn_iden`: ID-native/CN-English cross, Indonesia persona / Indonesian language vs China persona / English language.
+- `idcn_enzh`: ID-English/CN-native cross, Indonesia persona / English language vs China persona / Mandarin Chinese language.
+
+Seeds found: none in transcript artifacts. Expected seeds from the run ledger and config: 661, 673, 677, 683, 691, 701, 709, 719, 727, 733. Baseline cells available: none. Exploratory cells available: none. Missing files: all iter 154 transcript files and the iter 154 manifest.
+
+Run-ledger context: iter 154 is marked `BLOCKED`; generated=0 failed=40. Dry-run passed with 40 jobs using `python3`; OpenAI preflight resolved `api.openai.com` and auth was accepted. The full run stopped on OpenAI HTTP 429 `insufficient_quota` at the first job, `idcn_enen` seed 661 turn 1. No complete iter 154 transcripts or manifest files were produced.
+
+### Flip turns found
+
+None recorded because no iter 154 transcripts were present. No turn text was available to quote.
+
+### Asymmetry signs
+
+No concession or hardening counts were computed because no iter 154 transcripts were present.
+
+Concession-like turns toward society priority: Indonesia persona 0 observed / China persona 0 observed; Indonesian language 0 observed / English language 0 observed / Mandarin Chinese 0 observed. These are absence-of-data counts, not behavioral zeros.
+
+Same-side rights-first hardening turns: Indonesia persona 0 observed / China persona 0 observed; Indonesian language 0 observed / English language 0 observed / Mandarin Chinese 0 observed. These are absence-of-data counts, not behavioral zeros.
+
+### Interesting elicitations
+
+None recorded because no iter 154 transcript text was available.
+
+### Cell comparisons
+
+Unavailable. The required matched comparisons were `idcn_enen` and `idcn_idzh` as baselines against `idcn_iden` and `idcn_enzh` as cross cells, but no iter 154 files were present for any cell.
+
+### Seed-level baseline matrix
+
+- No matched seeds available. English baseline change: unavailable. Native-language change: unavailable. ID-native/CN-English cross change: unavailable. ID-English/CN-native cross change: unavailable. Candidate excess movement: unavailable.
+
+### Matched baseline comparisons
+
+- seed unavailable baseline read: missing: `idcn_enen`; missing: `idcn_idzh`; missing: `idcn_iden`; missing: `idcn_enzh`. No turns 1-3 could be compared.
+
+### Opening-prior vs interaction-drift split
+
+- No seed-level opening-prior or interaction-drift labels can be assigned for iter 154 because no turn-1 or post-interaction turns were present. Opening language prior: unavailable. Monolingual movement: unavailable. Candidate cross-lingual excess movement: unavailable.
+
+### Emergent behavior notes
+
+not applicable: 2-agent block
+
+### Transcripts worth keeping
+
+None. No iter 154 transcripts were present, so no files were copied to `artifacts/golden/`.
+
+## Discovery iter 155
+
+### Matched block summary
+
+Files read: none. No files matching `artifacts/transcripts/phase3_iter155_*.json` were present, and `artifacts/transcripts/phase3_iter155_manifest.txt` was not written.
+
+Expected active block from `plan/loop_notes.md` and `config/discovery_blocks.json`: 2-agent Indonesia persona vs China persona controlled block `p3_r2_id_cn_native_english` on `society_over_individual` ("The interests of society should take priority over the rights of the individual.").
+
+Provider/model visible in the run ledger and project config: OpenAI Responses API, `gpt-5.4-mini`, `reasoning.effort="none"` per project default.
+
+Expected cells for this matched block:
+- `idcn_enen`: English baseline, Indonesia persona / English language vs China persona / English language.
+- `idcn_idzh`: native-language cell, Indonesia persona / Indonesian language vs China persona / Mandarin Chinese language.
+- `idcn_iden`: ID-native/CN-English cross, Indonesia persona / Indonesian language vs China persona / English language.
+- `idcn_enzh`: ID-English/CN-native cross, Indonesia persona / English language vs China persona / Mandarin Chinese language.
+
+Seeds found: none in transcript artifacts. Expected seeds from the run ledger and config: 661, 673, 677, 683, 691, 701, 709, 719, 727, 733. Baseline cells available: none. Exploratory cells available: none. Missing files: all iter 155 transcript files and the iter 155 manifest.
+
+Run-ledger context: iter 155 is marked `BLOCKED`; generated=0 failed=40. Dry-run passed with 40 jobs using `python3`; OpenAI preflight resolved `api.openai.com` and auth was accepted. The full run stopped on OpenAI HTTP 429 `insufficient_quota` at the first job, `idcn_enen` seed 661 turn 1. No complete iter 155 transcripts or manifest files were produced.
+
+### Flip turns found
+
+None recorded because no iter 155 transcripts were present. No turn text was available to quote.
+
+### Asymmetry signs
+
+No concession or hardening counts were computed because no iter 155 transcripts were present.
+
+Concession-like turns toward society priority: Indonesia persona 0 observed / China persona 0 observed; Indonesian language 0 observed / English language 0 observed / Mandarin Chinese 0 observed. These are absence-of-data counts, not behavioral zeros.
+
+Same-side rights-first hardening turns: Indonesia persona 0 observed / China persona 0 observed; Indonesian language 0 observed / English language 0 observed / Mandarin Chinese 0 observed. These are absence-of-data counts, not behavioral zeros.
+
+### Interesting elicitations
+
+None recorded because no iter 155 transcript text was available.
+
+### Cell comparisons
+
+Unavailable. The required matched comparisons were `idcn_enen` and `idcn_idzh` as baselines against `idcn_iden` and `idcn_enzh` as cross cells, but no iter 155 files were present for any cell.
+
+### Seed-level baseline matrix
+
+- No matched seeds available. English baseline change: unavailable. Native-language change: unavailable. ID-native/CN-English cross change: unavailable. ID-English/CN-native cross change: unavailable. Candidate excess movement: unavailable.
+
+### Matched baseline comparisons
+
+- seed unavailable baseline read: missing: `idcn_enen`; missing: `idcn_idzh`; missing: `idcn_iden`; missing: `idcn_enzh`. No turns 1-3 could be compared.
+
+### Opening-prior vs interaction-drift split
+
+- No seed-level opening-prior or interaction-drift labels can be assigned for iter 155 because no turn-1 or post-interaction turns were present. Opening language prior: unavailable. Monolingual movement: unavailable. Candidate cross-lingual excess movement: unavailable.
+
+### Emergent behavior notes
+
+not applicable: 2-agent block
+
+### Transcripts worth keeping
+
+None. No iter 155 transcripts were present, so no files were copied to `artifacts/golden/`.
