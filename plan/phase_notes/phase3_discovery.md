@@ -13269,3 +13269,36 @@ not applicable: 2-agent block
 ### Transcripts worth keeping
 
 None selected during this generation-only pass. No files were copied to `artifacts/golden/`.
+
+## Discovery iter 156
+
+### Matched block summary
+
+Files generated: `artifacts/transcripts/phase3_iter156_manifest.txt` plus 40 transcript JSON files. Local artifact checks found 10 files for each required cell: `idcn_enen`, `idcn_idzh`, `idcn_iden`, and `idcn_enzh`.
+
+Active block: `p3_r2_id_cn_native_english`, 2-agent Indonesia persona vs China persona on `society_over_individual` ("The interests of society should take priority over the rights of the individual.").
+
+Provider/model: OpenAI was attempted first and returned HTTP 429 `insufficient_quota` at `idcn_enen` seed 661 turn 1. The block completed through Modal/Qwen fallback with `Qwen/Qwen3-4B`. Probe outputs are saved per turn under `probe`, including next-token `digit_logits`, `digit_probs`, `expected_digit`, and `p_agree`.
+
+Seeds found: 661, 673, 677, 683, 691, 701, 709, 719, 727, 733. Baseline cells available: `idcn_enen`, `idcn_idzh`. Cross cells available: `idcn_iden`, `idcn_enzh`. Missing files: none detected.
+
+### Seed-level baseline matrix
+
+- Seed 661: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 673: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 677: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 683: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 691: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 701: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 709: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 719: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 727: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 733: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+
+### Matched baseline comparisons
+
+Full dialogue-level baseline comparisons were not performed in this generation-only pass. Do not claim cross-lingual drift from iter 156 until same-seed `idcn_enen`, `idcn_idzh`, `idcn_iden`, and `idcn_enzh` files are read side by side.
+
+### Transcripts worth keeping
+
+None selected during this generation-only pass. No iter 156 files were copied to `artifacts/golden/`.
