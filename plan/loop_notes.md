@@ -5950,10 +5950,10 @@ Manifest is one line listing the 8 generated transcript files.
   - Full run stopped on OpenAI HTTP 429 `insufficient_quota` at the first job, `idcn_enen` seed 661 turn 1; no iter 154 transcript or manifest files were produced.
 
 ## Run note phase=3 iter=155
-- status: BLOCKED
-- provider/model/block: OpenAI Responses API / `gpt-5.4-mini` / `p3_r2_id_cn_native_english`
-- artifacts: `artifacts/transcripts/phase3_iter155_manifest.txt` not written; generated=0 failed=40
+- status: PASS
+- provider/model/block: Modal/Qwen / `Qwen/Qwen3-4B` / `p3_r2_id_cn_native_english`
+- artifacts: `artifacts/transcripts/phase3_iter155_manifest.txt`; generated=40 failed=0
 - seeds/cells: seeds `661,673,677,683,691,701,709,719,727,733`; cells `idcn_enen,idcn_idzh,idcn_iden,idcn_enzh`
 - notes:
-  - Dry-run passed with 40 jobs using `python3`; OpenAI preflight resolved `api.openai.com` and auth was accepted.
-  - Full run stopped on OpenAI HTTP 429 `insufficient_quota` at the first job, `idcn_enen` seed 661 turn 1; no iter 155 transcript or manifest files were produced.
+  - OpenAI dry-run passed with 40 jobs, but the full OpenAI path returned HTTP 429 `insufficient_quota` on `idcn_enen` seed 661 turn 1.
+  - Fallback ran via `modal run code/modal_multi_agent_debate.py --block p3_r2_id_cn_native_english --iter-num 155`; Qwen artifacts include next-token digit logits.

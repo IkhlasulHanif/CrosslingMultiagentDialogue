@@ -13209,53 +13209,58 @@ None. No iter 154 transcripts were present, so no files were copied to `artifact
 
 ### Matched block summary
 
-Files read: none. No files matching `artifacts/transcripts/phase3_iter155_*.json` were present, and `artifacts/transcripts/phase3_iter155_manifest.txt` was not written.
+Files generated: `artifacts/transcripts/phase3_iter155_manifest.txt` plus 40 transcript JSON files. Artifact sanity checks read the manifest count and one sample transcript, `artifacts/transcripts/phase3_iter155_idcn_iden_661.json`.
 
-Expected active block from `plan/loop_notes.md` and `config/discovery_blocks.json`: 2-agent Indonesia persona vs China persona controlled block `p3_r2_id_cn_native_english` on `society_over_individual` ("The interests of society should take priority over the rights of the individual.").
+Active block from `config/discovery_blocks.json`: 2-agent Indonesia persona vs China persona controlled block `p3_r2_id_cn_native_english` on `society_over_individual` ("The interests of society should take priority over the rights of the individual.").
 
-Provider/model visible in the run ledger and project config: OpenAI Responses API, `gpt-5.4-mini`, `reasoning.effort="none"` per project default.
+Provider/model: OpenAI was attempted first and returned HTTP 429 `insufficient_quota` at `idcn_enen` seed 661 turn 1. The block completed through Modal/Qwen fallback with `Qwen/Qwen3-4B`. Probes use `next_token_digit_logits` and include digit token IDs, logits, probabilities, expected digit, and P(agree).
 
-Expected cells for this matched block:
+Cells for this matched block:
 - `idcn_enen`: English baseline, Indonesia persona / English language vs China persona / English language.
 - `idcn_idzh`: native-language cell, Indonesia persona / Indonesian language vs China persona / Mandarin Chinese language.
 - `idcn_iden`: ID-native/CN-English cross, Indonesia persona / Indonesian language vs China persona / English language.
 - `idcn_enzh`: ID-English/CN-native cross, Indonesia persona / English language vs China persona / Mandarin Chinese language.
 
-Seeds found: none in transcript artifacts. Expected seeds from the run ledger and config: 661, 673, 677, 683, 691, 701, 709, 719, 727, 733. Baseline cells available: none. Exploratory cells available: none. Missing files: all iter 155 transcript files and the iter 155 manifest.
+Seeds found: 661, 673, 677, 683, 691, 701, 709, 719, 727, 733. Baseline cells available: `idcn_enen`, `idcn_idzh`. Cross cells available: `idcn_iden`, `idcn_enzh`. Missing files: none detected; 10 files were present for each required cell.
 
-Run-ledger context: iter 155 is marked `BLOCKED`; generated=0 failed=40. Dry-run passed with 40 jobs using `python3`; OpenAI preflight resolved `api.openai.com` and auth was accepted. The full run stopped on OpenAI HTTP 429 `insufficient_quota` at the first job, `idcn_enen` seed 661 turn 1. No complete iter 155 transcripts or manifest files were produced.
+Run-ledger context: iter 155 is marked `PASS`; generated=40 failed=0. The manifest lists all generated files.
 
 ### Flip turns found
 
-None recorded because no iter 155 transcripts were present. No turn text was available to quote.
+Not coded in this generation-only pass. The matched files now exist for a later dialogue-level read.
 
 ### Asymmetry signs
 
-No concession or hardening counts were computed because no iter 155 transcripts were present.
-
-Concession-like turns toward society priority: Indonesia persona 0 observed / China persona 0 observed; Indonesian language 0 observed / English language 0 observed / Mandarin Chinese 0 observed. These are absence-of-data counts, not behavioral zeros.
-
-Same-side rights-first hardening turns: Indonesia persona 0 observed / China persona 0 observed; Indonesian language 0 observed / English language 0 observed / Mandarin Chinese 0 observed. These are absence-of-data counts, not behavioral zeros.
+Not coded in this generation-only pass. Do not interpret this section as behavioral evidence.
 
 ### Interesting elicitations
 
-None recorded because no iter 155 transcript text was available.
+Not coded in this generation-only pass.
 
 ### Cell comparisons
 
-Unavailable. The required matched comparisons were `idcn_enen` and `idcn_idzh` as baselines against `idcn_iden` and `idcn_enzh` as cross cells, but no iter 155 files were present for any cell.
+Available for later reading. The required matched comparisons are `idcn_enen` and `idcn_idzh` as baselines against `idcn_iden` and `idcn_enzh` as cross cells, with all four files present for every seed.
 
 ### Seed-level baseline matrix
 
-- No matched seeds available. English baseline change: unavailable. Native-language change: unavailable. ID-native/CN-English cross change: unavailable. ID-English/CN-native cross change: unavailable. Candidate excess movement: unavailable.
+- Seed 661: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 673: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 677: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 683: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 691: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 701: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 709: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 719: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 727: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
+- Seed 733: files present for `idcn_enen`, `idcn_idzh`, `idcn_iden`, `idcn_enzh`; candidate excess movement not yet coded.
 
 ### Matched baseline comparisons
 
-- seed unavailable baseline read: missing: `idcn_enen`; missing: `idcn_idzh`; missing: `idcn_iden`; missing: `idcn_enzh`. No turns 1-3 could be compared.
+- Full turn-by-turn baseline comparisons were not performed in this generation-only pass.
 
 ### Opening-prior vs interaction-drift split
 
-- No seed-level opening-prior or interaction-drift labels can be assigned for iter 155 because no turn-1 or post-interaction turns were present. Opening language prior: unavailable. Monolingual movement: unavailable. Candidate cross-lingual excess movement: unavailable.
+- Opening-prior and interaction-drift labels are pending qualitative read. Do not call any iter 155 movement cross-lingual drift until `idcn_enen`, `idcn_idzh`, `idcn_iden`, and `idcn_enzh` have been read side by side for the same seed.
 
 ### Emergent behavior notes
 
@@ -13263,4 +13268,4 @@ not applicable: 2-agent block
 
 ### Transcripts worth keeping
 
-None. No iter 155 transcripts were present, so no files were copied to `artifacts/golden/`.
+None selected during this generation-only pass. No files were copied to `artifacts/golden/`.
