@@ -6002,3 +6002,12 @@ Manifest is one line listing the 8 generated transcript files.
 - notes:
   - `python` was unavailable, so dry-run used `python3` and passed with 40 jobs; OpenAI preflight passed, then returned HTTP 429 `insufficient_quota` on `idcn_enen` seed 661 turn 1.
   - Fallback ran via `modal run code/modal_multi_agent_debate.py --block p3_r2_id_cn_native_english --iter-num 160`; verified 40 JSON files with six turns and Qwen digit logits.
+
+## Run note phase=3 iter=161
+- status: BLOCKED
+- provider/model/block: OpenAI Responses API -> Modal/Qwen / `gpt-5.4-mini` -> `Qwen/Qwen3-4B` / `p3_r5_id_cn_multi_item`
+- artifacts: `artifacts/transcripts/phase3_iter161_manifest.txt` not written; generated=0 failed=48
+- seeds/cells: items `society_over_individual,individual_freedom,traditional_culture`; seeds `661,683,691,727`; cells `idcn_enen,idcn_idzh,idcn_iden,idcn_enzh`
+- notes:
+  - Dry-run passed with 48 jobs using `python3`; `python` was unavailable.
+  - OpenAI preflight failed DNS for `api.openai.com`; Modal fallback could not connect and local DNS also failed for `api.modal.com`/`modal.com`.
