@@ -6047,3 +6047,12 @@ Manifest is one line listing the 8 generated transcript files.
 - notes:
   - Required Modal dry-run with `secrets/modal.env` loaded failed before local entrypoint output with "Could not connect to the Modal server."
   - Modal auth vars are present, but local DNS has no resolver config and cannot resolve `api.modal.com`, `modal.com`, or `huggingface.co`; no full batch was started.
+
+## Run note phase=3 iter=162
+- status: BLOCKED
+- provider/model/block: Modal/Qwen / `Qwen/Qwen3-4B` / `p3_r5_id_cn_multi_item`
+- artifacts: `artifacts/transcripts/phase3_iter162_manifest.txt` not written; generated=0 failed=48
+- seeds/cells: items `society_over_individual,individual_freedom,traditional_culture`; seeds `661,683,691,727`; cells `idcn_enen,idcn_idzh,idcn_iden,idcn_enzh`
+- notes:
+  - Required dry-run and full-run Modal commands were both attempted with `secrets/modal.env` loaded; both failed before local entrypoint output with "Could not connect to the Modal server."
+  - Modal CLI `1.5.1` and auth vars are present, but local DNS has no resolver config and cannot resolve `api.modal.com`, `modal.com`, or `huggingface.co`; no batch artifacts were produced.
