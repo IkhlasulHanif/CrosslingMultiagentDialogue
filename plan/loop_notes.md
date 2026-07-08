@@ -6317,3 +6317,12 @@ Manifest is one line listing the 8 generated transcript files.
 - notes:
   - Required Modal dry-run and full-run commands were attempted with `secrets/modal.env` loaded; both failed before local entrypoint output with "Could not connect to the Modal server."
   - Debug confirmed Modal CLI `1.5.1`, Modal auth vars present, exact 48-job grid, zero iter 162 artifacts, no DNS config via `scutil --dns`, and failed resolution for `api.modal.com`, `modal.com`, and `huggingface.co`.
+
+## Run note phase=3 iter=162
+- status: BLOCKED
+- provider/model/block: Modal/Qwen / `Qwen/Qwen3-4B` / `p3_r5_id_cn_multi_item`
+- artifacts: `artifacts/transcripts/phase3_iter162_manifest.txt` not written; generated=0 failed=48
+- seeds/cells: items `society_over_individual,individual_freedom,traditional_culture`; seeds `661,683,691,727`; cells `idcn_enen,idcn_idzh,idcn_iden,idcn_enzh`
+- notes:
+  - Required dry-run and full-run Modal commands were attempted with `secrets/modal.env` loaded; both failed before local entrypoint output with "Could not connect to the Modal server."
+  - Debug confirmed Modal CLI `1.5.1`, active Modal auth vars/profile, exact 48-job config, zero iter 162 artifacts, no DNS config via `scutil --dns`, and failed resolution for `api.modal.com`.
