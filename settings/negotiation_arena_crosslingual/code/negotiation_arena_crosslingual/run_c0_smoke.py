@@ -308,7 +308,7 @@ def make_chat_client(provider: str) -> tuple[Any, dict[str, Any]]:
     }
 
 
-def run_endpoint_probe(provider: str) -> dict[str, Any]:
+def run_endpoint_probe(provider: str, failed_command: str | None = None) -> dict[str, Any]:
     if provider in {"openai_smoke", "openai_benchmark"}:
         is_benchmark = provider == "openai_benchmark"
         artifact_path = (
@@ -317,7 +317,7 @@ def run_endpoint_probe(provider: str) -> dict[str, Any]:
             else "artifacts/results/smoke_model_probe.json"
         )
         event_kind = "benchmark_model" if is_benchmark else "smoke_model"
-        failed_command = (
+        failed_command = failed_command or (
             "NEGOTIATION_SMOKE_PROVIDER=openai_benchmark python3 scripts/run_c0_smoke.py"
             if is_benchmark
             else "NEGOTIATION_SMOKE_PROVIDER=openai_smoke python3 scripts/run_c0_smoke.py"

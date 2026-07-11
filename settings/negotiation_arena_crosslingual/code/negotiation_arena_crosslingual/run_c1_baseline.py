@@ -151,7 +151,7 @@ def main() -> int:
     provider = selected_benchmark_provider()
 
     try:
-        model_metadata = run_endpoint_probe(provider)
+        model_metadata = run_endpoint_probe(provider, failed_command=FAILED_COMMAND)
     except SystemExit as exc:
         append_event(
             "baseline",

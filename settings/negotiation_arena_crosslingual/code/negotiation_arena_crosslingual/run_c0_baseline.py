@@ -18,6 +18,8 @@ sys.path.insert(0, str(ROOT / "code" / "negotiation_arena_crosslingual"))
 from local_model_adapter import load_adapter_config  # noqa: E402
 from run_c0_smoke import (  # noqa: E402
     append_event,
+    benchmark_openai_allowed,
+    load_benchmark_model_config,
     run_endpoint_probe,
     run_episode,
     upstream_commit,
@@ -28,6 +30,7 @@ from run_c0_smoke import (  # noqa: E402
 
 
 FAILED_COMMAND = "bash scripts/run_c0_baseline.sh"
+OPENAI_FAILED_COMMAND = "bash scripts/run_c0_openai_baseline.sh"
 
 
 def load_baseline_plan() -> dict[str, Any]:
@@ -51,6 +54,26 @@ def baseline_episode_plan(episode: dict[str, Any]) -> dict[str, Any]:
             "metrics": episode["metrics"],
         },
     }
+
+
+def selected_benchmark_provider() -> str:
+    override = os.environ.get("NEGOTIATION_BENCHMARK_PROVIDER")
+    if override:
+        return override
+    return "local_qwen"
+
+
+def provider_artifacts(artifacts: dict[str, str], provider: str) -> dict[str, str]:
+    if provider != "openai_benchmark":
+        return artifacts
+    return {
+        "transcript": artifacts["transcript"].replace(".json", ".openai_benchmark.json"),
+        "metrics": artifacts["metrics"].replace(".metrics.json", ".openai_benchmark.metrics.json"),
+    }
+
+
+def command_for_provider(provider: str) -> str:
+    return OPENAI_FAILED_COMMAND if provider == "openai_benchmark" else FAILED_COMMAND
 
 
 def write_blocked_artifact(reason: str, error: str | None = None) -> Path:
@@ -93,16 +116,45 @@ def main() -> int:
     episode_config = episodes[0]
     episode_plan = baseline_episode_plan(episode_config)
 
-    provider = "local_qwen"
+    provider = selected_benchmark_provider()
+    failed_command = command_for_provider(provider)
+    if provider == "openai_benchmark" and not benchmark_openai_allowed(load_benchmark_model_config()):
+        artifact = write_json(
+            "artifacts/results/baseline_c0_buy_sell_en_seed001.openai_benchmark.blocked.json",
+            {
+                "checked_at": utc_now(),
+                "status": "BLOCKED",
+                "blocker": "openai_benchmark_override_not_allowed",
+                "failed_command": failed_command,
+                "message": "OpenAI benchmark provider was requested but config/benchmark_model.json does not allow it.",
+                "next_command": "Use local Qwen with bash scripts/run_c0_baseline.sh or update config/benchmark_model.json explicitly.",
+            },
+        )
+        append_event(
+            "baseline",
+            "BLOCKED",
+            f"C0 OpenAI benchmark baseline blocked by config; artifact={artifact.relative_to(ROOT)}; "
+            f"failed_command={failed_command}",
+        )
+        return 2
+    episode_plan["expected_artifacts"] = provider_artifacts(episode_plan["expected_artifacts"], provider)
+
     try:
-        model_metadata = run_endpoint_probe(provider)
+        model_metadata = run_endpoint_probe(provider, failed_command=failed_command)
     except SystemExit as exc:
+        if provider == "openai_benchmark":
+            append_event(
+                "baseline",
+                "BLOCKED",
+                f"C0 OpenAI benchmark baseline blocked on provider probe; failed_command={failed_command}",
+            )
+            return int(exc.code) if isinstance(exc.code, int) else 2
         artifact = write_blocked_artifact("local_qwen_endpoint_unreachable", str(exc))
         append_event(
             "baseline",
             "BLOCKED",
             f"C0 baseline blocked on local Qwen endpoint; artifact={artifact.relative_to(ROOT)}; "
-            f"failed_command={FAILED_COMMAND}",
+            f"failed_command={failed_command}",
         )
         return int(exc.code) if isinstance(exc.code, int) else 2
 
@@ -114,7 +166,7 @@ def main() -> int:
             {
                 "checked_at": utc_now(),
                 "status": "ERROR",
-                "failed_command": FAILED_COMMAND,
+                "failed_command": failed_command,
                 "error_type": type(exc).__name__,
                 "error": str(exc),
                 "traceback": traceback.format_exc(),
@@ -131,7 +183,7 @@ def main() -> int:
         "baseline",
         "OK",
         f"C0 baseline buy_sell episode completed; transcript={transcript_path.relative_to(ROOT)}; "
-        f"metrics={metrics_path.relative_to(ROOT)}",
+        f"metrics={metrics_path.relative_to(ROOT)}; provider={provider}",
     )
     print(json.dumps({"transcript": str(transcript_path), "metrics": str(metrics_path)}, indent=2))
     return 0

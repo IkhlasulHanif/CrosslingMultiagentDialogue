@@ -1,16 +1,27 @@
 Qwen3-1.7B C0 EN baselines for buy/sell and resource_exchange pass the floor:
-deal_rate=1.0 and offer_parse_rate=1.0. C1 ID and G2 remain blocked only on
-pending human review of 16 EN-ID translation units. This pass added
-`python3 scripts/generate_translation_review_packet.py`, which regenerates the
-human review packet from `config/prompt_translations.json` and
-`config/translation_review.json`. The latest packet artifact is
+deal_rate=1.0 and offer_parse_rate=1.0. C1 ID and G2 remain blocked on pending
+human review of 16 EN-ID translation units.
+
+This pass added dedicated OpenAI benchmark override wrappers:
+`bash scripts/run_c0_openai_baseline.sh` and
+`bash scripts/run_c0_openai_resource_exchange_baseline.sh`. They reuse the C0
+baseline runners with `NEGOTIATION_BENCHMARK_PROVIDER=openai_benchmark` and
+write separate `.openai_benchmark.*` transcript/metrics paths so they do not
+overwrite Qwen evidence. A real C0 OpenAI buy/sell baseline attempt was made at
+2026-07-11T19:09:31 UTC. No transcript was produced because the provider probe
+failed before the episode: `api.openai.com` could not be resolved by urllib or
+curl. The blocker artifact is `artifacts/results/benchmark_model_probe.json`,
+and the exact next command after network/DNS access is restored is
+`bash scripts/run_c0_openai_baseline.sh`.
+
+The latest translation packet artifact is
 `artifacts/results/translation_review_packet.json`, refreshed at
 2026-07-11T18:49:15 UTC, and records 16 pending units. The translation
 validator artifact was refreshed at 2026-07-11T18:50:01 UTC, the real C1
 command artifact at 2026-07-11T18:48:50 UTC, and the G2 gate summary at
-2026-07-11T18:48:54 UTC. After human review clears, the runner will select the
-explicit OpenAI benchmark override (`openai_benchmark` / `gpt-4.1-mini`) and
-label resulting artifacts as OpenAI benchmark evidence, not Qwen evidence.
+2026-07-11T18:48:54 UTC. After human review clears, the C1 runner will select
+the explicit OpenAI benchmark override (`openai_benchmark` / `gpt-4.1-mini`)
+and label resulting artifacts as OpenAI benchmark evidence, not Qwen evidence.
 
 One real C0 EN-monolingual buy/sell smoke episode previously ran through
 upstream NegotiationArena using the explicitly allowed OpenAI smoke override;
