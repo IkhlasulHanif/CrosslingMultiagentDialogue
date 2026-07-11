@@ -135,6 +135,11 @@ def probe_endpoint(
     timeout_s: float = 2.0,
     api_key: str | None = None,
     out_dir: Path | None = None,
+    schema_version: str = SCHEMA_VERSION,
+    model_provider: str = "local-vllm-compatible",
+    blocker_label: str = "Qwen/vLLM OpenAI-compatible endpoint",
+    artifact_prefix: str = "qwen_endpoint_probe",
+    next_command_once_unblocked: str | None = None,
 ) -> tuple[dict[str, Any], Path]:
     """Probe `/models` and write a JSON artifact.
 
@@ -158,13 +163,13 @@ def probe_endpoint(
     endpoint_reachable = any(bool(check.get("reachable")) for check in checks)
     blockers: list[str] = []
     if not endpoint_reachable:
-        blockers.append(f"no reachable Qwen/vLLM OpenAI-compatible endpoint at {models_url}")
+        blockers.append(f"no reachable {blocker_label} at {models_url}")
 
     result: dict[str, Any] = {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": schema_version,
         "timestamp_utc": utc_now(),
         "empirical_episode_ran": False,
-        "model_provider": "local-vllm-compatible",
+        "model_provider": model_provider,
         "model": model_name,
         "base_url": base,
         "models_url": models_url,
@@ -173,12 +178,13 @@ def probe_endpoint(
         "checks": checks,
         "endpoint_reachable": endpoint_reachable,
         "blockers": blockers,
-        "next_command_once_unblocked": (
+        "next_command_once_unblocked": next_command_once_unblocked
+        or (
             "GOVSIM_MODEL_BASE_URL=http://127.0.0.1:8000/v1 "
             "GOVSIM_MODEL_NAME=Qwen3-1.7B ./scripts/run_qwen_c0_baseline.sh"
         ),
     }
 
-    path = artifact_dir / f"qwen_endpoint_probe_{stamp()}.json"
+    path = artifact_dir / f"{artifact_prefix}_{stamp()}.json"
     path.write_text(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return result, path

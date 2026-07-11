@@ -10,5 +10,6 @@ Run:
 ./harness.sh status
 ./harness.sh check
 ./harness.sh run-smoke
+./scripts/run_openai_c0_baseline.sh
+./scripts/run_openai_c1_baseline.sh
 ```
-

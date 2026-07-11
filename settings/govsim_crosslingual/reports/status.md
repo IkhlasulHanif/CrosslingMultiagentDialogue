@@ -4,11 +4,13 @@ This is the concise file to read first for this benchmark.
 
 ## Current Answer
 
-One C0 OpenAI smoke episode has run. It is runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence.
+One C0 OpenAI smoke episode has run. It is runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence. OpenAI benchmark-override C0/C1 baseline entrypoints are now wired, but no OpenAI baseline episode completed in this sandbox.
 
 Current empirical story: `./harness.sh run-smoke` most recently succeeded at `2026-07-11T16:59:10+00:00`, executing one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260711T165849Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260711T165849Z.jsonl`.
 
-Current blockers: no Qwen3-1.7B C0/C1 baseline has run yet, the ID translation pack still needs human review, and no local/Modal Qwen endpoint is reachable from this sandbox.
+Current blockers: no Qwen3-1.7B C0/C1 baseline has run yet, the ID translation pack still needs human review, no local/Modal Qwen endpoint is reachable from this sandbox, and `api.openai.com` DNS resolution is currently unavailable from this sandbox for OpenAI benchmark baseline calls.
+
+OpenAI benchmark override baseline state: `./scripts/run_openai_c1_baseline.sh` is wired and was attempted at `2026-07-11T17:30:26+00:00`; it stopped before any model call on the translation review gate, artifact `artifacts/results/govsim_c1_openai_baseline_20260711T173026Z.json`. `./scripts/run_openai_c0_baseline.sh` is wired and was attempted at `2026-07-11T17:30:35+00:00`; it attempted an OpenAI model call with `gpt-4.1-mini` and is blocked by DNS resolution for `api.openai.com`, artifact `artifacts/results/govsim_c0_openai_baseline_20260711T173035Z.json`, endpoint probe `artifacts/logs/openai_endpoint_probe_20260711T173035Z.json`. The probe includes redacted curl and urllib checks; curl returned `Could not resolve host: api.openai.com` and urllib returned `[Errno 8] nodename nor servname provided, or not known`.
 
 The Qwen C0 command `./scripts/run_qwen_c0_baseline.sh` is wired and was attempted at `2026-07-11T16:55:11+00:00` after resolving the PathFinder source and minimal import dependencies. It is blocked at `http://127.0.0.1:8000/v1/chat/completions` by sandbox/network permission `[Errno 1] Operation not permitted`; artifact `artifacts/results/govsim_c0_qwen_baseline_20260711T165511Z.json`. The attached endpoint probe `artifacts/logs/qwen_endpoint_probe_20260711T165511Z.json` found no reachable server at `http://127.0.0.1:8000/v1/models`.
 
@@ -16,8 +18,7 @@ The Qwen C1 ID command `./scripts/run_qwen_c1_baseline.sh` enforces the human tr
 
 Source/license state: `licenses.md` and `artifacts/logs/source_license_status.json` report `READY_FOR_REVIEW`. The source manifest records the paper/README canonical GovSim URL `https://github.com/giorgiopiatti/GovSim`; the local checkout remote resolves to `https://github.com/giorgio-piatti/GovSim.git`, branch `main`, commit `1d11adf047b24fa2ba0d44a1d4931015ea2e5210`. The local license file is MIT license text, 1071 bytes, SHA-256 `55be1b08220f411edf83dbf7ac9b3b3e7e56b92fb2ef9b10af91526edd38f15e`.
 
-
-Next useful work: **Human-check ID translation**.
+Next useful work: **Restore sandbox DNS/network for OpenAI C0 baseline, and human-check ID translation for C1**.
 
 ## Question
 
@@ -42,29 +43,26 @@ Does cross-lingual contact reduce cooperative resource-management outcomes beyon
 
 ## Blockers / Errors
 
-None logged.
+BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260711T173035Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260711T173035Z.json
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T17:18:10+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_011412.txt
-- `2026-07-11T17:18:10+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-11T17:18:44+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T171813Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T171813Z.jsonl
-- `2026-07-11T17:18:45+00:00` OK: scripts/run_smoke.sh exited 0
-- `2026-07-11T17:18:45+00:00` OK: Post-Codex smoke/experiment attempt exited 0
-- `2026-07-11T17:18:45+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
-- `2026-07-11T17:18:47+00:00` OK: Codex pass 19 completed
-- `2026-07-11T17:26:17+00:00` NOTE: OpenAI benchmark execution override enabled per user; Codex auth still strips OpenAI env.
+- `2026-07-11T17:26:50+00:00` RUNNING: Starting Codex implementation loop sleep=900s max_iters=infinite
+- `2026-07-11T17:26:50+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_012650.txt
+- `2026-07-11T17:30:26+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked before model call by translation gate: TranslationPackNotReady: ID translation pack is not ready for benchmark use: status=DRAFT, source_coverage_complete=True, human_checked=False, pack=/Users/ikhlasul.hanif/Documents/MultiAgent/settings/govsim_crosslingual/config/translations/en_id_fishery_draft.json; artifact=artifacts/results/govsim_c1_openai_baseline_20260711T173026Z.json; next=./scripts/run_openai_c1_baseline.sh
+- `2026-07-11T17:30:35+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260711T173035Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260711T173035Z.json
+- `2026-07-11T17:31:41+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
 | Transcript JSON/JSONL | 21 |
-| Result summaries | 65 |
-| Logs | 54 |
+| Result summaries | 67 |
+| Logs | 55 |
 
 ## Open Questions
 
