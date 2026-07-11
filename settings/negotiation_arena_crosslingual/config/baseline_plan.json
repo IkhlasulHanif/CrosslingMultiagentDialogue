@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "status": "planned_gated_on_local_qwen_endpoint",
+  "purpose": "First baseline execution after the smoke bring-up. This command is Qwen/local-only and must not use the OpenAI smoke override.",
+  "episodes": [
+    {
+      "episode_id": "baseline_c0_buy_sell_en_seed001",
+      "condition": "C0",
+      "game_id": "buy_sell",
+      "language_pair": "EN-ID",
+      "role_languages": {
+        "buyer": "EN",
+        "seller": "EN"
+      },
+      "model": "Qwen3-1.7B",
+      "turn_limit": 8,
+      "seed": 101,
+      "transcript": "artifacts/transcripts/baseline_c0_buy_sell_en_seed001.json",
+      "metrics": "artifacts/results/baseline_c0_buy_sell_en_seed001.metrics.json"
+    }
+  ],
+  "blocked_conditions": [
+    {
+      "condition": "C1",
+      "reason": "EN-ID human translation review is pending. Do not run or report ID monolingual baselines as valid benchmark evidence until config/translation_review.json is complete and scripts/validate_translation_review.py passes."
+    }
+  ],
+  "preconditions": [
+    {
+      "id": "upstream_checkout",
+      "required": true,
+      "check": "python3 scripts/bringup_check.py",
+      "why": "Baseline episodes must call the local NegotiationArena checkout."
+    },
+    {
+      "id": "local_qwen_endpoint",
+      "required": true,
+      "check": "python3 scripts/local_model_adapter.py --live-probe",
+      "why": "Baselines are benchmark evidence and must use Qwen/local or a later explicitly wired Modal Qwen endpoint, not the OpenAI smoke override."
+    },
+    {
+      "id": "translation_review_for_c1",
+      "required": true,
+      "check": "python3 scripts/validate_translation_review.py",
+      "why": "C1 ID prompts require human bilingual review before they are valid benchmark evidence."
+    }
+  ]
+}

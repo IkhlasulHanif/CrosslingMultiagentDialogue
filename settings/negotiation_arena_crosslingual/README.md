@@ -10,5 +10,5 @@ Run:
 ./harness.sh status
 ./harness.sh check
 ./harness.sh run-smoke
+bash scripts/run_c0_baseline.sh
 ```
-

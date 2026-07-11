@@ -25,13 +25,14 @@ payoff premium or anchor final terms?
 - [x] Bring up NegotiationArena locally.
 - [x] Select resource exchange and buy/sell games.
 - [x] Translate game rules and prompts to ID.
-- [ ] Human-check ID translation.
 - [x] Add shared local-model adapter instead of benchmark-local API calls.
 - [x] Implement structured offer parser.
 - [x] Track first-offer anchoring.
 - [x] Implement payoff asymmetry `EN-agent - ID-agent`.
-- [ ] Smoke test one C0 episode.
-- [ ] Run C0 and C1 baselines.
+- [x] Smoke test one C0 episode.
+- [ ] Run C0 EN baseline with Qwen3-1.7B.
+- [ ] Human-check ID translation before C1/C2/C3.
+- [ ] Run C1 ID baseline after translation review.
 - [ ] Check G2 capability floor before C2/C3.
 - [x] Write `budget.md` before full matrix.
 

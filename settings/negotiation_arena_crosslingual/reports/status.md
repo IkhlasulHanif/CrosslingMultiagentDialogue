@@ -4,20 +4,20 @@ This is the concise file to read first for this benchmark.
 
 ## Current Answer
 
-No benchmark data has run yet, so there is no empirical answer on whether the
-higher-resource language channel captures a negotiation payoff premium.
+One real C0 EN-monolingual buy/sell smoke episode has run through the upstream
+NegotiationArena checkout. The smoke used the explicitly allowed OpenAI override
+for runner bring-up only, so it is not Qwen3-1.7B research-matrix evidence.
 
-Current empirical story: null state; no transcripts, result summaries, or
-smoke-test episodes exist yet.
+Smoke artifact: `artifacts/transcripts/smoke_c0_buy_sell_en_001.json`.
+Metrics artifact: `artifacts/results/smoke_c0_buy_sell_en_001.metrics.json`.
+The smoke reached a deal in 2 turns with `offer_parse_rate=1.0`; this is only
+runner bring-up evidence.
 
-Latest run: `./harness.sh run-smoke` reached the OpenAI smoke endpoint gate and
-exited 2 before any model episode ran. OpenAI smoke is explicitly allowed by
-`config/smoke_model.json` for first runner bring-up only, not as Qwen3-1.7B
-research-matrix evidence.
+The next Qwen/local C0 baseline command is wired as
+`bash scripts/run_c0_baseline.sh`.
 
-Current blocker: DNS/network access to `https://api.openai.com/v1/chat/completions`
 
-Next useful work: **Human-check ID translation**.
+Next useful work: **Run C0 EN baseline with Qwen3-1.7B**.
 
 ## Question
 
@@ -40,29 +40,29 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-None logged.
+ERROR: Modal Qwen C0 baseline blocked before app start: workspace billing cycle spend limit reached; failed_command=modal run settings/negotiation_arena_crosslingual/scripts/run_c0_baseline_modal.py; local Qwen endpoint is still required unless Modal billing is restored.
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T11:07:03+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_190237.txt
-- `2026-07-11T11:07:03+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-11T11:07:03+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-11T11:07:04+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
-- `2026-07-11T11:07:12+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
-- `2026-07-11T11:07:12+00:00` OK: scripts/run_smoke.sh exited 0
-- `2026-07-11T11:07:12+00:00` OK: Post-Codex smoke/experiment attempt exited 0
-- `2026-07-11T11:07:12+00:00` OK: Codex pass 2 completed
+- `2026-07-11T11:15:20+00:00` OK: Harness scaffold check passed
+- `2026-07-11T11:15:36+00:00` ERROR: Modal Qwen C0 baseline blocked before app start: workspace billing cycle spend limit reached; failed_command=modal run settings/negotiation_arena_crosslingual/scripts/run_c0_baseline_modal.py; local Qwen endpoint is still required unless Modal billing is restored.
+- `2026-07-11T11:16:46+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_191015.txt
+- `2026-07-11T11:16:46+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T11:16:46+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-11T11:16:48+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
+- `2026-07-11T11:16:56+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-11T11:16:56+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
 | Transcript JSON/JSONL | 1 |
-| Result summaries | 4 |
-| Logs | 15 |
+| Result summaries | 6 |
+| Logs | 16 |
 
 ## Open Questions
 
