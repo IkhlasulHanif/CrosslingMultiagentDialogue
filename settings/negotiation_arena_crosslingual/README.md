@@ -11,5 +11,6 @@ Run:
 ./harness.sh check
 ./harness.sh run-smoke
 bash scripts/run_c0_baseline.sh
+bash scripts/run_c0_resource_exchange_baseline.sh
 bash scripts/run_c1_baseline.sh
 ```

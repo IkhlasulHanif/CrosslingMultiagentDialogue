@@ -14,6 +14,20 @@ Baseline result: deal reached in 2 turns at price 40. Metrics:
 anchoring signed delta 0, seller payoff 0, buyer payoff 60. Payoff asymmetry is
 not defined for C0 because both roles are EN.
 
+One real Qwen3-1.7B C0 EN-monolingual resource-exchange baseline has now run
+through upstream `games/trading_game` using the same cached Transformers
+provider. Artifact paths:
+`artifacts/transcripts/baseline_c0_resource_exchange_en_seed001.json` and
+`artifacts/results/baseline_c0_resource_exchange_en_seed001.metrics.json`.
+
+Resource-exchange result: upstream accepted a deal in 2 turns with
+`deal_rate=1.0` and `offer_parse_rate=1.0`. The accepted trade was effectively a
+zero-progress allocation, so final resources matched the initial allocation and
+both upstream ResourceGoal outcomes were false. The runner records those boolean
+outcomes as numeric 1/0 goal-satisfaction payoffs for now; inspect
+trade-legality and payoff semantics before treating resource_exchange as full
+matrix-ready.
+
 The first direct-Qwen baseline attempt failed before transcript writing because
 Qwen expressed acceptance in prose while leaving malformed XML for the upstream
 NegotiationArena parser. The runner now canonicalizes common casing/tag errors
@@ -39,3 +53,6 @@ Current run result is a gate artifact, not empirical evidence:
 `docs/id_translation_review.md` for side-by-side EN/ID text. Once the human
 review file is approved, rerun `python3 scripts/validate_translation_review.py`
 and `bash scripts/run_c1_baseline.sh`.
+
+The C0 resource-exchange baseline command is
+`bash scripts/run_c0_resource_exchange_baseline.sh`.
