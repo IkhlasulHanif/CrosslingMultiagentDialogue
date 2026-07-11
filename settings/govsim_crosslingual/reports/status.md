@@ -6,15 +6,15 @@ This is the concise file to read first for this benchmark.
 
 One C0 OpenAI smoke episode has run. It is runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence. OpenAI benchmark-override C0/C1 baseline entrypoints are wired, but no OpenAI baseline episode completed in this sandbox.
 
-Current empirical story: `./harness.sh run-smoke` most recently succeeded at `2026-07-11T21:56:28+00:00`, executing one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260711T215607Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260711T215607Z.jsonl`.
+Current empirical story: `./harness.sh run-smoke` most recently succeeded at `2026-07-11T22:14:36+00:00`, executing one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260711T221417Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260711T221417Z.jsonl`.
 
 Current blockers: no Qwen3-1.7B C0/C1 baseline has run yet, the ID translation pack still needs human review, no local/Modal Qwen endpoint is reachable from this sandbox, and `api.openai.com` DNS resolution is currently unavailable from this sandbox for OpenAI benchmark baseline calls.
 
-OpenAI benchmark override baseline state: `./scripts/run_openai_c0_baseline.sh` was attempted again at `2026-07-11T22:12:09+00:00`; it attempted an OpenAI model call with `gpt-4.1-mini` and is blocked by DNS resolution for `api.openai.com`, artifact `artifacts/results/govsim_c0_openai_baseline_20260711T221209Z.json`, endpoint probe `artifacts/logs/openai_endpoint_probe_20260711T221209Z.json`. The endpoint probe includes both `curl` and `urllib` evidence; `curl` reports `Could not resolve host: api.openai.com`. `./scripts/run_openai_c1_baseline.sh` was attempted at `2026-07-11T20:57:22+00:00`; it stopped before any model call on the translation review gate, artifact `artifacts/results/govsim_c1_openai_baseline_20260711T205722Z.json`.
+OpenAI benchmark override baseline state: `./scripts/run_openai_c0_baseline.sh` was attempted again at `2026-07-11T22:30:33+00:00`; it attempted an OpenAI model call with `gpt-4.1-mini` and is blocked by DNS resolution for `api.openai.com`, artifact `artifacts/results/govsim_c0_openai_baseline_20260711T223033Z.json`, endpoint probe `artifacts/logs/openai_endpoint_probe_20260711T223033Z.json`. The endpoint probe includes both `curl` and `urllib` evidence; `curl` reports `Could not resolve host: api.openai.com`. `./scripts/run_openai_c1_baseline.sh` was attempted at `2026-07-11T22:30:55+00:00`; it stopped before any model call on the translation review gate, artifact `artifacts/results/govsim_c1_openai_baseline_20260711T223055Z.json`.
 
 The Qwen C0 command `./scripts/run_qwen_c0_baseline.sh` is wired and was attempted at `2026-07-11T16:55:11+00:00` after resolving the PathFinder source and minimal import dependencies. It is blocked at `http://127.0.0.1:8000/v1/chat/completions` by sandbox/network permission `[Errno 1] Operation not permitted`; artifact `artifacts/results/govsim_c0_qwen_baseline_20260711T165511Z.json`. The attached endpoint probe `artifacts/logs/qwen_endpoint_probe_20260711T165511Z.json` found no reachable server at `http://127.0.0.1:8000/v1/models`.
 
-The Qwen C1 ID command `./scripts/run_qwen_c1_baseline.sh` enforces the human translation gate before any model call. It was attempted at `2026-07-11T17:15:41+00:00` and exited `2` before a model call; artifact `artifacts/results/govsim_c1_qwen_baseline_20260711T171541Z.json`. The translation pack `config/translations/en_id_fishery_draft.json` covers the active fishery prompt primitives and passes mechanical QA for all 17 entries, but remains `DRAFT` because `human_checked=false`. The latest strict translation check regenerated `artifacts/logs/translation_status.json` and `artifacts/logs/translation_human_review_packet.md` at `2026-07-11T20:57:15+00:00`, then exited `3` as expected for a structurally valid pack awaiting human review.
+The Qwen C1 ID command `./scripts/run_qwen_c1_baseline.sh` enforces the human translation gate before any model call. It was attempted at `2026-07-11T17:15:41+00:00` and exited `2` before a model call; artifact `artifacts/results/govsim_c1_qwen_baseline_20260711T171541Z.json`. The translation pack `config/translations/en_id_fishery_draft.json` covers the active fishery prompt primitives and passes mechanical QA for all 17 entries, but remains `DRAFT` because `human_checked=false`. The latest strict translation check regenerated `artifacts/logs/translation_status.json` and `artifacts/logs/translation_human_review_packet.md` at `2026-07-11T22:30:55+00:00`, then exited `3` as expected for a structurally valid pack awaiting human review.
 
 
 Next useful work: **Human-check ID translation**.
@@ -42,29 +42,29 @@ Does cross-lingual contact reduce cooperative resource-management outcomes beyon
 
 ## Blockers / Errors
 
-BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260711T221209Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260711T221209Z.json
+BLOCKED: Scoped commit/push attempt blocked before staging: git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock because the repository index is outside this setting sandbox writable root. Relevant uncommitted files remain under settings/govsim_crosslingual; attempted commit message would have been `B1 refresh GovSim baseline blocker evidence`.
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T21:56:31+00:00` OK: Codex pass 15 completed
-- `2026-07-11T22:11:31+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_061131.txt
-- `2026-07-11T22:12:09+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260711T221209Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260711T221209Z.json
-- `2026-07-11T22:13:14+00:00` OK: Harness scaffold check passed
-- `2026-07-11T22:14:13+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_061131.txt
-- `2026-07-11T22:14:13+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-11T22:14:36+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T221417Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T221417Z.jsonl
-- `2026-07-11T22:14:37+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-11T22:32:26+00:00` OK: Harness scaffold check passed
+- `2026-07-11T22:33:15+00:00` BLOCKED: Scoped commit/push attempt blocked before staging: git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock because the repository index is outside this setting sandbox writable root. Relevant uncommitted files remain under settings/govsim_crosslingual; attempted commit message would have been `B1 refresh GovSim baseline blocker evidence`.
+- `2026-07-11T22:33:16+00:00` OK: Harness scaffold check passed
+- `2026-07-11T22:33:42+00:00` OK: Harness scaffold check passed
+- `2026-07-11T22:33:59+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_062939.txt
+- `2026-07-11T22:33:59+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T22:34:20+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T223402Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T223402Z.jsonl
+- `2026-07-11T22:34:21+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 37 |
-| Result summaries | 116 |
-| Logs | 70 |
+| Transcript JSON/JSONL | 38 |
+| Result summaries | 120 |
+| Logs | 71 |
 
 ## Open Questions
 
