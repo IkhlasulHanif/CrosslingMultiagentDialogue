@@ -34,6 +34,8 @@ class TranslationPackTest(unittest.TestCase):
         self.assertIn("resource", result.categories)
         self.assertIn("rule", result.categories)
         self.assertGreaterEqual(result.entry_count, 12)
+        self.assertEqual(result.mechanical_qa["status"], "PASS")
+        self.assertEqual(result.mechanical_qa["issue_count"], 0)
 
     def test_missing_required_category_is_invalid(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -64,6 +66,53 @@ class TranslationPackTest(unittest.TestCase):
         self.assertEqual(result.status, "INVALID")
         self.assertIn("at least one resource entry", result.missing)
         self.assertIn("at least one rule entry", result.missing)
+
+    def test_placeholder_and_number_mismatch_is_invalid(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            pack = root / "pack.json"
+            entries = [
+                {
+                    "id": "instruction.bad",
+                    "category": "instruction",
+                    "en": "Choose between 0 and {num_tons_lake} tons. Answer:",
+                    "id_text": "Pilih antara 0 dan 100 ton.",
+                    "human_checked": True,
+                },
+                {
+                    "id": "resource.ok",
+                    "category": "resource",
+                    "en": "There are 100 tons.",
+                    "id_text": "Ada 100 ton.",
+                    "human_checked": True,
+                },
+                {
+                    "id": "rule.ok",
+                    "category": "rule",
+                    "en": "Fish double.",
+                    "id_text": "Ikan menjadi dua kali lipat.",
+                    "human_checked": True,
+                },
+            ]
+            pack.write_text(
+                json.dumps(
+                    {
+                        "schema_version": SCHEMA_VERSION,
+                        "language_pair": "EN-ID",
+                        "source_coverage_complete": True,
+                        "entries": entries,
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            result = check_translation_pack(root, pack)
+
+        self.assertEqual(result.status, "INVALID")
+        self.assertEqual(result.mechanical_qa["status"], "FAIL")
+        self.assertIn("instruction.bad: missing placeholders in id_text: {num_tons_lake}", result.missing)
+        self.assertIn("instruction.bad: extra numeric tokens in id_text: 100", result.missing)
+        self.assertIn("instruction.bad: answer label instruction is not preserved as Answer: or Jawaban:", result.missing)
 
     def test_complete_pack_requires_source_coverage_and_human_flags(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

@@ -6,9 +6,9 @@ This is the concise file to read first for this benchmark.
 
 One C0 OpenAI smoke episode has run. It is runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence.
 
-Current empirical story: `./harness.sh run-smoke` most recently succeeded at `2026-07-11T13:53:32+00:00`, executing one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260711T135310Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260711T135310Z.jsonl`; process metrics are `artifacts/logs/govsim_c0_openai_smoke_20260711T135310Z_process_metrics.json`. That smoke had 5/5 parseable harvests, survival_time 1, total_welfare 60.0, gini 0.1333333333333333, and EN language_share 1.0. This is runner bring-up evidence only.
+Current empirical story: `./harness.sh run-smoke` most recently succeeded at `2026-07-11T14:14:17+00:00`, executing one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260711T141352Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260711T141352Z.jsonl`. This is runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence.
 
-Current blockers: no Qwen3-1.7B C0/C1 baseline has run yet, the ID translation pack still needs human review, and the real upstream PathFinder submodule is still unresolved for full upstream entry-point replication. The Qwen C0 command `./scripts/run_qwen_c0_baseline.sh` is wired, but the latest attempt at `2026-07-11T14:09:40+00:00` is blocked at `http://127.0.0.1:8000/v1/chat/completions` by sandbox/network permission `[Errno 1] Operation not permitted`; artifact `artifacts/results/govsim_c0_qwen_baseline_20260711T140940Z.json`. The Qwen C1 ID command `./scripts/run_qwen_c1_baseline.sh` now enforces the human translation gate before any model call. Its latest attempt at `2026-07-11T13:51:18+00:00` is blocked because `config/translations/en_id_fishery_draft.json` is `DRAFT` with `human_checked=false`; artifact `artifacts/results/govsim_c1_qwen_baseline_20260711T135118Z.json`.
+Current blockers: no Qwen3-1.7B C0/C1 baseline has run yet, the ID translation pack still needs human review, and the real upstream PathFinder submodule is still unresolved for full upstream entry-point replication. The Qwen C0 command `./scripts/run_qwen_c0_baseline.sh` is wired, but the latest attempt at `2026-07-11T14:09:40+00:00` is blocked at `http://127.0.0.1:8000/v1/chat/completions` by sandbox/network permission `[Errno 1] Operation not permitted`; artifact `artifacts/results/govsim_c0_qwen_baseline_20260711T140940Z.json`. The Qwen C1 ID command `./scripts/run_qwen_c1_baseline.sh` enforces the human translation gate before any model call. Its latest attempt at `2026-07-11T14:31:22+00:00` is blocked because `config/translations/en_id_fishery_draft.json` is `DRAFT` with `human_checked=false`; artifact `artifacts/results/govsim_c1_qwen_baseline_20260711T143122Z.json`.
 
 Checkpoint state: this setting's `.gitignore` now ignores `.venv/*` rather than the `.venv` directory path, so the shared parent checkpoint exclude for `settings/govsim_crosslingual/.venv` no longer fails in `git add -n`. This does not track the virtualenv contents.
 
@@ -40,29 +40,29 @@ Does cross-lingual contact reduce cooperative resource-management outcomes beyon
 
 ## Blockers / Errors
 
-BLOCKED: Scoped commit/push skipped after fresh C0 Qwen blocker and PathFinder source-resolution artifact: git add failed because filesystem sandbox cannot create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock (Operation not permitted). Intended staged paths: plan/events.jsonl, reports/findings.md, reports/status.md, artifacts/results/govsim_c0_qwen_baseline_20260711T140940Z.json, artifacts/logs/govsim_pathfinder_source_resolution_20260711T141003Z.log.
+BLOCKED: Scoped commit/push skipped after translation mechanical-QA increment and fresh C1 gate artifact: git add failed because filesystem sandbox cannot create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock (Operation not permitted). Intended staged paths: code/translation_pack.py, scripts/test_translation_pack.py, plan/events.jsonl, reports/findings.md, reports/status.md, artifacts/results/govsim_c1_qwen_baseline_20260711T143122Z.json, artifacts/logs/translation_status.json, artifacts/logs/translation_human_review_packet.md.
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T14:11:50+00:00` OK: Harness scaffold check passed
-- `2026-07-11T14:12:37+00:00` BLOCKED: Scoped commit/push skipped after fresh C0 Qwen blocker and PathFinder source-resolution artifact: git add failed because filesystem sandbox cannot create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock (Operation not permitted). Intended staged paths: plan/events.jsonl, reports/findings.md, reports/status.md, artifacts/results/govsim_c0_qwen_baseline_20260711T140940Z.json, artifacts/logs/govsim_pathfinder_source_resolution_20260711T141003Z.log.
-- `2026-07-11T14:12:38+00:00` OK: Harness scaffold check passed
-- `2026-07-11T14:13:28+00:00` OK: Harness scaffold check passed
-- `2026-07-11T14:13:49+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_220834.txt
-- `2026-07-11T14:13:49+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-11T14:14:17+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T141352Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T141352Z.jsonl
-- `2026-07-11T14:14:17+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-11T14:31:22+00:00` BLOCKED: GovSim C1 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: TranslationPackNotReady: ID translation pack is not ready for benchmark use: status=DRAFT, source_coverage_complete=True, human_checked=False, pack=/Users/ikhlasul.hanif/Documents/MultiAgent/settings/govsim_crosslingual/config/translations/en_id_fishery_draft.json; artifact=artifacts/results/govsim_c1_qwen_baseline_20260711T143122Z.json
+- `2026-07-11T14:31:37+00:00` NOTE: Added deterministic translation mechanical QA for placeholders, numeric tokens, answer-label preservation, and local source paths. Regenerated artifacts/logs/translation_status.json and artifacts/logs/translation_human_review_packet.md; active EN-ID fishery pack passes mechanical QA for 17 entries with 0 issues, but remains DRAFT because human_checked=false. Validation: .venv/bin/python -m pytest scripts/test_translation_pack.py scripts/test_reports.py (10 passed).
+- `2026-07-11T14:32:50+00:00` OK: Harness scaffold check passed
+- `2026-07-11T14:33:40+00:00` BLOCKED: Scoped commit/push skipped after translation mechanical-QA increment and fresh C1 gate artifact: git add failed because filesystem sandbox cannot create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock (Operation not permitted). Intended staged paths: code/translation_pack.py, scripts/test_translation_pack.py, plan/events.jsonl, reports/findings.md, reports/status.md, artifacts/results/govsim_c1_qwen_baseline_20260711T143122Z.json, artifacts/logs/translation_status.json, artifacts/logs/translation_human_review_packet.md.
+- `2026-07-11T14:34:32+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_222919.txt
+- `2026-07-11T14:34:32+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T14:34:59+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T143436Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T143436Z.jsonl
+- `2026-07-11T14:34:59+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 12 |
-| Result summaries | 37 |
-| Logs | 41 |
+| Transcript JSON/JSONL | 13 |
+| Result summaries | 40 |
+| Logs | 42 |
 
 ## Open Questions
 

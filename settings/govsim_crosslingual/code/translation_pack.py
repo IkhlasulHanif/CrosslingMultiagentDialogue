@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import json
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -13,6 +15,8 @@ from typing import Any
 SCHEMA_VERSION = "govsim-translation-pack-v1"
 DEFAULT_PACK_PATH = Path("config/translations/en_id_fishery_draft.json")
 REQUIRED_CATEGORIES = {"rule", "instruction", "resource"}
+PLACEHOLDER_RE = re.compile(r"\{[A-Za-z_][A-Za-z0-9_]*\}")
+NUMBER_RE = re.compile(r"(?<![\w.-])-?\d+(?:\.\d+)?(?![\w.-])")
 
 
 @dataclass
@@ -27,6 +31,7 @@ class TranslationCheck:
     human_checked: bool | None = None
     missing: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
+    mechanical_qa: dict[str, Any] = field(default_factory=dict)
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -41,6 +46,7 @@ class TranslationCheck:
             "human_checked": self.human_checked,
             "missing": self.missing,
             "warnings": self.warnings,
+            "mechanical_qa": self.mechanical_qa,
         }
 
 
@@ -71,6 +77,77 @@ def _read_json(path: Path) -> tuple[dict[str, Any], list[str]]:
 def _entry_text(entry: dict[str, Any], key: str) -> str:
     value = entry.get(key)
     return value.strip() if isinstance(value, str) else ""
+
+
+def _tokens(pattern: re.Pattern[str], text: str) -> Counter[str]:
+    return Counter(pattern.findall(text))
+
+
+def _counter_delta(left: Counter[str], right: Counter[str]) -> list[str]:
+    delta: list[str] = []
+    for token, count in sorted((left - right).items()):
+        delta.extend([token] * count)
+    return delta
+
+
+def _entry_mechanical_qa(entry: dict[str, Any]) -> dict[str, Any]:
+    entry_id = _entry_text(entry, "id") or "<missing-id>"
+    en = _entry_text(entry, "en")
+    id_text = _entry_text(entry, "id_text")
+    en_placeholders = _tokens(PLACEHOLDER_RE, en)
+    id_placeholders = _tokens(PLACEHOLDER_RE, id_text)
+    en_numbers = _tokens(NUMBER_RE, en)
+    id_numbers = _tokens(NUMBER_RE, id_text)
+    issues: list[str] = []
+
+    missing_placeholders = _counter_delta(en_placeholders, id_placeholders)
+    extra_placeholders = _counter_delta(id_placeholders, en_placeholders)
+    if missing_placeholders:
+        issues.append(f"{entry_id}: missing placeholders in id_text: {', '.join(missing_placeholders)}")
+    if extra_placeholders:
+        issues.append(f"{entry_id}: extra placeholders in id_text: {', '.join(extra_placeholders)}")
+
+    missing_numbers = _counter_delta(en_numbers, id_numbers)
+    extra_numbers = _counter_delta(id_numbers, en_numbers)
+    if missing_numbers:
+        issues.append(f"{entry_id}: missing numeric tokens in id_text: {', '.join(missing_numbers)}")
+    if extra_numbers:
+        issues.append(f"{entry_id}: extra numeric tokens in id_text: {', '.join(extra_numbers)}")
+
+    if "Answer:" in en and not any(label in id_text for label in ("Answer:", "Jawaban:")):
+        issues.append(f"{entry_id}: answer label instruction is not preserved as Answer: or Jawaban:")
+
+    return {
+        "entry_id": entry_id,
+        "placeholder_count": sum(en_placeholders.values()),
+        "numeric_token_count": sum(en_numbers.values()),
+        "issues": issues,
+    }
+
+
+def _mechanical_qa(entries: list[Any], root: Path) -> dict[str, Any]:
+    checked_entries = 0
+    issue_list: list[str] = []
+    missing_source_paths: list[str] = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        checked_entries += 1
+        qa = _entry_mechanical_qa(entry)
+        issue_list.extend(qa["issues"])
+
+        source = _entry_text(entry, "source")
+        source_path_text = source.split(":", 1)[0]
+        if source_path_text and not (root / source_path_text).exists():
+            missing_source_paths.append(source_path_text)
+
+    return {
+        "status": "PASS" if not issue_list else "FAIL",
+        "checked_entries": checked_entries,
+        "issue_count": len(issue_list),
+        "issues": issue_list,
+        "missing_source_paths": sorted(set(missing_source_paths)),
+    }
 
 
 def check_translation_pack(root: Path, pack_path: Path = DEFAULT_PACK_PATH) -> TranslationCheck:
@@ -134,6 +211,11 @@ def check_translation_pack(root: Path, pack_path: Path = DEFAULT_PACK_PATH) -> T
     for category in missing_categories:
         missing.append(f"at least one {category} entry")
 
+    mechanical_qa = _mechanical_qa(entries, root)
+    missing.extend(mechanical_qa["issues"])
+    for source_path in mechanical_qa["missing_source_paths"]:
+        warnings.append(f"entry source path is not present locally: {source_path}")
+
     all_human_checked = bool(human_flags) and all(human_flags)
     if all_human_checked and source_coverage_complete is not True:
         warnings.append("human_checked entries do not imply complete upstream source coverage")
@@ -162,6 +244,7 @@ def check_translation_pack(root: Path, pack_path: Path = DEFAULT_PACK_PATH) -> T
         human_checked=all_human_checked,
         missing=missing,
         warnings=warnings,
+        mechanical_qa=mechanical_qa,
     )
 
 
@@ -209,6 +292,7 @@ def render_human_review_packet(root: Path, pack_path: Path = DEFAULT_PACK_PATH) 
         f"- Entries: {check.entry_count}",
         f"- Source coverage complete: `{check.source_coverage_complete}`",
         f"- All entries human checked: `{check.human_checked}`",
+        f"- Mechanical QA: `{check.mechanical_qa.get('status')}` ({check.mechanical_qa.get('issue_count')} issue(s))",
         "",
         "## Reviewer Instructions",
         "",
@@ -228,6 +312,10 @@ def render_human_review_packet(root: Path, pack_path: Path = DEFAULT_PACK_PATH) 
         lines.extend(["## Warnings", ""])
         for item in [*warnings, *check.warnings]:
             lines.append(f"- {item}")
+        lines.append("")
+    if check.mechanical_qa.get("issues"):
+        lines.extend(["## Mechanical QA Issues", ""])
+        lines.extend(f"- {item}" for item in check.mechanical_qa["issues"])
         lines.append("")
 
     for index, entry in enumerate(entries, start=1):
