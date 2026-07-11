@@ -8,7 +8,7 @@ One C0 OpenAI smoke episode has run. It is runner bring-up evidence only, not Qw
 
 Current empirical story: `./harness.sh run-smoke` successfully executed one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260711T104930Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260711T104930Z.jsonl`; process metrics are `artifacts/logs/govsim_c0_openai_smoke_20260711T104930Z_process_metrics.json`. That smoke had 5/5 parseable harvests, survival_time 1, total_welfare 60.0, gini 0.1333333333333333, and EN language share 1.0.
 
-Current blockers: no Qwen3-1.7B C0/C1 baseline has run yet, the ID translation pack still needs human review, and the real upstream PathFinder submodule is still unresolved for full upstream entry-point replication. The new Qwen C0 command `./scripts/run_qwen_c0_baseline.sh` is wired, but its first attempt is blocked at `http://127.0.0.1:8000/v1/chat/completions` by sandbox/network permission `[Errno 1] Operation not permitted`; artifact `artifacts/results/govsim_c0_qwen_baseline_20260711T111220Z.json`.
+Current blockers: no Qwen3-1.7B C0/C1 baseline has run yet, the ID translation pack still needs human review, and the real upstream PathFinder submodule is still unresolved for full upstream entry-point replication. The Qwen C0 command `./scripts/run_qwen_c0_baseline.sh` is wired, but its first attempt is blocked at `http://127.0.0.1:8000/v1/chat/completions` by sandbox/network permission `[Errno 1] Operation not permitted`; artifact `artifacts/results/govsim_c0_qwen_baseline_20260711T111220Z.json`. The Qwen C1 ID command `./scripts/run_qwen_c1_baseline.sh` is now wired through the same runner with Indonesian prompts, and its first attempt is blocked by the same endpoint permission issue; artifact `artifacts/results/govsim_c1_qwen_baseline_20260711T113327Z.json`.
 
 OpenAI smoke retry state: the latest `./harness.sh run-smoke` attempt, `artifacts/results/govsim_c0_openai_smoke_20260711T110810Z.json`, is blocked by DNS resolution for `api.openai.com` before any new transcript is produced. The OpenAI smoke bypasses PathFinder with the setting-local adapter and must not be reported as final benchmark evidence.
 
@@ -40,29 +40,32 @@ Does cross-lingual contact reduce cooperative resource-management outcomes beyon
 
 ## Blockers / Errors
 
-BLOCKED: GovSim C0 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: LocalModelError: Local model endpoint unavailable at http://127.0.0.1:8000/v1/chat/completions: [Errno 1] Operation not permitted; artifact=artifacts/results/govsim_c0_qwen_baseline_20260711T111220Z.json
+BLOCKED: GovSim C1 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: LocalModelError: Local model endpoint unavailable at http://127.0.0.1:8000/v1/chat/completions: [Errno 1] Operation not permitted; artifact=artifacts/results/govsim_c1_qwen_baseline_20260711T113327Z.json
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T11:09:42+00:00` ERROR: Commit/push skipped after source-covered translation and smoke artifact update: scoped git add for settings/govsim_crosslingual failed because filesystem sandbox cannot create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock (Operation not permitted). Relevant setting files and artifacts remain on disk.
-- `2026-07-11T11:09:50+00:00` ERROR: Current execution blocker: latest GovSim C0 OpenAI smoke cannot reach https://api.openai.com/v1/chat/completions due DNS ([Errno 8] nodename nor servname provided, or not known); blocker artifact=artifacts/results/govsim_c0_openai_smoke_20260711T110810Z.json; next='./harness.sh run-smoke' once network/DNS is available. Qwen C0/C1 baselines still require a local or Modal Qwen endpoint via code/local_model_adapter.py.
-- `2026-07-11T11:10:12+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_190452.txt
-- `2026-07-11T11:10:12+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-11T11:10:15+00:00` RUNNING: Starting Codex implementation loop sleep=900s max_iters=infinite
-- `2026-07-11T11:10:15+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260711_191015.txt
-- `2026-07-11T11:12:20+00:00` BLOCKED: GovSim C0 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: LocalModelError: Local model endpoint unavailable at http://127.0.0.1:8000/v1/chat/completions: [Errno 1] Operation not permitted; artifact=artifacts/results/govsim_c0_qwen_baseline_20260711T111220Z.json
-- `2026-07-11T11:13:26+00:00` OK: Harness scaffold check passed
+- `2026-07-11T11:15:21+00:00` OK: Post-Codex smoke/experiment attempt exited 0
+- `2026-07-11T11:15:22+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
+- `2026-07-11T11:15:22+00:00` BLOCKED: git add failed during checkpoint: The following paths are ignored by one of your .gitignore files:
+settings/govsim_crosslingual/.venv
+hint: Use -f if you really want to add them.
+hint: Disable this message with "git config set advice.addIgnoredFile false"
+- `2026-07-11T11:15:22+00:00` OK: Codex pass 1 completed
+- `2026-07-11T11:30:22+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260711_193022.txt
+- `2026-07-11T11:33:27+00:00` BLOCKED: GovSim C1 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: LocalModelError: Local model endpoint unavailable at http://127.0.0.1:8000/v1/chat/completions: [Errno 1] Operation not permitted; artifact=artifacts/results/govsim_c1_qwen_baseline_20260711T113327Z.json
+- `2026-07-11T11:33:35+00:00` OK: Harness scaffold check passed
+- `2026-07-11T11:34:21+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 2 |
-| Result summaries | 8 |
-| Logs | 28 |
+| Transcript JSON/JSONL | 3 |
+| Result summaries | 11 |
+| Logs | 29 |
 
 ## Open Questions
 

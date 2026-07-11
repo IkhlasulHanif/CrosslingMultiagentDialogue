@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Run one C0 GovSim fishery episode through the local Qwen/vLLM adapter.
+"""Run one GovSim fishery baseline episode through the local Qwen/vLLM adapter.
 
 This is the narrowest executable Qwen baseline command. It uses the same
-upstream GovSim fishery environment and prompt text as the OpenAI bring-up
-smoke, but it never reads OpenAI credentials and only targets the configured
-OpenAI-compatible local/Modal Qwen endpoint.
+upstream GovSim fishery environment as the OpenAI bring-up smoke, but it never
+reads OpenAI credentials and only targets the configured OpenAI-compatible
+local/Modal Qwen endpoint.
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CODE_DIR = ROOT / "code"
 SCRIPT_DIR = ROOT / "scripts"
 RESULT_DIR = ROOT / "artifacts" / "results"
-RUN_STORAGE_ROOT = RESULT_DIR / "govsim_qwen_c0_baseline_runs"
+RUN_STORAGE_ROOT = RESULT_DIR / "govsim_qwen_baseline_runs"
 
 sys.path.insert(0, str(CODE_DIR))
 sys.path.insert(0, str(SCRIPT_DIR))
@@ -36,18 +36,31 @@ def adapter_from_qwen_env() -> VLLMChatAdapter:
     return VLLMChatAdapter(timeout_s=timeout_s, api_key=api_key)
 
 
-def blocked_result(exc: BaseException, adapter: VLLMChatAdapter) -> dict[str, Any]:
+def baseline_condition_language() -> tuple[str, str]:
+    condition = os.environ.get("GOVSIM_CONDITION", "C0").strip().upper()
+    language = os.environ.get("GOVSIM_LANGUAGE", "EN").strip().upper()
+    if (condition, language) not in {("C0", "EN"), ("C1", "ID")}:
+        raise RuntimeError(
+            "unsupported baseline pair; use GOVSIM_CONDITION=C0 GOVSIM_LANGUAGE=EN "
+            "or GOVSIM_CONDITION=C1 GOVSIM_LANGUAGE=ID"
+        )
+    return condition, language
+
+
+def blocked_result(exc: BaseException, adapter: VLLMChatAdapter, condition: str, language: str) -> dict[str, Any]:
+    script_name = "run_qwen_c1_baseline.sh" if condition == "C1" else "run_qwen_c0_baseline.sh"
     next_command = (
         "GOVSIM_MODEL_BASE_URL=http://127.0.0.1:8000/v1 "
-        "GOVSIM_MODEL_NAME=Qwen3-1.7B ./scripts/run_qwen_c0_baseline.sh"
+        f"GOVSIM_MODEL_NAME=Qwen3-1.7B ./scripts/{script_name}"
     )
+    schema_suffix = condition.lower()
     return {
-        "schema_version": "govsim-c0-qwen-baseline-v1",
+        "schema_version": f"govsim-{schema_suffix}-qwen-baseline-v1",
         "timestamp_utc": utc_now(),
         "empirical_episode_ran": False,
-        "evidence_scope": "blocked Qwen3 C0 baseline; no matrix evidence",
-        "condition": "C0",
-        "language": "EN",
+        "evidence_scope": f"blocked Qwen3 {condition} baseline; no matrix evidence",
+        "condition": condition,
+        "language": language,
         "model_provider": "local-vllm-compatible",
         "model": adapter.model,
         "base_url": adapter.base_url,
@@ -61,7 +74,9 @@ def blocked_result(exc: BaseException, adapter: VLLMChatAdapter) -> dict[str, An
 def main() -> int:
     RESULT_DIR.mkdir(parents=True, exist_ok=True)
     RUN_STORAGE_ROOT.mkdir(parents=True, exist_ok=True)
-    run_id = f"govsim_c0_qwen_baseline_{stamp()}"
+    condition, language = baseline_condition_language()
+    schema_suffix = condition.lower()
+    run_id = f"govsim_{schema_suffix}_qwen_baseline_{stamp()}"
     result_path = RESULT_DIR / f"{run_id}.json"
     adapter = adapter_from_qwen_env()
 
@@ -71,11 +86,11 @@ def main() -> int:
             adapter.model,
             run_id,
             provider="local-vllm-compatible",
-            evidence_scope="Qwen3 C0 baseline candidate; valid only if model endpoint is Qwen3-1.7B or configured Qwen",
-            condition="C0",
-            language="EN",
-            schema_version="govsim-c0-qwen-baseline-v1",
-            episode_id="c0-qwen-baseline-0001",
+            evidence_scope=f"Qwen3 {condition} baseline candidate; valid only if model endpoint is Qwen3-1.7B or configured Qwen",
+            condition=condition,
+            language=language,
+            schema_version=f"govsim-{schema_suffix}-qwen-baseline-v1",
+            episode_id=f"{schema_suffix}-qwen-baseline-0001",
             run_storage_root=RUN_STORAGE_ROOT,
         )
         result["base_url"] = adapter.base_url
@@ -84,17 +99,17 @@ def main() -> int:
         append_event(
             "baseline",
             "OK",
-            f"GovSim C0 Qwen baseline produced transcript/result artifact={result_path.relative_to(ROOT)} transcript={result['transcript_path']}",
+            f"GovSim {condition} Qwen baseline produced transcript/result artifact={result_path.relative_to(ROOT)} transcript={result['transcript_path']}",
         )
         print(result_path.relative_to(ROOT))
         return 0
     except (LocalModelError, Exception) as exc:
-        result = blocked_result(exc, adapter)
+        result = blocked_result(exc, adapter, condition, language)
         write_json(result_path, result)
         append_event(
             "baseline",
             "BLOCKED",
-            f"GovSim C0 Qwen baseline blocked at {adapter.chat_url}: {type(exc).__name__}: {exc}; artifact={result_path.relative_to(ROOT)}",
+            f"GovSim {condition} Qwen baseline blocked at {adapter.chat_url}: {type(exc).__name__}: {exc}; artifact={result_path.relative_to(ROOT)}",
         )
         print(result_path.relative_to(ROOT))
         return 2
