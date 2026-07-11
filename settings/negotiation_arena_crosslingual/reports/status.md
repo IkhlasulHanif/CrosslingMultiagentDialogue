@@ -33,6 +33,8 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 | Priority | 1 |
 | Phase | setup |
 | Default model | `Qwen3-1.7B` |
+| Active benchmark model | `openai / gpt-4.1-mini` |
+| Model note | benchmark execution override |
 | Language pairs | EN-ID, EN-ZH, EN-AR, ZH-ID, AR-ID, ID-AR |
 | Conditions | C0, C1, C2, C3 |
 | Primary metrics | payoff, deal_rate, payoff_asymmetry, turns_to_deal, offer_parse_rate |
@@ -47,14 +49,14 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T17:23:08+00:00` OK: Harness scaffold check passed
-- `2026-07-11T17:23:46+00:00` OK: Scoped commit/push succeeded for refreshed B5 C1 translation-gate artifacts; commit=225e05f6; remote=origin/main
-- `2026-07-11T17:24:17+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_012141.txt
-- `2026-07-11T17:24:17+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
 - `2026-07-11T17:24:17+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
 - `2026-07-11T17:24:19+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
 - `2026-07-11T17:24:38+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
 - `2026-07-11T17:24:38+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-11T17:24:38+00:00` OK: Post-Codex smoke/experiment attempt exited 0
+- `2026-07-11T17:24:38+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
+- `2026-07-11T17:24:39+00:00` OK: Codex pass 20 completed
+- `2026-07-11T17:26:17+00:00` NOTE: OpenAI benchmark execution override enabled per user; Codex auth still strips OpenAI env.
 
 ## Artifact Counts
 

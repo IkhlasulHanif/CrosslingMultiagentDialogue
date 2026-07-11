@@ -18,6 +18,8 @@ payoff premium or anchor final terms?
 - C2 counterbalance: buyer-EN/seller-ID and buyer-ID/seller-EN.
 - C3: both agents bilingual EN/ID.
 - Model: Qwen3-1.7B unless G2 escalates the whole benchmark.
+- Active execution override: OpenAI benchmark calls are allowed per user on
+  2026-07-12. Label those artifacts as OpenAI evidence, not Qwen evidence.
 
 ## Checklist
 
@@ -33,6 +35,7 @@ payoff premium or anchor final terms?
 - [x] Run C0 EN baseline with Qwen3-1.7B.
 - [ ] Human-check ID translation before C1/C2/C3.
 - [ ] Run C1 ID baseline after translation review.
+- [ ] Run OpenAI-backed baseline/matrix commands if Qwen/Modal remains unavailable.
 - [ ] Check G2 capability floor before C2/C3.
 - [x] Write `budget.md` before full matrix.
 

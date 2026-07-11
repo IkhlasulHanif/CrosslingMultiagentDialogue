@@ -103,6 +103,7 @@ def current_answer(root: Path) -> str:
 
 def render_status(root: Path) -> str:
     config = load_json(root / "config" / "benchmark.json")
+    benchmark_model = load_json(root / "config" / "benchmark_model.json")
     events = read_events(root)
     artifacts = root / "artifacts"
     logs = artifacts / "logs"
@@ -113,6 +114,11 @@ def render_status(root: Path) -> str:
     bench_id = config.get("id", "unknown")
     bucket = config.get("bucket", "unknown")
     model = config.get("default_model", "Qwen3-1.7B")
+    active_model = model
+    model_note = "default research plan"
+    if benchmark_model.get("provider"):
+        active_model = f"{benchmark_model.get('provider')} / {benchmark_model.get('default_model', 'unspecified')}"
+        model_note = benchmark_model.get("purpose", "explicit benchmark model override")
     priority = config.get("priority", "unknown")
     phase = config.get("phase", "setup")
     question = config.get(
@@ -165,6 +171,8 @@ Next useful work: **{next_step}**.
 | Priority | {priority} |
 | Phase | {phase} |
 | Default model | `{model}` |
+| Active benchmark model | `{active_model}` |
+| Model note | {model_note} |
 | Language pairs | {pairs} |
 | Conditions | {conditions} |
 | Primary metrics | {metric_text} |
@@ -355,6 +363,7 @@ def maybe_commit_and_push(root: Path, reason: str) -> None:
 def build_codex_prompt(root: Path) -> str:
     config = load_json(root / "config" / "benchmark.json")
     smoke_model = load_json(root / "config" / "smoke_model.json")
+    benchmark_model = load_json(root / "config" / "benchmark_model.json")
     protocol = read_text(root.parent / "_benchmark_common" / "protocol.md")
     goals = read_text(root / "goals.md")
     status = render_status(root)
@@ -372,9 +381,21 @@ shared code. Keep all benchmark-specific code, logs, artifacts, docs, and plans
 inside this setting folder.
 
 Do not use an OpenAI API key for Codex. Codex is already authenticated by the
-CLI/session. For benchmark agents, the research design uses local Qwen/vLLM or
-Modal Qwen when later wired; do not introduce OpenAI debate calls unless the
-human explicitly changes the model plan.
+CLI/session. The OpenAI key, when configured below, is only for benchmark
+agents/judges called by setting-local scripts.
+
+Benchmark model override:
+- Default research design used local Qwen/vLLM or Modal Qwen.
+- If `config/benchmark_model.json` exists and sets `"provider": "openai"`, the
+  human has explicitly changed this benchmark setting's execution plan: use
+  OpenAI for benchmark agent/judge calls when that unblocks smoke, C0/C1, or
+  later matrix runs.
+- Read the key only inside benchmark runner scripts from the configured
+  `api_key_file_candidates` or `OPENAI_API_KEY`. Do not print secrets.
+- Label artifacts and reports as OpenAI benchmark evidence, not Qwen3 evidence.
+- This override does not remove design gates such as counterbalancing,
+  translation review, or G2 notes; if you intentionally proceed around a gate,
+  record the deviation in `plan/deviations.md`.
 
 Smoke model override:
 - If `config/smoke_model.json` exists and sets `"provider": "openai"`, the
@@ -415,8 +436,11 @@ Experiment-running requirement:
   `./harness.sh run-smoke`, `scripts/run_smoke.sh`, a C0 smoke script, or a
   newly implemented C0 baseline command.
 - A dry-run/preflight is acceptable only when the real run is blocked by a
-  named missing dependency, missing local/Modal Qwen endpoint, license gate, or
-  human translation gate. Log the blocker with the exact failed command.
+  named missing dependency, missing benchmark model endpoint/API quota, license
+  gate, or human translation gate. If `config/benchmark_model.json` allows
+  OpenAI, implement and run the OpenAI-backed command instead of stopping on a
+  missing local/Modal Qwen endpoint. Log any blocker with the exact failed
+  command.
 - Do not claim empirical results from synthetic fixtures, validators, or
   preflights. They are contract checks only.
 
@@ -475,6 +499,9 @@ Benchmark config:
 
 Smoke model config:
 {json.dumps(smoke_model, indent=2, ensure_ascii=False)}
+
+Benchmark model config:
+{json.dumps(benchmark_model, indent=2, ensure_ascii=False)}
 
 Current goals.md:
 {goals}

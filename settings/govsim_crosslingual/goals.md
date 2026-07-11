@@ -17,6 +17,8 @@ baselines predict?
 - Conditions: C0 EN-mono, C1 ID-mono, C2 forced mixed, C3 free choice.
 - C2 counterbalance: 2 EN / 3 ID and 3 EN / 2 ID.
 - Model: Qwen3-1.7B unless G2 escalates the whole benchmark to Qwen3-8B.
+- Active execution override: OpenAI benchmark calls are allowed per user on
+  2026-07-12. Label those artifacts as OpenAI evidence, not Qwen evidence.
 
 ## Checklist
 
@@ -29,6 +31,7 @@ baselines predict?
 - [x] Implement lang-share, code-switch, convergence, and off-pair metrics.
 - [x] Smoke test one C0 episode.
 - [ ] Run C0 and C1 baselines.
+- [ ] Run OpenAI-backed C0/C1 baseline commands if Qwen/Modal remains unavailable.
 - [ ] Check G2 capability floor before C2/C3.
 - [x] Write `budget.md` before full matrix.
 

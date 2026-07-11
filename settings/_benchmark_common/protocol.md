@@ -20,6 +20,11 @@ asymmetrically steer whose framing dominates?
   - C3: free-choice bilingual contact when the benchmark supports it.
 - Default model: Qwen3-1.7B.
 - Escalation model: Qwen3-8B, only for a whole benchmark after gate G2.
+- Optional benchmark execution override: if a setting has
+  `config/benchmark_model.json` with provider `openai`, the user has explicitly
+  allowed setting-local benchmark scripts to call OpenAI for agents/judges.
+  These runs must be labeled as OpenAI evidence and must not be reported as
+  Qwen evidence.
 - Report both outcome metrics and process metrics.
 
 ## Harness Meaning
@@ -52,6 +57,9 @@ that can be solved by inspecting the paper or canonical repository.
   try `curl -L` before declaring the source unavailable.
 - Never install dependencies globally; create/use a setting-local `.venv` or
   document an offline wheel/source-archive path.
+- If a missing local/Modal Qwen endpoint is the only blocker and
+  `config/benchmark_model.json` allows OpenAI, implement/run the OpenAI-backed
+  benchmark command instead of stopping at the endpoint blocker.
 
 ## Periodic Pushes
 

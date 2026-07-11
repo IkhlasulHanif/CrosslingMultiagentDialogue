@@ -33,6 +33,8 @@ Does cross-lingual contact reduce cooperative resource-management outcomes beyon
 | Priority | 5 |
 | Phase | setup |
 | Default model | `Qwen3-1.7B` |
+| Active benchmark model | `openai / gpt-4.1-mini` |
+| Model note | benchmark execution override |
 | Language pairs | EN-ID |
 | Conditions | C0, C1, C2, C3 |
 | Primary metrics | survival_time, total_welfare, gini, parseable_harvest_rate |
@@ -40,21 +42,21 @@ Does cross-lingual contact reduce cooperative resource-management outcomes beyon
 
 ## Blockers / Errors
 
-BLOCKED: Regenerated translation_status.json and translation_human_review_packet.md; strict translation check exited 3 because the EN-ID fishery pack is structurally valid but still DRAFT with 17 entries, source_coverage_complete=true, human_checked=false, mechanical_qa=PASS. Next after human review: set accepted entries human_checked=true, then run `python3 code/translation_pack.py --root . --out artifacts/logs/translation_status.json --review-out artifacts/logs/translation_human_review_packet.md --strict`.
+None logged.
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T17:15:41+00:00` BLOCKED: GovSim C1 Qwen baseline blocked before model call by translation gate: TranslationPackNotReady: ID translation pack is not ready for benchmark use: status=DRAFT, source_coverage_complete=True, human_checked=False, pack=/Users/ikhlasul.hanif/Documents/MultiAgent/settings/govsim_crosslingual/config/translations/en_id_fishery_draft.json; artifact=artifacts/results/govsim_c1_qwen_baseline_20260711T171541Z.json
-- `2026-07-11T17:16:13+00:00` BLOCKED: Regenerated translation_status.json and translation_human_review_packet.md; strict translation check exited 3 because the EN-ID fishery pack is structurally valid but still DRAFT with 17 entries, source_coverage_complete=true, human_checked=false, mechanical_qa=PASS. Next after human review: set accepted entries human_checked=true, then run `python3 code/translation_pack.py --root . --out artifacts/logs/translation_status.json --review-out artifacts/logs/translation_human_review_packet.md --strict`.
-- `2026-07-11T17:17:03+00:00` OK: Harness scaffold check passed
-- `2026-07-11T17:17:26+00:00` OK: Focused no-network validation passed under setting-local .venv: `.venv/bin/python -m unittest scripts/test_translation_pack.py scripts/test_qwen_baseline_blockers.py scripts/test_local_model_adapter.py scripts/test_process_metrics.py` ran 16 tests. System python3 lacks omegaconf, so .venv is the supported validation environment.
 - `2026-07-11T17:18:10+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_011412.txt
 - `2026-07-11T17:18:10+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
 - `2026-07-11T17:18:44+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T171813Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T171813Z.jsonl
 - `2026-07-11T17:18:45+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-11T17:18:45+00:00` OK: Post-Codex smoke/experiment attempt exited 0
+- `2026-07-11T17:18:45+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
+- `2026-07-11T17:18:47+00:00` OK: Codex pass 19 completed
+- `2026-07-11T17:26:17+00:00` NOTE: OpenAI benchmark execution override enabled per user; Codex auth still strips OpenAI env.
 
 ## Artifact Counts
 
