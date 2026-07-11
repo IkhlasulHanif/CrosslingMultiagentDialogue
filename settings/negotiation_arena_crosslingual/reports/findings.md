@@ -1,32 +1,22 @@
-One real C0 EN-monolingual buy/sell smoke episode has run through the upstream
-NegotiationArena checkout using the explicitly allowed OpenAI smoke override.
-It reached a deal in 2 turns with `offer_parse_rate=1.0`, but this is only
-runner bring-up evidence, not Qwen3-1.7B research-matrix evidence.
+One real C0 EN-monolingual buy/sell smoke episode ran through upstream
+NegotiationArena using the explicitly allowed OpenAI smoke override; it is
+runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence.
+Two real Qwen3-1.7B C0 EN-monolingual baselines have run through the same
+checkout via `hf-cache://Qwen/Qwen3-1.7B`: `buy_sell` and `resource_exchange`.
+Both reached deals in 2 turns with `deal_rate=1.0` and `offer_parse_rate=1.0`.
+`artifacts/results/g2_capability_floor.json` confirms the C0 floor passes on
+existing Qwen evidence, but G2 remains blocked until C1 ID metrics exist.
 
-One real Qwen3-1.7B C0 EN-monolingual buy/sell baseline has now run through the
-same upstream checkout using the cached local Transformers provider
-`hf-cache://Qwen/Qwen3-1.7B`. Artifact paths:
-`artifacts/transcripts/baseline_c0_buy_sell_en_seed001.json` and
-`artifacts/results/baseline_c0_buy_sell_en_seed001.metrics.json`.
+Buy/sell result: deal reached at price 40. First-offer price and final price
+were both 40, anchoring signed delta was 0, seller payoff was 0, and buyer
+payoff was 60. Payoff asymmetry is not defined for C0 because both roles are EN.
 
-Baseline result: deal reached in 2 turns at price 40. Metrics:
-`deal_rate=1.0`, `offer_parse_rate=1.0`, first-offer price 40, final price 40,
-anchoring signed delta 0, seller payoff 0, buyer payoff 60. Payoff asymmetry is
-not defined for C0 because both roles are EN.
-
-One real Qwen3-1.7B C0 EN-monolingual resource-exchange baseline has now run
-through upstream `games/trading_game` using the same cached Transformers
-provider. Artifact paths:
-`artifacts/transcripts/baseline_c0_resource_exchange_en_seed001.json` and
-`artifacts/results/baseline_c0_resource_exchange_en_seed001.metrics.json`.
-
-Resource-exchange result: upstream accepted a deal in 2 turns with
-`deal_rate=1.0` and `offer_parse_rate=1.0`. The accepted trade was effectively a
-zero-progress allocation, so final resources matched the initial allocation and
-both upstream ResourceGoal outcomes were false. The runner records those boolean
-outcomes as numeric 1/0 goal-satisfaction payoffs for now; inspect
-trade-legality and payoff semantics before treating resource_exchange as full
-matrix-ready.
+Resource-exchange result: upstream accepted a deal in 2 turns. The accepted
+trade was effectively a zero-progress allocation, so final resources matched
+the initial allocation and both upstream ResourceGoal outcomes were false. The
+runner records those boolean outcomes as numeric 1/0 goal-satisfaction payoffs
+for now; inspect trade-legality and payoff semantics before treating
+resource_exchange as full matrix-ready.
 
 The first direct-Qwen baseline attempt failed before transcript writing because
 Qwen expressed acceptance in prose while leaving malformed XML for the upstream
@@ -56,3 +46,5 @@ and `bash scripts/run_c1_baseline.sh`.
 
 The C0 resource-exchange baseline command is
 `bash scripts/run_c0_resource_exchange_baseline.sh`.
+The capability-floor gate summary command is
+`python3 scripts/check_g2_capability_floor.py`.

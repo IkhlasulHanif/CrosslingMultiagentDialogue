@@ -12,5 +12,6 @@ Run:
 ./harness.sh run-smoke
 bash scripts/run_c0_baseline.sh
 bash scripts/run_c0_resource_exchange_baseline.sh
+python3 scripts/check_g2_capability_floor.py
 bash scripts/run_c1_baseline.sh
 ```
