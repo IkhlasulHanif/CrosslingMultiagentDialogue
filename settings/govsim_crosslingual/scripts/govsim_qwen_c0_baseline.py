@@ -27,6 +27,7 @@ sys.path.insert(0, str(CODE_DIR))
 sys.path.insert(0, str(SCRIPT_DIR))
 
 from govsim_openai_smoke import append_event, run_episode, stamp, utc_now, write_json  # noqa: E402
+from endpoint_probe import probe_endpoint  # noqa: E402
 from local_model_adapter import LocalModelError, VLLMChatAdapter  # noqa: E402
 from translation_pack import TranslationPackNotReady, require_complete_translation_pack  # noqa: E402
 
@@ -48,7 +49,15 @@ def baseline_condition_language() -> tuple[str, str]:
     return condition, language
 
 
-def blocked_result(exc: BaseException, adapter: VLLMChatAdapter, condition: str, language: str) -> dict[str, Any]:
+def blocked_result(
+    exc: BaseException,
+    adapter: VLLMChatAdapter,
+    condition: str,
+    language: str,
+    *,
+    endpoint_probe_path: Path | None = None,
+    endpoint_probe_result: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     script_name = "run_qwen_c1_baseline.sh" if condition == "C1" else "run_qwen_c0_baseline.sh"
     next_command = (
         "GOVSIM_MODEL_BASE_URL=http://127.0.0.1:8000/v1 "
@@ -73,6 +82,15 @@ def blocked_result(exc: BaseException, adapter: VLLMChatAdapter, condition: str,
         "traceback_tail": traceback.format_exc()[-4000:],
         "next_command_once_unblocked": next_command,
     }
+    if endpoint_probe_path is not None:
+        result["endpoint_probe_path"] = str(endpoint_probe_path.relative_to(ROOT))
+    if endpoint_probe_result is not None:
+        result["endpoint_probe"] = {
+            "schema_version": endpoint_probe_result.get("schema_version"),
+            "models_url": endpoint_probe_result.get("models_url"),
+            "endpoint_reachable": endpoint_probe_result.get("endpoint_reachable"),
+            "blockers": endpoint_probe_result.get("blockers", []),
+        }
     if isinstance(exc, TranslationPackNotReady):
         result.update(
             {
@@ -94,6 +112,8 @@ def blocked_event_message(
     adapter: VLLMChatAdapter,
     condition: str,
     artifact_path: Path,
+    *,
+    endpoint_probe_path: Path | None = None,
 ) -> str:
     artifact = artifact_path.relative_to(ROOT)
     if isinstance(exc, TranslationPackNotReady):
@@ -101,10 +121,13 @@ def blocked_event_message(
             f"GovSim {condition} Qwen baseline blocked before model call by translation gate: "
             f"{type(exc).__name__}: {exc}; artifact={artifact}"
         )
-    return (
+    message = (
         f"GovSim {condition} Qwen baseline blocked at {adapter.chat_url}: "
         f"{type(exc).__name__}: {exc}; artifact={artifact}"
     )
+    if endpoint_probe_path is not None:
+        message += f"; endpoint_probe={endpoint_probe_path.relative_to(ROOT)}"
+    return message
 
 
 def main() -> int:
@@ -141,9 +164,36 @@ def main() -> int:
         print(result_path.relative_to(ROOT))
         return 0
     except (LocalModelError, Exception) as exc:
-        result = blocked_result(exc, adapter, condition, language)
+        endpoint_probe_result = None
+        endpoint_probe_path = None
+        if not isinstance(exc, TranslationPackNotReady):
+            endpoint_probe_result, endpoint_probe_path = probe_endpoint(
+                ROOT,
+                base_url=adapter.base_url,
+                model=adapter.model,
+                timeout_s=float(os.environ.get("GOVSIM_ENDPOINT_PROBE_TIMEOUT_S", "2")),
+                api_key=adapter.api_key,
+            )
+        result = blocked_result(
+            exc,
+            adapter,
+            condition,
+            language,
+            endpoint_probe_path=endpoint_probe_path,
+            endpoint_probe_result=endpoint_probe_result,
+        )
         write_json(result_path, result)
-        append_event("baseline", "BLOCKED", blocked_event_message(exc, adapter, condition, result_path))
+        append_event(
+            "baseline",
+            "BLOCKED",
+            blocked_event_message(
+                exc,
+                adapter,
+                condition,
+                result_path,
+                endpoint_probe_path=endpoint_probe_path,
+            ),
+        )
         print(result_path.relative_to(ROOT))
         return 2
 
