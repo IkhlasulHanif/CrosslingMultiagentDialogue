@@ -31,19 +31,24 @@ of `https://github.com/vinid/NegotiationArena.git` on branch
 `d35a7a3aa0d94c2d49f1d6ac13c5f931851abf12`. License evidence is recorded in
 `licenses.md` and `artifacts/results/bringup_check.json`.
 
-Human bilingual review of the Indonesian translations remains pending. Do not
-run or report C1 ID baselines or mixed-language C2/C3 conditions as valid
-benchmark evidence until `config/translation_review.json` is completed and
+Human bilingual review of the Indonesian translations remains pending. The
+review queue itself validates as aligned with `config/prompt_translations.json`,
+but this is not human approval. Do not run or report C1 ID baselines or
+mixed-language C2/C3 conditions as valid benchmark evidence until
+`config/translation_review.json` is completed and
 `python3 scripts/validate_translation_review.py` passes.
 
 The C1 ID baseline command now exists as `bash scripts/run_c1_baseline.sh`.
 Current run result is a gate artifact, not empirical evidence:
 `artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`, refreshed at
-2026-07-11T15:13:18+00:00 by the real C1 command. It blocks on 15 pending
+2026-07-11T15:31:00+00:00 by the real C1 command. It blocks on 15 pending
 translation-review units and points reviewers to `docs/id_translation_review.md`
-for side-by-side EN/ID text. Once the human review file is approved, rerun
-`python3 scripts/validate_translation_review.py` and
-`bash scripts/run_c1_baseline.sh`.
+for side-by-side EN/ID text. `artifacts/results/g2_capability_floor.json` was
+refreshed at 2026-07-11T15:31:04+00:00 and confirms C0 passes while G2 remains
+blocked on missing C1 ID metrics. Once the human review file is approved, rerun
+`python3 scripts/validate_translation_review.py`,
+`bash scripts/run_c1_baseline.sh`, and
+`python3 scripts/check_g2_capability_floor.py`.
 
 The C0 resource-exchange baseline command is
 `bash scripts/run_c0_resource_exchange_baseline.sh`.
