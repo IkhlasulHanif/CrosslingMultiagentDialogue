@@ -2,7 +2,7 @@ Qwen3-1.7B C0 EN baselines for buy/sell and resource_exchange pass the floor
 (deal_rate=1.0, offer_parse_rate=1.0). C1 ID and G2 remain blocked on pending
 human review of 16 EN-ID translation units.
 
-A fresh real C0 OpenAI buy/sell attempt at 2026-07-11T23:38:23 UTC produced no
+A fresh real C0 OpenAI buy/sell attempt at 2026-07-11T23:57:06 UTC produced no
 transcript because `api.openai.com` could not be resolved by urllib or curl.
 Blocker artifact: `artifacts/results/benchmark_model_probe.json`. Retry with
 `bash scripts/run_c0_openai_baseline.sh` after network/DNS access is restored.
