@@ -10,8 +10,9 @@ at `http://127.0.0.1:8000/v1/chat/completions`
 (`<urlopen error [Errno 1] Operation not permitted>`). The next Qwen/local C0
 baseline command remains `bash scripts/run_c0_baseline.sh`.
 
-Latest baseline attempt: blocked before any baseline episode ran because the
-local Qwen/vLLM chat-completions endpoint was unavailable from this sandbox.
+Latest baseline attempt (`2026-07-11T11:37:54+00:00`): blocked before any
+baseline episode ran because the local Qwen/vLLM chat-completions endpoint was
+unavailable from this sandbox.
 Blocker artifact: `artifacts/results/baseline_c0_buy_sell_en_seed001.blocked.json`.
 Endpoint probe artifact: `artifacts/results/model_endpoint_probe.json`.
 The recorded error is `<urlopen error [Errno 1] Operation not permitted>` for
