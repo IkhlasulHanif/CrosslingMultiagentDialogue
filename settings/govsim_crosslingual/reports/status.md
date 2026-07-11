@@ -49,21 +49,21 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T21:01:10+00:00` OK: scripts/run_smoke.sh exited 0
-- `2026-07-11T21:01:10+00:00` OK: Post-Codex smoke/experiment attempt exited 0
-- `2026-07-11T21:01:11+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
-- `2026-07-11T21:01:12+00:00` OK: Codex pass 12 completed
 - `2026-07-11T21:16:13+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_051613.txt
 - `2026-07-11T21:16:58+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260711T211658Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260711T211658Z.json
 - `2026-07-11T21:18:23+00:00` OK: Harness check passed and focused no-network validation passed under setting-local .venv: `.venv/bin/python -m unittest scripts/test_translation_pack.py scripts/test_qwen_baseline_blockers.py scripts/test_local_model_adapter.py scripts/test_process_metrics.py scripts/test_reports.py scripts/test_transcript_logger.py` ran 20 tests.
 - `2026-07-11T21:18:09+00:00` OK: Harness scaffold check passed
+- `2026-07-11T21:19:08+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_051613.txt
+- `2026-07-11T21:19:08+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T21:19:29+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T211911Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T211911Z.jsonl
+- `2026-07-11T21:19:29+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 33 |
-| Result summaries | 105 |
+| Transcript JSON/JSONL | 34 |
+| Result summaries | 107 |
 | Logs | 67 |
 
 ## Open Questions
