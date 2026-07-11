@@ -10,8 +10,10 @@ from __future__ import annotations
 import json
 import os
 import re
+import time
 import urllib.error
 import urllib.request
+from http.client import RemoteDisconnected
 from dataclasses import dataclass
 from typing import Any, Iterable
 
@@ -78,12 +80,16 @@ class VLLMChatAdapter:
         timeout_s: float = 120.0,
         api_key: str | None = None,
         opener: Any | None = None,
+        max_retries: int = 0,
+        retry_sleep_s: float = 1.0,
     ) -> None:
         self.base_url = (base_url or os.environ.get("GOVSIM_MODEL_BASE_URL") or DEFAULT_BASE_URL).rstrip("/")
         self.model = model or os.environ.get("GOVSIM_MODEL_NAME") or DEFAULT_MODEL
         self.timeout_s = timeout_s
         self.api_key = api_key
         self._opener = opener or urllib.request.build_opener()
+        self.max_retries = max(0, max_retries)
+        self.retry_sleep_s = max(0.0, retry_sleep_s)
 
     @property
     def chat_url(self) -> str:
@@ -113,16 +119,35 @@ class VLLMChatAdapter:
             method="POST",
         )
 
-        try:
-            with self._opener.open(request, timeout=self.timeout_s) as response:
-                body = response.read().decode("utf-8")
-        except urllib.error.HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")
-            raise LocalModelError(f"Local model HTTP {exc.code}: {detail}") from exc
-        except urllib.error.URLError as exc:
-            raise LocalModelError(f"Local model endpoint unavailable at {self.chat_url}: {exc.reason}") from exc
+        body = self._open_with_retries(request)
 
         return self._parse_response(body)
+
+    def _open_with_retries(self, request: urllib.request.Request) -> str:
+        last_exc: BaseException | None = None
+        attempts = self.max_retries + 1
+        for attempt in range(1, attempts + 1):
+            try:
+                with self._opener.open(request, timeout=self.timeout_s) as response:
+                    return response.read().decode("utf-8")
+            except urllib.error.HTTPError as exc:
+                detail = exc.read().decode("utf-8", errors="replace")
+                raise LocalModelError(f"Local model HTTP {exc.code}: {detail}") from exc
+            except urllib.error.URLError as exc:
+                last_exc = exc
+                if not _is_transient_error(exc.reason) or attempt >= attempts:
+                    raise LocalModelError(f"Local model endpoint unavailable at {self.chat_url}: {exc.reason}") from exc
+            except (RemoteDisconnected, TimeoutError) as exc:
+                last_exc = exc
+                if attempt >= attempts:
+                    raise LocalModelError(
+                        f"Local model endpoint unavailable at {self.chat_url}: {exc}"
+                    ) from exc
+
+            if self.retry_sleep_s:
+                time.sleep(self.retry_sleep_s)
+
+        raise LocalModelError(f"Local model endpoint unavailable at {self.chat_url}: {last_exc}")
 
     def _headers(self) -> dict[str, str]:
         headers = {"Content-Type": "application/json"}
@@ -160,3 +185,17 @@ def adapter_from_env() -> VLLMChatAdapter:
 
     return VLLMChatAdapter()
 
+
+def _is_transient_error(reason: Any) -> bool:
+    if isinstance(reason, (TimeoutError, RemoteDisconnected)):
+        return True
+    text = str(reason).lower()
+    transient_markers = (
+        "temporarily unavailable",
+        "timed out",
+        "timeout",
+        "remote end closed connection",
+        "connection reset",
+        "connection aborted",
+    )
+    return any(marker in text for marker in transient_markers)

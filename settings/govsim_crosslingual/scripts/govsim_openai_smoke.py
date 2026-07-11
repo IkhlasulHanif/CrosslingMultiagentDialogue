@@ -505,6 +505,8 @@ def main() -> int:
             model=model_name,
             api_key=api_key,
             timeout_s=90.0,
+            max_retries=2,
+            retry_sleep_s=2.0,
         )
         result = run_episode(adapter, model_name, run_id)
         result["api_key_source"] = key_source

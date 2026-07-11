@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+from http.client import RemoteDisconnected
 import sys
 import unittest
 from pathlib import Path
@@ -38,6 +39,18 @@ class FakeOpener:
     def open(self, request: Request, timeout: float) -> FakeResponse:
         self.last_request = request
         self.last_timeout = timeout
+        return FakeResponse(self.response_payload)
+
+
+class FlakyOpener:
+    def __init__(self, response_payload: dict) -> None:
+        self.response_payload = response_payload
+        self.calls = 0
+
+    def open(self, request: Request, timeout: float) -> FakeResponse:
+        self.calls += 1
+        if self.calls == 1:
+            raise RemoteDisconnected("Remote end closed connection without response")
         return FakeResponse(self.response_payload)
 
 
@@ -90,7 +103,27 @@ class LocalModelAdapterTest(unittest.TestCase):
         self.assertEqual(payload["messages"][1]["content"], "Choose harvest.")
         self.assertEqual(payload["max_tokens"], 32)
 
+    def test_complete_retries_transient_remote_disconnect(self) -> None:
+        opener = FlakyOpener(
+            {
+                "model": "gpt-4.1-mini",
+                "choices": [{"message": {"content": "Answer: 10"}, "finish_reason": "stop"}],
+                "usage": {},
+            }
+        )
+        adapter = VLLMChatAdapter(
+            base_url="https://api.openai.com/v1",
+            model="gpt-4.1-mini",
+            opener=opener,
+            max_retries=1,
+            retry_sleep_s=0,
+        )
+
+        result = adapter.complete([{"role": "user", "content": "Choose harvest."}])
+
+        self.assertEqual(result.visible_text, "Answer: 10")
+        self.assertEqual(opener.calls, 2)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
-

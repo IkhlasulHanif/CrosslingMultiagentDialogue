@@ -8,11 +8,11 @@ One C0 OpenAI smoke episode has run. It is runner bring-up evidence only, not Qw
 
 Current empirical story: `./harness.sh run-smoke` most recently succeeded at `2026-07-11T12:33:31+00:00`, executing one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260711T123308Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260711T123308Z.jsonl`; process metrics are `artifacts/logs/govsim_c0_openai_smoke_20260711T123308Z_process_metrics.json`. That smoke had 5/5 parseable harvests, survival_time 1, total_welfare 50.0, and gini 0.0. This is runner bring-up evidence only.
 
-Current blockers: no Qwen3-1.7B C0/C1 baseline has run yet, the ID translation pack still needs human review, and the real upstream PathFinder submodule is still unresolved for full upstream entry-point replication. The Qwen C0 command `./scripts/run_qwen_c0_baseline.sh` is wired, but the latest attempt at `2026-07-11T12:50:27+00:00` is blocked at `http://127.0.0.1:8000/v1/chat/completions` by sandbox/network permission `[Errno 1] Operation not permitted`; artifact `artifacts/results/govsim_c0_qwen_baseline_20260711T125027Z.json`. The Qwen C1 ID command `./scripts/run_qwen_c1_baseline.sh` is wired through the same runner with Indonesian prompts, and the latest attempt is blocked by the same endpoint permission issue; artifact `artifacts/results/govsim_c1_qwen_baseline_20260711T121153Z.json`.
+Current blockers: no Qwen3-1.7B C0/C1 baseline has run yet, the ID translation pack still needs human review, and the real upstream PathFinder submodule is still unresolved for full upstream entry-point replication. The Qwen C0 command `./scripts/run_qwen_c0_baseline.sh` is wired, but the latest attempt at `2026-07-11T13:10:39+00:00` is blocked at `http://127.0.0.1:8000/v1/chat/completions` by sandbox/network permission `[Errno 1] Operation not permitted`; artifact `artifacts/results/govsim_c0_qwen_baseline_20260711T131039Z.json`. The Qwen C1 ID command `./scripts/run_qwen_c1_baseline.sh` is wired through the same runner with Indonesian prompts, and the latest attempt is blocked by the same endpoint permission issue; artifact `artifacts/results/govsim_c1_qwen_baseline_20260711T121153Z.json`.
 
 Checkpoint state: this setting's `.gitignore` now ignores `.venv/*` rather than the `.venv` directory path, so the shared parent checkpoint exclude for `settings/govsim_crosslingual/.venv` no longer fails in `git add -n`. This does not track the virtualenv contents.
 
-OpenAI smoke retry state: the latest `./harness.sh run-smoke` attempt succeeded at `2026-07-11T12:33:31+00:00`. Earlier transient DNS failures for `api.openai.com` are recorded in prior result artifacts. The OpenAI smoke bypasses PathFinder with the setting-local adapter and must not be reported as final benchmark evidence.
+OpenAI smoke retry state: the adapter now supports opt-in retries for transient transport failures such as `RemoteDisconnected`, and the OpenAI smoke runner enables two retries. Validation passed with `.venv/bin/python -m pytest scripts/test_local_model_adapter.py scripts/test_reports.py scripts/test_translation_pack.py` at `2026-07-11T13:09:58+00:00` (8 passed). The latest `./harness.sh run-smoke` attempt at `2026-07-11T13:10:20+00:00` did not reach the model because DNS resolution for `api.openai.com` failed with `[Errno 8] nodename nor servname provided, or not known`; artifact `artifacts/results/govsim_c0_openai_smoke_20260711T131020Z.json`. The OpenAI smoke bypasses PathFinder with the setting-local adapter and must not be reported as final benchmark evidence.
 
 Source/license state: `licenses.md` and `artifacts/logs/source_license_status.json` report `READY_FOR_REVIEW`. The local GovSim checkout is `vendor/govsim` at upstream `https://github.com/giorgio-piatti/GovSim.git`, branch `main`, commit `1d11adf047b24fa2ba0d44a1d4931015ea2e5210`. The local license file is MIT license text, 1071 bytes, SHA-256 `55be1b08220f411edf83dbf7ac9b3b3e7e56b92fb2ef9b10af91526edd38f15e`. PathFinder source resolution was retried from canonical submodule `https://github.com/giorgiopiatti/PathFinder.git` at commit `69b8d646ad3e618380dd0d47ec4d1e8d2d4c930e`; generated cache files blocking clone were removed, and the remaining blocker is GitHub DNS (`Could not resolve host: github.com`) for `git ls-remote`, `git submodule update --init --depth 1 pathfinder`, and `curl -L -I`; latest artifact `artifacts/logs/govsim_pathfinder_source_resolution_20260711T121143Z.log`.
 
@@ -40,32 +40,29 @@ Does cross-lingual contact reduce cooperative resource-management outcomes beyon
 
 ## Blockers / Errors
 
-BLOCKED: GovSim C0 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: LocalModelError: Local model endpoint unavailable at http://127.0.0.1:8000/v1/chat/completions: [Errno 1] Operation not permitted; artifact=artifacts/results/govsim_c0_qwen_baseline_20260711T125027Z.json
+BLOCKED: GovSim C0 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: LocalModelError: Local model endpoint unavailable at http://127.0.0.1:8000/v1/chat/completions: [Errno 1] Operation not permitted; artifact=artifacts/results/govsim_c0_qwen_baseline_20260711T131039Z.json
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T12:33:31+00:00` BLOCKED: git add failed during checkpoint: The following paths are ignored by one of your .gitignore files:
-settings/govsim_crosslingual/.venv
-hint: Use -f if you really want to add them.
-hint: Disable this message with "git config set advice.addIgnoredFile false"
-- `2026-07-11T12:33:31+00:00` OK: Codex pass 5 completed
-- `2026-07-11T12:48:31+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260711_204831.txt
-- `2026-07-11T12:50:08+00:00` OK: Harness scaffold check passed
-- `2026-07-11T12:50:27+00:00` BLOCKED: GovSim C0 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: LocalModelError: Local model endpoint unavailable at http://127.0.0.1:8000/v1/chat/completions: [Errno 1] Operation not permitted; artifact=artifacts/results/govsim_c0_qwen_baseline_20260711T125027Z.json
-- `2026-07-11T12:51:20+00:00` NOTE: Git checkpoint dry-run no longer fails on settings/govsim_crosslingual/.venv after changing the setting .gitignore to ignore .venv/* contents; validation='git add -n -- settings/govsim_crosslingual ... :(exclude)settings/govsim_crosslingual/.venv' exited 0 without ignored-path error.
-- `2026-07-11T12:51:20+00:00` OK: Harness scaffold check passed
-- `2026-07-11T12:52:13+00:00` NOTE: Validation passed with setting-local pytest: .venv/bin/python -m pytest scripts/test_reports.py scripts/test_local_model_adapter.py scripts/test_translation_pack.py (7 passed). System python lacks pytest, so use the setting .venv for tests.
+- `2026-07-11T12:53:43+00:00` OK: Codex pass 6 completed
+- `2026-07-11T13:08:43+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260711_210843.txt
+- `2026-07-11T13:10:20+00:00` BLOCKED: GovSim C0 OpenAI smoke blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_smoke_20260711T131020Z.json
+- `2026-07-11T13:10:21+00:00` ERROR: scripts/run_smoke.sh exited 2
+- `2026-07-11T13:10:39+00:00` BLOCKED: GovSim C0 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: LocalModelError: Local model endpoint unavailable at http://127.0.0.1:8000/v1/chat/completions: [Errno 1] Operation not permitted; artifact=artifacts/results/govsim_c0_qwen_baseline_20260711T131039Z.json
+- `2026-07-11T13:11:23+00:00` NOTE: Added opt-in transient transport retries to code/local_model_adapter.py and enabled two retries for OpenAI smoke. Validation passed: .venv/bin/python -m pytest scripts/test_local_model_adapter.py scripts/test_reports.py scripts/test_translation_pack.py (8 passed). Real smoke remains blocked by api.openai.com DNS, and real C0 Qwen remains blocked by local endpoint sandbox permission; blocker artifacts are artifacts/results/govsim_c0_openai_smoke_20260711T131020Z.json and artifacts/results/govsim_c0_qwen_baseline_20260711T131039Z.json.
+- `2026-07-11T13:11:09+00:00` OK: Harness scaffold check passed
+- `2026-07-11T13:12:14+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 7 |
-| Result summaries | 23 |
-| Logs | 36 |
+| Transcript JSON/JSONL | 8 |
+| Result summaries | 26 |
+| Logs | 37 |
 
 ## Open Questions
 
