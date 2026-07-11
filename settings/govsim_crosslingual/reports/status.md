@@ -49,21 +49,21 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T22:52:25+00:00` OK: scripts/run_smoke.sh exited 0
-- `2026-07-11T22:52:25+00:00` OK: Post-Codex smoke/experiment attempt exited 0
-- `2026-07-11T22:52:25+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
-- `2026-07-11T22:52:27+00:00` OK: Codex pass 18 completed
 - `2026-07-11T23:07:27+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_070727.txt
 - `2026-07-11T23:08:13+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260711T230813Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260711T230813Z.json
 - `2026-07-11T23:08:39+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked before model call by translation gate: TranslationPackNotReady: ID translation pack is not ready for benchmark use: status=DRAFT, source_coverage_complete=True, human_checked=False, pack=/Users/ikhlasul.hanif/Documents/MultiAgent/settings/govsim_crosslingual/config/translations/en_id_fishery_draft.json; artifact=artifacts/results/govsim_c1_openai_baseline_20260711T230839Z.json; next=./scripts/run_openai_c1_baseline.sh
 - `2026-07-11T23:10:14+00:00` OK: Harness scaffold check passed
+- `2026-07-11T23:11:27+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_070727.txt
+- `2026-07-11T23:11:27+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T23:11:50+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T231129Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T231129Z.jsonl
+- `2026-07-11T23:11:51+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 39 |
-| Result summaries | 125 |
+| Transcript JSON/JSONL | 40 |
+| Result summaries | 127 |
 | Logs | 73 |
 
 ## Open Questions
