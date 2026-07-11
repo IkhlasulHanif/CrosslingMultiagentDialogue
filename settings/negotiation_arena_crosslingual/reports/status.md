@@ -47,14 +47,14 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T15:50:32+00:00` ERROR: scripts/run_smoke.sh exited 2
-- `2026-07-11T15:50:38+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-11T15:50:38+00:00` BLOCKED: OpenAI smoke model probe failed; artifact=artifacts/results/smoke_model_probe.json
-- `2026-07-11T15:51:06+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-11T15:51:12+00:00` OK: Local Qwen provider probe passed; artifact=artifacts/results/model_endpoint_probe.json
-- `2026-07-11T15:52:01+00:00` OK: C0 baseline buy_sell episode completed; transcript=artifacts/transcripts/baseline_c0_buy_sell_en_seed001.json; metrics=artifacts/results/baseline_c0_buy_sell_en_seed001.metrics.json
 - `2026-07-11T15:52:16+00:00` BLOCKED: G2 capability floor check blocked; artifact=artifacts/results/g2_capability_floor.json; next_command=bash scripts/run_c1_baseline.sh
 - `2026-07-11T15:52:59+00:00` OK: Harness scaffold check passed
+- `2026-07-11T15:54:32+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_234742.txt
+- `2026-07-11T15:54:32+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T15:54:33+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-11T15:54:35+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
+- `2026-07-11T15:54:40+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-11T15:54:40+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
