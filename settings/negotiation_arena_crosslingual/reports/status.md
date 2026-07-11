@@ -4,18 +4,18 @@ This is the concise file to read first for this benchmark.
 
 ## Current Answer
 
-Qwen3-1.7B C0 EN baselines for buy/sell and resource_exchange pass the floor:
-deal_rate=1.0 and offer_parse_rate=1.0. C1 ID and G2 remain blocked on pending
+Qwen3-1.7B C0 EN baselines for buy/sell and resource_exchange pass the floor
+(deal_rate=1.0, offer_parse_rate=1.0). C1 ID and G2 remain blocked on pending
 human review of 16 EN-ID translation units.
 
-OpenAI benchmark override wrappers exist for C0 buy/sell and resource_exchange.
-A fresh real C0 OpenAI buy/sell attempt at 2026-07-11T23:19:50 UTC produced no
+A fresh real C0 OpenAI buy/sell attempt at 2026-07-11T23:38:23 UTC produced no
 transcript because `api.openai.com` could not be resolved by urllib or curl.
-Blocker artifact: `artifacts/results/benchmark_model_probe.json`. Retry after
-network/DNS access is restored with `bash scripts/run_c0_openai_baseline.sh`.
-No OpenAI benchmark evidence was produced in this pass.
+Blocker artifact: `artifacts/results/benchmark_model_probe.json`. Retry with
+`bash scripts/run_c0_openai_baseline.sh` after network/DNS access is restored.
 
-C1 and G2 gate artifacts were refreshed at 2026-07-11T23:20:05 UTC and
+Translation, C1, and G2 blockers were refreshed in this pass:
+`translation_review_packet.json`, `translation_review_validation.json`,
+`baseline_c1_buy_sell_id_seed001.blocked.json`, and `g2_capability_floor.json`.
 
 Next useful work: **Human-check ID translation before C1/C2/C3**.
 
@@ -42,21 +42,21 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-BLOCKED: G2 capability floor check blocked; artifact=artifacts/results/g2_capability_floor.json; next_command=bash scripts/run_c1_baseline.sh
+BLOCKED: Scoped commit/push attempt blocked before commit; git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock because the repository .git directory is outside the setting writable root. Scoped changes remain unstaged in settings/negotiation_arena_crosslingual.
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T23:20:10+00:00` BLOCKED: G2 capability floor check blocked; artifact=artifacts/results/g2_capability_floor.json; next_command=bash scripts/run_c1_baseline.sh
-- `2026-07-11T23:21:13+00:00` OK: Harness scaffold check passed
-- `2026-07-11T23:22:15+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_071859.txt
-- `2026-07-11T23:22:15+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-11T23:22:16+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-11T23:22:18+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
-- `2026-07-11T23:22:30+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
-- `2026-07-11T23:22:30+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-11T23:40:59+00:00` BLOCKED: Scoped commit/push attempt blocked before commit; git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock because the repository .git directory is outside the setting writable root. Scoped changes remain unstaged in settings/negotiation_arena_crosslingual.
+- `2026-07-11T23:41:08+00:00` OK: Harness scaffold check passed
+- `2026-07-11T23:41:24+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_073732.txt
+- `2026-07-11T23:41:24+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T23:41:25+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-11T23:41:27+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
+- `2026-07-11T23:41:32+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-11T23:41:32+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
@@ -64,7 +64,7 @@ or benchmark-specific failures. They will show up here.
 |---|---:|
 | Transcript JSON/JSONL | 3 |
 | Result summaries | 14 |
-| Logs | 57 |
+| Logs | 58 |
 
 ## Open Questions
 
