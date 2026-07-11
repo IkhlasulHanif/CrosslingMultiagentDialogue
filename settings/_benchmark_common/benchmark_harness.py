@@ -297,8 +297,18 @@ def maybe_commit_and_push(root: Path, reason: str) -> None:
         "run_setting.sh",
     ]
     existing_paths = [p for p in candidate_paths if (repo_root / p).exists()]
+    excluded_checkout_paths = [
+        f"{setting_path}/external",
+        f"{setting_path}/vendor",
+        f"{setting_path}/code/vendor",
+        f"{setting_path}/.venv",
+    ]
+    pathspecs = [
+        *existing_paths,
+        *[f":(exclude){p}" for p in excluded_checkout_paths if (repo_root / p).exists()],
+    ]
 
-    status_before = git_output(["status", "--porcelain", "--", *existing_paths], repo_root)
+    status_before = git_output(["status", "--porcelain", "--", *pathspecs], repo_root)
     if status_before.returncode != 0:
         append_event(root, "git", f"Could not inspect scoped git status: {status_before.stdout.strip()}", "BLOCKED")
         return
@@ -307,12 +317,12 @@ def maybe_commit_and_push(root: Path, reason: str) -> None:
         return
 
     append_event(root, "git", f"Attempting scoped commit/push after {reason}", "RUNNING")
-    add_proc = git_output(["add", "--", *existing_paths], repo_root)
+    add_proc = git_output(["add", "--", *pathspecs], repo_root)
     if add_proc.returncode != 0:
         append_event(root, "git", f"git add failed during checkpoint: {add_proc.stdout.strip()}", "BLOCKED")
         return
 
-    staged = git_output(["diff", "--cached", "--name-only", "--", *existing_paths], repo_root)
+    staged = git_output(["diff", "--cached", "--name-only", "--", *pathspecs], repo_root)
     if staged.returncode != 0:
         append_event(root, "git", f"Could not inspect staged files: {staged.stdout.strip()}", "BLOCKED")
         return
@@ -324,7 +334,7 @@ def maybe_commit_and_push(root: Path, reason: str) -> None:
     config = load_json(root / "config" / "benchmark.json")
     label = config.get("benchmark") or config.get("name") or root.name
     message = f"{label} checkpoint after {reason}"
-    commit_proc = git_output(["commit", "-m", message, "--", *existing_paths], repo_root)
+    commit_proc = git_output(["commit", "-m", message, "--", *pathspecs], repo_root)
     if commit_proc.returncode != 0:
         output = commit_proc.stdout.strip()
         if "nothing to commit" in output.lower():
