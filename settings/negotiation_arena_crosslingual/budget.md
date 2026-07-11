@@ -6,9 +6,12 @@ full run until local bring-up, smoke testing, and C0/C1 capability gates pass.
 ## Scope
 
 - Setting: `negotiation_arena_crosslingual`.
-- Model plan: local `Qwen3-1.7B` through vLLM-compatible chat completions.
+- Default model plan: local `Qwen3-1.7B` through vLLM-compatible chat
+  completions.
 - Escalation model: `Qwen3-8B`, only for the whole benchmark after G2.
-- OpenAI API calls: not allowed for benchmark agents under the current design.
+- Active execution override: OpenAI benchmark calls are allowed by
+  `config/benchmark_model.json` for this setting. Treat those artifacts as
+  OpenAI benchmark evidence, not Qwen3 evidence.
 - Initial empirical pair: `EN-ID`.
 - Selected games: `resource_exchange` and `buy_sell`.
 - Conditions: `C0`, `C1`, `C2`, and `C3`.
@@ -60,7 +63,9 @@ justifies a smaller design.
   requires a documented change: temperature 0.2, top_p 0.9, max_tokens 512.
 - Estimate up to 8 negotiation turns per episode for initial scheduling.
 - Prefer local Qwen/vLLM. If Modal Qwen is later wired, add setting-specific
-  config and validation before running it.
+  config and validation before running it. If local/Modal Qwen is unavailable,
+  the explicit OpenAI benchmark override may be used for benchmark agents, with
+  all artifacts labeled as OpenAI evidence.
 - Do not run more than the 1-episode smoke while bring-up mappings are pending.
 - Do not run more than the 40-episode C0/C1 pilot before checking G2.
 
