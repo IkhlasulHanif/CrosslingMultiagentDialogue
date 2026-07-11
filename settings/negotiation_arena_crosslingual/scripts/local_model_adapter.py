@@ -31,9 +31,13 @@ class LocalModelConfig:
     chat_completions_path: str
     timeout_seconds: float
     generation_defaults: dict[str, Any]
+    transformers_model_id: str
+    local_files_only: bool
 
     @property
     def endpoint(self) -> str:
+        if self.provider == "local_transformers":
+            return f"hf-cache://{self.transformers_model_id}"
         base = self.base_url.rstrip("/") + "/"
         path = self.chat_completions_path.lstrip("/")
         return urljoin(base, path)
@@ -44,8 +48,13 @@ def load_adapter_config(path: Path = CONFIG_PATH, environ: dict[str, str] | None
     env = os.environ if environ is None else environ
     overrides = raw.get("env_overrides", {})
 
+    provider = env.get(overrides.get("provider", ""), raw.get("provider", "local_vllm"))
     base_url = env.get(overrides.get("base_url", ""), raw.get("base_url", "http://127.0.0.1:8000"))
     model = env.get(overrides.get("model", ""), raw.get("model", "Qwen3-1.7B"))
+    transformers_model_id = env.get(
+        overrides.get("transformers_model_id", ""),
+        raw.get("transformers_model_id", "Qwen/Qwen3-1.7B"),
+    )
     timeout_value = env.get(
         overrides.get("timeout_seconds", ""),
         str(raw.get("timeout_seconds", 120)),
@@ -60,12 +69,14 @@ def load_adapter_config(path: Path = CONFIG_PATH, environ: dict[str, str] | None
         raise LocalModelError("generation_defaults must be an object")
 
     return LocalModelConfig(
-        provider=str(raw.get("provider", "local_vllm")),
+        provider=str(provider),
         model=str(model),
         base_url=str(base_url),
         chat_completions_path=str(raw.get("chat_completions_path", "/v1/chat/completions")),
         timeout_seconds=timeout_seconds,
         generation_defaults=dict(defaults),
+        transformers_model_id=str(transformers_model_id),
+        local_files_only=bool(raw.get("local_files_only", True)),
     )
 
 
@@ -134,6 +145,104 @@ class LocalQwenChat:
         return extract_text(parsed)
 
 
+class LocalTransformersQwenChat:
+    _tokenizer: Any = None
+    _model: Any = None
+    _loaded_model_id: str | None = None
+
+    def __init__(self, config: LocalModelConfig | None = None) -> None:
+        self.config = config or load_adapter_config()
+
+    def _load(self) -> tuple[Any, Any]:
+        if (
+            LocalTransformersQwenChat._tokenizer is not None
+            and LocalTransformersQwenChat._model is not None
+            and LocalTransformersQwenChat._loaded_model_id == self.config.transformers_model_id
+        ):
+            return LocalTransformersQwenChat._tokenizer, LocalTransformersQwenChat._model
+
+        try:
+            import torch
+            from transformers import AutoModelForCausalLM, AutoTokenizer
+        except Exception as exc:  # pragma: no cover - environment-specific dependency probe
+            raise LocalModelError(f"local Transformers Qwen dependencies are unavailable: {exc}") from exc
+
+        try:
+            tokenizer = AutoTokenizer.from_pretrained(
+                self.config.transformers_model_id,
+                local_files_only=self.config.local_files_only,
+                trust_remote_code=True,
+            )
+            model = AutoModelForCausalLM.from_pretrained(
+                self.config.transformers_model_id,
+                local_files_only=self.config.local_files_only,
+                dtype="auto",
+                device_map="auto",
+                trust_remote_code=True,
+            )
+        except Exception as exc:
+            raise LocalModelError(
+                f"local Transformers Qwen load failed for {self.config.transformers_model_id}: {exc}"
+            ) from exc
+
+        LocalTransformersQwenChat._tokenizer = tokenizer
+        LocalTransformersQwenChat._model = model
+        LocalTransformersQwenChat._loaded_model_id = self.config.transformers_model_id
+        return tokenizer, model
+
+    def complete(self, messages: list[dict[str, str]], **overrides: Any) -> str:
+        build_payload(messages, self.config, **overrides)
+        tokenizer, model = self._load()
+        try:
+            import torch
+        except Exception as exc:  # pragma: no cover - already covered by _load in normal use
+            raise LocalModelError(f"torch is unavailable after model load: {exc}") from exc
+
+        try:
+            prompt = tokenizer.apply_chat_template(
+                messages,
+                tokenize=False,
+                add_generation_prompt=True,
+                enable_thinking=False,
+            )
+        except TypeError:
+            prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+
+        inputs = tokenizer([prompt], return_tensors="pt").to(model.device)
+        defaults = dict(self.config.generation_defaults)
+        defaults.update({key: value for key, value in overrides.items() if value is not None})
+        max_new_tokens = int(defaults.get("max_tokens", defaults.get("max_new_tokens", 512)))
+        temperature = float(defaults.get("temperature", 0.2))
+        top_p = float(defaults.get("top_p", 0.9))
+        generation_args: dict[str, Any] = {
+            "max_new_tokens": max_new_tokens,
+            "do_sample": temperature > 0,
+            "pad_token_id": tokenizer.eos_token_id,
+        }
+        if temperature > 0:
+            generation_args["temperature"] = temperature
+            generation_args["top_p"] = top_p
+
+        with torch.inference_mode():
+            generated = model.generate(**inputs, **generation_args)
+        new_tokens = generated[:, inputs.input_ids.shape[-1] :]
+        text = tokenizer.batch_decode(new_tokens, skip_special_tokens=True)[0].strip()
+        if "</think>" in text:
+            text = text.split("</think>", 1)[1].strip()
+        if not text:
+            raise LocalModelError("local Transformers Qwen returned empty text")
+        return text
+
+
+def make_local_chat(config: LocalModelConfig | None = None) -> Any:
+    resolved = config or load_adapter_config()
+    if resolved.provider == "local_transformers":
+        return LocalTransformersQwenChat(resolved)
+    if resolved.provider == "local_vllm":
+        return LocalQwenChat(resolved)
+    raise LocalModelError(f"unsupported local Qwen provider: {resolved.provider}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--show-config", action="store_true", help="print resolved adapter config")
@@ -163,7 +272,7 @@ def main() -> int:
     if args.dry_run:
         print(json.dumps(build_payload(messages, config, max_tokens=8), indent=2))
     if args.live_probe:
-        print(LocalQwenChat(config).complete(messages, max_tokens=8))
+        print(make_local_chat(config).complete(messages, max_tokens=8))
     if not (args.show_config or args.dry_run or args.live_probe):
         parser.print_help()
     return 0

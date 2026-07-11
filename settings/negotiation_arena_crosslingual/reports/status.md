@@ -9,15 +9,15 @@ NegotiationArena checkout using the explicitly allowed OpenAI smoke override.
 It reached a deal in 2 turns with `offer_parse_rate=1.0`, but this is only
 runner bring-up evidence, not Qwen3-1.7B research-matrix evidence.
 
-Latest real C0 baseline attempt: `bash scripts/run_c0_baseline.sh` passed source
-bring-up and parser/process validators, then blocked before any episode ran
-because this sandbox cannot reach the local Qwen/vLLM chat-completions endpoint
-at `http://127.0.0.1:8000/v1/chat/completions`
-(`<urlopen error [Errno 1] Operation not permitted>`). The next Qwen/local C0
-baseline command remains `bash scripts/run_c0_baseline.sh`.
+One real Qwen3-1.7B C0 EN-monolingual buy/sell baseline has now run through the
+same upstream checkout using the cached local Transformers provider
+`hf-cache://Qwen/Qwen3-1.7B`. Artifact paths:
+`artifacts/transcripts/baseline_c0_buy_sell_en_seed001.json` and
+`artifacts/results/baseline_c0_buy_sell_en_seed001.metrics.json`.
 
+Baseline result: deal reached in 2 turns at price 40. Metrics:
 
-Next useful work: **Run C0 EN baseline with Qwen3-1.7B**.
+Next useful work: **Human-check ID translation before C1/C2/C3**.
 
 ## Question
 
@@ -40,29 +40,29 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-BLOCKED: C0 baseline blocked on local Qwen endpoint; artifact=artifacts/results/baseline_c0_buy_sell_en_seed001.blocked.json; failed_command=bash scripts/run_c0_baseline.sh
+BLOCKED: Scoped commit/push attempt failed before staging because git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock: Operation not permitted. Validated NegotiationArena C0 baseline artifacts remain local in settings/negotiation_arena_crosslingual.
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T12:49:41+00:00` BLOCKED: C0 baseline blocked on local Qwen endpoint; artifact=artifacts/results/baseline_c0_buy_sell_en_seed001.blocked.json; failed_command=bash scripts/run_c0_baseline.sh
-- `2026-07-11T12:50:24+00:00` OK: Harness scaffold check passed
-- `2026-07-11T12:51:42+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_204838.txt
-- `2026-07-11T12:51:42+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-11T12:51:43+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-11T12:51:44+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
-- `2026-07-11T12:51:51+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
-- `2026-07-11T12:51:51+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-11T13:15:44+00:00` OK: Resolved local Qwen blocker by wiring cached Transformers provider hf-cache://Qwen/Qwen3-1.7B and added narrow XML normalization for Qwen accept-tag formatting; C0 seed001 completed after rerun.
+- `2026-07-11T13:16:10+00:00` BLOCKED: Scoped commit/push attempt failed before staging because git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock: Operation not permitted. Validated NegotiationArena C0 baseline artifacts remain local in settings/negotiation_arena_crosslingual.
+- `2026-07-11T13:17:15+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_210653.txt
+- `2026-07-11T13:17:15+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T13:17:16+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-11T13:17:17+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
+- `2026-07-11T13:17:25+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-11T13:17:25+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 1 |
-| Result summaries | 6 |
-| Logs | 22 |
+| Transcript JSON/JSONL | 2 |
+| Result summaries | 8 |
+| Logs | 23 |
 
 ## Open Questions
 

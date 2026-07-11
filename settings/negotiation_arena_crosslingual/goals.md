@@ -30,7 +30,7 @@ payoff premium or anchor final terms?
 - [x] Track first-offer anchoring.
 - [x] Implement payoff asymmetry `EN-agent - ID-agent`.
 - [x] Smoke test one C0 episode.
-- [ ] Run C0 EN baseline with Qwen3-1.7B.
+- [x] Run C0 EN baseline with Qwen3-1.7B.
 - [ ] Human-check ID translation before C1/C2/C3.
 - [ ] Run C1 ID baseline after translation review.
 - [ ] Check G2 capability floor before C2/C3.

@@ -70,10 +70,12 @@ def write_blocked_artifact(reason: str, error: str | None = None) -> Path:
         "provider": config.provider,
         "model": config.model,
         "endpoint": config.endpoint,
-        "message": "C0 baseline requires the local Qwen-compatible chat-completions endpoint.",
+        "message": "C0 baseline requires a usable local Qwen provider.",
         "next_action": (
-            "Start Qwen3-1.7B behind the configured OpenAI-compatible endpoint "
-            "or set LOCAL_QWEN_BASE_URL/LOCAL_QWEN_MODEL, then rerun bash scripts/run_c0_baseline.sh."
+            "For local_transformers, ensure Qwen/Qwen3-1.7B is present in the local Hugging Face cache "
+            "with torch/transformers installed. For local_vllm, start Qwen3-1.7B behind the configured "
+            "OpenAI-compatible endpoint or set LOCAL_QWEN_BASE_URL/LOCAL_QWEN_MODEL. Then rerun "
+            "bash scripts/run_c0_baseline.sh."
         ),
         "openai_smoke_override_used": False,
         "related_probe": "artifacts/results/model_endpoint_probe.json",

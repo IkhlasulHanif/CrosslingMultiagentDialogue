@@ -3,29 +3,23 @@ NegotiationArena checkout using the explicitly allowed OpenAI smoke override.
 It reached a deal in 2 turns with `offer_parse_rate=1.0`, but this is only
 runner bring-up evidence, not Qwen3-1.7B research-matrix evidence.
 
-Latest real C0 baseline attempt: `bash scripts/run_c0_baseline.sh` passed source
-bring-up and parser/process validators, then blocked before any episode ran
-because this sandbox cannot reach the local Qwen/vLLM chat-completions endpoint
-at `http://127.0.0.1:8000/v1/chat/completions`
-(`<urlopen error [Errno 1] Operation not permitted>`). The next Qwen/local C0
-baseline command remains `bash scripts/run_c0_baseline.sh`.
+One real Qwen3-1.7B C0 EN-monolingual buy/sell baseline has now run through the
+same upstream checkout using the cached local Transformers provider
+`hf-cache://Qwen/Qwen3-1.7B`. Artifact paths:
+`artifacts/transcripts/baseline_c0_buy_sell_en_seed001.json` and
+`artifacts/results/baseline_c0_buy_sell_en_seed001.metrics.json`.
 
-Latest baseline attempt (`2026-07-11T12:49:41+00:00`): blocked before any
-baseline episode ran because the local Qwen/vLLM chat-completions endpoint was
-unavailable from this sandbox.
-Blocker artifact: `artifacts/results/baseline_c0_buy_sell_en_seed001.blocked.json`.
-Endpoint probe artifact: `artifacts/results/model_endpoint_probe.json`.
-The recorded error is `<urlopen error [Errno 1] Operation not permitted>` for
-`http://127.0.0.1:8000/v1/chat/completions`.
+Baseline result: deal reached in 2 turns at price 40. Metrics:
+`deal_rate=1.0`, `offer_parse_rate=1.0`, first-offer price 40, final price 40,
+anchoring signed delta 0, seller payoff 0, buyer payoff 60. Payoff asymmetry is
+not defined for C0 because both roles are EN.
 
-A bounded Modal Qwen baseline runner is also wired as
-`modal run scripts/run_c0_baseline_modal.py`. The latest Modal attempt was
-blocked before app creation because the workspace billing cycle spend limit was
-reached. Blocker artifact:
-`artifacts/results/baseline_c0_buy_sell_en_seed001.modal_blocked.json`.
-Next unblock command after restoring a Qwen path is either
-`bash scripts/run_c0_baseline.sh` for local Qwen or
-`modal run scripts/run_c0_baseline_modal.py` for Modal Qwen.
+The first direct-Qwen baseline attempt failed before transcript writing because
+Qwen expressed acceptance in prose while leaving malformed XML for the upstream
+NegotiationArena parser. The runner now canonicalizes common casing/tag errors
+and copies an already visible prior offer into `<newly proposed trade>` when the
+model explicitly accepts that trade. The successful baseline above is the rerun
+with that normalization.
 
 Source bring-up remains resolved. `external/NegotiationArena` is a local checkout
 of `https://github.com/vinid/NegotiationArena.git` on branch

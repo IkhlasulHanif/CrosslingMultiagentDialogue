@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -23,7 +24,7 @@ UPSTREAM = ROOT / "external" / "NegotiationArena"
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(UPSTREAM))
 
-from local_model_adapter import LocalModelError, LocalQwenChat, load_adapter_config  # noqa: E402
+from local_model_adapter import LocalModelError, load_adapter_config, make_local_chat  # noqa: E402
 from offer_parser import offer_parse_rate, parse_offer  # noqa: E402
 from process_metrics import episode_payoff_asymmetry, first_offer_anchoring  # noqa: E402
 
@@ -249,11 +250,11 @@ def make_chat_client(provider: str) -> tuple[Any, dict[str, Any]]:
         }
 
     config = load_adapter_config()
-    return LocalQwenChat(config), {
+    return make_local_chat(config), {
         "provider": config.provider,
         "model": config.model,
         "endpoint": config.endpoint,
-        "evidence_scope": "Qwen/local model smoke",
+        "evidence_scope": "Qwen/local model run",
     }
 
 
@@ -318,10 +319,10 @@ def run_endpoint_probe(provider: str) -> dict[str, Any]:
         "model": config.model,
         "endpoint": config.endpoint,
         "failed_command": None,
-        "message": "Local model endpoint responded to a tiny chat-completions probe.",
+        "message": "Local Qwen provider responded to a tiny generation probe.",
     }
     try:
-        text = LocalQwenChat(config).complete(
+        text = make_local_chat(config).complete(
             [
                 {"role": "system", "content": "You are a concise endpoint probe."},
                 {"role": "user", "content": "Reply with OK."},
@@ -335,12 +336,13 @@ def run_endpoint_probe(provider: str) -> dict[str, Any]:
                 "status": "BLOCKED",
                 "failed_command": "python3 scripts/local_model_adapter.py --live-probe",
                 "error": str(exc),
-                "message": "Local Qwen/vLLM endpoint is not reachable.",
+                "message": "Local Qwen provider is not usable from this session.",
                 "next_action": (
-                    "Start a local OpenAI-compatible Qwen3-1.7B chat-completions "
-                    "server at the configured endpoint, or set LOCAL_QWEN_BASE_URL "
-                    "and rerun the failed command: ./harness.sh run-smoke for smoke "
-                    "or bash scripts/run_c0_baseline.sh for the C0 baseline."
+                    "For local_transformers, ensure Qwen/Qwen3-1.7B is present in the "
+                    "Hugging Face cache with torch/transformers installed. For local_vllm, "
+                    "start a local OpenAI-compatible Qwen3-1.7B chat-completions server "
+                    "or set LOCAL_QWEN_BASE_URL. Then rerun ./harness.sh run-smoke for "
+                    "smoke or bash scripts/run_c0_baseline.sh for the C0 baseline."
                 ),
             }
         )
@@ -348,19 +350,19 @@ def run_endpoint_probe(provider: str) -> dict[str, Any]:
         append_event(
             "model_endpoint",
             "BLOCKED",
-            f"Local Qwen endpoint probe failed; artifact={artifact.relative_to(ROOT)}; "
+            f"Local Qwen provider probe failed; artifact={artifact.relative_to(ROOT)}; "
             "failed_command=python3 scripts/local_model_adapter.py --live-probe",
         )
         raise SystemExit(2) from exc
 
     probe["response_preview"] = text[:200]
     artifact = write_json("artifacts/results/model_endpoint_probe.json", probe)
-    append_event("model_endpoint", "OK", f"Local Qwen endpoint probe passed; artifact={artifact.relative_to(ROOT)}")
+    append_event("model_endpoint", "OK", f"Local Qwen provider probe passed; artifact={artifact.relative_to(ROOT)}")
     return {
         "provider": config.provider,
         "model": config.model,
         "endpoint": config.endpoint,
-        "evidence_scope": "Qwen/local model smoke",
+        "evidence_scope": "Qwen/local model run",
     }
 
 
@@ -411,6 +413,68 @@ def structured_line(state: dict[str, Any], last_offer_price: int | float | None)
     if offered_price is not None:
         return f"OFFER: price={offered_price}", offered_price
     return "REJECT:", last_offer_price
+
+
+BUY_SELL_TAGS = (
+    "proposal count",
+    "my resources",
+    "my goals",
+    "reason",
+    "player answer",
+    "newly proposed trade",
+    "other player proposed trade",
+    "message",
+)
+
+
+def canonicalize_xml_tags(text: str) -> str:
+    normalized = text.strip()
+    if normalized.startswith("```"):
+        normalized = re.sub(r"^```[a-zA-Z]*\s*", "", normalized)
+        normalized = re.sub(r"\s*```$", "", normalized).strip()
+    for tag in BUY_SELL_TAGS:
+        pattern = re.compile(rf"<\s*(/?)\s*{re.escape(tag)}\s*>", re.IGNORECASE)
+        normalized = pattern.sub(lambda match, t=tag: f"</{t}>" if match.group(1) else f"<{t}>", normalized)
+    return normalized
+
+
+def tag_value(text: str, tag: str) -> str | None:
+    match = re.search(rf"<{re.escape(tag)}>(.*?)</{re.escape(tag)}>", text, flags=re.DOTALL)
+    if not match:
+        return None
+    return match.group(1).strip()
+
+
+def replace_or_append_tag(text: str, tag: str, value: str) -> str:
+    replacement = f"<{tag}>{value}</{tag}>"
+    pattern = re.compile(rf"<{re.escape(tag)}>.*?</{re.escape(tag)}>", flags=re.DOTALL)
+    if pattern.search(text):
+        return pattern.sub(replacement, text, count=1)
+    return f"{text.rstrip()}\n{replacement}"
+
+
+def normalize_buy_sell_response(text: str) -> str:
+    normalized = canonicalize_xml_tags(text)
+    lower = normalized.lower()
+    answer = (tag_value(normalized, "player answer") or "").strip().upper()
+
+    accepts_prior_offer = "accept this trade" in lower or "i accept" in lower
+    rejects_prior_offer = "reject" in lower and "accept" not in lower
+    if accepts_prior_offer:
+        normalized = replace_or_append_tag(normalized, "player answer", "ACCEPT")
+        prior_trade = tag_value(normalized, "other player proposed trade")
+        if prior_trade and not tag_value(normalized, "newly proposed trade"):
+            normalized = replace_or_append_tag(normalized, "newly proposed trade", prior_trade)
+    elif rejects_prior_offer and answer not in {"PROPOSAL", "ACCEPT"}:
+        normalized = replace_or_append_tag(normalized, "player answer", "REJECT")
+        if not tag_value(normalized, "newly proposed trade"):
+            normalized = replace_or_append_tag(normalized, "newly proposed trade", "NONE")
+
+    proposed_trade = tag_value(normalized, "newly proposed trade")
+    if proposed_trade:
+        clipped = re.split(r"</(?:message|other player proposed trade|player answer)>", proposed_trade, maxsplit=1)[0].strip()
+        normalized = replace_or_append_tag(normalized, "newly proposed trade", clipped)
+    return normalized
 
 
 def build_episode(game: Any, plan: dict[str, Any]) -> dict[str, Any]:
@@ -484,7 +548,7 @@ def run_episode(plan: dict[str, Any], provider: str, model_metadata: dict[str, A
             self.run_epoch_time_ms = None
 
         def chat(self) -> str:
-            return self.client.complete(self.conversation)
+            return normalize_buy_sell_response(self.client.complete(self.conversation))
 
         def update_conversation_tracking(self, entity: str, message: Any) -> None:
             role = entity if entity in {"system", "user", "assistant"} else "user"
@@ -492,7 +556,10 @@ def run_episode(plan: dict[str, Any], provider: str, model_metadata: dict[str, A
             if role == "system":
                 content += (
                     "\n\nYou must negotiate only in English. Follow the XML tag format exactly. "
-                    "When proposing a trade, include one item X and a ZUP price as an integer."
+                    "When proposing a trade, include one item X and a ZUP price as an integer. "
+                    "If accepting, set <player answer>ACCEPT</player answer> and repeat the accepted "
+                    "trade inside <newly proposed trade>...</newly proposed trade>. If rejecting, set "
+                    "<player answer>REJECT</player answer> and <newly proposed trade>NONE</newly proposed trade>."
                 )
             self.conversation.append({"role": role, "content": content})
 

@@ -1,8 +1,10 @@
 {
   "schema_version": 1,
-  "status": "configured_pending_live_endpoint",
-  "provider": "local_vllm",
+  "status": "configured_cached_transformers",
+  "provider": "local_transformers",
   "model": "Qwen3-1.7B",
+  "transformers_model_id": "Qwen/Qwen3-1.7B",
+  "local_files_only": true,
   "base_url": "http://127.0.0.1:8000",
   "chat_completions_path": "/v1/chat/completions",
   "timeout_seconds": 120,
@@ -12,13 +14,16 @@
     "max_tokens": 512
   },
   "env_overrides": {
+    "provider": "LOCAL_QWEN_PROVIDER",
     "base_url": "LOCAL_QWEN_BASE_URL",
     "model": "LOCAL_QWEN_MODEL",
+    "transformers_model_id": "LOCAL_QWEN_TRANSFORMERS_MODEL_ID",
     "timeout_seconds": "LOCAL_QWEN_TIMEOUT_SECONDS"
   },
   "notes": [
-    "This adapter is for local Qwen served through vLLM or another compatible local chat-completions server.",
+    "The default adapter loads Qwen/Qwen3-1.7B directly from the local Hugging Face cache with transformers and local_files_only=true.",
+    "Set LOCAL_QWEN_PROVIDER=local_vllm to use a local Qwen served through vLLM or another compatible chat-completions server.",
     "It intentionally does not read API-key environment variables. If a remote Modal Qwen endpoint is wired later, add a setting-specific config field and validator update before use.",
-    "Live endpoint probing is optional; default validation only checks config and request construction."
+    "Live provider probing is optional; default validation only checks config and request construction."
   ]
 }

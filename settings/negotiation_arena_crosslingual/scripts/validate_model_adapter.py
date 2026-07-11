@@ -29,12 +29,19 @@ def main() -> int:
     benchmark = load_json("config/benchmark.json")
     config = load_adapter_config()
 
-    if config_file.get("provider") != "local_vllm":
-        return fail("model adapter provider must remain local_vllm")
+    if config.provider not in {"local_vllm", "local_transformers"}:
+        return fail("model adapter provider must remain local_vllm or local_transformers")
     if config.model != benchmark.get("default_model"):
         return fail("model adapter model must match benchmark default_model")
-    if not config.endpoint.endswith("/v1/chat/completions"):
+    if config.provider == "local_vllm" and not config.endpoint.endswith("/v1/chat/completions"):
         return fail("model adapter endpoint must target /v1/chat/completions")
+    if config.provider == "local_transformers":
+        if config.transformers_model_id != "Qwen/Qwen3-1.7B":
+            return fail("local_transformers must target Qwen/Qwen3-1.7B")
+        if not config.local_files_only:
+            return fail("local_transformers must use local_files_only=true")
+        if not config.endpoint.startswith("hf-cache://"):
+            return fail("local_transformers endpoint evidence must use hf-cache://")
 
     forbidden_envs = {"OPENAI_API_KEY", "OPENAI_API_KEY_FILE", "OPENAI_ORG_ID", "OPENAI_PROJECT_ID"}
     override_values = set(config_file.get("env_overrides", {}).values())
@@ -62,7 +69,7 @@ def main() -> int:
         return fail("response extraction failed")
 
     print(
-        "OK: local Qwen/vLLM adapter config, dry payload construction, "
+        "OK: local Qwen adapter config, dry payload construction, "
         "and response extraction validated without live endpoint."
     )
     return 0

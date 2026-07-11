@@ -37,7 +37,7 @@ def main() -> int:
     if plan.get("schema_version") != 1:
         return fail("config/smoke_plan.json schema_version must be 1")
     if plan.get("status") != "planned_gated_on_bringup_and_model_endpoint":
-        return fail("smoke plan must remain gated until source bring-up and one allowed model endpoint pass")
+        return fail("smoke plan must remain gated until source bring-up and one allowed local Qwen provider pass")
 
     if episode.get("condition") != "C0":
         return fail("first smoke episode must be C0")
@@ -47,7 +47,7 @@ def main() -> int:
         return fail("smoke model must match the benchmark default model")
     if model_adapter.get("model") != benchmark.get("default_model"):
         return fail("model adapter must remain aligned with the benchmark default model")
-    if model_adapter.get("provider") not in {"local_vllm", "modal_qwen"}:
+    if model_adapter.get("provider") not in {"local_vllm", "local_transformers", "modal_qwen"}:
         return fail("model adapter provider must stay on local/Modal Qwen, not OpenAI")
 
     selected_game_ids = [game.get("id") for game in games.get("selected_games", []) if game.get("include")]
@@ -80,7 +80,7 @@ def main() -> int:
     preconditions = {item.get("id"): item for item in plan.get("preconditions", [])}
     for required in [
         "upstream_checkout",
-        "local_model_endpoint",
+        "local_qwen_provider",
         "structured_offer_parser",
         "process_metrics",
     ]:
@@ -111,7 +111,7 @@ def main() -> int:
 
     print(
         "OK: C0 smoke plan is narrow, EN-monolingual, selected-game aligned, "
-        "Qwen-default, and ready to run after source bring-up plus an allowed endpoint probe succeed."
+        "Qwen-default, and ready to run after source bring-up plus an allowed local Qwen probe succeeds."
     )
     return 0
 
