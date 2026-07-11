@@ -16,6 +16,9 @@ same upstream checkout using the cached local Transformers provider
 `artifacts/results/baseline_c0_buy_sell_en_seed001.metrics.json`.
 
 Baseline result: deal reached in 2 turns at price 40. Metrics:
+`deal_rate=1.0`, `offer_parse_rate=1.0`, first-offer price 40, final price 40,
+anchoring signed delta 0, seller payoff 0, buyer payoff 60. Payoff asymmetry is
+not defined for C0 because both roles are EN.
 
 Next useful work: **Human-check ID translation before C1/C2/C3**.
 
