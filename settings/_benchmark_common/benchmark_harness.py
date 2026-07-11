@@ -313,10 +313,14 @@ def maybe_commit_and_push(root: Path, reason: str) -> None:
         append_event(root, "git", f"Could not inspect scoped git status: {status_before.stdout.strip()}", "BLOCKED")
         return
     if not status_before.stdout.strip():
-        append_event(root, "git", f"No scoped changes to commit after {reason}", "OK")
         return
 
-    append_event(root, "git", f"Attempting scoped commit/push after {reason}", "RUNNING")
+    append_event(
+        root,
+        "git",
+        f"Attempting scoped commit/push after {reason}; if no later git blocker appears, check git log/remote for success",
+        "RUNNING",
+    )
     add_proc = git_output(["add", "--", *pathspecs], repo_root)
     if add_proc.returncode != 0:
         append_event(root, "git", f"git add failed during checkpoint: {add_proc.stdout.strip()}", "BLOCKED")
@@ -328,7 +332,6 @@ def maybe_commit_and_push(root: Path, reason: str) -> None:
         return
     staged_files = [line for line in staged.stdout.splitlines() if line.strip()]
     if not staged_files:
-        append_event(root, "git", f"No scoped staged changes to commit after {reason}", "OK")
         return
 
     config = load_json(root / "config" / "benchmark.json")
@@ -347,7 +350,6 @@ def maybe_commit_and_push(root: Path, reason: str) -> None:
     if push_proc.returncode != 0:
         append_event(root, "git", f"git push failed during checkpoint: {push_proc.stdout.strip()}", "BLOCKED")
         return
-    append_event(root, "git", f"Committed and pushed scoped checkpoint: {message}", "OK")
 
 
 def build_codex_prompt(root: Path) -> str:
