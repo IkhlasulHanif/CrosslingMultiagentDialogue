@@ -47,14 +47,14 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T15:15:12+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
-- `2026-07-11T15:15:13+00:00` OK: Codex pass 13 completed
-- `2026-07-11T15:30:13+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260711_233013.txt
-- `2026-07-11T15:30:55+00:00` OK: Harness scaffold check passed
-- `2026-07-11T15:31:00+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-11T15:31:00+00:00` BLOCKED: C1 ID baseline blocked on pending human translation review; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh; next_command=bash scripts/run_c1_baseline.sh
 - `2026-07-11T15:31:04+00:00` BLOCKED: G2 capability floor check blocked; artifact=artifacts/results/g2_capability_floor.json; next_command=bash scripts/run_c1_baseline.sh
 - `2026-07-11T15:31:46+00:00` OK: Harness scaffold check passed
+- `2026-07-11T15:32:33+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_233013.txt
+- `2026-07-11T15:32:33+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T15:32:34+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-11T15:32:34+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
+- `2026-07-11T15:32:41+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-11T15:32:41+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
