@@ -49,14 +49,14 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T23:41:32+00:00` OK: Post-Codex smoke/experiment attempt exited 0
-- `2026-07-11T23:41:32+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
-- `2026-07-11T23:41:34+00:00` OK: Codex pass 21 completed
-- `2026-07-11T23:56:34+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_075634.txt
-- `2026-07-11T23:57:06+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-11T23:57:06+00:00` BLOCKED: OpenAI benchmark model probe failed; artifact=artifacts/results/benchmark_model_probe.json
 - `2026-07-11T23:57:06+00:00` BLOCKED: C0 OpenAI benchmark baseline blocked on provider probe; failed_command=bash scripts/run_c0_openai_baseline.sh
 - `2026-07-11T23:58:03+00:00` OK: Harness scaffold check passed
+- `2026-07-11T23:58:34+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_075634.txt
+- `2026-07-11T23:58:34+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T23:58:35+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-11T23:58:37+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
+- `2026-07-11T23:58:46+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-11T23:58:46+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
