@@ -3,7 +3,7 @@ deal_rate=1.0 and offer_parse_rate=1.0. C1 ID and G2 remain blocked on pending
 human review of 16 EN-ID translation units.
 
 OpenAI benchmark override wrappers exist for C0 buy/sell and resource_exchange.
-A fresh real C0 OpenAI buy/sell attempt at 2026-07-11T19:27:51 UTC produced no
+A fresh real C0 OpenAI buy/sell attempt at 2026-07-11T19:46:43 UTC produced no
 transcript because `api.openai.com` could not be resolved by urllib or curl.
 Blocker artifact: `artifacts/results/benchmark_model_probe.json`. Retry after
 network/DNS access is restored with `bash scripts/run_c0_openai_baseline.sh`.
