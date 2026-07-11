@@ -9,7 +9,8 @@ NegotiationArena checkout using the explicitly allowed OpenAI smoke override.
 It reached a deal in 2 turns with `offer_parse_rate=1.0`, but this is only
 runner bring-up evidence, not Qwen3-1.7B research-matrix evidence.
 
-Latest real C0 baseline attempt: `bash scripts/run_c0_baseline.sh` passed source
+Latest real C0 baseline attempt (`2026-07-11T12:49:41+00:00`):
+`bash scripts/run_c0_baseline.sh` passed source
 bring-up and parser/process validators, then blocked before any episode ran
 because this sandbox cannot reach the local Qwen/vLLM chat-completions endpoint
 at `http://127.0.0.1:8000/v1/chat/completions`
@@ -40,21 +41,25 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-None logged.
+BLOCKED: C0 baseline blocked on local Qwen endpoint; artifact=artifacts/results/baseline_c0_buy_sell_en_seed001.blocked.json; failed_command=bash scripts/run_c0_baseline.sh
+
+Endpoint probe artifact: `artifacts/results/model_endpoint_probe.json`.
+Modal fallback remains blocked by workspace billing quota:
+`artifacts/results/baseline_c0_buy_sell_en_seed001.modal_blocked.json`.
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T12:32:01+00:00` OK: Harness scaffold check passed
-- `2026-07-11T12:32:30+00:00` OK: Harness scaffold check passed
-- `2026-07-11T12:33:29+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_203107.txt
-- `2026-07-11T12:33:29+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-11T12:33:29+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-11T12:33:30+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
-- `2026-07-11T12:33:37+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
-- `2026-07-11T12:33:37+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-11T12:33:37+00:00` OK: Post-Codex smoke/experiment attempt exited 0
+- `2026-07-11T12:33:37+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
+- `2026-07-11T12:33:38+00:00` OK: Codex pass 5 completed
+- `2026-07-11T12:48:38+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260711_204838.txt
+- `2026-07-11T12:49:40+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-11T12:49:41+00:00` BLOCKED: Local Qwen endpoint probe failed; artifact=artifacts/results/model_endpoint_probe.json; failed_command=python3 scripts/local_model_adapter.py --live-probe
+- `2026-07-11T12:49:41+00:00` BLOCKED: C0 baseline blocked on local Qwen endpoint; artifact=artifacts/results/baseline_c0_buy_sell_en_seed001.blocked.json; failed_command=bash scripts/run_c0_baseline.sh
+- `2026-07-11T12:50:24+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
@@ -62,7 +67,7 @@ or benchmark-specific failures. They will show up here.
 |---|---:|
 | Transcript JSON/JSONL | 1 |
 | Result summaries | 6 |
-| Logs | 21 |
+| Logs | 22 |
 
 ## Open Questions
 
