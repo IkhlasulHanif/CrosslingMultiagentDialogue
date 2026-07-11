@@ -8,14 +8,14 @@ One real C0 EN-monolingual buy/sell smoke episode has run through the upstream
 NegotiationArena checkout. The smoke used the explicitly allowed OpenAI override
 for runner bring-up only, so it is not Qwen3-1.7B research-matrix evidence.
 
+Current Qwen baseline blocker: `bash scripts/run_c0_baseline.sh` is wired but
+needs a reachable local Qwen/vLLM endpoint; `modal run scripts/run_c0_baseline_modal.py`
+is also wired but Modal app creation is blocked by the workspace billing cycle
+spend limit.
+
 Smoke artifact: `artifacts/transcripts/smoke_c0_buy_sell_en_001.json`.
 Metrics artifact: `artifacts/results/smoke_c0_buy_sell_en_001.metrics.json`.
 The smoke reached a deal in 2 turns with `offer_parse_rate=1.0`; this is only
-runner bring-up evidence.
-
-The next Qwen/local C0 baseline command is wired as
-`bash scripts/run_c0_baseline.sh`.
-
 
 Next useful work: **Run C0 EN baseline with Qwen3-1.7B**.
 
@@ -40,21 +40,21 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-ERROR: Modal Qwen C0 baseline blocked before app start: workspace billing cycle spend limit reached; failed_command=modal run settings/negotiation_arena_crosslingual/scripts/run_c0_baseline_modal.py; local Qwen endpoint is still required unless Modal billing is restored.
+None logged.
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T11:15:20+00:00` OK: Harness scaffold check passed
-- `2026-07-11T11:15:36+00:00` ERROR: Modal Qwen C0 baseline blocked before app start: workspace billing cycle spend limit reached; failed_command=modal run settings/negotiation_arena_crosslingual/scripts/run_c0_baseline_modal.py; local Qwen endpoint is still required unless Modal billing is restored.
-- `2026-07-11T11:16:46+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_191015.txt
 - `2026-07-11T11:16:46+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
 - `2026-07-11T11:16:46+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
 - `2026-07-11T11:16:48+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
 - `2026-07-11T11:16:56+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
 - `2026-07-11T11:16:56+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-11T11:16:56+00:00` OK: Post-Codex smoke/experiment attempt exited 0
+- `2026-07-11T11:16:56+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
+- `2026-07-11T11:16:58+00:00` OK: Codex pass 1 completed
 
 ## Artifact Counts
 

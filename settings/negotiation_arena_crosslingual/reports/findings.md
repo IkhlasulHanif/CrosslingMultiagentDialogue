@@ -2,6 +2,11 @@ One real C0 EN-monolingual buy/sell smoke episode has run through the upstream
 NegotiationArena checkout. The smoke used the explicitly allowed OpenAI override
 for runner bring-up only, so it is not Qwen3-1.7B research-matrix evidence.
 
+Current Qwen baseline blocker: `bash scripts/run_c0_baseline.sh` is wired but
+needs a reachable local Qwen/vLLM endpoint; `modal run scripts/run_c0_baseline_modal.py`
+is also wired but Modal app creation is blocked by the workspace billing cycle
+spend limit.
+
 Smoke artifact: `artifacts/transcripts/smoke_c0_buy_sell_en_001.json`.
 Metrics artifact: `artifacts/results/smoke_c0_buy_sell_en_001.metrics.json`.
 The smoke reached a deal in 2 turns with `offer_parse_rate=1.0`; this is only
