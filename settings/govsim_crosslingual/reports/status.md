@@ -47,21 +47,21 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T15:13:21+00:00` OK: scripts/run_smoke.sh exited 0
-- `2026-07-11T15:13:21+00:00` OK: Post-Codex smoke/experiment attempt exited 0
-- `2026-07-11T15:13:21+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
-- `2026-07-11T15:13:23+00:00` OK: Codex pass 13 completed
 - `2026-07-11T15:28:23+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260711_232823.txt
 - `2026-07-11T15:29:51+00:00` BLOCKED: GovSim C0 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: LocalModelError: Local model endpoint unavailable at http://127.0.0.1:8000/v1/chat/completions: [Errno 1] Operation not permitted; artifact=artifacts/results/govsim_c0_qwen_baseline_20260711T152951Z.json
 - `2026-07-11T15:30:13+00:00` BLOCKED: Shell probe `curl -sS --connect-timeout 2 http://127.0.0.1:8000/v1/models` found no reachable local Qwen/vLLM server on 127.0.0.1:8000; Python baseline artifact still records sandbox socket PermissionError. Next once a local or Modal Qwen endpoint is reachable: `GOVSIM_MODEL_BASE_URL=http://127.0.0.1:8000/v1 GOVSIM_MODEL_NAME=Qwen3-1.7B ./scripts/run_qwen_c0_baseline.sh`.
 - `2026-07-11T15:31:04+00:00` OK: Harness scaffold check passed
+- `2026-07-11T15:31:42+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_232823.txt
+- `2026-07-11T15:31:42+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T15:32:09+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T153145Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T153145Z.jsonl
+- `2026-07-11T15:32:09+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 15 |
-| Result summaries | 47 |
+| Transcript JSON/JSONL | 16 |
+| Result summaries | 49 |
 | Logs | 46 |
 
 ## Open Questions
