@@ -23,9 +23,9 @@ Scope:
 
 Known limits:
 
-- These are canonical setting-local prompt units, not verified upstream prompt
-  IDs. The upstream mapping remains blocked until a local NegotiationArena
-  checkout is available.
+- These are canonical setting-local prompt units used by this setting's runner.
+  Source bring-up is resolved through `external/NegotiationArena` on branch
+  `paper_experiment_code`; human bilingual review remains the active gate.
 - Human bilingual review is still required before using the Indonesian prompts
   for reported benchmark runs.
 - Structured labels `OFFER:`, `ACCEPT:`, `REJECT:`, placeholder names, and role

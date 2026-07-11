@@ -38,11 +38,12 @@ benchmark evidence until `config/translation_review.json` is completed and
 
 The C1 ID baseline command now exists as `bash scripts/run_c1_baseline.sh`.
 Current run result is a gate artifact, not empirical evidence:
-`artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`. It blocks on
-15 pending translation-review units and points reviewers to
-`docs/id_translation_review.md` for side-by-side EN/ID text. Once the human
-review file is approved, rerun `python3 scripts/validate_translation_review.py`
-and `bash scripts/run_c1_baseline.sh`.
+`artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`, refreshed at
+2026-07-11T15:13:18+00:00 by the real C1 command. It blocks on 15 pending
+translation-review units and points reviewers to `docs/id_translation_review.md`
+for side-by-side EN/ID text. Once the human review file is approved, rerun
+`python3 scripts/validate_translation_review.py` and
+`bash scripts/run_c1_baseline.sh`.
 
 The C0 resource-exchange baseline command is
 `bash scripts/run_c0_resource_exchange_baseline.sh`.
