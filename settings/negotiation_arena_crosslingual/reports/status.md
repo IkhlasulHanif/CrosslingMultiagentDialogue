@@ -40,21 +40,21 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-BLOCKED: Follow-up commit for the NegotiationArena version-control caveat failed because git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock: Operation not permitted. The caveat remains local in plan/events.jsonl.
+BLOCKED: C0 baseline blocked on local Qwen endpoint; artifact=artifacts/results/baseline_c0_buy_sell_en_seed001.blocked.json; failed_command=bash scripts/run_c0_baseline.sh
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T12:15:03+00:00` WARN: Scoped commit/push succeeded as ed2e913b, but commit output showed pre-existing staged settings/govsim_crosslingual artifacts were included alongside NegotiationArena files. Did not revert sibling benchmark files from this setting pass.
-- `2026-07-11T12:15:26+00:00` BLOCKED: Follow-up commit for the NegotiationArena version-control caveat failed because git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock: Operation not permitted. The caveat remains local in plan/events.jsonl.
-- `2026-07-11T12:15:56+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_201248.txt
-- `2026-07-11T12:15:56+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-11T12:15:56+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-11T12:15:57+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
-- `2026-07-11T12:16:05+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
-- `2026-07-11T12:16:05+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-11T12:16:05+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
+- `2026-07-11T12:16:07+00:00` OK: Codex pass 4 completed
+- `2026-07-11T12:31:07+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260711_203107.txt
+- `2026-07-11T12:31:53+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-11T12:31:54+00:00` BLOCKED: Local Qwen endpoint probe failed; artifact=artifacts/results/model_endpoint_probe.json; failed_command=python3 scripts/local_model_adapter.py --live-probe
+- `2026-07-11T12:31:54+00:00` BLOCKED: C0 baseline blocked on local Qwen endpoint; artifact=artifacts/results/baseline_c0_buy_sell_en_seed001.blocked.json; failed_command=bash scripts/run_c0_baseline.sh
+- `2026-07-11T12:32:01+00:00` OK: Harness scaffold check passed
+- `2026-07-11T12:32:30+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
@@ -62,7 +62,7 @@ or benchmark-specific failures. They will show up here.
 |---|---:|
 | Transcript JSON/JSONL | 1 |
 | Result summaries | 6 |
-| Logs | 20 |
+| Logs | 21 |
 
 ## Open Questions
 
