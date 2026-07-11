@@ -49,21 +49,21 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T18:29:34+00:00` OK: scripts/run_smoke.sh exited 0
-- `2026-07-11T18:29:34+00:00` OK: Post-Codex smoke/experiment attempt exited 0
-- `2026-07-11T18:29:34+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
-- `2026-07-11T18:29:36+00:00` OK: Codex pass 4 completed
 - `2026-07-11T18:44:36+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_024436.txt
 - `2026-07-11T18:45:41+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260711T184541Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260711T184541Z.json
 - `2026-07-11T18:46:53+00:00` BLOCKED: Refreshed strict translation gate artifacts: translation_status.json reports status=DRAFT, source_coverage_complete=true, human_checked=false, mechanical_qa=PASS for 17 entries; translation_human_review_packet.md regenerated. Next after human review: python3 code/translation_pack.py --root . --out artifacts/logs/translation_status.json --review-out artifacts/logs/translation_human_review_packet.md --strict.
 - `2026-07-11T18:47:28+00:00` OK: Harness scaffold check passed
+- `2026-07-11T18:48:52+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_024436.txt
+- `2026-07-11T18:48:52+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T18:49:16+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T184857Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T184857Z.jsonl
+- `2026-07-11T18:49:17+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 25 |
-| Result summaries | 79 |
+| Transcript JSON/JSONL | 26 |
+| Result summaries | 81 |
 | Logs | 59 |
 
 ## Open Questions
