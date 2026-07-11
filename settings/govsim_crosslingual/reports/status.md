@@ -16,9 +16,8 @@ The Qwen C0 command `./scripts/run_qwen_c0_baseline.sh` is wired and was attempt
 
 The Qwen C1 ID command `./scripts/run_qwen_c1_baseline.sh` enforces the human translation gate before any model call. It was attempted at `2026-07-11T17:15:41+00:00` and exited `2` before a model call; artifact `artifacts/results/govsim_c1_qwen_baseline_20260711T171541Z.json`. The translation pack `config/translations/en_id_fishery_draft.json` covers the active fishery prompt primitives and passes mechanical QA for all 17 entries, but remains `DRAFT` because `human_checked=false`. On this pass, `python3 code/translation_pack.py --root . --out artifacts/logs/translation_status.json --review-out artifacts/logs/translation_human_review_packet.md --strict` regenerated the artifacts and exited `3`, as expected for a structurally valid pack awaiting human review.
 
-Source/license state: `licenses.md` and `artifacts/logs/source_license_status.json` report `READY_FOR_REVIEW`. The source manifest records the paper/README canonical GovSim URL `https://github.com/giorgiopiatti/GovSim`; the local checkout remote resolves to `https://github.com/giorgio-piatti/GovSim.git`, branch `main`, commit `1d11adf047b24fa2ba0d44a1d4931015ea2e5210`. The local license file is MIT license text, 1071 bytes, SHA-256 `55be1b08220f411edf83dbf7ac9b3b3e7e56b92fb2ef9b10af91526edd38f15e`.
 
-Next useful work: **Restore sandbox DNS/network for OpenAI C0 baseline, and human-check ID translation for C1**.
+Next useful work: **Human-check ID translation**.
 
 ## Question
 
@@ -50,18 +49,21 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T17:26:50+00:00` RUNNING: Starting Codex implementation loop sleep=900s max_iters=infinite
-- `2026-07-11T17:26:50+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_012650.txt
+- `2026-07-11T17:29:52+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260711T172952Z.json
 - `2026-07-11T17:30:26+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked before model call by translation gate: TranslationPackNotReady: ID translation pack is not ready for benchmark use: status=DRAFT, source_coverage_complete=True, human_checked=False, pack=/Users/ikhlasul.hanif/Documents/MultiAgent/settings/govsim_crosslingual/config/translations/en_id_fishery_draft.json; artifact=artifacts/results/govsim_c1_openai_baseline_20260711T173026Z.json; next=./scripts/run_openai_c1_baseline.sh
 - `2026-07-11T17:30:35+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260711T173035Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260711T173035Z.json
 - `2026-07-11T17:31:41+00:00` OK: Harness scaffold check passed
+- `2026-07-11T17:34:23+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_012650.txt
+- `2026-07-11T17:34:23+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T17:34:47+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T173427Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T173427Z.jsonl
+- `2026-07-11T17:34:47+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 21 |
-| Result summaries | 67 |
+| Transcript JSON/JSONL | 22 |
+| Result summaries | 69 |
 | Logs | 55 |
 
 ## Open Questions
