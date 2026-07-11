@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "code"))
 
-from translation_pack import SCHEMA_VERSION, check_translation_pack  # noqa: E402
+from translation_pack import SCHEMA_VERSION, check_translation_pack, render_human_review_packet  # noqa: E402
 
 
 class TranslationPackTest(unittest.TestCase):
@@ -90,6 +90,15 @@ class TranslationPackTest(unittest.TestCase):
         self.assertEqual(result.status, "COMPLETE")
         self.assertEqual(result.missing, [])
         self.assertTrue(result.human_checked)
+
+    def test_review_packet_contains_human_gate_and_placeholders(self) -> None:
+        packet = render_human_review_packet(ROOT)
+
+        self.assertIn("# GovSim EN-ID Translation Human Review Packet", packet)
+        self.assertIn("All entries human checked: `False`", packet)
+        self.assertIn("`fishery.task.choose_harvest`", packet)
+        self.assertIn("{num_tons_lake}", packet)
+        self.assertIn("Review decision: [ ] accept  [ ] edit required", packet)
 
 
 if __name__ == "__main__":

@@ -153,11 +153,95 @@ def check_translation_pack(root: Path, pack_path: Path = DEFAULT_PACK_PATH) -> T
     )
 
 
+def render_human_review_packet(root: Path, pack_path: Path = DEFAULT_PACK_PATH) -> str:
+    """Render a human-facing EN-ID translation review packet."""
+
+    root = root.resolve()
+    path = (root / pack_path).resolve() if not pack_path.is_absolute() else pack_path.resolve()
+    data, warnings = _read_json(path)
+    check = check_translation_pack(root, pack_path)
+    entries = data.get("entries")
+    if not isinstance(entries, list):
+        entries = []
+
+    lines = [
+        "# GovSim EN-ID Translation Human Review Packet",
+        "",
+        "This packet is for human review of the active GovSim fishery translation pack.",
+        "Do not mark `goals.md` human-check complete until every active entry is reviewed and the JSON pack has `human_checked: true` for each accepted entry.",
+        "",
+        "## Review Status",
+        "",
+        f"- Pack: `{path.relative_to(root) if path.is_relative_to(root) else path}`",
+        f"- Status: `{check.status}`",
+        f"- Language pair: `{check.language_pair}`",
+        f"- Entries: {check.entry_count}",
+        f"- Source coverage complete: `{check.source_coverage_complete}`",
+        f"- All entries human checked: `{check.human_checked}`",
+        "",
+        "## Reviewer Instructions",
+        "",
+        "For each entry, compare the English source text with the Indonesian translation.",
+        "Check that quantities, constraints, role labels, answer-format requirements, and placeholders such as `{num_tons_lake}` are preserved exactly.",
+        "If an entry is acceptable, set its `human_checked` field to `true` in the JSON pack.",
+        "If an entry needs changes, edit `id_text`, keep the same placeholders, then set `human_checked` to `true` after review.",
+        "",
+        "## Entries",
+        "",
+    ]
+    if check.missing:
+        lines.extend(["## Structural Issues", ""])
+        lines.extend(f"- {item}" for item in check.missing)
+        lines.append("")
+    if warnings or check.warnings:
+        lines.extend(["## Warnings", ""])
+        for item in [*warnings, *check.warnings]:
+            lines.append(f"- {item}")
+        lines.append("")
+
+    for index, entry in enumerate(entries, start=1):
+        if not isinstance(entry, dict):
+            lines.extend([f"### {index}. Invalid Entry", "", "Entry is not a JSON object.", ""])
+            continue
+        entry_id = _entry_text(entry, "id") or f"entry_{index}"
+        category = _entry_text(entry, "category") or "unknown"
+        source = _entry_text(entry, "source") or "unknown"
+        human_checked = entry.get("human_checked")
+        lines.extend(
+            [
+                f"### {index}. `{entry_id}`",
+                "",
+                f"- Category: `{category}`",
+                f"- Source: `{source}`",
+                f"- Human checked: `{human_checked}`",
+                "",
+                "**EN**",
+                "",
+                "```text",
+                _entry_text(entry, "en"),
+                "```",
+                "",
+                "**ID**",
+                "",
+                "```text",
+                _entry_text(entry, "id_text"),
+                "```",
+                "",
+                "- Review decision: [ ] accept  [ ] edit required",
+                "- Reviewer note:",
+                "",
+            ]
+        )
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path.cwd(), help="Setting root to inspect.")
     parser.add_argument("--pack", type=Path, default=DEFAULT_PACK_PATH, help="Translation pack path.")
     parser.add_argument("--out", type=Path, help="Optional JSON report path.")
+    parser.add_argument("--review-out", type=Path, help="Optional Markdown human review packet path.")
     parser.add_argument("--strict", action="store_true", help="Return nonzero unless the pack is complete.")
     args = parser.parse_args()
 
@@ -167,6 +251,10 @@ def main() -> int:
         out_path = args.root / args.out if not args.out.is_absolute() else args.out
         out_path.parent.mkdir(parents=True, exist_ok=True)
         out_path.write_text(text + "\n", encoding="utf-8")
+    if args.review_out:
+        review_path = args.root / args.review_out if not args.review_out.is_absolute() else args.review_out
+        review_path.parent.mkdir(parents=True, exist_ok=True)
+        review_path.write_text(render_human_review_packet(args.root, args.pack), encoding="utf-8")
     print(text)
     if result.status == "INVALID":
         return 2
