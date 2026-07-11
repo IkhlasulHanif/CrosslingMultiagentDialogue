@@ -49,21 +49,21 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T19:07:41+00:00` OK: scripts/run_smoke.sh exited 0
-- `2026-07-11T19:07:41+00:00` OK: Post-Codex smoke/experiment attempt exited 0
-- `2026-07-11T19:07:41+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
-- `2026-07-11T19:07:43+00:00` OK: Codex pass 6 completed
 - `2026-07-11T19:22:43+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_032243.txt
 - `2026-07-11T19:23:25+00:00` OK: Harness scaffold check passed
 - `2026-07-11T19:23:37+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260711T192337Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260711T192337Z.json
 - `2026-07-11T19:24:28+00:00` OK: Focused no-network validation passed under setting-local .venv: `.venv/bin/python -m unittest scripts/test_translation_pack.py scripts/test_qwen_baseline_blockers.py scripts/test_local_model_adapter.py scripts/test_process_metrics.py scripts/test_reports.py scripts/test_transcript_logger.py` ran 20 tests.
+- `2026-07-11T19:25:14+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_032243.txt
+- `2026-07-11T19:25:14+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T19:25:38+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T192517Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T192517Z.jsonl
+- `2026-07-11T19:25:39+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 27 |
-| Result summaries | 85 |
+| Transcript JSON/JSONL | 28 |
+| Result summaries | 87 |
 | Logs | 61 |
 
 ## Open Questions
