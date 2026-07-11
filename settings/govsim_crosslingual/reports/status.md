@@ -6,9 +6,9 @@ This is the concise file to read first for this benchmark.
 
 One C0 OpenAI smoke episode has run. It is runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence.
 
-Current empirical story: `./harness.sh run-smoke` most recently succeeded at `2026-07-11T15:32:09+00:00`, executing one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260711T153145Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260711T153145Z.jsonl`. This is runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence.
+Current empirical story: `./harness.sh run-smoke` most recently succeeded at `2026-07-11T15:53:47+00:00`, executing one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260711T155323Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260711T155323Z.jsonl`. This is runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence.
 
-Current blockers: no Qwen3-1.7B C0/C1 baseline has run yet, the ID translation pack still needs human review, and the real upstream PathFinder submodule is still unresolved for full upstream entry-point replication. The Qwen C0 command `./scripts/run_qwen_c0_baseline.sh` is wired, but the latest attempt at `2026-07-11T15:50:34+00:00` is blocked at `http://127.0.0.1:8000/v1/chat/completions` by sandbox/network permission `[Errno 1] Operation not permitted`; artifact `artifacts/results/govsim_c0_qwen_baseline_20260711T155034Z.json`. The attached endpoint probe `artifacts/logs/qwen_endpoint_probe_20260711T155034Z.json` also found no reachable server at `http://127.0.0.1:8000/v1/models`: `curl` could not connect to port 8000 and Python `urllib` hit `[Errno 1] Operation not permitted`. The Qwen C1 ID command `./scripts/run_qwen_c1_baseline.sh` enforces the human translation gate before any model call. Its latest attempt at `2026-07-11T15:10:23+00:00` is blocked before model access because `config/translations/en_id_fishery_draft.json` is `DRAFT` with `human_checked=false`; artifact `artifacts/results/govsim_c1_qwen_baseline_20260711T151023Z.json` records `blocked_stage=translation_review_gate` and `model_call_attempted=false`.
+Current blockers: no Qwen3-1.7B C0/C1 baseline has run yet, the ID translation pack still needs human review, and the real upstream PathFinder submodule is still unresolved for full upstream entry-point replication. The Qwen C0 command `./scripts/run_qwen_c0_baseline.sh` is wired, but the latest attempt at `2026-07-11T16:09:54+00:00` is blocked at `http://127.0.0.1:8000/v1/chat/completions` by sandbox/network permission `[Errno 1] Operation not permitted`; artifact `artifacts/results/govsim_c0_qwen_baseline_20260711T160954Z.json`. The attached endpoint probe `artifacts/logs/qwen_endpoint_probe_20260711T160954Z.json` also found no reachable server at `http://127.0.0.1:8000/v1/models`: `curl` could not connect to port 8000 and Python `urllib` hit `[Errno 1] Operation not permitted`. The Qwen C1 ID command `./scripts/run_qwen_c1_baseline.sh` enforces the human translation gate before any model call. Its latest attempt at `2026-07-11T15:10:23+00:00` is blocked before model access because `config/translations/en_id_fishery_draft.json` is `DRAFT` with `human_checked=false`; artifact `artifacts/results/govsim_c1_qwen_baseline_20260711T151023Z.json` records `blocked_stage=translation_review_gate` and `model_call_attempted=false`.
 
 Checkpoint state: this setting's `.gitignore` now ignores `.venv/*` rather than the `.venv` directory path, so the shared parent checkpoint exclude for `settings/govsim_crosslingual/.venv` no longer fails in `git add -n`. This does not track the virtualenv contents.
 
@@ -40,29 +40,29 @@ Does cross-lingual contact reduce cooperative resource-management outcomes beyon
 
 ## Blockers / Errors
 
-BLOCKED: GovSim C0 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: LocalModelError: Local model endpoint unavailable at http://127.0.0.1:8000/v1/chat/completions: [Errno 1] Operation not permitted; artifact=artifacts/results/govsim_c0_qwen_baseline_20260711T155034Z.json; endpoint_probe=artifacts/logs/qwen_endpoint_probe_20260711T155034Z.json
+BLOCKED: Scoped commit/push skipped after fresh C0 Qwen endpoint blocker artifact: git add failed because filesystem sandbox cannot create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock (Operation not permitted). Intended staged paths: plan/events.jsonl, reports/findings.md, reports/status.md, artifacts/results/govsim_c0_qwen_baseline_20260711T160954Z.json, artifacts/logs/qwen_endpoint_probe_20260711T160954Z.json, artifacts/logs/translation_status.json, artifacts/logs/translation_human_review_packet.md.
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T15:47:11+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260711_234711.txt
-- `2026-07-11T15:49:50+00:00` BLOCKED: GovSim C0 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: LocalModelError: Local model endpoint unavailable at http://127.0.0.1:8000/v1/chat/completions: [Errno 1] Operation not permitted; artifact=artifacts/results/govsim_c0_qwen_baseline_20260711T154950Z.json
-- `2026-07-11T15:50:34+00:00` BLOCKED: GovSim C0 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: LocalModelError: Local model endpoint unavailable at http://127.0.0.1:8000/v1/chat/completions: [Errno 1] Operation not permitted; artifact=artifacts/results/govsim_c0_qwen_baseline_20260711T155034Z.json; endpoint_probe=artifacts/logs/qwen_endpoint_probe_20260711T155034Z.json
-- `2026-07-11T15:51:51+00:00` OK: Harness scaffold check passed
-- `2026-07-11T15:53:20+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_234711.txt
-- `2026-07-11T15:53:20+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-11T15:53:46+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T155323Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T155323Z.jsonl
-- `2026-07-11T15:53:47+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-11T16:09:54+00:00` BLOCKED: GovSim C0 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: LocalModelError: Local model endpoint unavailable at http://127.0.0.1:8000/v1/chat/completions: [Errno 1] Operation not permitted; artifact=artifacts/results/govsim_c0_qwen_baseline_20260711T160954Z.json; endpoint_probe=artifacts/logs/qwen_endpoint_probe_20260711T160954Z.json
+- `2026-07-11T16:10:06+00:00` BLOCKED: Regenerated translation_status.json and translation_human_review_packet.md; pack remains DRAFT with 17 entries, source_coverage_complete=true, human_checked=false, mechanical_qa=PASS. Strict command exited 3 as expected until human review marks entries checked.
+- `2026-07-11T16:12:04+00:00` OK: Harness scaffold check passed
+- `2026-07-11T16:13:08+00:00` BLOCKED: Scoped commit/push skipped after fresh C0 Qwen endpoint blocker artifact: git add failed because filesystem sandbox cannot create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock (Operation not permitted). Intended staged paths: plan/events.jsonl, reports/findings.md, reports/status.md, artifacts/results/govsim_c0_qwen_baseline_20260711T160954Z.json, artifacts/logs/qwen_endpoint_probe_20260711T160954Z.json, artifacts/logs/translation_status.json, artifacts/logs/translation_human_review_packet.md.
+- `2026-07-11T16:14:01+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_000849.txt
+- `2026-07-11T16:14:01+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T16:14:28+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T161405Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T161405Z.jsonl
+- `2026-07-11T16:14:28+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 17 |
-| Result summaries | 53 |
-| Logs | 47 |
+| Transcript JSON/JSONL | 18 |
+| Result summaries | 56 |
+| Logs | 48 |
 
 ## Open Questions
 
