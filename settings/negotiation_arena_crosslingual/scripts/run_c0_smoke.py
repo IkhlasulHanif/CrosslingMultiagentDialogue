@@ -339,7 +339,8 @@ def run_endpoint_probe(provider: str) -> dict[str, Any]:
                 "next_action": (
                     "Start a local OpenAI-compatible Qwen3-1.7B chat-completions "
                     "server at the configured endpoint, or set LOCAL_QWEN_BASE_URL "
-                    "and rerun ./harness.sh run-smoke."
+                    "and rerun the failed command: ./harness.sh run-smoke for smoke "
+                    "or bash scripts/run_c0_baseline.sh for the C0 baseline."
                 ),
             }
         )

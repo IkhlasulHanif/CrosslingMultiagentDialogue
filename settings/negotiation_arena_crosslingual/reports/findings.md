@@ -1,19 +1,14 @@
 One real C0 EN-monolingual buy/sell smoke episode has run through the upstream
-NegotiationArena checkout. The smoke used the explicitly allowed OpenAI override
-for runner bring-up only, so it is not Qwen3-1.7B research-matrix evidence.
+NegotiationArena checkout using the explicitly allowed OpenAI smoke override.
+It reached a deal in 2 turns with `offer_parse_rate=1.0`, but this is only
+runner bring-up evidence, not Qwen3-1.7B research-matrix evidence.
 
-Current Qwen baseline blocker: `bash scripts/run_c0_baseline.sh` is wired but
-needs a reachable local Qwen/vLLM endpoint; `modal run scripts/run_c0_baseline_modal.py`
-is also wired but Modal app creation is blocked by the workspace billing cycle
-spend limit.
-
-Smoke artifact: `artifacts/transcripts/smoke_c0_buy_sell_en_001.json`.
-Metrics artifact: `artifacts/results/smoke_c0_buy_sell_en_001.metrics.json`.
-The smoke reached a deal in 2 turns with `offer_parse_rate=1.0`; this is only
-runner bring-up evidence.
-
-The next Qwen/local C0 baseline command is wired as
-`bash scripts/run_c0_baseline.sh`.
+Latest real C0 baseline attempt: `bash scripts/run_c0_baseline.sh` passed source
+bring-up and parser/process validators, then blocked before any episode ran
+because this sandbox cannot reach the local Qwen/vLLM chat-completions endpoint
+at `http://127.0.0.1:8000/v1/chat/completions`
+(`<urlopen error [Errno 1] Operation not permitted>`). The next Qwen/local C0
+baseline command remains `bash scripts/run_c0_baseline.sh`.
 
 Latest baseline attempt: blocked before any baseline episode ran because the
 local Qwen/vLLM chat-completions endpoint was unavailable from this sandbox.
