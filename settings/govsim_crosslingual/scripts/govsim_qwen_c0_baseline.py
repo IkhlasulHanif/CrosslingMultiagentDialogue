@@ -55,6 +55,7 @@ def blocked_result(exc: BaseException, adapter: VLLMChatAdapter, condition: str,
         f"GOVSIM_MODEL_NAME=Qwen3-1.7B ./scripts/{script_name}"
     )
     schema_suffix = condition.lower()
+    blocked_stage = "translation_review_gate" if isinstance(exc, TranslationPackNotReady) else "model_or_runner"
     result = {
         "schema_version": f"govsim-{schema_suffix}-qwen-baseline-v1",
         "timestamp_utc": utc_now(),
@@ -62,6 +63,8 @@ def blocked_result(exc: BaseException, adapter: VLLMChatAdapter, condition: str,
         "evidence_scope": f"blocked Qwen3 {condition} baseline; no matrix evidence",
         "condition": condition,
         "language": language,
+        "blocked_stage": blocked_stage,
+        "model_call_attempted": not isinstance(exc, TranslationPackNotReady),
         "model_provider": "local-vllm-compatible",
         "model": adapter.model,
         "base_url": adapter.base_url,
@@ -84,6 +87,24 @@ def blocked_result(exc: BaseException, adapter: VLLMChatAdapter, condition: str,
             }
         )
     return result
+
+
+def blocked_event_message(
+    exc: BaseException,
+    adapter: VLLMChatAdapter,
+    condition: str,
+    artifact_path: Path,
+) -> str:
+    artifact = artifact_path.relative_to(ROOT)
+    if isinstance(exc, TranslationPackNotReady):
+        return (
+            f"GovSim {condition} Qwen baseline blocked before model call by translation gate: "
+            f"{type(exc).__name__}: {exc}; artifact={artifact}"
+        )
+    return (
+        f"GovSim {condition} Qwen baseline blocked at {adapter.chat_url}: "
+        f"{type(exc).__name__}: {exc}; artifact={artifact}"
+    )
 
 
 def main() -> int:
@@ -122,11 +143,7 @@ def main() -> int:
     except (LocalModelError, Exception) as exc:
         result = blocked_result(exc, adapter, condition, language)
         write_json(result_path, result)
-        append_event(
-            "baseline",
-            "BLOCKED",
-            f"GovSim {condition} Qwen baseline blocked at {adapter.chat_url}: {type(exc).__name__}: {exc}; artifact={result_path.relative_to(ROOT)}",
-        )
+        append_event("baseline", "BLOCKED", blocked_event_message(exc, adapter, condition, result_path))
         print(result_path.relative_to(ROOT))
         return 2
 

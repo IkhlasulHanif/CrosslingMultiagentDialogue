@@ -6,9 +6,9 @@ This is the concise file to read first for this benchmark.
 
 One C0 OpenAI smoke episode has run. It is runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence.
 
-Current empirical story: `./harness.sh run-smoke` most recently succeeded at `2026-07-11T14:34:59+00:00`, executing one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260711T143436Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260711T143436Z.jsonl`. This is runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence.
+Current empirical story: `./harness.sh run-smoke` most recently succeeded at `2026-07-11T14:53:32+00:00`, executing one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260711T145308Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260711T145308Z.jsonl`. This is runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence.
 
-Current blockers: no Qwen3-1.7B C0/C1 baseline has run yet, the ID translation pack still needs human review, and the real upstream PathFinder submodule is still unresolved for full upstream entry-point replication. The Qwen C0 command `./scripts/run_qwen_c0_baseline.sh` is wired, but the latest attempt at `2026-07-11T14:51:00+00:00` is blocked at `http://127.0.0.1:8000/v1/chat/completions` by sandbox/network permission `[Errno 1] Operation not permitted`; artifact `artifacts/results/govsim_c0_qwen_baseline_20260711T145100Z.json`. The Qwen C1 ID command `./scripts/run_qwen_c1_baseline.sh` enforces the human translation gate before any model call. Its latest attempt at `2026-07-11T14:31:22+00:00` is blocked because `config/translations/en_id_fishery_draft.json` is `DRAFT` with `human_checked=false`; artifact `artifacts/results/govsim_c1_qwen_baseline_20260711T143122Z.json`.
+Current blockers: no Qwen3-1.7B C0/C1 baseline has run yet, the ID translation pack still needs human review, and the real upstream PathFinder submodule is still unresolved for full upstream entry-point replication. The Qwen C0 command `./scripts/run_qwen_c0_baseline.sh` is wired, but the latest attempt at `2026-07-11T14:51:00+00:00` is blocked at `http://127.0.0.1:8000/v1/chat/completions` by sandbox/network permission `[Errno 1] Operation not permitted`; artifact `artifacts/results/govsim_c0_qwen_baseline_20260711T145100Z.json`. The Qwen C1 ID command `./scripts/run_qwen_c1_baseline.sh` enforces the human translation gate before any model call. Its latest attempt at `2026-07-11T15:10:23+00:00` is blocked before model access because `config/translations/en_id_fishery_draft.json` is `DRAFT` with `human_checked=false`; artifact `artifacts/results/govsim_c1_qwen_baseline_20260711T151023Z.json` records `blocked_stage=translation_review_gate` and `model_call_attempted=false`.
 
 Checkpoint state: this setting's `.gitignore` now ignores `.venv/*` rather than the `.venv` directory path, so the shared parent checkpoint exclude for `settings/govsim_crosslingual/.venv` no longer fails in `git add -n`. This does not track the virtualenv contents.
 
@@ -40,29 +40,29 @@ Does cross-lingual contact reduce cooperative resource-management outcomes beyon
 
 ## Blockers / Errors
 
-BLOCKED: PathFinder source resolution retried from canonical submodule https://github.com/giorgiopiatti/PathFinder.git at 69b8d646ad3e618380dd0d47ec4d1e8d2d4c930e; git ls-remote, git submodule update --init --depth 1 pathfinder, and curl -L -I remain blocked by GitHub DNS; artifact=artifacts/logs/govsim_pathfinder_source_resolution_20260711T145051Z.log; next='git -C vendor/govsim submodule update --init --depth 1 pathfinder' once DNS is available
+BLOCKED: Scoped commit/push skipped after C1 translation blocker clarification: git add failed because filesystem sandbox cannot create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock (Operation not permitted). Intended staged paths: scripts/govsim_qwen_c0_baseline.py, scripts/test_qwen_baseline_blockers.py, reports/findings.md, reports/status.md, plan/events.jsonl, artifacts/results/govsim_c1_qwen_baseline_20260711T151023Z.json.
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T14:51:00+00:00` BLOCKED: GovSim C0 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: LocalModelError: Local model endpoint unavailable at http://127.0.0.1:8000/v1/chat/completions: [Errno 1] Operation not permitted; artifact=artifacts/results/govsim_c0_qwen_baseline_20260711T145100Z.json
-- `2026-07-11T14:50:51+00:00` BLOCKED: PathFinder source resolution retried from canonical submodule https://github.com/giorgiopiatti/PathFinder.git at 69b8d646ad3e618380dd0d47ec4d1e8d2d4c930e; git ls-remote, git submodule update --init --depth 1 pathfinder, and curl -L -I remain blocked by GitHub DNS; artifact=artifacts/logs/govsim_pathfinder_source_resolution_20260711T145051Z.log; next='git -C vendor/govsim submodule update --init --depth 1 pathfinder' once DNS is available
-- `2026-07-11T14:51:07+00:00` OK: Harness scaffold check passed
-- `2026-07-11T14:52:24+00:00` OK: Harness scaffold check passed
-- `2026-07-11T14:53:04+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_225001.txt
-- `2026-07-11T14:53:04+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-11T14:53:31+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T145308Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T145308Z.jsonl
-- `2026-07-11T14:53:32+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-11T15:10:23+00:00` BLOCKED: GovSim C1 Qwen baseline blocked before model call by translation gate: TranslationPackNotReady: ID translation pack is not ready for benchmark use: status=DRAFT, source_coverage_complete=True, human_checked=False, pack=/Users/ikhlasul.hanif/Documents/MultiAgent/settings/govsim_crosslingual/config/translations/en_id_fishery_draft.json; artifact=artifacts/results/govsim_c1_qwen_baseline_20260711T151023Z.json
+- `2026-07-11T15:11:42+00:00` OK: Harness scaffold check passed
+- `2026-07-11T15:12:15+00:00` BLOCKED: Scoped commit/push skipped after C1 translation blocker clarification: git add failed because filesystem sandbox cannot create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock (Operation not permitted). Intended staged paths: scripts/govsim_qwen_c0_baseline.py, scripts/test_qwen_baseline_blockers.py, reports/findings.md, reports/status.md, plan/events.jsonl, artifacts/results/govsim_c1_qwen_baseline_20260711T151023Z.json.
+- `2026-07-11T15:12:28+00:00` OK: Harness scaffold check passed
+- `2026-07-11T15:12:51+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_230834.txt
+- `2026-07-11T15:12:51+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T15:13:20+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T151254Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T151254Z.jsonl
+- `2026-07-11T15:13:21+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 14 |
-| Result summaries | 43 |
-| Logs | 44 |
+| Transcript JSON/JSONL | 15 |
+| Result summaries | 46 |
+| Logs | 45 |
 
 ## Open Questions
 
