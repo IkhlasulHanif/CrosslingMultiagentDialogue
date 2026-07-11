@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "blocked_pending_human_translation_review",
-  "purpose": "First Indonesian monolingual baseline after human review of EN-ID prompt translations. This command is Qwen/local-only and must not use the OpenAI smoke override.",
+  "purpose": "First Indonesian monolingual baseline after human review of EN-ID prompt translations. This command may use the explicit OpenAI benchmark override in config/benchmark_model.json when local or Modal Qwen is unavailable, but it must not use the OpenAI smoke-only override.",
   "episodes": [
     {
       "episode_id": "baseline_c1_buy_sell_id_seed001",
@@ -33,10 +33,10 @@
       "why": "Baseline episodes must call the local NegotiationArena checkout."
     },
     {
-      "id": "local_qwen_provider",
+      "id": "benchmark_model_provider",
       "required": true,
-      "check": "python3 scripts/local_model_adapter.py --live-probe",
-      "why": "Baselines are benchmark evidence and must use local cached Qwen, local Qwen/vLLM, or a later explicitly wired Modal Qwen endpoint, not the OpenAI smoke override."
+      "check": "python3 scripts/local_model_adapter.py --live-probe or NEGOTIATION_BENCHMARK_PROVIDER=openai_benchmark python3 scripts/run_c0_smoke.py",
+      "why": "Baselines are benchmark evidence and must use local cached Qwen, local Qwen/vLLM, a wired Modal Qwen endpoint, or the explicit OpenAI benchmark override. OpenAI benchmark artifacts must be labeled as OpenAI evidence and not Qwen3-1.7B evidence."
     }
   ]
 }

@@ -17,6 +17,8 @@ sys.path.insert(0, str(ROOT / "code" / "negotiation_arena_crosslingual"))
 
 from run_c0_smoke import (  # noqa: E402
     append_event,
+    benchmark_openai_allowed,
+    load_benchmark_model_config,
     run_endpoint_probe,
     run_episode,
     upstream_commit,
@@ -76,6 +78,15 @@ def translation_review_complete(review: dict[str, Any]) -> bool:
     )
 
 
+def selected_benchmark_provider() -> str:
+    override = os.environ.get("NEGOTIATION_BENCHMARK_PROVIDER")
+    if override:
+        return override
+    if benchmark_openai_allowed(load_benchmark_model_config()):
+        return "openai_benchmark"
+    return "local_qwen"
+
+
 def write_translation_blocked_artifact(review: dict[str, Any]) -> Path:
     pending = pending_review_units(review)
     payload = {
@@ -125,7 +136,7 @@ def main() -> int:
 
     episode_config = episodes[0]
     episode_plan = baseline_episode_plan(episode_config)
-    provider = "local_qwen"
+    provider = selected_benchmark_provider()
 
     try:
         model_metadata = run_endpoint_probe(provider)
@@ -133,7 +144,7 @@ def main() -> int:
         append_event(
             "baseline",
             "BLOCKED",
-            f"C1 ID baseline blocked on local Qwen endpoint; failed_command={FAILED_COMMAND}",
+            f"C1 ID baseline blocked on benchmark provider {provider}; failed_command={FAILED_COMMAND}",
         )
         return int(exc.code) if isinstance(exc.code, int) else 2
 
