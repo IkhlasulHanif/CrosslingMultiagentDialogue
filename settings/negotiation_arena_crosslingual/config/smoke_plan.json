@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "status": "planned_gated_on_bringup_and_model_endpoint",
+  "purpose": "First real benchmark execution should be exactly one C0 EN-monolingual smoke episode before any baselines or mixed-language conditions. The benchmark default remains Qwen3-1.7B; config/smoke_model.json may explicitly allow OpenAI for runner bring-up evidence only.",
+  "episode": {
+    "episode_id": "smoke_c0_buy_sell_en_001",
+    "condition": "C0",
+    "game_id": "buy_sell",
+    "language_pair": "EN-ID",
+    "role_languages": {
+      "buyer": "EN",
+      "seller": "EN"
+    },
+    "model": "Qwen3-1.7B",
+    "turn_limit": 8,
+    "seed": 1
+  },
+  "preconditions": [
+    {
+      "id": "upstream_checkout",
+      "required": true,
+      "check": "python3 scripts/bringup_check.py",
+      "why": "Smoke execution must call the local NegotiationArena checkout rather than a synthetic local loop."
+    },
+    {
+      "id": "local_model_endpoint",
+      "required": true,
+      "check": "python3 scripts/local_model_adapter.py --live-probe",
+      "why": "Benchmark agents must use local Qwen/vLLM or later Modal Qwen, not OpenAI API calls."
+    },
+    {
+      "id": "openai_smoke_override",
+      "required": false,
+      "check": "NEGOTIATION_SMOKE_PROVIDER=openai_smoke python3 scripts/run_c0_smoke.py",
+      "why": "Allowed only when config/smoke_model.json provider is openai; OpenAI smoke results are runner bring-up evidence only and must not be reported as Qwen3-1.7B research-matrix evidence."
+    },
+    {
+      "id": "structured_offer_parser",
+      "required": true,
+      "check": "python3 scripts/validate_offer_parser.py",
+      "why": "Smoke output must be parseable before the setting advances to C0/C1 baselines."
+    },
+    {
+      "id": "process_metrics",
+      "required": true,
+      "check": "python3 scripts/validate_process_metrics.py",
+      "why": "Smoke output must produce deal, turn, anchoring, and payoff-asymmetry null-state metrics."
+    }
+  ],
+  "expected_artifacts": {
+    "transcript": "artifacts/transcripts/smoke_c0_buy_sell_en_001.json",
+    "metrics": "artifacts/results/smoke_c0_buy_sell_en_001.metrics.json",
+    "event_kind": "smoke"
+  },
+  "minimum_episode_schema": {
+    "required_top_level_keys": [
+      "episode_id",
+      "condition",
+      "game_id",
+      "role_languages",
+      "messages",
+      "deal",
+      "final_terms",
+      "payoffs"
+    ],
+    "message_required_keys": [
+      "role",
+      "language",
+      "text"
+    ],
+    "allowed_message_languages": [
+      "EN"
+    ],
+    "required_structured_actions": [
+      "OFFER"
+    ]
+  },
+  "success_criteria": [
+    "A transcript JSON exists at the expected path.",
+    "Every agent message is English-only by assignment metadata.",
+    "At least one OFFER line is parsed by scripts/offer_parser.py.",
+    "The metrics artifact reports offer_parse_rate for structured negotiation actions.",
+    "No C1, C2, or C3 episode is run in the same smoke command."
+  ],
+  "blocked_state": {
+    "current_reason": "Local NegotiationArena checkout and one allowed model endpoint must both pass before a real episode can run. For the current user-authorized smoke override, OpenAI DNS/network access is blocked in this session.",
+    "do_not_mark_goal_complete_until": "The expected transcript and metrics artifacts exist from a real local NegotiationArena run."
+  }
+}

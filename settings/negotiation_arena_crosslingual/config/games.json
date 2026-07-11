@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "selection_status": "selected_pending_upstream_mapping",
+  "source": {
+    "goals": "goals.md",
+    "upstream_config": "config/upstream.json"
+  },
+  "selected_games": [
+    {
+      "id": "resource_exchange",
+      "label": "Resource exchange",
+      "priority": 1,
+      "include": true,
+      "reason": "Primary mixed-motive dyadic negotiation game named in the setting goals.",
+      "roles": [
+        "agent_a",
+        "agent_b"
+      ],
+      "conditions": [
+        "C0",
+        "C1",
+        "C2",
+        "C3"
+      ],
+      "required_outputs": [
+        "deal",
+        "final_terms",
+        "agent_a_payoff",
+        "agent_b_payoff",
+        "turn_count",
+        "first_offer"
+      ],
+      "upstream_mapping": {
+        "status": "mapped_to_paper_branch_trading_game",
+        "candidate_name_patterns": [
+          "trading",
+          "trade"
+        ],
+        "note": "The repository README says paper experiments are in the paper_experiment_code branch. In that branch, the aggregate resource-exchange scenario is implemented as games/trading_game and runner/trading_main.py."
+      }
+    },
+    {
+      "id": "buy_sell",
+      "label": "Buy/sell",
+      "priority": 2,
+      "include": true,
+      "reason": "Second setup target named in the setting goals; useful for price anchoring and payoff asymmetry.",
+      "roles": [
+        "buyer",
+        "seller"
+      ],
+      "conditions": [
+        "C0",
+        "C1",
+        "C2",
+        "C3"
+      ],
+      "required_outputs": [
+        "deal",
+        "final_price",
+        "buyer_payoff",
+        "seller_payoff",
+        "turn_count",
+        "first_offer"
+      ],
+      "upstream_mapping": {
+        "status": "mapped_to_paper_branch_buy_sell_game",
+        "candidate_name_patterns": [
+          "buy",
+          "sell"
+        ],
+        "note": "The paper branch exposes buy/sell as games/buy_sell_game and runner/buysell_main.py."
+      }
+    }
+  ],
+  "skipped_games": [
+    {
+      "id": "ultimatum",
+      "include": false,
+      "reason": "Explicitly skipped for the first B5 setup pass in goals.md."
+    }
+  ],
+  "counterbalancing": {
+    "core_pair": "EN-ID",
+    "c2_role_language_assignments": [
+      {
+        "assignment_id": "role_a_EN_role_b_ID",
+        "role_a_language": "EN",
+        "role_b_language": "ID"
+      },
+      {
+        "assignment_id": "role_a_ID_role_b_EN",
+        "role_a_language": "ID",
+        "role_b_language": "EN"
+      }
+    ],
+    "buy_sell_role_aliases": {
+      "role_a": "buyer",
+      "role_b": "seller"
+    },
+    "resource_exchange_role_aliases": {
+      "role_a": "agent_a",
+      "role_b": "agent_b"
+    }
+  },
+  "metrics_required_by_selection": [
+    "payoff",
+    "deal_rate",
+    "payoff_asymmetry",
+    "turns_to_deal",
+    "offer_parse_rate",
+    "first_offer_anchoring"
+  ],
+  "notes": [
+    "Use the upstream paper_experiment_code branch, because the main README says the paper experiments live there and marks Resource Exchange incomplete on main.",
+    "Upstream class/function names should be filled after scripts/bringup_check.py confirms local checkout metadata."
+  ]
+}
