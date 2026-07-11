@@ -7,7 +7,7 @@ This is the concise file to read first for this benchmark.
 Qwen3-1.7B C0 EN baselines for buy/sell and resource_exchange pass the floor:
 deal_rate=1.0 and offer_parse_rate=1.0. C1 ID and G2 remain blocked only on
 pending human review of 16 EN-ID translation units. This pass refreshed the
-real C1 command artifact and the G2 gate summary at 2026-07-11T16:10 UTC.
+real C1 command artifact and the G2 gate summary at 2026-07-11T16:46 UTC.
 
 One real C0 EN-monolingual buy/sell smoke episode previously ran through
 upstream NegotiationArena using the explicitly allowed OpenAI smoke override;
@@ -42,19 +42,28 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 BLOCKED: G2 capability floor check blocked; artifact=artifacts/results/g2_capability_floor.json; next_command=bash scripts/run_c1_baseline.sh
 
+The underlying blocker is `pending_human_translation_review`: `bash
+scripts/run_c1_baseline.sh` writes
+`artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json` and refuses to
+run C1 until all 16 EN-ID prompt units are approved in
+`config/translation_review.json`.
+
+After human review, run:
+`python3 scripts/validate_translation_review.py && bash scripts/run_c1_baseline.sh && python3 scripts/check_g2_capability_floor.py`.
+
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T16:28:12+00:00` BLOCKED: G2 capability floor check blocked; artifact=artifacts/results/g2_capability_floor.json; next_command=bash scripts/run_c1_baseline.sh
-- `2026-07-11T16:29:01+00:00` OK: Harness scaffold check passed
-- `2026-07-11T16:30:10+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_002714.txt
-- `2026-07-11T16:30:10+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-11T16:30:10+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-11T16:30:13+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
-- `2026-07-11T16:30:19+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
-- `2026-07-11T16:30:19+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-11T16:30:19+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
+- `2026-07-11T16:30:20+00:00` OK: Codex pass 17 completed
+- `2026-07-11T16:45:20+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_004520.txt
+- `2026-07-11T16:46:15+00:00` OK: Harness scaffold check passed
+- `2026-07-11T16:46:21+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-11T16:46:22+00:00` BLOCKED: C1 ID baseline blocked on pending human translation review; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh; next_command=bash scripts/run_c1_baseline.sh
+- `2026-07-11T16:46:26+00:00` BLOCKED: G2 capability floor check blocked; artifact=artifacts/results/g2_capability_floor.json; next_command=bash scripts/run_c1_baseline.sh
+- `2026-07-11T16:47:11+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
@@ -62,7 +71,7 @@ or benchmark-specific failures. They will show up here.
 |---|---:|
 | Transcript JSON/JSONL | 3 |
 | Result summaries | 11 |
-| Logs | 33 |
+| Logs | 34 |
 
 ## Open Questions
 
