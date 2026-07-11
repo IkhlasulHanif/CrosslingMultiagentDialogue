@@ -89,6 +89,14 @@ def selected_benchmark_provider() -> str:
 
 def write_translation_blocked_artifact(review: dict[str, Any]) -> Path:
     pending = pending_review_units(review)
+    benchmark_config = load_benchmark_model_config() or {}
+    provider_after_gate = selected_benchmark_provider()
+    if provider_after_gate == "openai_benchmark":
+        provider_model_after_gate = benchmark_config.get("default_model", "gpt-4.1-mini")
+        provider_scope_after_gate = "OpenAI benchmark override evidence; not Qwen3-1.7B evidence"
+    else:
+        provider_model_after_gate = "Qwen3-1.7B"
+        provider_scope_after_gate = "Qwen/local model run"
     payload = {
         "checked_at": utc_now(),
         "status": "BLOCKED",
@@ -97,7 +105,11 @@ def write_translation_blocked_artifact(review: dict[str, Any]) -> Path:
         "condition": "C1",
         "game_id": "buy_sell",
         "language_pair": "EN-ID",
-        "model": "Qwen3-1.7B",
+        "planned_model": "Qwen3-1.7B",
+        "active_benchmark_provider_after_gate": provider_after_gate,
+        "active_benchmark_model_after_gate": provider_model_after_gate,
+        "active_benchmark_evidence_scope_after_gate": provider_scope_after_gate,
+        "openai_key_read": False,
         "message": "C1 ID baseline is gated until a bilingual human approves every EN-ID prompt unit.",
         "review_status": review.get("status"),
         "reviewer_completed": review.get("reviewer", {}).get("completed"),

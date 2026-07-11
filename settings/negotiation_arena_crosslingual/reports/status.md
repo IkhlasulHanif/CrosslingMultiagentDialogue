@@ -6,16 +6,17 @@ This is the concise file to read first for this benchmark.
 
 Qwen3-1.7B C0 EN baselines for buy/sell and resource_exchange pass the floor:
 deal_rate=1.0 and offer_parse_rate=1.0. C1 ID and G2 remain blocked only on
-pending human review of 16 EN-ID translation units. This pass wired the C1
-baseline runner to select the explicit OpenAI benchmark override after the
-human translation gate clears, while still refusing to use the OpenAI
-smoke-only override. It refreshed the real C1 command artifact at
-2026-07-11T17:52:33 UTC and the G2 gate summary at 2026-07-11T17:52:40 UTC.
+pending human review of 16 EN-ID translation units. This pass refreshed the
+real C1 command artifact at 2026-07-11T18:11:05 UTC and the G2 gate summary at
+2026-07-11T18:11:09 UTC. The C1 gate artifact now records that, after human
+review clears, the runner will select the explicit OpenAI benchmark override
+(`openai_benchmark` / `gpt-4.1-mini`) and label resulting artifacts as OpenAI
+benchmark evidence, not Qwen evidence.
 
 One real C0 EN-monolingual buy/sell smoke episode previously ran through
 upstream NegotiationArena using the explicitly allowed OpenAI smoke override;
 it remains runner bring-up evidence only, not Qwen3-1.7B research-matrix
-evidence. An earlier pass saw `bash scripts/run_smoke.sh` blocked by DNS for
+evidence.
 
 Next useful work: **Human-check ID translation before C1/C2/C3**.
 
@@ -42,21 +43,27 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-BLOCKED: G2 capability floor check blocked; artifact=artifacts/results/g2_capability_floor.json; next_command=bash scripts/run_c1_baseline.sh
+BLOCKED: C1 ID baseline and G2 capability floor are gated on pending bilingual
+human review of 16 EN-ID prompt units. Gate artifacts:
+`artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json` and
+`artifacts/results/g2_capability_floor.json`. Next command after review:
+`bash scripts/run_c1_baseline.sh`.
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T17:52:40+00:00` BLOCKED: G2 capability floor check blocked; artifact=artifacts/results/g2_capability_floor.json; next_command=bash scripts/run_c1_baseline.sh
-- `2026-07-11T17:53:32+00:00` OK: Harness scaffold check passed
-- `2026-07-11T17:54:25+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_015051.txt
-- `2026-07-11T17:54:25+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-11T17:54:25+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
 - `2026-07-11T17:54:26+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
 - `2026-07-11T17:54:32+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
 - `2026-07-11T17:54:32+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-11T17:54:32+00:00` OK: Post-Codex smoke/experiment attempt exited 0
+- `2026-07-11T17:54:33+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
+- `2026-07-11T17:54:34+00:00` OK: Codex pass 2 completed
+- `2026-07-11T18:09:34+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_020934.txt
+- `2026-07-11T18:11:01+00:00` OK: Harness scaffold check passed
+- `2026-07-11T18:11:05+00:00` BLOCKED: C1 ID baseline blocked on pending human translation review; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh; next_command=bash scripts/run_c1_baseline.sh
+- `2026-07-11T18:11:09+00:00` BLOCKED: G2 capability floor check blocked; artifact=artifacts/results/g2_capability_floor.json; next_command=bash scripts/run_c1_baseline.sh
 
 ## Artifact Counts
 
@@ -64,7 +71,7 @@ or benchmark-specific failures. They will show up here.
 |---|---:|
 | Transcript JSON/JSONL | 3 |
 | Result summaries | 12 |
-| Logs | 39 |
+| Logs | 40 |
 
 ## Open Questions
 
