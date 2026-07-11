@@ -31,3 +31,11 @@ Human bilingual review of the Indonesian translations remains pending. Do not
 run or report C1 ID baselines or mixed-language C2/C3 conditions as valid
 benchmark evidence until `config/translation_review.json` is completed and
 `python3 scripts/validate_translation_review.py` passes.
+
+The C1 ID baseline command now exists as `bash scripts/run_c1_baseline.sh`.
+Current run result is a gate artifact, not empirical evidence:
+`artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`. It blocks on
+15 pending translation-review units and points reviewers to
+`docs/id_translation_review.md` for side-by-side EN/ID text. Once the human
+review file is approved, rerun `python3 scripts/validate_translation_review.py`
+and `bash scripts/run_c1_baseline.sh`.

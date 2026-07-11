@@ -477,6 +477,41 @@ def normalize_buy_sell_response(text: str) -> str:
     return normalized
 
 
+def language_runtime_instruction(language: str, role_name: str) -> str:
+    normalized = language.upper()
+    if normalized == "ID":
+        role_text = "penjual" if role_name == "seller" else "pembeli"
+        private_goal = (
+            "Biaya pribadi Anda untuk barang ini adalah 40 ZUP; usahakan menjual "
+            "pada harga tertinggi yang dapat diterima sambil mencapai kesepakatan yang sah."
+            if role_name == "seller"
+            else "Nilai pribadi Anda untuk barang ini adalah 100 ZUP; usahakan membeli "
+            "pada harga terendah yang dapat diterima sambil mencapai kesepakatan yang sah."
+        )
+        return (
+            "\n\nGunakan bahasa Indonesia saja untuk episode ini. Anda adalah agen negosiasi; "
+            f"jawab hanya sebagai {role_text}. Jangan mengungkap valuasi tersembunyi atau "
+            "batas pribadi kecuali aturan secara eksplisit mengizinkannya. "
+            "Seorang pembeli dan penjual sedang merundingkan satu harga transaksi untuk satu barang. "
+            "Kesepakatan sah hanya jika kedua pihak secara eksplisit menerima harga akhir yang sama "
+            "sebelum batas giliran. Jika tidak ada kesepakatan yang diterima, pembeli mempertahankan "
+            "opsi luar dan penjual mempertahankan barang. "
+            f"{private_goal} Ikuti format tag XML persis. Saat menawarkan, sertakan satu item X "
+            "dan harga ZUP sebagai bilangan bulat. Saat menerima, set "
+            "<player answer>ACCEPT</player answer> dan ulangi trade yang diterima di dalam "
+            "<newly proposed trade>...</newly proposed trade>. Saat menolak, set "
+            "<player answer>REJECT</player answer> dan <newly proposed trade>NONE</newly proposed trade>."
+        )
+
+    return (
+        "\n\nYou must negotiate only in English. Follow the XML tag format exactly. "
+        "When proposing a trade, include one item X and a ZUP price as an integer. "
+        "If accepting, set <player answer>ACCEPT</player answer> and repeat the accepted "
+        "trade inside <newly proposed trade>...</newly proposed trade>. If rejecting, set "
+        "<player answer>REJECT</player answer> and <newly proposed trade>NONE</newly proposed trade>."
+    )
+
+
 def build_episode(game: Any, plan: dict[str, Any]) -> dict[str, Any]:
     episode = plan["episode"]
     role_by_turn = {0: "seller", 1: "buyer"}
@@ -538,8 +573,9 @@ def run_episode(plan: dict[str, Any], provider: str, model_metadata: dict[str, A
     from ratbench.game_objects.valuation import Valuation
 
     class AgentImpl(Agent):
-        def __init__(self, agent_name: str, language: str, model_label: str) -> None:
+        def __init__(self, agent_name: str, role_name: str, language: str, model_label: str) -> None:
             super().__init__(agent_name=agent_name)
+            self.role_name = role_name
             self.language = language
             self.model = model_label
             self.prompt_entity_initializer = "system"
@@ -554,13 +590,7 @@ def run_episode(plan: dict[str, Any], provider: str, model_metadata: dict[str, A
             role = entity if entity in {"system", "user", "assistant"} else "user"
             content = str(message)
             if role == "system":
-                content += (
-                    "\n\nYou must negotiate only in English. Follow the XML tag format exactly. "
-                    "When proposing a trade, include one item X and a ZUP price as an integer. "
-                    "If accepting, set <player answer>ACCEPT</player answer> and repeat the accepted "
-                    "trade inside <newly proposed trade>...</newly proposed trade>. If rejecting, set "
-                    "<player answer>REJECT</player answer> and <newly proposed trade>NONE</newly proposed trade>."
-                )
+                content += language_runtime_instruction(self.language, self.role_name)
             self.conversation.append({"role": role, "content": content})
 
         def get_state(self) -> dict[str, Any]:
@@ -574,10 +604,21 @@ def run_episode(plan: dict[str, Any], provider: str, model_metadata: dict[str, A
             }
 
     episode = plan["episode"]
+    role_languages = episode["role_languages"]
     log_dir = ROOT / "artifacts" / "upstream_logs" / episode["episode_id"]
     log_dir.mkdir(parents=True, exist_ok=True)
-    seller = AgentImpl(AGENT_ONE, "EN", episode["model"])
-    buyer = AgentImpl(AGENT_TWO, "EN", episode["model"])
+    seller = AgentImpl(AGENT_ONE, "seller", role_languages["seller"], episode["model"])
+    buyer = AgentImpl(AGENT_TWO, "buyer", role_languages["buyer"], episode["model"])
+    seller_role_prompt = (
+        f"You are {AGENT_ONE}. You are the seller."
+        if role_languages["seller"].upper() != "ID"
+        else f"Anda adalah {AGENT_ONE}. Anda adalah penjual."
+    )
+    buyer_role_prompt = (
+        f"You are {AGENT_TWO}. You are the buyer."
+        if role_languages["buyer"].upper() != "ID"
+        else f"Anda adalah {AGENT_TWO}. Anda adalah pembeli."
+    )
     game = BuySellGame(
         players=[seller, buyer],
         iterations=int(episode["turn_limit"]),
@@ -591,8 +632,8 @@ def run_episode(plan: dict[str, Any], provider: str, model_metadata: dict[str, A
             Resources({MONEY_TOKEN: 1000}),
         ],
         player_roles=[
-            f"You are {AGENT_ONE}. You are the seller.",
-            f"You are {AGENT_TWO}. You are the buyer.",
+            seller_role_prompt,
+            buyer_role_prompt,
         ],
         player_social_behaviour=["", ""],
         log_dir=str(log_dir),
