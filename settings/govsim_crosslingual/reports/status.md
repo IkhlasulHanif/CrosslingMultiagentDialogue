@@ -49,21 +49,21 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T22:34:20+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T223402Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T223402Z.jsonl
-- `2026-07-11T22:34:21+00:00` OK: scripts/run_smoke.sh exited 0
-- `2026-07-11T22:34:21+00:00` OK: Post-Codex smoke/experiment attempt exited 0
-- `2026-07-11T22:34:21+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
 - `2026-07-11T22:34:23+00:00` OK: Codex pass 17 completed
 - `2026-07-11T22:49:23+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_064923.txt
 - `2026-07-11T22:49:53+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260711T224953Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260711T224953Z.json
 - `2026-07-11T22:51:05+00:00` OK: Harness scaffold check passed
+- `2026-07-11T22:52:00+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_064923.txt
+- `2026-07-11T22:52:00+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T22:52:24+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T225204Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T225204Z.jsonl
+- `2026-07-11T22:52:25+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 38 |
-| Result summaries | 121 |
+| Transcript JSON/JSONL | 39 |
+| Result summaries | 123 |
 | Logs | 72 |
 
 ## Open Questions
