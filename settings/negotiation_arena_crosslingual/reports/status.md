@@ -49,14 +49,14 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T17:32:23+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-11T17:32:41+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
-- `2026-07-11T17:33:06+00:00` RUNNING: Starting Codex implementation loop sleep=900s max_iters=infinite
-- `2026-07-11T17:33:06+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_013306.txt
-- `2026-07-11T17:33:55+00:00` OK: Harness scaffold check passed
-- `2026-07-11T17:34:00+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-11T17:34:00+00:00` BLOCKED: C1 ID baseline blocked on pending human translation review; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh; next_command=bash scripts/run_c1_baseline.sh
 - `2026-07-11T17:34:04+00:00` BLOCKED: G2 capability floor check blocked; artifact=artifacts/results/g2_capability_floor.json; next_command=bash scripts/run_c1_baseline.sh
+- `2026-07-11T17:35:09+00:00` OK: Scoped commit/push succeeded for refreshed B5 C1 translation-gate artifacts; commit=1ff650d2; remote=origin/main
+- `2026-07-11T17:35:42+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_013306.txt
+- `2026-07-11T17:35:42+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T17:35:42+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-11T17:35:43+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
+- `2026-07-11T17:35:50+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-11T17:35:50+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
