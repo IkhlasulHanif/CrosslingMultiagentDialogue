@@ -40,21 +40,21 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-BLOCKED: Commit/push skipped because unrelated settings/govsim_crosslingual files are already staged in the parent repository index; avoiding mixed benchmark commit. Scoped NegotiationArena changes remain in settings/negotiation_arena_crosslingual.
+BLOCKED: C0 baseline remains blocked on local Qwen endpoint after scoped commit attempt failed; artifact=artifacts/results/baseline_c0_buy_sell_en_seed001.blocked.json; next_command=bash scripts/run_c0_baseline.sh
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T11:38:27+00:00` OK: Harness scaffold check passed
-- `2026-07-11T11:38:53+00:00` BLOCKED: Commit/push skipped because unrelated settings/govsim_crosslingual files are already staged in the parent repository index; avoiding mixed benchmark commit. Scoped NegotiationArena changes remain in settings/negotiation_arena_crosslingual.
-- `2026-07-11T11:39:42+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_193657.txt
-- `2026-07-11T11:39:42+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-11T11:39:43+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-11T11:39:44+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
-- `2026-07-11T11:39:53+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
-- `2026-07-11T11:39:53+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-11T11:56:50+00:00` BLOCKED: Scoped commit/push blocked because git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock: Operation not permitted. Attempted path-limited commit for settings/negotiation_arena_crosslingual only; changes remain local.
+- `2026-07-11T11:57:07+00:00` BLOCKED: C0 baseline remains blocked on local Qwen endpoint after scoped commit attempt failed; artifact=artifacts/results/baseline_c0_buy_sell_en_seed001.blocked.json; next_command=bash scripts/run_c0_baseline.sh
+- `2026-07-11T11:57:38+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_195455.txt
+- `2026-07-11T11:57:38+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T11:57:38+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-11T11:57:39+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
+- `2026-07-11T11:57:46+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-11T11:57:46+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
@@ -62,7 +62,7 @@ or benchmark-specific failures. They will show up here.
 |---|---:|
 | Transcript JSON/JSONL | 1 |
 | Result summaries | 6 |
-| Logs | 18 |
+| Logs | 19 |
 
 ## Open Questions
 
