@@ -1,0 +1,45 @@
+{
+  "api_key_present": false,
+  "base_url": "http://127.0.0.1:8000/v1",
+  "blockers": [
+    "no reachable Qwen/vLLM OpenAI-compatible endpoint at http://127.0.0.1:8000/v1/models"
+  ],
+  "chat_url": "http://127.0.0.1:8000/v1/chat/completions",
+  "checks": [
+    {
+      "command": [
+        "curl",
+        "-sS",
+        "--connect-timeout",
+        "2.0",
+        "-m",
+        "2.0",
+        "-o",
+        "-",
+        "-w",
+        "\nHTTP_STATUS:%{http_code}\n",
+        "http://127.0.0.1:8000/v1/models"
+      ],
+      "name": "curl_models",
+      "output_tail": "curl: (7) Failed to connect to 127.0.0.1 port 8000 after 0 ms: Couldn't connect to server\n\nHTTP_STATUS:000\n",
+      "reachable": false,
+      "returncode": 7,
+      "timed_out": false
+    },
+    {
+      "error": "<urlopen error [Errno 1] Operation not permitted>",
+      "error_type": "URLError",
+      "name": "urllib_models",
+      "reachable": false,
+      "status": "ERROR"
+    }
+  ],
+  "empirical_episode_ran": false,
+  "endpoint_reachable": false,
+  "model": "Qwen3-1.7B",
+  "model_provider": "local-vllm-compatible",
+  "models_url": "http://127.0.0.1:8000/v1/models",
+  "next_command_once_unblocked": "GOVSIM_MODEL_BASE_URL=http://127.0.0.1:8000/v1 GOVSIM_MODEL_NAME=Qwen3-1.7B ./scripts/run_qwen_c0_baseline.sh",
+  "schema_version": "govsim-qwen-endpoint-probe-v1",
+  "timestamp_utc": "2026-07-11T16:55:11+00:00"
+}

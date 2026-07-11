@@ -23,7 +23,7 @@ Local GovSim source/license evidence is present. The vendored license file ident
 
 ## Upstream Evidence Note
 
-The NeurIPS 2024 GovSim paper and upstream README point to github.com/giorgiopiatti/GovSim. The local checkout remote currently resolves to github.com/giorgio-piatti/GovSim, and its .gitmodules file points the pathfinder submodule to github.com/giorgiopiatti/PathFinder.git at commit 69b8d646ad3e618380dd0d47ec4d1e8d2d4c930e. The GitHub repository page reports an MIT license. The user's binding benchmark goals specify the fishery substrate only for now; local evidence uses subskills/fishing prompt/rule/config files from the cloned repository.
+The NeurIPS 2024 GovSim paper and upstream README point to github.com/giorgiopiatti/GovSim. The local checkout remote currently resolves to github.com/giorgio-piatti/GovSim, and its .gitmodules file points the pathfinder submodule to github.com/giorgiopiatti/PathFinder.git at commit 69b8d646ad3e618380dd0d47ec4d1e8d2d4c930e. During the 2026-07-11T16:52:07+00:00 pass, GitHub Git transport was intermittent but curl downloaded the exact PathFinder pinned-commit archive from the redirected repository and extracted it to vendor/govsim/pathfinder; provenance is recorded in artifacts/logs/govsim_pathfinder_source_resolution_20260711T165207Z.json. The GovSim and PathFinder license files are MIT text with matching SHA-256 55be1b08220f411edf83dbf7ac9b3b3e7e56b92fb2ef9b10af91526edd38f15e. The user's binding benchmark goals specify the fishery substrate only for now; local evidence uses subskills/fishing prompt/rule/config files from the cloned repository.
 
 ## License Files
 
