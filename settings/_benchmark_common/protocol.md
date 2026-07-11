@@ -50,6 +50,8 @@ that can be solved by inspecting the paper or canonical repository.
   requirements, package metadata, branches, and source tree search.
 - Use setting-local source/data locations only: `vendor/`, `external/`,
   `code/vendor/`, `data/source/`, or equivalent benchmark-local folders.
+- Keep setting-specific reusable implementation under `code/`. Use `scripts/`
+  for thin command wrappers and shell entry points, not the primary codebase.
 - Record URL, branch/commit, license evidence, and local path.
 - If the paper/repo says experiments live on a non-default branch, use that
   branch.

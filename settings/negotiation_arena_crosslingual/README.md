@@ -4,6 +4,12 @@ Separate setting for B5 NegotiationArena cross-lingual contact experiments.
 
 Read first: `reports/status.md`.
 
+Layout:
+
+- `code/negotiation_arena_crosslingual/`: setting implementation package.
+- `scripts/`: stable command wrappers and shell entry points.
+- `external/NegotiationArena/`: canonical upstream benchmark checkout.
+
 Run:
 
 ```bash

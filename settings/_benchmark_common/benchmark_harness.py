@@ -380,6 +380,15 @@ settings/crosslingual_debate loop unless this setting's goals explicitly require
 shared code. Keep all benchmark-specific code, logs, artifacts, docs, and plans
 inside this setting folder.
 
+Repository layout rule:
+- Put reusable benchmark implementation in this setting's `code/` directory.
+- Keep `scripts/` for thin CLI entry points and shell commands that call into
+  `code/`.
+- Put upstream/canonical benchmark checkouts in `external/`, `vendor/`, or
+  `code/vendor/` as configured by the setting.
+- Do not leave `code/` empty while adding substantial Python implementation
+  under `scripts/`.
+
 Do not use an OpenAI API key for Codex. Codex is already authenticated by the
 CLI/session. The OpenAI key, when configured below, is only for benchmark
 agents/judges called by setting-local scripts.
