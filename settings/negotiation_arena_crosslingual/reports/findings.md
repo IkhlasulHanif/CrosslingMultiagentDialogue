@@ -1,8 +1,8 @@
 Qwen3-1.7B C0 EN baselines for buy/sell and resource_exchange pass the floor:
 deal_rate=1.0 and offer_parse_rate=1.0. C1 ID and G2 remain blocked only on
 pending human review of 16 EN-ID translation units. This pass refreshed the
-real C1 command artifact at 2026-07-11T17:22:24 UTC and the G2 gate summary at
-2026-07-11T17:22:28 UTC.
+real C1 command artifact at 2026-07-11T17:34:00 UTC and the G2 gate summary at
+2026-07-11T17:34:04 UTC.
 
 One real C0 EN-monolingual buy/sell smoke episode previously ran through
 upstream NegotiationArena using the explicitly allowed OpenAI smoke override;
@@ -39,10 +39,10 @@ completed and `python3 scripts/validate_translation_review.py` passes.
 The C1 ID baseline command exists as `bash scripts/run_c1_baseline.sh`. Current
 run result is a gate artifact, not empirical evidence:
 `artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`, refreshed at
-2026-07-11T17:22:24+00:00 by the real C1 command. It blocks on 16 pending
+2026-07-11T17:34:00+00:00 by the real C1 command. It blocks on 16 pending
 translation-review units and points reviewers to `docs/id_translation_review.md`
 for side-by-side EN/ID text. `artifacts/results/g2_capability_floor.json` was
-refreshed at 2026-07-11T17:22:28+00:00 and confirms C0 passes while G2 remains
+refreshed at 2026-07-11T17:34:04+00:00 and confirms C0 passes while G2 remains
 blocked on missing C1 ID metrics. Once the human review file is approved, rerun
 `python3 scripts/validate_translation_review.py`,
 `bash scripts/run_c1_baseline.sh`, and
