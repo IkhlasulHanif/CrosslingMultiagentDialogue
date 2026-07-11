@@ -97,6 +97,7 @@ def write_validation_artifact(review: dict[str, Any], errors: list[str], complet
         "pending_units": pending,
         "review_file": "config/translation_review.json",
         "review_packet": "docs/id_translation_review.md",
+        "review_packet_artifact": "artifacts/results/translation_review_packet.json",
         "source_translation_file": review.get("source_translation_file"),
         "errors": errors,
         "message": message,
