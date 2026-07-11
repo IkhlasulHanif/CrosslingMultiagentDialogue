@@ -2,17 +2,17 @@ Qwen3-1.7B C0 EN baselines for buy/sell and resource_exchange pass the floor:
 deal_rate=1.0 and offer_parse_rate=1.0. C1 ID and G2 remain blocked on pending
 human review of 16 EN-ID translation units.
 
-This pass added dedicated OpenAI benchmark override wrappers:
+Dedicated OpenAI benchmark override wrappers exist:
 `bash scripts/run_c0_openai_baseline.sh` and
 `bash scripts/run_c0_openai_resource_exchange_baseline.sh`. They reuse the C0
 baseline runners with `NEGOTIATION_BENCHMARK_PROVIDER=openai_benchmark` and
 write separate `.openai_benchmark.*` transcript/metrics paths so they do not
-overwrite Qwen evidence. A real C0 OpenAI buy/sell baseline attempt was made at
-2026-07-11T19:09:31 UTC. No transcript was produced because the provider probe
-failed before the episode: `api.openai.com` could not be resolved by urllib or
-curl. The blocker artifact is `artifacts/results/benchmark_model_probe.json`,
-and the exact next command after network/DNS access is restored is
-`bash scripts/run_c0_openai_baseline.sh`.
+overwrite Qwen evidence. A fresh real C0 OpenAI buy/sell baseline attempt was
+made at 2026-07-11T19:27:51 UTC. No transcript was produced because the
+provider probe failed before the episode: `api.openai.com` could not be
+resolved by urllib or curl. The blocker artifact is
+`artifacts/results/benchmark_model_probe.json`, and the exact next command
+after network/DNS access is restored is `bash scripts/run_c0_openai_baseline.sh`.
 
 The latest translation packet artifact is
 `artifacts/results/translation_review_packet.json`, refreshed at

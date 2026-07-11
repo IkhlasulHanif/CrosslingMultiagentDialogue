@@ -8,14 +8,14 @@ Qwen3-1.7B C0 EN baselines for buy/sell and resource_exchange pass the floor:
 deal_rate=1.0 and offer_parse_rate=1.0. C1 ID and G2 remain blocked on pending
 human review of 16 EN-ID translation units.
 
-This pass added dedicated OpenAI benchmark override wrappers:
+Dedicated OpenAI benchmark override wrappers exist:
 `bash scripts/run_c0_openai_baseline.sh` and
 `bash scripts/run_c0_openai_resource_exchange_baseline.sh`. They reuse the C0
 baseline runners with `NEGOTIATION_BENCHMARK_PROVIDER=openai_benchmark` and
 write separate `.openai_benchmark.*` transcript/metrics paths so they do not
-overwrite Qwen evidence. A real C0 OpenAI buy/sell baseline attempt was made at
-2026-07-11T19:09:31 UTC. No transcript was produced because the provider probe
-failed before the episode: `api.openai.com` could not be resolved by urllib or
+overwrite Qwen evidence. A fresh real C0 OpenAI buy/sell baseline attempt was
+made at 2026-07-11T19:27:51 UTC. No transcript was produced because the
+provider probe failed before the episode: `api.openai.com` could not be
 
 Next useful work: **Human-check ID translation before C1/C2/C3**.
 
@@ -42,21 +42,21 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-BLOCKED: Scoped commit/push blocked by sandbox filesystem permissions: git could not create parent repo .git/index.lock; failed_command=git add <negotiation_arena_crosslingual scoped files>
+BLOCKED: C0 OpenAI benchmark baseline blocked on provider probe; failed_command=bash scripts/run_c0_openai_baseline.sh
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T19:10:43+00:00` OK: Harness scaffold check passed
-- `2026-07-11T19:11:35+00:00` BLOCKED: Scoped commit/push blocked by sandbox filesystem permissions: git could not create parent repo .git/index.lock; failed_command=git add <negotiation_arena_crosslingual scoped files>
-- `2026-07-11T19:12:07+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_030637.txt
-- `2026-07-11T19:12:07+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-11T19:12:07+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-11T19:12:08+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
-- `2026-07-11T19:12:14+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
-- `2026-07-11T19:12:14+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-11T19:12:14+00:00` OK: Post-Codex smoke/experiment attempt exited 0
+- `2026-07-11T19:12:14+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
+- `2026-07-11T19:12:16+00:00` OK: Codex pass 6 completed
+- `2026-07-11T19:27:16+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_032716.txt
+- `2026-07-11T19:27:51+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-11T19:27:51+00:00` BLOCKED: OpenAI benchmark model probe failed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-11T19:27:51+00:00` BLOCKED: C0 OpenAI benchmark baseline blocked on provider probe; failed_command=bash scripts/run_c0_openai_baseline.sh
+- `2026-07-11T19:28:53+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
@@ -64,7 +64,7 @@ or benchmark-specific failures. They will show up here.
 |---|---:|
 | Transcript JSON/JSONL | 3 |
 | Result summaries | 14 |
-| Logs | 43 |
+| Logs | 44 |
 
 ## Open Questions
 
