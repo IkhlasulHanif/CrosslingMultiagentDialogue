@@ -40,27 +40,21 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-C1 ID and G2 are blocked on pending human translation review, not source,
-dependency, or model-endpoint failure. Evidence:
-`artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json` and
-`artifacts/results/g2_capability_floor.json`.
-
-Next unblock command after review approval:
-`python3 scripts/validate_translation_review.py && bash scripts/run_c1_baseline.sh && python3 scripts/check_g2_capability_floor.py`.
+BLOCKED: G2 capability floor check blocked; artifact=artifacts/results/g2_capability_floor.json; next_command=bash scripts/run_c1_baseline.sh
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T16:48:31+00:00` OK: Post-Codex smoke/experiment attempt exited 0
-- `2026-07-11T16:48:31+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
-- `2026-07-11T16:48:33+00:00` OK: Codex pass 18 completed
-- `2026-07-11T17:03:33+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_010333.txt
-- `2026-07-11T17:04:21+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-11T17:04:21+00:00` BLOCKED: C1 ID baseline blocked on pending human translation review; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh; next_command=bash scripts/run_c1_baseline.sh
 - `2026-07-11T17:04:36+00:00` BLOCKED: G2 capability floor check blocked; artifact=artifacts/results/g2_capability_floor.json; next_command=bash scripts/run_c1_baseline.sh
 - `2026-07-11T17:05:17+00:00` OK: Harness scaffold check passed
+- `2026-07-11T17:06:29+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_010333.txt
+- `2026-07-11T17:06:29+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T17:06:30+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-11T17:06:33+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
+- `2026-07-11T17:06:39+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-11T17:06:39+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
