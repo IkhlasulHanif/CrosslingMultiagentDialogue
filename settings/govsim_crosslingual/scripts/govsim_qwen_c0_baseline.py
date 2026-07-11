@@ -28,6 +28,7 @@ sys.path.insert(0, str(SCRIPT_DIR))
 
 from govsim_openai_smoke import append_event, run_episode, stamp, utc_now, write_json  # noqa: E402
 from local_model_adapter import LocalModelError, VLLMChatAdapter  # noqa: E402
+from translation_pack import TranslationPackNotReady, require_complete_translation_pack  # noqa: E402
 
 
 def adapter_from_qwen_env() -> VLLMChatAdapter:
@@ -54,7 +55,7 @@ def blocked_result(exc: BaseException, adapter: VLLMChatAdapter, condition: str,
         f"GOVSIM_MODEL_NAME=Qwen3-1.7B ./scripts/{script_name}"
     )
     schema_suffix = condition.lower()
-    return {
+    result = {
         "schema_version": f"govsim-{schema_suffix}-qwen-baseline-v1",
         "timestamp_utc": utc_now(),
         "empirical_episode_ran": False,
@@ -69,6 +70,20 @@ def blocked_result(exc: BaseException, adapter: VLLMChatAdapter, condition: str,
         "traceback_tail": traceback.format_exc()[-4000:],
         "next_command_once_unblocked": next_command,
     }
+    if isinstance(exc, TranslationPackNotReady):
+        result.update(
+            {
+                "evidence_scope": f"blocked {condition} baseline before model call; no matrix evidence",
+                "translation_gate": exc.check.as_dict(),
+                "human_review_packet": "artifacts/logs/translation_human_review_packet.md",
+                "next_unblock_command": (
+                    "python3 code/translation_pack.py --root . "
+                    "--out artifacts/logs/translation_status.json "
+                    "--review-out artifacts/logs/translation_human_review_packet.md --strict"
+                ),
+            }
+        )
+    return result
 
 
 def main() -> int:
@@ -81,6 +96,7 @@ def main() -> int:
     adapter = adapter_from_qwen_env()
 
     try:
+        require_complete_translation_pack(ROOT, language)
         result = run_episode(
             adapter,
             adapter.model,

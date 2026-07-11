@@ -12,7 +12,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "code"))
 
-from translation_pack import SCHEMA_VERSION, check_translation_pack, render_human_review_packet  # noqa: E402
+from translation_pack import (  # noqa: E402
+    SCHEMA_VERSION,
+    TranslationPackNotReady,
+    check_translation_pack,
+    render_human_review_packet,
+    require_complete_translation_pack,
+)
 
 
 class TranslationPackTest(unittest.TestCase):
@@ -99,6 +105,47 @@ class TranslationPackTest(unittest.TestCase):
         self.assertIn("`fishery.task.choose_harvest`", packet)
         self.assertIn("{num_tons_lake}", packet)
         self.assertIn("Review decision: [ ] accept  [ ] edit required", packet)
+
+    def test_indonesian_run_gate_blocks_draft_pack(self) -> None:
+        with self.assertRaises(TranslationPackNotReady) as raised:
+            require_complete_translation_pack(ROOT, "ID")
+
+        self.assertEqual(raised.exception.check.status, "DRAFT")
+        self.assertFalse(raised.exception.check.human_checked)
+
+    def test_english_run_does_not_require_translation_pack(self) -> None:
+        self.assertIsNone(require_complete_translation_pack(ROOT, "EN"))
+
+    def test_indonesian_run_gate_accepts_complete_pack(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            pack = root / "pack.json"
+            entries = [
+                {
+                    "id": f"{category}.one",
+                    "category": category,
+                    "en": f"{category} text",
+                    "id_text": f"teks {category}",
+                    "human_checked": True,
+                }
+                for category in ("instruction", "resource", "rule")
+            ]
+            pack.write_text(
+                json.dumps(
+                    {
+                        "schema_version": SCHEMA_VERSION,
+                        "language_pair": "EN-ID",
+                        "source_coverage_complete": True,
+                        "entries": entries,
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            result = require_complete_translation_pack(root, "ID", pack)
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result.status, "COMPLETE")
 
 
 if __name__ == "__main__":

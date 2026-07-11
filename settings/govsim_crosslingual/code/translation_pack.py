@@ -44,6 +44,18 @@ class TranslationCheck:
         }
 
 
+class TranslationPackNotReady(RuntimeError):
+    """Raised when a benchmark run requires reviewed translations."""
+
+    def __init__(self, check: TranslationCheck) -> None:
+        self.check = check
+        super().__init__(
+            "ID translation pack is not ready for benchmark use: "
+            f"status={check.status}, source_coverage_complete={check.source_coverage_complete}, "
+            f"human_checked={check.human_checked}, pack={check.pack_path}"
+        )
+
+
 def _read_json(path: Path) -> tuple[dict[str, Any], list[str]]:
     if not path.exists():
         return {}, [f"missing translation pack {path}"]
@@ -151,6 +163,25 @@ def check_translation_pack(root: Path, pack_path: Path = DEFAULT_PACK_PATH) -> T
         missing=missing,
         warnings=warnings,
     )
+
+
+def require_complete_translation_pack(
+    root: Path,
+    language: str,
+    pack_path: Path = DEFAULT_PACK_PATH,
+) -> TranslationCheck | None:
+    """Require reviewed translations for Indonesian benchmark prompts.
+
+    English prompts come directly from upstream GovSim and do not use this pack.
+    Indonesian C1/C2/C3 runs must not proceed while the pack is still draft.
+    """
+
+    if language.strip().upper() != "ID":
+        return None
+    check = check_translation_pack(root, pack_path)
+    if check.status != "COMPLETE":
+        raise TranslationPackNotReady(check)
+    return check
 
 
 def render_human_review_packet(root: Path, pack_path: Path = DEFAULT_PACK_PATH) -> str:
