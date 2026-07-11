@@ -3,7 +3,7 @@ deal_rate=1.0 and offer_parse_rate=1.0. C1 ID and G2 remain blocked on pending
 human review of 16 EN-ID translation units.
 
 OpenAI benchmark override wrappers exist for C0 buy/sell and resource_exchange.
-A fresh real C0 OpenAI buy/sell attempt at 2026-07-11T19:46:43 UTC produced no
+A fresh real C0 OpenAI buy/sell attempt at 2026-07-11T20:04:36 UTC produced no
 transcript because `api.openai.com` could not be resolved by urllib or curl.
 Blocker artifact: `artifacts/results/benchmark_model_probe.json`. Retry after
 network/DNS access is restored with `bash scripts/run_c0_openai_baseline.sh`.
@@ -12,10 +12,10 @@ No OpenAI benchmark evidence was produced in this pass.
 
 The latest translation packet artifact is
 `artifacts/results/translation_review_packet.json`, refreshed at
-2026-07-11T18:49:15 UTC, and records 16 pending units. The translation
-validator artifact was refreshed at 2026-07-11T18:50:01 UTC, the real C1
-command artifact at 2026-07-11T18:48:50 UTC, and the G2 gate summary at
-2026-07-11T18:48:54 UTC. After human review clears, the C1 runner will select
+2026-07-11T20:04:49 UTC, and records 16 pending units. The translation
+validator artifact was refreshed at 2026-07-11T20:04:49 UTC, the real C1
+command artifact at 2026-07-11T20:04:55 UTC, and the G2 gate summary at
+2026-07-11T20:04:58 UTC. After human review clears, the C1 runner will select
 the explicit OpenAI benchmark override (`openai_benchmark` / `gpt-4.1-mini`)
 and label resulting artifacts as OpenAI benchmark evidence, not Qwen evidence.
 
@@ -56,7 +56,7 @@ evidence until `config/translation_review.json` is completed and
 The C1 ID baseline command exists as `bash scripts/run_c1_baseline.sh`. Current
 run result is a gate artifact, not empirical evidence:
 `artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`, refreshed at
-2026-07-11T18:48:50+00:00 by the real C1 command. It blocks on 16 pending
+2026-07-11T20:04:55+00:00 by the real C1 command. It blocks on 16 pending
 translation-review units and points reviewers to `docs/id_translation_review.md`
 for side-by-side EN/ID text. The packet can be regenerated with
 `python3 scripts/generate_translation_review_packet.py`, which also writes
@@ -64,7 +64,7 @@ for side-by-side EN/ID text. The packet can be regenerated with
 `config/benchmark_model.json` to choose the OpenAI benchmark provider when it is
 allowed, labeling the resulting artifacts as OpenAI benchmark evidence rather
 than Qwen evidence. `artifacts/results/g2_capability_floor.json` was refreshed
-at 2026-07-11T18:48:54+00:00 and confirms C0 passes while G2 remains blocked on
+at 2026-07-11T20:04:58+00:00 and confirms C0 passes while G2 remains blocked on
 missing C1 ID metrics. Once the human review file is approved, rerun
 `python3 scripts/validate_translation_review.py`,
 `bash scripts/run_c1_baseline.sh`, and
