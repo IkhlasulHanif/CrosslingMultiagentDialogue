@@ -40,21 +40,21 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-BLOCKED: Scoped commit/push attempt failed before staging because git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock: Operation not permitted. C1 translation-gate runner and blocked artifact remain local in settings/negotiation_arena_crosslingual.
+BLOCKED: C1 ID baseline blocked on pending human translation review; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh; next_command=bash scripts/run_c1_baseline.sh
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T13:37:49+00:00` OK: Harness scaffold check passed
-- `2026-07-11T13:39:19+00:00` BLOCKED: Scoped commit/push attempt failed before staging because git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock: Operation not permitted. C1 translation-gate runner and blocked artifact remain local in settings/negotiation_arena_crosslingual.
-- `2026-07-11T13:40:04+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_213227.txt
-- `2026-07-11T13:40:04+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-11T13:40:05+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-11T13:40:06+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
-- `2026-07-11T13:40:11+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
 - `2026-07-11T13:40:11+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-11T13:40:11+00:00` OK: Post-Codex smoke/experiment attempt exited 0
+- `2026-07-11T13:40:11+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
+- `2026-07-11T13:40:13+00:00` OK: Codex pass 8 completed
+- `2026-07-11T13:55:13+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260711_215513.txt
+- `2026-07-11T13:56:01+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-11T13:56:01+00:00` BLOCKED: C1 ID baseline blocked on pending human translation review; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh; next_command=bash scripts/run_c1_baseline.sh
+- `2026-07-11T13:56:22+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
@@ -62,7 +62,7 @@ or benchmark-specific failures. They will show up here.
 |---|---:|
 | Transcript JSON/JSONL | 2 |
 | Result summaries | 9 |
-| Logs | 24 |
+| Logs | 25 |
 
 ## Open Questions
 
