@@ -477,39 +477,77 @@ def normalize_buy_sell_response(text: str) -> str:
     return normalized
 
 
-def language_runtime_instruction(language: str, role_name: str) -> str:
-    normalized = language.upper()
-    if normalized == "ID":
-        role_text = "penjual" if role_name == "seller" else "pembeli"
-        private_goal = (
-            "Biaya pribadi Anda untuk barang ini adalah 40 ZUP; usahakan menjual "
-            "pada harga tertinggi yang dapat diterima sambil mencapai kesepakatan yang sah."
-            if role_name == "seller"
-            else "Nilai pribadi Anda untuk barang ini adalah 100 ZUP; usahakan membeli "
-            "pada harga terendah yang dapat diterima sambil mencapai kesepakatan yang sah."
-        )
-        return (
-            "\n\nGunakan bahasa Indonesia saja untuk episode ini. Anda adalah agen negosiasi; "
-            f"jawab hanya sebagai {role_text}. Jangan mengungkap valuasi tersembunyi atau "
-            "batas pribadi kecuali aturan secara eksplisit mengizinkannya. "
-            "Seorang pembeli dan penjual sedang merundingkan satu harga transaksi untuk satu barang. "
-            "Kesepakatan sah hanya jika kedua pihak secara eksplisit menerima harga akhir yang sama "
-            "sebelum batas giliran. Jika tidak ada kesepakatan yang diterima, pembeli mempertahankan "
-            "opsi luar dan penjual mempertahankan barang. "
-            f"{private_goal} Ikuti format tag XML persis. Saat menawarkan, sertakan satu item X "
-            "dan harga ZUP sebagai bilangan bulat. Saat menerima, set "
-            "<player answer>ACCEPT</player answer> dan ulangi trade yang diterima di dalam "
-            "<newly proposed trade>...</newly proposed trade>. Saat menolak, set "
-            "<player answer>REJECT</player answer> dan <newly proposed trade>NONE</newly proposed trade>."
-        )
+_PROMPT_TRANSLATIONS: dict[str, Any] | None = None
 
+
+def prompt_translations() -> dict[str, Any]:
+    global _PROMPT_TRANSLATIONS
+    if _PROMPT_TRANSLATIONS is None:
+        _PROMPT_TRANSLATIONS = json.loads((ROOT / "config" / "prompt_translations.json").read_text(encoding="utf-8"))
+    return _PROMPT_TRANSLATIONS
+
+
+def prompt_unit(context: str, unit_id: str) -> dict[str, Any]:
+    translations = prompt_translations()
+    if context == "global":
+        units = translations.get("global_prompt_units", [])
+    else:
+        games = {game.get("game_id"): game for game in translations.get("games", [])}
+        units = games.get(context, {}).get("prompt_units", [])
+    for unit in units:
+        if unit.get("id") == unit_id:
+            return unit
+    raise KeyError(f"Missing translation prompt unit: {context}/{unit_id}")
+
+
+def prompt_text(context: str, unit_id: str, language: str, **values: str) -> str:
+    unit = prompt_unit(context, unit_id)
+    source_key = "id_translation" if language.upper() == "ID" else "en"
+    text = str(unit[source_key])
+    return text.format(**values) if values else text
+
+
+def language_policy_unit(condition: str, language: str) -> str:
+    normalized_condition = condition.upper()
+    normalized_language = language.upper()
+    if normalized_condition == "C3":
+        return "language_policy_c3_free_choice"
+    if normalized_condition == "C2":
+        return "language_policy_c2_forced_mixed"
+    if normalized_language == "ID":
+        return "language_policy_c1_id"
+    return "language_policy_c0_en"
+
+
+def buy_sell_private_prompt_unit(role_name: str, language: str) -> tuple[str, dict[str, str]]:
+    id_language = language.upper() == "ID"
+    if role_name == "seller":
+        return (
+            "buy_sell_seller_private_prompt",
+            {
+                "seller_cost": "40 ZUP",
+                "seller_outside_option": "mempertahankan barang" if id_language else "keeping the item",
+            },
+        )
     return (
-        "\n\nYou must negotiate only in English. Follow the XML tag format exactly. "
-        "When proposing a trade, include one item X and a ZUP price as an integer. "
-        "If accepting, set <player answer>ACCEPT</player answer> and repeat the accepted "
-        "trade inside <newly proposed trade>...</newly proposed trade>. If rejecting, set "
-        "<player answer>REJECT</player answer> and <newly proposed trade>NONE</newly proposed trade>."
+        "buy_sell_buyer_private_prompt",
+        {
+            "buyer_value": "100 ZUP",
+            "buyer_outside_option": "tidak membeli barang" if id_language else "not buying the item",
+        },
     )
+
+
+def language_runtime_instruction(language: str, role_name: str, condition: str) -> str:
+    private_unit, private_values = buy_sell_private_prompt_unit(role_name, language)
+    parts = [
+        prompt_text("global", "system_negotiator", language),
+        prompt_text("global", language_policy_unit(condition, language), language),
+        prompt_text("buy_sell", "buy_sell_public_rules", language),
+        prompt_text("buy_sell", private_unit, language, **private_values),
+        prompt_text("buy_sell", "buy_sell_upstream_xml_response_format", language),
+    ]
+    return "\n\n" + " ".join(parts)
 
 
 def build_episode(game: Any, plan: dict[str, Any]) -> dict[str, Any]:
@@ -573,10 +611,11 @@ def run_episode(plan: dict[str, Any], provider: str, model_metadata: dict[str, A
     from ratbench.game_objects.valuation import Valuation
 
     class AgentImpl(Agent):
-        def __init__(self, agent_name: str, role_name: str, language: str, model_label: str) -> None:
+        def __init__(self, agent_name: str, role_name: str, language: str, condition: str, model_label: str) -> None:
             super().__init__(agent_name=agent_name)
             self.role_name = role_name
             self.language = language
+            self.condition = condition
             self.model = model_label
             self.prompt_entity_initializer = "system"
             self.client, _metadata = make_chat_client(provider)
@@ -590,7 +629,7 @@ def run_episode(plan: dict[str, Any], provider: str, model_metadata: dict[str, A
             role = entity if entity in {"system", "user", "assistant"} else "user"
             content = str(message)
             if role == "system":
-                content += language_runtime_instruction(self.language, self.role_name)
+                content += language_runtime_instruction(self.language, self.role_name, self.condition)
             self.conversation.append({"role": role, "content": content})
 
         def get_state(self) -> dict[str, Any]:
@@ -607,8 +646,8 @@ def run_episode(plan: dict[str, Any], provider: str, model_metadata: dict[str, A
     role_languages = episode["role_languages"]
     log_dir = ROOT / "artifacts" / "upstream_logs" / episode["episode_id"]
     log_dir.mkdir(parents=True, exist_ok=True)
-    seller = AgentImpl(AGENT_ONE, "seller", role_languages["seller"], episode["model"])
-    buyer = AgentImpl(AGENT_TWO, "buyer", role_languages["buyer"], episode["model"])
+    seller = AgentImpl(AGENT_ONE, "seller", role_languages["seller"], episode["condition"], episode["model"])
+    buyer = AgentImpl(AGENT_TWO, "buyer", role_languages["buyer"], episode["condition"], episode["model"])
     seller_role_prompt = (
         f"You are {AGENT_ONE}. You are the seller."
         if role_languages["seller"].upper() != "ID"

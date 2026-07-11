@@ -1,11 +1,15 @@
-One real C0 EN-monolingual buy/sell smoke episode ran through upstream
-NegotiationArena using the explicitly allowed OpenAI smoke override; it is
-runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence.
-Two real Qwen3-1.7B C0 EN-monolingual baselines have run through the same
-checkout via `hf-cache://Qwen/Qwen3-1.7B`: `buy_sell` and `resource_exchange`.
-Both reached deals in 2 turns with `deal_rate=1.0` and `offer_parse_rate=1.0`.
-`artifacts/results/g2_capability_floor.json` confirms the C0 floor passes on
-existing Qwen evidence, but G2 remains blocked until C1 ID metrics exist.
+Qwen3-1.7B C0 EN baselines for buy/sell and resource_exchange pass the floor:
+deal_rate=1.0 and offer_parse_rate=1.0. In this pass, buy/sell was rerun after
+the runtime prompt was wired to `config/prompt_translations.json`; it again
+reached a deal in 2 turns. C1 ID and G2 remain blocked only on pending human
+review of 16 EN-ID translation units.
+
+One real C0 EN-monolingual buy/sell smoke episode previously ran through
+upstream NegotiationArena using the explicitly allowed OpenAI smoke override;
+it remains runner bring-up evidence only, not Qwen3-1.7B research-matrix
+evidence. In this pass, `bash scripts/run_smoke.sh` was blocked by DNS for
+`api.openai.com`; the blocker is recorded in
+`artifacts/results/smoke_model_probe.json`.
 
 Buy/sell result: deal reached at price 40. First-offer price and final price
 were both 40, anchoring signed delta was 0, seller payoff was 0, and buyer
@@ -18,13 +22,6 @@ runner records those boolean outcomes as numeric 1/0 goal-satisfaction payoffs
 for now; inspect trade-legality and payoff semantics before treating
 resource_exchange as full matrix-ready.
 
-The first direct-Qwen baseline attempt failed before transcript writing because
-Qwen expressed acceptance in prose while leaving malformed XML for the upstream
-NegotiationArena parser. The runner now canonicalizes common casing/tag errors
-and copies an already visible prior offer into `<newly proposed trade>` when the
-model explicitly accepts that trade. The successful baseline above is the rerun
-with that normalization.
-
 Source bring-up remains resolved. `external/NegotiationArena` is a local checkout
 of `https://github.com/vinid/NegotiationArena.git` on branch
 `paper_experiment_code` at commit
@@ -32,19 +29,20 @@ of `https://github.com/vinid/NegotiationArena.git` on branch
 `licenses.md` and `artifacts/results/bringup_check.json`.
 
 Human bilingual review of the Indonesian translations remains pending. The
-review queue itself validates as aligned with `config/prompt_translations.json`,
-but this is not human approval. Do not run or report C1 ID baselines or
-mixed-language C2/C3 conditions as valid benchmark evidence until
-`config/translation_review.json` is completed and
-`python3 scripts/validate_translation_review.py` passes.
+review queue now includes the upstream buy/sell XML response-format instruction
+that the runner actually appends, so there are 16 pending review units. The
+queue validates as aligned with `config/prompt_translations.json`, but this is
+not human approval. Do not run or report C1 ID baselines or mixed-language C2/C3
+conditions as valid benchmark evidence until `config/translation_review.json` is
+completed and `python3 scripts/validate_translation_review.py` passes.
 
-The C1 ID baseline command now exists as `bash scripts/run_c1_baseline.sh`.
-Current run result is a gate artifact, not empirical evidence:
+The C1 ID baseline command exists as `bash scripts/run_c1_baseline.sh`. Current
+run result is a gate artifact, not empirical evidence:
 `artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`, refreshed at
-2026-07-11T15:31:00+00:00 by the real C1 command. It blocks on 15 pending
+2026-07-11T15:50:27+00:00 by the real C1 command. It blocks on 16 pending
 translation-review units and points reviewers to `docs/id_translation_review.md`
 for side-by-side EN/ID text. `artifacts/results/g2_capability_floor.json` was
-refreshed at 2026-07-11T15:31:04+00:00 and confirms C0 passes while G2 remains
+refreshed at 2026-07-11T15:52:16+00:00 and confirms C0 passes while G2 remains
 blocked on missing C1 ID metrics. Once the human review file is approved, rerun
 `python3 scripts/validate_translation_review.py`,
 `bash scripts/run_c1_baseline.sh`, and

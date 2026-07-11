@@ -40,6 +40,7 @@ Review criteria:
 | buy_sell | buy_sell_seller_private_prompt | private_prompt | pending |
 | buy_sell | buy_sell_offer_format | offer_format | pending |
 | buy_sell | buy_sell_accept_format | offer_format | pending |
+| buy_sell | buy_sell_upstream_xml_response_format | offer_format | pending |
 
 ## Side-By-Side Units
 
@@ -162,6 +163,14 @@ Kind: offer_format
 EN: Write acceptance as ACCEPT: price={price}.
 
 ID: Tulis penerimaan sebagai ACCEPT: price={price}.
+
+### buy_sell/buy_sell_upstream_xml_response_format
+
+Kind: offer_format
+
+EN: Follow the XML tag format exactly. When proposing a trade, include one item X and a ZUP price as an integer in <newly proposed trade>. When accepting, set <player answer>ACCEPT</player answer> and repeat the accepted trade in <newly proposed trade>. When rejecting, set <player answer>REJECT</player answer> and set <newly proposed trade>NONE</newly proposed trade>.
+
+ID: Ikuti format tag XML persis. Saat mengusulkan trade, sertakan satu item X dan harga ZUP berupa bilangan bulat di dalam <newly proposed trade>. Saat menerima, setel <player answer>ACCEPT</player answer> dan ulangi trade yang diterima di dalam <newly proposed trade>. Saat menolak, setel <player answer>REJECT</player answer> dan setel <newly proposed trade>NONE</newly proposed trade>.
 
 ## Reviewer Notes
 
