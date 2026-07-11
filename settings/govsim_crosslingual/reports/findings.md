@@ -1,0 +1,15 @@
+One C0 OpenAI smoke episode has run. It is runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence.
+
+Current empirical story: `./harness.sh run-smoke` successfully executed one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260711T104930Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260711T104930Z.jsonl`; process metrics are `artifacts/logs/govsim_c0_openai_smoke_20260711T104930Z_process_metrics.json`. That smoke had 5/5 parseable harvests, survival_time 1, total_welfare 60.0, gini 0.1333333333333333, and EN language share 1.0.
+
+Current blockers: no Qwen3-1.7B C0/C1 baseline has run yet, the ID translation pack still needs human review, and the real upstream PathFinder submodule is still unresolved for full upstream entry-point replication. The new Qwen C0 command `./scripts/run_qwen_c0_baseline.sh` is wired, but its first attempt is blocked at `http://127.0.0.1:8000/v1/chat/completions` by sandbox/network permission `[Errno 1] Operation not permitted`; artifact `artifacts/results/govsim_c0_qwen_baseline_20260711T111220Z.json`.
+
+OpenAI smoke retry state: the latest `./harness.sh run-smoke` attempt, `artifacts/results/govsim_c0_openai_smoke_20260711T110810Z.json`, is blocked by DNS resolution for `api.openai.com` before any new transcript is produced. The OpenAI smoke bypasses PathFinder with the setting-local adapter and must not be reported as final benchmark evidence.
+
+Source/license state: `licenses.md` and `artifacts/logs/source_license_status.json` report `READY_FOR_REVIEW`. The local GovSim checkout is `vendor/govsim` at upstream `https://github.com/giorgio-piatti/GovSim.git`, branch `main`, commit `1d11adf047b24fa2ba0d44a1d4931015ea2e5210`. The local license file is MIT license text, 1071 bytes, SHA-256 `55be1b08220f411edf83dbf7ac9b3b3e7e56b92fb2ef9b10af91526edd38f15e`.
+
+Translation state: `config/translations/en_id_fishery_draft.json` now covers the upstream fishery prompt primitives used by the current runner: system rules, dynamic resource text, memory text, harvest tasks, conversation instructions, summaries, and numeric limit extraction. `artifacts/logs/translation_status.json` reports `DRAFT` because `source_coverage_complete` is true but `human_checked` is false.
+
+Exact next Qwen command once a local or Modal Qwen endpoint is reachable: `GOVSIM_MODEL_BASE_URL=http://127.0.0.1:8000/v1 GOVSIM_MODEL_NAME=Qwen3-1.7B ./scripts/run_qwen_c0_baseline.sh`.
+Exact next OpenAI smoke retry once network/DNS is available: `./harness.sh run-smoke`.
+Regenerate the translation artifact with `python3 code/translation_pack.py --root . --out artifacts/logs/translation_status.json`.

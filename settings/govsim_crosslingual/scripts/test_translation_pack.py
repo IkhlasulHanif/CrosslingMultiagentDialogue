@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+"""No-network checks for GovSim translation pack validation."""
+
+from __future__ import annotations
+
+import json
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "code"))
+
+from translation_pack import SCHEMA_VERSION, check_translation_pack  # noqa: E402
+
+
+class TranslationPackTest(unittest.TestCase):
+    def test_setting_draft_pack_is_source_covered_but_not_human_checked(self) -> None:
+        result = check_translation_pack(ROOT)
+
+        self.assertEqual(result.status, "DRAFT")
+        self.assertEqual(result.missing, [])
+        self.assertEqual(result.language_pair, "EN-ID")
+        self.assertTrue(result.source_coverage_complete)
+        self.assertFalse(result.human_checked)
+        self.assertIn("instruction", result.categories)
+        self.assertIn("resource", result.categories)
+        self.assertIn("rule", result.categories)
+        self.assertGreaterEqual(result.entry_count, 12)
+
+    def test_missing_required_category_is_invalid(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            pack = root / "pack.json"
+            pack.write_text(
+                json.dumps(
+                    {
+                        "schema_version": SCHEMA_VERSION,
+                        "language_pair": "EN-ID",
+                        "source_coverage_complete": False,
+                        "entries": [
+                            {
+                                "id": "only.instruction",
+                                "category": "instruction",
+                                "en": "Choose a harvest.",
+                                "id_text": "Pilih jumlah panen.",
+                                "human_checked": False,
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            result = check_translation_pack(root, pack)
+
+        self.assertEqual(result.status, "INVALID")
+        self.assertIn("at least one resource entry", result.missing)
+        self.assertIn("at least one rule entry", result.missing)
+
+    def test_complete_pack_requires_source_coverage_and_human_flags(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            pack = root / "pack.json"
+            entries = [
+                {
+                    "id": f"{category}.one",
+                    "category": category,
+                    "en": f"{category} text",
+                    "id_text": f"teks {category}",
+                    "human_checked": True,
+                }
+                for category in ("instruction", "resource", "rule")
+            ]
+            pack.write_text(
+                json.dumps(
+                    {
+                        "schema_version": SCHEMA_VERSION,
+                        "language_pair": "EN-ID",
+                        "source_coverage_complete": True,
+                        "entries": entries,
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            result = check_translation_pack(root, pack)
+
+        self.assertEqual(result.status, "COMPLETE")
+        self.assertEqual(result.missing, [])
+        self.assertTrue(result.human_checked)
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
