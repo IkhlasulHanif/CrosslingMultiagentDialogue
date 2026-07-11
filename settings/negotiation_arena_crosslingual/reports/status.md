@@ -9,7 +9,7 @@ deal_rate=1.0 and offer_parse_rate=1.0. C1 ID and G2 remain blocked on pending
 human review of 16 EN-ID translation units.
 
 OpenAI benchmark override wrappers exist for C0 buy/sell and resource_exchange.
-A fresh real C0 OpenAI buy/sell attempt at 2026-07-11T20:58:11 UTC produced no
+A fresh real C0 OpenAI buy/sell attempt at 2026-07-11T21:15:11 UTC produced no
 transcript because `api.openai.com` could not be resolved by urllib or curl.
 Blocker artifact: `artifacts/results/benchmark_model_probe.json`. Retry after
 network/DNS access is restored with `bash scripts/run_c0_openai_baseline.sh`.
@@ -42,21 +42,21 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-BLOCKED: C0 OpenAI benchmark baseline blocked on provider probe; failed_command=bash scripts/run_c0_openai_baseline.sh
+BLOCKED: Scoped commit/push attempt blocked before staging: git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock due sandbox Operation not permitted; intended_paths=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json artifacts/results/benchmark_model_probe.json artifacts/results/bringup_check.json artifacts/results/translation_review_validation.json plan/events.jsonl reports/findings.md reports/status.md
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T20:58:11+00:00` BLOCKED: C0 OpenAI benchmark baseline blocked on provider probe; failed_command=bash scripts/run_c0_openai_baseline.sh
-- `2026-07-11T20:58:59+00:00` OK: Harness scaffold check passed
-- `2026-07-11T20:59:21+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_045728.txt
-- `2026-07-11T20:59:21+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-11T20:59:22+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-11T20:59:23+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
-- `2026-07-11T20:59:29+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
-- `2026-07-11T20:59:29+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-11T21:16:12+00:00` OK: Harness scaffold check passed
+- `2026-07-11T21:16:49+00:00` BLOCKED: Scoped commit/push attempt blocked before staging: git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock due sandbox Operation not permitted; intended_paths=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json artifacts/results/benchmark_model_probe.json artifacts/results/bringup_check.json artifacts/results/translation_review_validation.json plan/events.jsonl reports/findings.md reports/status.md
+- `2026-07-11T21:17:20+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_051431.txt
+- `2026-07-11T21:17:20+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T21:17:21+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-11T21:17:22+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
+- `2026-07-11T21:17:29+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-11T21:17:29+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
@@ -64,7 +64,7 @@ or benchmark-specific failures. They will show up here.
 |---|---:|
 | Transcript JSON/JSONL | 3 |
 | Result summaries | 14 |
-| Logs | 49 |
+| Logs | 50 |
 
 ## Open Questions
 
