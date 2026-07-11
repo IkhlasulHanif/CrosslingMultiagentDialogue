@@ -3,19 +3,26 @@ deal_rate=1.0 and offer_parse_rate=1.0. C1 ID and G2 remain blocked on pending
 human review of 16 EN-ID translation units.
 
 OpenAI benchmark override wrappers exist for C0 buy/sell and resource_exchange.
-A fresh real C0 OpenAI buy/sell attempt at 2026-07-11T22:43:24 UTC produced no
+A fresh real C0 OpenAI buy/sell attempt at 2026-07-11T23:01:23 UTC produced no
 transcript because `api.openai.com` could not be resolved by urllib or curl.
 Blocker artifact: `artifacts/results/benchmark_model_probe.json`. Retry after
 network/DNS access is restored with `bash scripts/run_c0_openai_baseline.sh`.
 No OpenAI benchmark evidence was produced in this pass.
 
+C1 and G2 gate artifacts were refreshed at 2026-07-11T23:01:49 UTC:
+`artifacts/results/translation_review_validation.json`,
+`artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`, and
+`artifacts/results/g2_capability_floor.json`. All 16 EN-ID translation units
+remain pending human approval, so no C1/C2/C3 empirical evidence was produced.
+The exact unblock is to fill `config/translation_review.json` with
+`reviewer.completed=true`, reviewer metadata, and `reviewer_status=approved`
+for every unit, then run
+`python3 scripts/validate_translation_review.py && bash scripts/run_c1_baseline.sh`.
+
 
 The latest translation packet artifact is
 `artifacts/results/translation_review_packet.json`, refreshed at
-2026-07-11T20:23:05 UTC, and records 16 pending units. This pass refreshed the
-translation-review validation at 2026-07-11T22:43:49 UTC, the real C1 command
-gate at 2026-07-11T22:43:50 UTC, and the G2 gate summary at
-2026-07-11T22:43:50 UTC. The review queue remains aligned with
+2026-07-11T20:23:05 UTC, and records 16 pending units. The review queue remains aligned with
 `config/prompt_translations.json`, but all 16 units are still pending human
 approval, so no C1 empirical evidence was produced. After human review clears,
 the C1 runner will select the explicit OpenAI benchmark override
