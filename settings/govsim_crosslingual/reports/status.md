@@ -47,21 +47,21 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T16:14:28+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
-- `2026-07-11T16:14:30+00:00` OK: Codex pass 16 completed
-- `2026-07-11T16:29:30+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_002930.txt
-- `2026-07-11T16:30:32+00:00` BLOCKED: Canonical PathFinder source probe used upstream .gitmodules URL https://github.com/giorgiopiatti/PathFinder.git at submodule commit 69b8d646ad3e618380dd0d47ec4d1e8d2d4c930e; git ls-remote, curl raw .gitmodules, and git submodule update remain blocked by DNS in this sandbox; artifact=artifacts/logs/govsim_pathfinder_canonical_probe_20260711T163032Z.log; next='git -C vendor/govsim submodule update --init --depth 1 pathfinder' once DNS is available.
 - `2026-07-11T16:31:24+00:00` BLOCKED: Regenerated translation_status.json and translation_human_review_packet.md; strict translation check exited 3 because the EN-ID fishery pack is structurally valid but still DRAFT with 17 entries, source_coverage_complete=true, human_checked=false, mechanical_qa=PASS.
 - `2026-07-11T16:31:24+00:00` BLOCKED: GovSim C0 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: LocalModelError: Local model endpoint unavailable at http://127.0.0.1:8000/v1/chat/completions: [Errno 1] Operation not permitted; artifact=artifacts/results/govsim_c0_qwen_baseline_20260711T163124Z.json; endpoint_probe=artifacts/logs/qwen_endpoint_probe_20260711T163124Z.json
 - `2026-07-11T16:33:21+00:00` OK: Harness scaffold check passed
 - `2026-07-11T16:33:42+00:00` OK: Harness scaffold check passed
+- `2026-07-11T16:34:36+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_002930.txt
+- `2026-07-11T16:34:36+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T16:35:00+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T163440Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T163440Z.jsonl
+- `2026-07-11T16:35:01+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 18 |
-| Result summaries | 57 |
+| Transcript JSON/JSONL | 19 |
+| Result summaries | 59 |
 | Logs | 50 |
 
 ## Open Questions
