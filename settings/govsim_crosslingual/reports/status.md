@@ -47,21 +47,21 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T12:53:43+00:00` OK: Codex pass 6 completed
-- `2026-07-11T13:08:43+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260711_210843.txt
-- `2026-07-11T13:10:20+00:00` BLOCKED: GovSim C0 OpenAI smoke blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_smoke_20260711T131020Z.json
-- `2026-07-11T13:10:21+00:00` ERROR: scripts/run_smoke.sh exited 2
 - `2026-07-11T13:10:39+00:00` BLOCKED: GovSim C0 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: LocalModelError: Local model endpoint unavailable at http://127.0.0.1:8000/v1/chat/completions: [Errno 1] Operation not permitted; artifact=artifacts/results/govsim_c0_qwen_baseline_20260711T131039Z.json
 - `2026-07-11T13:11:23+00:00` NOTE: Added opt-in transient transport retries to code/local_model_adapter.py and enabled two retries for OpenAI smoke. Validation passed: .venv/bin/python -m pytest scripts/test_local_model_adapter.py scripts/test_reports.py scripts/test_translation_pack.py (8 passed). Real smoke remains blocked by api.openai.com DNS, and real C0 Qwen remains blocked by local endpoint sandbox permission; blocker artifacts are artifacts/results/govsim_c0_openai_smoke_20260711T131020Z.json and artifacts/results/govsim_c0_qwen_baseline_20260711T131039Z.json.
 - `2026-07-11T13:11:09+00:00` OK: Harness scaffold check passed
 - `2026-07-11T13:12:14+00:00` OK: Harness scaffold check passed
+- `2026-07-11T13:12:55+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260711_210843.txt
+- `2026-07-11T13:12:55+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T13:13:25+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T131301Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T131301Z.jsonl
+- `2026-07-11T13:13:25+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 8 |
-| Result summaries | 26 |
+| Transcript JSON/JSONL | 9 |
+| Result summaries | 28 |
 | Logs | 37 |
 
 ## Open Questions
