@@ -16,9 +16,8 @@ The Qwen C1 ID command `./scripts/run_qwen_c1_baseline.sh` enforces the human tr
 
 Source/license state: `licenses.md` and `artifacts/logs/source_license_status.json` report `READY_FOR_REVIEW`. The source manifest records the paper/README canonical GovSim URL `https://github.com/giorgiopiatti/GovSim`; the local checkout remote resolves to `https://github.com/giorgio-piatti/GovSim.git`, branch `main`, commit `1d11adf047b24fa2ba0d44a1d4931015ea2e5210`. The local license file is MIT license text, 1071 bytes, SHA-256 `55be1b08220f411edf83dbf7ac9b3b3e7e56b92fb2ef9b10af91526edd38f15e`.
 
-PathFinder source is now present from the exact pinned archive at `vendor/govsim/pathfinder`; provenance is recorded in `artifacts/logs/govsim_pathfinder_source_resolution_20260711T165207Z.json`. The minimal PathFinder import dependencies `backoff==2.2.1` and `pygtrie==2.5.0` were installed into the setting-local `.venv` from local wheel artifacts, moving the Qwen C0 runner past the previous import blocker.
 
-Next useful work: **start/reach a Qwen3-1.7B OpenAI-compatible endpoint, then rerun C0; human-check ID translation before C1.**
+Next useful work: **Human-check ID translation**.
 
 ## Question
 
@@ -48,21 +47,21 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-11T16:35:01+00:00` OK: Post-Codex smoke/experiment attempt exited 0
-- `2026-07-11T16:35:01+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
-- `2026-07-11T16:35:02+00:00` OK: Codex pass 17 completed
-- `2026-07-11T16:50:03+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_005002.txt
 - `2026-07-11T16:55:11+00:00` BLOCKED: GovSim C0 Qwen baseline blocked at http://127.0.0.1:8000/v1/chat/completions: LocalModelError: Local model endpoint unavailable at http://127.0.0.1:8000/v1/chat/completions: [Errno 1] Operation not permitted; artifact=artifacts/results/govsim_c0_qwen_baseline_20260711T165511Z.json; endpoint_probe=artifacts/logs/qwen_endpoint_probe_20260711T165511Z.json
 - `2026-07-11T16:52:07+00:00` OK: PathFinder source blocker resolved by downloading exact pinned archive from https://github.com/giorgio-piatti/PathFinder/archive/69b8d646ad3e618380dd0d47ec4d1e8d2d4c930e.tar.gz and extracting to vendor/govsim/pathfinder; artifact=artifacts/logs/govsim_pathfinder_source_resolution_20260711T165207Z.json; archive_sha256=6cde981bdaa56053b526fe82cbad3a8ee76fe112e03e3e98f38638d5860a39cc; license=MIT sha256=55be1b08220f411edf83dbf7ac9b3b3e7e56b92fb2ef9b10af91526edd38f15e. Git submodule update/direct clone still had intermittent github.com DNS, so this is archive source evidence rather than Git metadata.
 - `2026-07-11T16:55:37+00:00` OK: Installed minimal PathFinder import dependencies into setting-local .venv from local wheel artifacts: backoff==2.2.1 from artifacts/logs/backoff-2.2.1-py3-none-any.whl and pygtrie==2.5.0 from artifacts/logs/pygtrie-2.5.0-py3-none-any.whl. This unblocked upstream PathFinder import and moved C0 Qwen runner to the model endpoint gate.
 - `2026-07-11T16:57:04+00:00` OK: Harness scaffold check passed
+- `2026-07-11T16:58:45+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_005002.txt
+- `2026-07-11T16:58:45+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-11T16:59:10+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260711T165849Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260711T165849Z.jsonl
+- `2026-07-11T16:59:10+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 19 |
-| Result summaries | 60 |
+| Transcript JSON/JSONL | 20 |
+| Result summaries | 62 |
 | Logs | 53 |
 
 ## Open Questions
