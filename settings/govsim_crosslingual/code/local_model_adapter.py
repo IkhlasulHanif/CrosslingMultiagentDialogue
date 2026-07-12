@@ -82,7 +82,12 @@ class VLLMChatAdapter:
         opener: Any | None = None,
         max_retries: int = 0,
         retry_sleep_s: float = 1.0,
+        completion_token_param: str = "max_tokens",
     ) -> None:
+        if completion_token_param not in {"max_tokens", "max_completion_tokens"}:
+            raise ValueError(
+                "completion_token_param must be 'max_tokens' or 'max_completion_tokens'"
+            )
         self.base_url = (base_url or os.environ.get("GOVSIM_MODEL_BASE_URL") or DEFAULT_BASE_URL).rstrip("/")
         self.model = model or os.environ.get("GOVSIM_MODEL_NAME") or DEFAULT_MODEL
         self.timeout_s = timeout_s
@@ -90,6 +95,7 @@ class VLLMChatAdapter:
         self._opener = opener or urllib.request.build_opener()
         self.max_retries = max(0, max_retries)
         self.retry_sleep_s = max(0.0, retry_sleep_s)
+        self.completion_token_param = completion_token_param
 
     @property
     def chat_url(self) -> str:
@@ -107,7 +113,7 @@ class VLLMChatAdapter:
             "model": self.model,
             "messages": [self._message_payload(message) for message in messages],
             "temperature": temperature,
-            "max_tokens": max_tokens,
+            self.completion_token_param: max_tokens,
         }
         if extra:
             payload.update(extra)

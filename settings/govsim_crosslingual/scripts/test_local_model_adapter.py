@@ -102,6 +102,30 @@ class LocalModelAdapterTest(unittest.TestCase):
         self.assertEqual(payload["model"], "Qwen3-1.7B")
         self.assertEqual(payload["messages"][1]["content"], "Choose harvest.")
         self.assertEqual(payload["max_tokens"], 32)
+        self.assertNotIn("max_completion_tokens", payload)
+
+    def test_complete_can_post_openai_max_completion_tokens_payload(self) -> None:
+        opener = FakeOpener(
+            {
+                "model": "gpt-5.4-mini-2026-03-17",
+                "choices": [{"message": {"content": "Harvest: 2"}, "finish_reason": "stop"}],
+                "usage": {},
+            }
+        )
+        adapter = VLLMChatAdapter(
+            base_url="https://api.openai.com/v1",
+            model="gpt-5.4-mini-2026-03-17",
+            opener=opener,
+            completion_token_param="max_completion_tokens",
+        )
+
+        adapter.complete([{"role": "user", "content": "Choose harvest."}], max_tokens=24)
+
+        self.assertIsNotNone(opener.last_request)
+        assert opener.last_request is not None
+        payload = json.loads(opener.last_request.data.decode("utf-8"))
+        self.assertEqual(payload["max_completion_tokens"], 24)
+        self.assertNotIn("max_tokens", payload)
 
     def test_complete_retries_transient_remote_disconnect(self) -> None:
         opener = FlakyOpener(

@@ -44,6 +44,7 @@ from channel_instructions import (  # noqa: E402
 )
 from process_metrics import summarize_transcript  # noqa: E402
 from transcript_logger import TranscriptContext, TranscriptWriter  # noqa: E402
+from endpoint_probe import probe_endpoint  # noqa: E402
 
 from simulation.persona.common import (  # noqa: E402
     PersonaAction,
@@ -464,6 +465,8 @@ def main() -> int:
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     run_id = f"govsim_c0_openai_smoke_{stamp()}"
     result_path = RESULT_DIR / f"{run_id}.json"
+    api_key: str | None = None
+    model_name: str | None = None
 
     try:
         config = load_smoke_config()
@@ -480,6 +483,7 @@ def main() -> int:
             timeout_s=90.0,
             max_retries=2,
             retry_sleep_s=2.0,
+            completion_token_param="max_completion_tokens",
         )
         result = run_episode(adapter, model_name, run_id)
         result["api_key_source"] = key_source
@@ -492,6 +496,21 @@ def main() -> int:
         print(result_path.relative_to(ROOT))
         return 0
     except (LocalModelError, Exception) as exc:
+        endpoint_probe_result = None
+        endpoint_probe_path = None
+        if isinstance(exc, LocalModelError) and model_name:
+            endpoint_probe_result, endpoint_probe_path = probe_endpoint(
+                ROOT,
+                base_url="https://api.openai.com/v1",
+                model=model_name,
+                timeout_s=float(os.environ.get("GOVSIM_ENDPOINT_PROBE_TIMEOUT_S", "5")),
+                api_key=api_key,
+                schema_version="govsim-openai-endpoint-probe-v1",
+                model_provider="openai",
+                blocker_label="OpenAI smoke endpoint",
+                artifact_prefix="openai_smoke_endpoint_probe",
+                next_command_once_unblocked="./harness.sh run-smoke",
+            )
         result = {
             "schema_version": "govsim-c0-openai-smoke-v1",
             "timestamp_utc": utc_now(),
@@ -503,8 +522,23 @@ def main() -> int:
             "traceback_tail": traceback.format_exc()[-4000:],
             "next_command_once_unblocked": "./harness.sh run-smoke",
         }
+        if endpoint_probe_path is not None:
+            result["endpoint_probe_path"] = str(endpoint_probe_path.relative_to(ROOT))
+        if endpoint_probe_result is not None:
+            result["endpoint_probe"] = {
+                "schema_version": endpoint_probe_result.get("schema_version"),
+                "models_url": endpoint_probe_result.get("models_url"),
+                "endpoint_reachable": endpoint_probe_result.get("endpoint_reachable"),
+                "blockers": endpoint_probe_result.get("blockers", []),
+            }
         write_json(result_path, result)
-        append_event("smoke", "BLOCKED", f"GovSim C0 OpenAI smoke blocked: {type(exc).__name__}: {exc}; artifact={result_path.relative_to(ROOT)}")
+        message = (
+            f"GovSim C0 OpenAI smoke blocked: {type(exc).__name__}: {exc}; "
+            f"artifact={result_path.relative_to(ROOT)}"
+        )
+        if endpoint_probe_path is not None:
+            message += f"; endpoint_probe={endpoint_probe_path.relative_to(ROOT)}"
+        append_event("smoke", "BLOCKED", message)
         print(result_path.relative_to(ROOT))
         return 2
 

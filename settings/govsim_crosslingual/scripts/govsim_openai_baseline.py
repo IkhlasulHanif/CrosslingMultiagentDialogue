@@ -173,6 +173,7 @@ def main() -> int:
             timeout_s=120.0,
             max_retries=2,
             retry_sleep_s=2.0,
+            completion_token_param="max_completion_tokens",
         )
         result = run_episode(
             adapter,
