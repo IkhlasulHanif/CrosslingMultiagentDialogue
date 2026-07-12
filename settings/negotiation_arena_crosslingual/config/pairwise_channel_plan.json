@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "purpose": "Pairwise output-channel run plan for active NegotiationArena language pairs. Language is the visible interaction-output channel; benchmark rules and private state remain in English unless a later rule-language experiment is declared.",
+  "model": {
+    "provider": "openai_benchmark",
+    "name": "gpt-5.4-mini-2026-03-17",
+    "evidence_scope": "OpenAI benchmark override evidence; not Qwen3-1.7B evidence"
+  },
+  "games": ["buy_sell", "resource_exchange"],
+  "active_pairs": [
+    {
+      "pair": "EN-ID",
+      "lx": "EN",
+      "ly": "ID",
+      "conditions": [
+        {
+          "condition": "C0",
+          "label": "EN monolingual output-channel baseline",
+          "role_languages": {"buyer": "EN", "seller": "EN"}
+        },
+        {
+          "condition": "C1",
+          "label": "ID monolingual output-channel baseline",
+          "role_languages": {"buyer": "ID", "seller": "ID"}
+        },
+        {
+          "condition": "C2",
+          "label": "forced mixed buyer EN / seller ID",
+          "counterbalance_id": "buyer_lx_seller_ly",
+          "role_languages": {"buyer": "EN", "seller": "ID"}
+        },
+        {
+          "condition": "C2",
+          "label": "forced mixed buyer ID / seller EN",
+          "counterbalance_id": "buyer_ly_seller_lx",
+          "role_languages": {"buyer": "ID", "seller": "EN"}
+        },
+        {
+          "condition": "C3",
+          "label": "free-choice bilingual EN-ID contact",
+          "allowed_languages": ["EN", "ID"],
+          "role_languages": {"buyer": "EN-ID", "seller": "EN-ID"}
+        }
+      ]
+    },
+    {
+      "pair": "EN-ZH",
+      "lx": "EN",
+      "ly": "ZH",
+      "conditions": [
+        {
+          "condition": "C0",
+          "label": "EN monolingual output-channel baseline",
+          "role_languages": {"buyer": "EN", "seller": "EN"}
+        },
+        {
+          "condition": "C1",
+          "label": "ZH monolingual output-channel baseline",
+          "role_languages": {"buyer": "ZH", "seller": "ZH"}
+        },
+        {
+          "condition": "C2",
+          "label": "forced mixed buyer EN / seller ZH",
+          "counterbalance_id": "buyer_lx_seller_ly",
+          "role_languages": {"buyer": "EN", "seller": "ZH"}
+        },
+        {
+          "condition": "C2",
+          "label": "forced mixed buyer ZH / seller EN",
+          "counterbalance_id": "buyer_ly_seller_lx",
+          "role_languages": {"buyer": "ZH", "seller": "EN"}
+        },
+        {
+          "condition": "C3",
+          "label": "free-choice bilingual EN-ZH contact",
+          "allowed_languages": ["EN", "ZH"],
+          "role_languages": {"buyer": "EN-ZH", "seller": "EN-ZH"}
+        }
+      ]
+    },
+    {
+      "pair": "ZH-ID",
+      "lx": "ZH",
+      "ly": "ID",
+      "conditions": [
+        {
+          "condition": "C0",
+          "label": "ZH monolingual output-channel baseline",
+          "role_languages": {"buyer": "ZH", "seller": "ZH"}
+        },
+        {
+          "condition": "C1",
+          "label": "ID monolingual output-channel baseline",
+          "role_languages": {"buyer": "ID", "seller": "ID"}
+        },
+        {
+          "condition": "C2",
+          "label": "forced mixed buyer ZH / seller ID",
+          "counterbalance_id": "buyer_lx_seller_ly",
+          "role_languages": {"buyer": "ZH", "seller": "ID"}
+        },
+        {
+          "condition": "C2",
+          "label": "forced mixed buyer ID / seller ZH",
+          "counterbalance_id": "buyer_ly_seller_lx",
+          "role_languages": {"buyer": "ID", "seller": "ZH"}
+        },
+        {
+          "condition": "C3",
+          "label": "free-choice bilingual ZH-ID contact",
+          "allowed_languages": ["ZH", "ID"],
+          "role_languages": {"buyer": "ZH-ID", "seller": "ZH-ID"}
+        }
+      ]
+    }
+  ],
+  "gates": [
+    "Run C0 and C1 monolingual baselines before C2/C3.",
+    "Run python3 scripts/check_g2_capability_floor.py before mixed-language conditions.",
+    "For C2, run both counterbalance rows for each pair before interpreting payoff asymmetry."
+  ],
+  "next_executable_command": "bash scripts/run_c1_baseline.sh"
+}

@@ -16,6 +16,7 @@ Run:
 ./harness.sh status
 ./harness.sh check
 ./harness.sh run-smoke
+python3 scripts/validate_pairwise_channel_plan.py
 python3 scripts/generate_translation_review_packet.py
 bash scripts/run_c0_baseline.sh
 bash scripts/run_c0_resource_exchange_baseline.sh

@@ -41,7 +41,7 @@ change payoff, anchoring, or whose terms dominate?
 - [x] Run C0 EN baseline with Qwen3-1.7B before the GPT-mini switch.
 - [ ] Run C1 ID baseline with ID-only output-channel instructions.
 - [ ] Run OpenAI-backed baseline/matrix commands if Qwen/Modal remains unavailable.
-- [ ] Add EN-ZH and ZH-ID pairwise channel-run plans.
+- [x] Add EN-ZH and ZH-ID pairwise channel-run plans.
 - [ ] Check G2 capability floor before C2/C3.
 - [x] Write `budget.md` before full matrix.
 
