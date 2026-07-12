@@ -17,7 +17,7 @@ Process-metric caveat: the C1 baseline framework summary contained one Hebrew-sc
 Pairwise channel-run plan state: `plan/channel_run_plan.md` now lists EN-ID, EN-ZH, and ZH-ID C0/C1 commands and C2 counterbalances. Thin ladder wrappers are available at `scripts/run_openai_en_zh_c0_baseline.sh`, `scripts/run_openai_en_zh_c1_baseline.sh`, `scripts/run_openai_zh_id_c0_baseline.sh`, and `scripts/run_openai_zh_id_c1_baseline.sh`.
 
 
-Next useful work: **Implement/run EN-ID C3 free-choice episodes**.
+Next useful work: **Run EN-ID C3 free-choice episodes**.
 
 ## Question
 
@@ -50,25 +50,26 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T17:48:31+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260713_014831.txt
-- `2026-07-12T17:49:29+00:00` OK: GovSim C0 OpenAI baseline produced transcript/result artifact=artifacts/results/govsim_c0_openai_baseline_20260712T174917Z.json transcript=artifacts/transcripts/govsim_c0_openai_baseline_20260712T174917Z.jsonl
-- `2026-07-12T17:49:50+00:00` OK: GovSim C1 OpenAI baseline produced transcript/result artifact=artifacts/results/govsim_c1_openai_baseline_20260712T174935Z.json transcript=artifacts/transcripts/govsim_c1_openai_baseline_20260712T174935Z.jsonl
-- `2026-07-12T17:55:10+00:00` OK: GovSim C2 OpenAI EN-ID counterbalance A produced artifact=artifacts/results/govsim_c2_openai_en_id_a_20260712T175459Z.json transcript=artifacts/transcripts/govsim_c2_openai_en_id_a_20260712T175459Z.jsonl
 - `2026-07-12T17:55:41+00:00` OK: GovSim C2 OpenAI EN-ID counterbalance B produced artifact=artifacts/results/govsim_c2_openai_en_id_b_20260712T175531Z.json transcript=artifacts/transcripts/govsim_c2_openai_en_id_b_20260712T175531Z.jsonl
 - `2026-07-12T17:56:10+00:00` OK: Updated GovSim process metrics to tokenize Hebrew script as off-pair HE and regenerated fresh C0/C1 process summaries; focused process-metrics tests pass.
 - `2026-07-12T17:56:20+00:00` OK: GovSim EN-ID G2 capability floor passed for OpenAI baselines; artifact=artifacts/logs/g2_en_id_openai_capability_floor_20260712T174935Z.json.
 - `2026-07-12T17:57:36+00:00` OK: Harness scaffold check passed
+- `2026-07-12T17:59:21+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260713_014831.txt
+- `2026-07-12T17:59:21+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-12T17:59:36+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260712T175925Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260712T175925Z.jsonl
+- `2026-07-12T17:59:36+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 58 |
-| Result summaries | 59 |
+| Transcript JSON/JSONL | 59 |
+| Result summaries | 61 |
 | Logs | 91 |
 
 ## Open Questions
 
-- EN-ID C3 free-choice episodes are not implemented/run yet.
-- EN-ZH and ZH-ID C0/C1 ladder baselines remain open.
-- The final TeX/PDF is still missing.
+- Are output-channel instructions and transcript language-compliance checks implemented for the active language pair?
+- Has `budget.md` been written before any full matrix run?
+- Did C0 and C1 pass the benchmark capability floor before C2/C3?
+- Are role-language assignments counterbalanced?
