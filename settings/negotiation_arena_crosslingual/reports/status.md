@@ -42,21 +42,21 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-BLOCKED: Scoped commit/push blocked by sandbox filesystem permissions: git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock; failed_command=git add README.md code/negotiation_arena_crosslingual/run_c0_smoke.py code/negotiation_arena_crosslingual/run_c1_baseline.py scripts/run_c1_openai_bridge_baseline.sh reports/findings.md reports/status.md plan/events.jsonl artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json artifacts/results/benchmark_model_probe.json artifacts/results/bringup_check.json artifacts/results/language_channel_validation.json artifacts/results/baseline_c1_buy_sell_id_seed001.bridge_blocked.json
+BLOCKED: C1 ID OpenAI shell bridge blocked; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.bridge_blocked.json; failed_command=bash scripts/run_c1_openai_bridge_baseline.sh
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T04:10:13+00:00` OK: Harness scaffold check passed
-- `2026-07-12T04:11:32+00:00` BLOCKED: Scoped commit/push blocked by sandbox filesystem permissions: git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock; failed_command=git add README.md code/negotiation_arena_crosslingual/run_c0_smoke.py code/negotiation_arena_crosslingual/run_c1_baseline.py scripts/run_c1_openai_bridge_baseline.sh reports/findings.md reports/status.md plan/events.jsonl artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json artifacts/results/benchmark_model_probe.json artifacts/results/bringup_check.json artifacts/results/language_channel_validation.json artifacts/results/baseline_c1_buy_sell_id_seed001.bridge_blocked.json
-- `2026-07-12T04:11:59+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_120454.txt
-- `2026-07-12T04:11:59+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-12T04:12:00+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-12T04:12:01+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T04:12:10+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
-- `2026-07-12T04:12:10+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-12T04:27:51+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-12T04:27:51+00:00` BLOCKED: OpenAI benchmark model probe failed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T04:27:51+00:00` BLOCKED: C1 ID baseline blocked on benchmark provider openai_benchmark; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh
+- `2026-07-12T04:28:02+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-12T04:28:02+00:00` OK: OpenAI benchmark shell bridge ready; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T04:28:02+00:00` RUNNING: C1 ID baseline shell bridge request ready; request=artifacts/tmp/c1_openai_bridge_request.json
+- `2026-07-12T04:28:18+00:00` BLOCKED: C1 ID OpenAI shell bridge blocked; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.bridge_blocked.json; failed_command=bash scripts/run_c1_openai_bridge_baseline.sh
+- `2026-07-12T04:29:14+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
@@ -64,7 +64,7 @@ or benchmark-specific failures. They will show up here.
 |---|---:|
 | Transcript JSON/JSONL | 3 |
 | Result summaries | 21 |
-| Logs | 72 |
+| Logs | 73 |
 
 ## Open Questions
 

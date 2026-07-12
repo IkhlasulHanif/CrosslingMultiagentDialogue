@@ -10,15 +10,18 @@ transcripts.
 
 Current executable blocker: `bash scripts/run_c1_baseline.sh` uses the active
 OpenAI benchmark provider by default, but Python cannot resolve
-`api.openai.com` in this Codex sandbox. A fallback bridge command now exists:
+`api.openai.com` in this Codex sandbox. A fallback bridge command exists:
 `bash scripts/run_c1_openai_bridge_baseline.sh`. It lets Python generate/replay
 the upstream NegotiationArena prompts while the surrounding shell performs the
 OpenAI `curl` calls.
 
-The bridge reached the first real C1 model request at 2026-07-12T04:09:16 UTC,
-after bring-up, offer parser validation, process-metric validation, and
-EN/ID/ZH channel validation all passed. Top-level shell `curl` then failed with
-exit 6, `Could not resolve host: api.openai.com`, even after bounded retries.
+Fresh pass result: the standard C1 ID baseline command was rerun at
+2026-07-12T04:27:51 UTC and blocked during the OpenAI benchmark probe with
+`nodename nor servname provided, or not known`; curl fallback also failed with
+exit 6. The shell bridge was then rerun at 2026-07-12T04:28:18 UTC. It reached
+the first real C1 model request after bring-up, offer parser validation,
+process-metric validation, and EN/ID/ZH channel validation all passed, but
+top-level shell `curl` failed with `Could not resolve host: api.openai.com`.
 No C1 transcript or metrics were created.
 
 Fresh blocker artifacts:
