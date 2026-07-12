@@ -2,15 +2,16 @@ Qwen3-1.7B C0 EN baselines for buy/sell and resource_exchange pass the floor
 (deal_rate=1.0, offer_parse_rate=1.0). C1 ID and G2 remain blocked on pending
 human review of 16 EN-ID translation units.
 
-A fresh real C0 OpenAI buy/sell attempt at 2026-07-11T23:57:06 UTC produced no
+A fresh real C0 OpenAI buy/sell attempt at 2026-07-12T00:14:31 UTC produced no
 transcript because `api.openai.com` could not be resolved by urllib or curl.
 Blocker artifact: `artifacts/results/benchmark_model_probe.json`. Retry with
 `bash scripts/run_c0_openai_baseline.sh` after network/DNS access is restored.
 
-Translation, C1, and G2 blockers were refreshed in this pass:
-`translation_review_packet.json`, `translation_review_validation.json`,
-`baseline_c1_buy_sell_id_seed001.blocked.json`, and `g2_capability_floor.json`.
-No C1/C2/C3 empirical evidence was produced.
+The translation review gate and C1 ID baseline command were refreshed in this
+pass. `artifacts/results/translation_review_validation.json` still shows 16
+pending units, and `artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`
+confirms `bash scripts/run_c1_baseline.sh` exits before model calls until the
+human review file is approved. No C1/C2/C3 empirical evidence was produced.
 
 After human review clears, the C1 runner will select the explicit OpenAI
 benchmark override (`openai_benchmark` / `gpt-4.1-mini`) and label resulting
@@ -53,7 +54,7 @@ evidence until `config/translation_review.json` is completed and
 The C1 ID baseline command exists as `bash scripts/run_c1_baseline.sh`. Current
 run result is a gate artifact, not empirical evidence:
 `artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`, refreshed at
-2026-07-11T23:38:52+00:00 by the real C1 command. It blocks on 16 pending
+2026-07-12T00:14:50+00:00 by the real C1 command. It blocks on 16 pending
 translation-review units and points reviewers to `docs/id_translation_review.md`
 for side-by-side EN/ID text. The packet can be regenerated with
 `python3 scripts/generate_translation_review_packet.py`, which also writes
