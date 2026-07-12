@@ -1,0 +1,164 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.8in]{geometry}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{url}
+\usepackage{hyperref}
+\hypersetup{colorlinks=false,pdfborder={0 0 0}}
+
+\title{B5 NegotiationArena Cross-Lingual Contact: Seed-101 OpenAI Evidence}
+\author{negotiation\_arena\_crosslingual}
+\date{2026-07-13}
+
+\newcommand{\artifact}[1]{\path{#1}}
+
+\begin{document}
+\maketitle
+
+\section*{Answer}
+
+For the current B5 NegotiationArena evidence, the answer is a constrained null:
+the seed-101 OpenAI \texttt{gpt-5.4-mini-2026-03-17} runs do not support a
+stable higher-resource language payoff premium after counterbalancing. All
+buy/sell C2 rows reached deals and parsed offers, but the payoff differences
+were role-sensitive and two C2 rows failed strict assigned-channel compliance
+because visible dialogue converged to Chinese. These are OpenAI benchmark
+override results, not Qwen3 evidence.
+
+H1 is not supported. EN-ID showed EN minus ID payoff asymmetry of +36 when EN
+was buyer, but 0 when EN was seller. EN-ZH flipped sign, -10 then +8. ZH-ID was
+-20 then 0 for ZH minus ID. H2 therefore fails as a language-premium claim:
+the counterbalances do not show a stable same-sign premium. H3 is weak and
+mostly first-offer/seller driven rather than higher-resource-channel driven.
+Final prices were 0--10 ZUP away from the first offer, and the first offer was
+always made by the seller. H4 is supported only as a convergence observation:
+C3 converged to EN for EN-ID, to ZH for EN-ZH, and to ZH for ZH-ID, with no
+detected off-pair English leakage in ZH-ID. H5 is the best current summary:
+the capability floor passed, C2 outcomes were not worse than baselines, and no
+counterbalanced language premium remains defensible from this evidence.
+
+\section*{Design and Gates}
+
+Language is the visible interaction-output channel. Rules and private state
+remain in English. The active language pairs are EN-ID, EN-ZH, and ZH-ID. C0
+and C1 are monolingual output-channel baselines; C2 assigns each role one
+language and counterbalances buyer/seller role; C3 permits either language in
+the active pair. Source bring-up used the local NegotiationArena checkout at
+\artifact{external/NegotiationArena}, branch \texttt{paper\_experiment\_code},
+commit \texttt{d35a7a3aa0d94c2d49f1d6ac13c5f931851abf12}.
+
+The G2 capability gate passed. C0 EN buy/sell reached a deal with offer parse
+rate 1.0 and channel compliance 1.0 at
+\artifact{artifacts/results/baseline_c0_buy_sell_en_seed001.openai_benchmark.metrics.json}.
+C1 ID buy/sell likewise reached a deal with offer parse rate 1.0 and channel
+compliance 1.0 at
+\artifact{artifacts/results/baseline_c1_buy_sell_id_seed001.metrics.json}. C1
+ZH buy/sell reached a deal with offer parse rate 1.0 and channel compliance 1.0
+at \artifact{artifacts/results/pair_en_zh_c1_buy_sell_seed101.metrics.json}.
+The gate artifact is \artifact{artifacts/results/g2_capability_floor.json}.
+
+\section*{Evidence Table}
+
+\begin{center}
+\small
+\begin{tabular}{|p{0.12\linewidth}|p{0.16\linewidth}|p{0.11\linewidth}|p{0.11\linewidth}|p{0.12\linewidth}|p{0.12\linewidth}|p{0.13\linewidth}|}
+\hline
+Pair/condition & Assignment & Final & Payoffs & Lx-Ly payoff & Channel compliance & Interpretation \\
+\hline
+EN-ID C2 & buyer EN, seller ID & price 52 & buyer 48, seller 12 & +36 & 1.00 & EN advantage only with EN as buyer \\
+\hline
+EN-ID C2 & buyer ID, seller EN & price 70 & buyer 30, seller 30 & 0 & 1.00 & counterbalance removes EN premium \\
+\hline
+EN-ZH C2 & buyer EN, seller ZH & price 75 & buyer 25, seller 35 & -10 & 0.50 & Chinese convergence; no EN premium \\
+\hline
+EN-ZH C2 & buyer ZH, seller EN & price 74 & buyer 26, seller 34 & +8 & 0.667 & sign flip; compliance limited \\
+\hline
+ZH-ID C2 & buyer ZH, seller ID & price 80 & buyer 20, seller 40 & -20 & 1.00 & no ZH premium \\
+\hline
+ZH-ID C2 & buyer ID, seller ZH & price 70 & buyer 30, seller 30 & 0 & 0.50 & Chinese convergence; no stable premium \\
+\hline
+EN-ID C3 & bilingual EN/ID & price 50 & buyer 50, seller 10 & n/a & 1.00 & converged to EN; off-pair 0 \\
+\hline
+EN-ZH C3 & bilingual EN/ZH & price 50 & buyer 50, seller 10 & n/a & 1.00 & converged to ZH; off-pair 0 \\
+\hline
+ZH-ID C3 & bilingual ZH/ID & price 60 & buyer 40, seller 20 & n/a & 1.00 & converged to ZH; EN leakage 0 \\
+\hline
+\end{tabular}
+\end{center}
+
+The C2 buy/sell rows cite, in order:
+\artifact{artifacts/results/pair_en_id_c2_buyer_lx_seller_ly_buy_sell_seed101.metrics.json},
+\artifact{artifacts/results/pair_en_id_c2_buyer_ly_seller_lx_buy_sell_seed101.metrics.json},
+\artifact{artifacts/results/pair_en_zh_c2_buyer_lx_seller_ly_buy_sell_seed101.metrics.json},
+\artifact{artifacts/results/pair_en_zh_c2_buyer_ly_seller_lx_buy_sell_seed101.metrics.json},
+\artifact{artifacts/results/pair_zh_id_c2_buyer_lx_seller_ly_buy_sell_seed101.metrics.json}, and
+\artifact{artifacts/results/pair_zh_id_c2_buyer_ly_seller_lx_buy_sell_seed101.metrics.json}.
+The C3 rows cite
+\artifact{artifacts/results/pair_en_id_c3_buy_sell_seed101.metrics.json},
+\artifact{artifacts/results/pair_en_zh_c3_buy_sell_seed101.metrics.json}, and
+\artifact{artifacts/results/pair_zh_id_c3_buy_sell_seed101.metrics.json}.
+
+\section*{First-Offer Anchoring}
+
+The buy/sell first-offer metric is final price minus first offer price. The
+EN-ID rows were -8 when the ID seller opened at 60 and -10 when the EN seller
+opened at 80. EN-ZH was -5 when the ZH seller opened at 80 and -6 when the EN
+seller opened at 80. ZH-ID was 0 when the ID seller opened at 80 and -10 when
+the ZH seller opened at 80. This is not a clean higher-resource anchoring
+effect; it is more consistent with seller-first-offer anchoring plus role and
+compliance effects. The one completed resource-exchange C2 row,
+\artifact{artifacts/results/pair_en_id_c2_buyer_lx_seller_ly_resource_exchange_seed101.metrics.json},
+ended exactly at the EN agent's first allocation offer, but resource exchange
+is not yet counterbalanced.
+
+\section*{Representative Interaction Excerpts}
+
+EN-ID C2 buyer-EN/seller-ID:
+the ID seller opened, ``Saya menawarkan X dengan harga 60 ZUP,'' the EN buyer
+countered, ``I can do 50 ZUP for X,'' and the ID seller accepted 52 ZUP. Full
+transcript:
+\artifact{artifacts/transcripts/pair_en_id_c2_buyer_lx_seller_ly_buy_sell_seed101.json}.
+
+EN-ZH C2 buyer-EN/seller-ZH:
+the seller opened in Chinese with a translated offer of 1 X for 80 ZUP, and the
+buyer assigned to English also replied in Chinese with a 70 ZUP counteroffer.
+This explains the 0.50 assigned-channel compliance despite a valid deal.
+Transcript:
+\artifact{artifacts/transcripts/pair_en_zh_c2_buyer_lx_seller_ly_buy_sell_seed101.json}.
+
+ZH-ID C2 buyer-ID/seller-ZH:
+the ZH seller opened at 80 ZUP; the ID-assigned buyer replied in Chinese with
+60 ZUP and later accepted 70 ZUP. This row is useful evidence of channel drift,
+not a clean assigned-language treatment. Transcript:
+\artifact{artifacts/transcripts/pair_zh_id_c2_buyer_ly_seller_lx_buy_sell_seed101.json}.
+
+C3 free choice:
+EN-ID used English throughout at
+\artifact{artifacts/transcripts/pair_en_id_c3_buy_sell_seed101.json}; EN-ZH
+used Chinese throughout at
+\artifact{artifacts/transcripts/pair_en_zh_c3_buy_sell_seed101.json}; ZH-ID
+used Chinese throughout, with no detected English leakage, at
+\artifact{artifacts/transcripts/pair_zh_id_c3_buy_sell_seed101.json}.
+
+\section*{Limitations and Next Work}
+
+This report is intentionally narrow. It is a seed-101 OpenAI benchmark evidence
+report and should not be generalized as a Qwen3 matrix result. The buy/sell
+matrix is counterbalanced for all active pairs, but it has only one seed per
+row. EN-ZH and one ZH-ID C2 row are compliance-limited because agents converged
+to Chinese despite assigned channels. Resource exchange is executable for all
+active pairs, but only the EN-ID agent-a-EN/agent-b-ID row has been run; the
+next exact resource-exchange commands are listed in
+\artifact{reports/findings.md}. More seeds and completed resource-exchange
+counterbalances are needed before estimating effect sizes.
+
+\section*{Conclusion}
+
+The current answer to the headline question is no: in this evidence bundle,
+the higher-resource visible language channel does not capture a robust
+counterbalanced payoff premium. The clearest positive finding is process-level:
+free-choice language selection can converge strongly to one visible language,
+and in these seed-101 runs it converged to EN for EN-ID but to ZH for EN-ZH and
+ZH-ID.
+
+\end{document}

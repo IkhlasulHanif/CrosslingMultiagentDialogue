@@ -3,6 +3,14 @@ per user request on 2026-07-12, and active language pairs are EN-ID, EN-ZH,
 and ZH-ID. New benchmark artifacts must be labeled as OpenAI evidence, not
 Qwen evidence.
 
+Final report result: `reports/paper/main.tex` and `reports/paper/main.pdf`
+now exist. The paper answers H1-H5 directly from local artifacts as a
+constrained null/role-sensitive seed-101 OpenAI result: no robust
+counterbalanced higher-resource payoff premium is supported; C3 convergence is
+EN for EN-ID and ZH for EN-ZH/ZH-ID; ZH-ID shows no detected English leakage.
+The paper records that EN-ZH C2 and one ZH-ID C2 row are compliance-limited,
+and that resource exchange is executable but not yet counterbalanced.
+
 Control definition: language means required interaction-output channel, not
 translated benchmark rules. Rules/private state may remain in English; C0/C1/C2/C3
 constrain visible negotiation messages and validate channel compliance from

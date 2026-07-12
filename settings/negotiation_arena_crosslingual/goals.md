@@ -77,8 +77,8 @@ that as the answer rather than forcing an effect.
 - [x] Add executable pairwise resource-exchange runner for EN-ID, EN-ZH, and ZH-ID.
 - [x] Add EN-ZH and ZH-ID pairwise channel-run plans.
 - [x] Check G2 capability floor before C2/C3.
-- [ ] Produce `reports/paper/main.tex` answering H1-H5 with artifact-backed claims.
-- [ ] Compile `reports/paper/main.pdf` from the TeX source.
+- [x] Produce `reports/paper/main.tex` answering H1-H5 with artifact-backed claims.
+- [x] Compile `reports/paper/main.pdf` from the TeX source.
 - [x] Write `budget.md` before full matrix.
 
 ## Metrics
