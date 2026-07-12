@@ -64,9 +64,9 @@ valid if the C2/C3 cells track the monolingual baselines.
 - [x] Check G2 capability floor before C2/C3.
 - [x] Run EN-ID C2 counterbalances: 2 EN / 3 ID and 3 EN / 2 ID.
 - [x] Run EN-ID C3 free-choice episodes.
-- [ ] Add ZH ladder runs: EN-ZH and ZH-ID C0/C1, then C2/C3 if baselines pass.
-- [ ] Produce `reports/paper/main.tex` answering H1-H5 with artifact-backed claims.
-- [ ] Compile `reports/paper/main.pdf` from the TeX source.
+- [x] Add ZH ladder runs: EN-ZH and ZH-ID C0/C1, then C2/C3 if baselines pass.
+- [x] Produce `reports/paper/main.tex` answering H1-H5 with artifact-backed claims.
+- [x] Compile `reports/paper/main.pdf` from the TeX source.
 - [x] Write `budget.md` before full matrix.
 
 ## Metrics

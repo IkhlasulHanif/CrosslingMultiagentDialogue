@@ -1,0 +1,78 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.8in]{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{xurl}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\setlist{nosep,leftmargin=*}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\newcommand{\artifact}[1]{{\scriptsize\path{#1}}}
+
+\title{GovSim Cross-Lingual Contact Pilot}
+\author{B1 GovSim Cross-Lingual Setting}
+\date{OpenAI benchmark evidence through 2026-07-12}
+
+\begin{document}
+\maketitle
+
+\textbf{Question.} In a cooperative fishery resource-management game, does the required visible interaction language change group welfare beyond monolingual channel baselines?
+
+\textbf{Short answer.} In this one-seed OpenAI pilot, the main result is mostly null: all EN-ID and ZH-ID C0/C1/C2/C3 cells and most EN-ZH cells produced survival time 1, parseable harvest rate 1.0, total welfare 100.0, and Gini 0.0. The only adverse outcome was EN-ZH C2 counterbalance B, where one English-channel agent selected 0 tons while the other four selected 20 tons, yielding welfare 80.0 and Gini 0.2 despite perfect parseability and channel compliance. These are OpenAI \texttt{gpt-5.4-mini-2026-03-17} benchmark artifacts, not Qwen3 evidence.
+
+\section*{Design And Evidence Scope}
+The game is the GovSim fishery substrate with five agents. Rules and private state stayed in English; only the agents' visible output channel was manipulated. Pairs were EN-ID, EN-ZH, and ZH-ID. C0/C1 are monolingual baselines, C2 is forced mixed-language contact with 2/3 and 3/2 counterbalances, and C3 is free-choice between the two pair languages. All claims below cite local artifacts under this setting directory.
+
+\section*{Condition Table}
+\scriptsize
+\begin{tabular}{@{}llp{0.9in}rrrp{2.9in}@{}}
+\toprule
+Pair & Cond. & Assignment & Welfare & Gini & Parse & Artifact and process note \\
+\midrule
+EN-ID & C0 & EN & 100 & 0.0 & 1.0 & \artifact{artifacts/results/govsim_c0_openai_baseline_20260712T174917Z.json}; baseline \\
+EN-ID & C1 & ID & 100 & 0.0 & 1.0 & \artifact{artifacts/results/govsim_c1_openai_baseline_20260712T174935Z.json}; one HE off-pair token in summary metric \\
+EN-ID & C2A & 2 EN / 3 ID & 100 & 0.0 & 1.0 & \artifact{artifacts/results/govsim_c2_openai_en_id_a_20260712T175459Z.json}; EN 0.432 / ID 0.568 \\
+EN-ID & C2B & 3 EN / 2 ID & 100 & 0.0 & 1.0 & \artifact{artifacts/results/govsim_c2_openai_en_id_b_20260712T175531Z.json}; EN 0.651 / ID 0.349 \\
+EN-ID & C3 & free EN/ID & 100 & 0.0 & 1.0 & \artifact{artifacts/results/govsim_c3_openai_en_id_free_20260712T180413Z.json}; EN share 1.0 \\
+\midrule
+EN-ZH & C0 & EN & 100 & 0.0 & 1.0 & \artifact{artifacts/results/govsim_c0_openai_baseline_20260712T180942Z.json}; baseline \\
+EN-ZH & C1 & ZH & 100 & 0.0 & 1.0 & \artifact{artifacts/results/govsim_c1_openai_baseline_20260712T181003Z.json}; baseline \\
+EN-ZH & C2A & 2 EN / 3 ZH & 100 & 0.0 & 1.0 & \artifact{artifacts/results/govsim_c2_openai_en_zh_a_20260712T181150Z.json}; EN 0.493 / ZH 0.507 \\
+EN-ZH & C2B & 3 EN / 2 ZH & 80 & 0.2 & 1.0 & \artifact{artifacts/results/govsim_c2_openai_en_zh_b_20260712T181210Z.json}; EN 0.746 / ZH 0.254 \\
+EN-ZH & C3 & free EN/ZH & 100 & 0.0 & 1.0 & \artifact{artifacts/results/govsim_c3_openai_en_zh_free_20260712T181230Z.json}; EN share 1.0 \\
+\midrule
+ZH-ID & C0 & ZH & 100 & 0.0 & 1.0 & \artifact{artifacts/results/govsim_c0_openai_baseline_20260712T181024Z.json}; baseline \\
+ZH-ID & C1 & ID & 100 & 0.0 & 1.0 & \artifact{artifacts/results/govsim_c1_openai_baseline_20260712T181044Z.json}; baseline \\
+ZH-ID & C2A & 2 ZH / 3 ID & 100 & 0.0 & 1.0 & \artifact{artifacts/results/govsim_c2_openai_zh_id_a_20260712T181248Z.json}; ZH 0.402 / ID 0.598 \\
+ZH-ID & C2B & 3 ZH / 2 ID & 100 & 0.0 & 1.0 & \artifact{artifacts/results/govsim_c2_openai_zh_id_b_20260712T181308Z.json}; ZH 0.534 / ID 0.466 \\
+ZH-ID & C3 & free ZH/ID & 100 & 0.0 & 1.0 & \artifact{artifacts/results/govsim_c3_openai_zh_id_free_20260712T181328Z.json}; ZH share 1.0; EN off-pair 0.0 \\
+\bottomrule
+\end{tabular}
+\normalsize
+
+\section*{Hypotheses}
+\textbf{H1, coordination tax.} Mostly not supported in the one-seed pilot. C2 did not fall below the C0/C1 baselines for EN-ID or ZH-ID, and EN-ZH C2A matched its baselines. EN-ZH C2B is the counterexample: welfare fell to 80.0 with Gini 0.2 because one English-channel agent harvested 0 while the other four agents harvested 20. This is a real outcome deviation, but it is one counterbalance in one seed, not enough to claim a stable cross-lingual tax.
+
+\textbf{H2, shared-norm failure.} Weak evidence only. Most cells formed the acted-on 20-ton harvest norm. EN-ZH C2B lacked full acted-on norm agreement because persona\_2 selected 0 tons, but the subsequent conversation still discussed reducing catches for sustainability. The artifact is \artifact{artifacts/transcripts/govsim_c2_openai_en_zh_b_20260712T181210Z.jsonl}.
+
+\textbf{H3, language-channel anchoring.} Not supported by this pilot. The one adverse EN-ZH C2B outcome came from an English-channel agent choosing 0, not from the higher-resource channel pulling the group norm upward. Most acted harvests were exactly 20 across all languages and conditions, so there is little variation for an anchoring estimate.
+
+\textbf{H4, free-choice convergence.} Supported in the pilot, but only as a one-seed observation. EN-ID C3 and EN-ZH C3 converged to English by token share. ZH-ID C3 converged to Chinese, with no off-pair English pivot tokens. See process metrics \artifact{artifacts/logs/govsim_c3_openai_en_id_free_20260712T180413Z_process_metrics.json}, \artifact{artifacts/logs/govsim_c3_openai_en_zh_free_20260712T181230Z_process_metrics.json}, and \artifact{artifacts/logs/govsim_c3_openai_zh_id_free_20260712T181328Z_process_metrics.json}.
+
+\textbf{H5, outcome link.} The converged C3 episodes all had welfare 100.0, Gini 0.0, and parseability 1.0. There are no non-converged C3 episodes in this pilot, so the converged versus non-converged comparison remains untested.
+
+\section*{Representative Transcript Excerpts}
+\textbf{EN-ZH C2B harvest divergence.} In \artifact{artifacts/transcripts/govsim_c2_openai_en_zh_b_20260712T181210Z.jsonl}, persona\_0 wrote: ``I would catch 20 tons this month. Answer: 20.'' Persona\_2 wrote: ``I should avoid overfishing and help keep the lake at its maximum sustainable level... Answer: 0.'' This produced the welfare-80 counterexample in the condition table.
+
+\textbf{ZH-ID C3 language convergence.} In \artifact{artifacts/transcripts/govsim_c3_openai_zh_id_free_20260712T181328Z.jsonl}, all five harvest answers used Chinese-format final answers with 20 tons, and the first conversation message urged the group to reduce next month after everyone caught 20 tons. The paired process file reports active language share ZH 1.0, ID 0.0, EN 0.0.
+
+\section*{Limitations}
+This is a narrow runner-completion pilot, not a full matrix. Each cell here is one seed and one configured episode, so statistical claims are not warranted. The active model is OpenAI \texttt{gpt-5.4-mini-2026-03-17}; the historical Qwen plan remains blocked on a reachable local or Modal endpoint. The final empirical story should be revisited if more seeds are added, especially for EN-ZH C2B and for non-converged C3 cases.
+
+\section*{Reproducibility Pointers}
+The active runner wrappers are recorded in \artifact{plan/channel_run_plan.md}. The source/license state is in \artifact{licenses.md} and \artifact{artifacts/logs/source_license_status.json}. The status summary is \artifact{reports/status.md}; detailed local findings are in \artifact{reports/findings.md}.
+
+\end{document}

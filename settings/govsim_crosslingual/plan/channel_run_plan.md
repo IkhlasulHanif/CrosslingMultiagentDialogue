@@ -21,8 +21,8 @@ C2 requires both counterbalances for each pair:
 | Pair | Assignment A | Command A | Assignment B | Command B |
 |---|---|---|---|---|
 | EN-ID | 2 EN / 3 ID | `./scripts/run_openai_en_id_c2_counterbalance_a.sh` | 3 EN / 2 ID | `./scripts/run_openai_en_id_c2_counterbalance_b.sh` |
-| EN-ZH | 2 EN / 3 ZH | not wired yet | 3 EN / 2 ZH | not wired yet |
-| ZH-ID | 2 ZH / 3 ID | not wired yet | 3 ZH / 2 ID | not wired yet |
+| EN-ZH | 2 EN / 3 ZH | `./scripts/run_openai_en_zh_c2_counterbalance_a.sh` | 3 EN / 2 ZH | `./scripts/run_openai_en_zh_c2_counterbalance_b.sh` |
+| ZH-ID | 2 ZH / 3 ID | `./scripts/run_openai_zh_id_c2_counterbalance_a.sh` | 3 ZH / 2 ID | `./scripts/run_openai_zh_id_c2_counterbalance_b.sh` |
 
 C3 allows either language in the pair during visible interaction. Measure
 language share, code switching, convergence, off-pair language, survival time,
@@ -31,7 +31,7 @@ total welfare, Gini, and parseable harvest rate.
 | Pair | Free-choice channels | Command |
 |---|---|---|
 | EN-ID | EN or ID | `./scripts/run_openai_en_id_c3_free_choice.sh` |
-| EN-ZH | EN or ZH | not wired yet |
-| ZH-ID | ZH or ID | not wired yet |
+| EN-ZH | EN or ZH | `./scripts/run_openai_en_zh_c3_free_choice.sh` |
+| ZH-ID | ZH or ID | `./scripts/run_openai_zh_id_c3_free_choice.sh` |
 
 Do not run C2 or C3 until the C0/C1 capability floor is checked for the pair.
