@@ -50,21 +50,21 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T17:59:36+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260712T175925Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260712T175925Z.jsonl
-- `2026-07-12T17:59:36+00:00` OK: scripts/run_smoke.sh exited 0
-- `2026-07-12T17:59:36+00:00` OK: Post-Codex smoke/experiment attempt exited 0
-- `2026-07-12T17:59:37+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
 - `2026-07-12T17:59:39+00:00` OK: Codex pass 1 completed
 - `2026-07-12T18:00:39+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260713_020039.txt
 - `2026-07-12T18:04:27+00:00` OK: GovSim C3 OpenAI EN-ID free-choice produced artifact=artifacts/results/govsim_c3_openai_en_id_free_20260712T180413Z.json transcript=artifacts/transcripts/govsim_c3_openai_en_id_free_20260712T180413Z.jsonl
 - `2026-07-12T18:05:53+00:00` OK: Harness scaffold check passed
+- `2026-07-12T18:07:40+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260713_020039.txt
+- `2026-07-12T18:07:40+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-12T18:07:59+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260712T180746Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260712T180746Z.jsonl
+- `2026-07-12T18:08:00+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 60 |
-| Result summaries | 63 |
+| Transcript JSON/JSONL | 61 |
+| Result summaries | 65 |
 | Logs | 92 |
 
 ## Open Questions
