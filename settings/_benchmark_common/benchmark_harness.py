@@ -101,6 +101,22 @@ def current_answer(root: Path) -> str:
     )
 
 
+def final_report_state(root: Path) -> dict[str, Any]:
+    tex = root / "reports" / "paper" / "main.tex"
+    pdf = root / "reports" / "paper" / "main.pdf"
+    return {
+        "tex": tex,
+        "pdf": pdf,
+        "tex_exists": tex.exists() and tex.stat().st_size > 0,
+        "pdf_exists": pdf.exists() and pdf.stat().st_size > 0,
+    }
+
+
+def final_report_done(root: Path) -> bool:
+    state = final_report_state(root)
+    return bool(state["tex_exists"] and state["pdf_exists"])
+
+
 def render_status(root: Path) -> str:
     config = load_json(root / "config" / "benchmark.json")
     benchmark_model = load_json(root / "config" / "benchmark_model.json")
@@ -127,6 +143,12 @@ def render_status(root: Path) -> str:
     )
     acceptance = config.get("acceptance", "not specified")
     next_step = first_unchecked_goal(root / "goals.md").rstrip(".")
+    report_state = final_report_state(root)
+    final_report = (
+        f"`{report_state['pdf'].relative_to(root)}` exists"
+        if report_state["pdf_exists"]
+        else f"missing `{report_state['pdf'].relative_to(root)}`"
+    )
 
     last_error = next((e for e in reversed(events) if e.get("status") in {"ERROR", "BLOCKED"}), None)
     event_lines = []
@@ -185,6 +207,7 @@ Next useful work: **{next_step}**.
 | Conditions | {conditions} |
 | Primary metrics | {metric_text} |
 | Acceptance gate | {acceptance} |
+| Final report | {final_report} |
 
 ## Blockers / Errors
 
@@ -463,6 +486,23 @@ Experiment-running requirement:
 - Do not claim empirical results from synthetic fixtures, validators, or
   preflights. They are contract checks only.
 
+Final artifact and stopping requirement:
+- The parent loop stops only when BOTH `reports/paper/main.tex` and
+  `reports/paper/main.pdf` exist in this setting.
+- Do not create the final PDF as a placeholder. Create it only when the setting
+  has enough real benchmark evidence, or a clearly documented hard blocker, to
+  answer the hypotheses in `goals.md`.
+- The TeX/PDF must be the single concise human-readable artifact for this
+  setting. It should answer the question directly, then show the evidence table,
+  representative interaction excerpts, counterexamples or null cases, and
+  limitations. Cite local artifact paths for every claim.
+- Use TeX as the source of truth. Compile it with an available local command
+  such as `tectonic reports/paper/main.tex` or `pdflatex` from the setting root.
+- Language is the language agents speak in visible interaction messages. It is
+  not necessarily the language of benchmark rules/private instructions. Keep
+  rules/private state in English unless this setting explicitly declares a
+  separate rule-language experiment.
+
 Version-control requirement:
 - Once in a while, after a meaningful validated increment, commit and push your
   benchmark-setting changes to `origin` so progress is not trapped locally.
@@ -595,6 +635,10 @@ def loop(root: Path, sleep_seconds: int, max_iters: int) -> int:
     write_status(root)
     iteration = 0
     while max_iters <= 0 or iteration < max_iters:
+        if final_report_done(root):
+            append_event(root, "loop", "Final TeX/PDF report exists; loop stopping", "OK")
+            write_status(root)
+            return 0
         iteration += 1
         code = run_codex_once(root)
         if code != 0:
@@ -602,6 +646,10 @@ def loop(root: Path, sleep_seconds: int, max_iters: int) -> int:
         else:
             append_event(root, "loop", f"Codex pass {iteration} completed", "OK")
         write_status(root)
+        if final_report_done(root):
+            append_event(root, "loop", "Final TeX/PDF report exists after Codex pass; loop stopping", "OK")
+            write_status(root)
+            return 0
         if max_iters > 0 and iteration >= max_iters:
             break
         time.sleep(sleep_seconds)

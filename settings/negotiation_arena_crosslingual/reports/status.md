@@ -14,20 +14,10 @@ translated benchmark rules. Rules/private state may remain in English; C0/C1/C2/
 constrain visible negotiation messages and validate channel compliance from
 transcripts.
 
-Fresh pass result: two EN-ID C2 buy/sell counterbalances and one EN-ZH C1
-ZH-only buy/sell baseline completed with OpenAI benchmark execution at
-2026-07-12T17:49-17:50 UTC. Artifacts:
-`artifacts/transcripts/pair_en_id_c2_buyer_lx_seller_ly_buy_sell_seed101.json`,
-`artifacts/transcripts/pair_en_id_c2_buyer_ly_seller_lx_buy_sell_seed101.json`,
-and `artifacts/transcripts/pair_en_zh_c1_buy_sell_seed101.json`.
+Fresh pass result: three OpenAI benchmark buy/sell runs completed.
 
-EN-ID C2 is now counterbalanced for buy/sell seed 101. Buyer-EN/seller-ID
-ended at price 52 with EN minus ID payoff asymmetry 36; buyer-ID/seller-EN
-ended at price 70 with EN minus ID payoff asymmetry 0. Deal rate,
-offer-parse rate, and assigned channel compliance are 1.0 for both runs.
 
-Next useful work: **Run the remaining EN-ZH and ZH-ID C2 buy/sell
-counterbalances, then C3 free-choice runs.**
+Next useful work: **Run C2 EN-ZH both counterbalances**.
 
 ## Question
 
@@ -60,15 +50,14 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T17:49:26+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T17:49:35+00:00` OK: pair_en_id_c2_buyer_lx_seller_ly_buy_sell_seed101 completed; transcript=artifacts/transcripts/pair_en_id_c2_buyer_lx_seller_ly_buy_sell_seed101.json; metrics=artifacts/results/pair_en_id_c2_buyer_lx_seller_ly_buy_sell_seed101.metrics.json; provider=openai_benchmark
-- `2026-07-12T17:49:41+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T17:49:46+00:00` OK: pair_en_id_c2_buyer_ly_seller_lx_buy_sell_seed101 completed; transcript=artifacts/transcripts/pair_en_id_c2_buyer_ly_seller_lx_buy_sell_seed101.json; metrics=artifacts/results/pair_en_id_c2_buyer_ly_seller_lx_buy_sell_seed101.metrics.json; provider=openai_benchmark
-- `2026-07-12T17:50:21+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T17:50:24+00:00` OK: pair_en_zh_c1_buy_sell_seed101 completed; transcript=artifacts/transcripts/pair_en_zh_c1_buy_sell_seed101.json; metrics=artifacts/results/pair_en_zh_c1_buy_sell_seed101.metrics.json; provider=openai_benchmark
-- `2026-07-12T17:51:59+00:00` OK: Pairwise EN-ID, EN-ZH, and ZH-ID channel-run plan validated; artifact=artifacts/results/pairwise_channel_plan_validation.json
 - `2026-07-12T17:51:59+00:00` OK: Harness scaffold check passed
-- `2026-07-12T17:54:04+00:00` OK: G2 capability floor check ok with active OpenAI benchmark buy/sell C0/C1 metric paths; artifact=artifacts/results/g2_capability_floor.json
+- `2026-07-12T17:54:04+00:00` OK: G2 capability floor check ok; artifact=artifacts/results/g2_capability_floor.json; next_command=prepare C2/C3 role-language counterbalanced runs
+- `2026-07-12T17:54:55+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260713_014831.txt
+- `2026-07-12T17:54:55+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-12T17:54:55+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-12T17:54:56+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T17:55:06+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-12T17:55:06+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
@@ -80,7 +69,7 @@ or benchmark-specific failures. They will show up here.
 
 ## Open Questions
 
-- EN-ZH and ZH-ID C2 buy/sell counterbalances still need to run before any
-  cross-pair payoff claim.
-- C3 free-choice convergence is still unrun.
-- Pairwise resource-exchange runner is still missing.
+- Are output-channel instructions and transcript language-compliance checks implemented for the active language pair?
+- Has `budget.md` been written before any full matrix run?
+- Did C0 and C1 pass the benchmark capability floor before C2/C3?
+- Are role-language assignments counterbalanced?
