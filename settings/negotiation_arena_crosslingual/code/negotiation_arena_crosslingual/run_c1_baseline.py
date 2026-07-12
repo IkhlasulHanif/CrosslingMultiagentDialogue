@@ -92,7 +92,7 @@ def write_translation_blocked_artifact(review: dict[str, Any]) -> Path:
     benchmark_config = load_benchmark_model_config() or {}
     provider_after_gate = selected_benchmark_provider()
     if provider_after_gate == "openai_benchmark":
-        provider_model_after_gate = benchmark_config.get("default_model", "gpt-4.1-mini")
+        provider_model_after_gate = benchmark_config.get("default_model", "gpt-5.4-mini-2026-03-17")
         provider_scope_after_gate = "OpenAI benchmark override evidence; not Qwen3-1.7B evidence"
     else:
         provider_model_after_gate = "Qwen3-1.7B"

@@ -4,8 +4,8 @@
 
 ## Question
 
-In mixed-motive negotiation, does the higher-resource language channel capture a
-payoff premium or anchor final terms?
+In mixed-motive negotiation, does the required interaction output language
+change payoff, anchoring, or whose terms dominate?
 
 ## Design
 
@@ -13,29 +13,35 @@ payoff premium or anchor final terms?
 - Bucket: competitive mixed-motive dyadic.
 - Games: resource exchange and buy/sell first.
 - Skip ultimatum for now.
-- Core pair: EN-ID.
-- Conditions: C0 EN-mono, C1 ID-mono, C2 forced mixed, C3 free choice.
-- C2 counterbalance: buyer-EN/seller-ID and buyer-ID/seller-EN.
-- C3: both agents bilingual EN/ID.
-- Model: Qwen3-1.7B unless G2 escalates the whole benchmark.
-- Active execution override: OpenAI benchmark calls are allowed per user on
-  2026-07-12. Label those artifacts as OpenAI evidence, not Qwen evidence.
+- Active language pairs: EN-ID, EN-ZH, ZH-ID.
+- Core pair: EN-ID; ZH is now an active ladder language.
+- Language means interaction-output channel. It is not benchmark-rule
+  translation. Rules/private state may stay in English unless a later experiment
+  explicitly studies rule-language effects.
+- Conditions are defined per pair Lx-Ly: C0 Lx-only output, C1 Ly-only output,
+  C2 forced mixed assigned-channel output, C3 free-choice Lx/Ly output.
+- C2 counterbalance: buyer-Lx/seller-Ly and buyer-Ly/seller-Lx.
+- C3: both agents bilingual for the active pair under test.
+- Model: OpenAI `gpt-5.4-mini-2026-03-17` for benchmark execution per user request on
+  2026-07-12. Preserve the old Qwen plan only as historical/backlog context.
+- Label artifacts as OpenAI `gpt-5.4-mini-2026-03-17` evidence, not Qwen evidence.
 
 ## Checklist
 
 - [x] Verify NegotiationArena license and record it in `licenses.md`.
 - [x] Bring up NegotiationArena locally.
 - [x] Select resource exchange and buy/sell games.
-- [x] Translate game rules and prompts to ID.
+- [ ] Add output-channel instruction templates for EN, ID, and ZH.
+- [ ] Add channel-compliance metrics for EN, ID, ZH, and off-pair output.
 - [x] Add shared local-model adapter instead of benchmark-local API calls.
 - [x] Implement structured offer parser.
 - [x] Track first-offer anchoring.
 - [x] Implement payoff asymmetry `EN-agent - ID-agent`.
 - [x] Smoke test one C0 episode.
-- [x] Run C0 EN baseline with Qwen3-1.7B.
-- [ ] Human-check ID translation before C1/C2/C3.
-- [ ] Run C1 ID baseline after translation review.
+- [x] Run C0 EN baseline with Qwen3-1.7B before the GPT-mini switch.
+- [ ] Run C1 ID baseline with ID-only output-channel instructions.
 - [ ] Run OpenAI-backed baseline/matrix commands if Qwen/Modal remains unavailable.
+- [ ] Add EN-ZH and ZH-ID pairwise channel-run plans.
 - [ ] Check G2 capability floor before C2/C3.
 - [x] Write `budget.md` before full matrix.
 

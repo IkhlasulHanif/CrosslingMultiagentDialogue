@@ -18,6 +18,10 @@ asymmetrically steer whose framing dominates?
   - C1: Ly monolingual baseline and capability floor.
   - C2: forced mixed-language contact with counterbalancing.
   - C3: free-choice bilingual contact when the benchmark supports it.
+- Language is the interaction-output channel. Do not treat translated benchmark
+  rules as the manipulation unless a setting explicitly says so. The default
+  control is: rules/private state can remain in English, while dialogue output
+  is constrained to the assigned channel and validated from transcripts.
 - Default model: Qwen3-1.7B.
 - Escalation model: Qwen3-8B, only for a whole benchmark after gate G2.
 - Optional benchmark execution override: if a setting has

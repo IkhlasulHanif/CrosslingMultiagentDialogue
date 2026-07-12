@@ -140,7 +140,15 @@ def render_status(root: Path) -> str:
 
     blocker = "None logged."
     if last_error:
-        blocker = f"{last_error.get('status')}: {last_error.get('message')}"
+        superseded = any(
+            (event.get("ts", "") > last_error.get("ts", ""))
+            and "superseded" in event.get("message", "").lower()
+            for event in events
+        )
+        if superseded:
+            blocker = "None current; a later event marks the previous blocker as superseded."
+        else:
+            blocker = f"{last_error.get('status')}: {last_error.get('message')}"
 
     metrics = config.get("primary_metrics", [])
     metric_text = ", ".join(metrics) if metrics else "not specified"
@@ -199,7 +207,7 @@ or benchmark-specific failures. They will show up here.
 
 ## Open Questions
 
-- Are translated rules/prompts human-checked for the active language pair?
+- Are output-channel instructions and transcript language-compliance checks implemented for the active language pair?
 - Has `budget.md` been written before any full matrix run?
 - Did C0 and C1 pass the benchmark capability floor before C2/C3?
 - Are role-language assignments counterbalanced?
@@ -402,9 +410,11 @@ Benchmark model override:
 - Read the key only inside benchmark runner scripts from the configured
   `api_key_file_candidates` or `OPENAI_API_KEY`. Do not print secrets.
 - Label artifacts and reports as OpenAI benchmark evidence, not Qwen3 evidence.
-- This override does not remove design gates such as counterbalancing,
-  translation review, or G2 notes; if you intentionally proceed around a gate,
-  record the deviation in `plan/deviations.md`.
+- This override does not remove design gates such as counterbalancing and G2
+  notes. If a setting defines language as an interaction-output channel,
+  translated benchmark rules are not a hard gate unless that setting explicitly
+  says a rule-language experiment is being run. If you intentionally proceed
+  around any real gate, record the deviation in `plan/deviations.md`.
 
 Smoke model override:
 - If `config/smoke_model.json` exists and sets `"provider": "openai"`, the
@@ -446,7 +456,7 @@ Experiment-running requirement:
   newly implemented C0 baseline command.
 - A dry-run/preflight is acceptable only when the real run is blocked by a
   named missing dependency, missing benchmark model endpoint/API quota, license
-  gate, or human translation gate. If `config/benchmark_model.json` allows
+  gate, or explicitly required human review gate. If `config/benchmark_model.json` allows
   OpenAI, implement and run the OpenAI-backed command instead of stopping on a
   missing local/Modal Qwen endpoint. Log any blocker with the exact failed
   command.

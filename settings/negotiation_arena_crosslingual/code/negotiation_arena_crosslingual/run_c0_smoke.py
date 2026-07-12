@@ -114,7 +114,7 @@ class OpenAIConfiguredChat:
         self.purpose = purpose
         self.model = os.environ.get(
             str(config.get("env_model", env_model_default)),
-            str(config.get("default_model", "gpt-4.1-mini")),
+            str(config.get("default_model", "gpt-5.4-mini-2026-03-17")),
         )
         self.base_url = os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1").rstrip("/")
         self.endpoint = f"{self.base_url}/chat/completions"

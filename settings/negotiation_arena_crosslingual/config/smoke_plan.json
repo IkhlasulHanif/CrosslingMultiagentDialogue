@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "planned_gated_on_bringup_and_model_endpoint",
-  "purpose": "First real benchmark execution should be exactly one C0 EN-monolingual smoke episode before any baselines or mixed-language conditions. The benchmark default remains Qwen3-1.7B; config/smoke_model.json may explicitly allow OpenAI for runner bring-up evidence only.",
+  "purpose": "First real benchmark execution should be exactly one C0 EN-monolingual smoke episode before any baselines or mixed-language conditions. The active benchmark model is OpenAI gpt-5.4-mini-2026-03-17; config/smoke_model.json remains smoke-only bring-up evidence.",
   "episode": {
     "episode_id": "smoke_c0_buy_sell_en_001",
     "condition": "C0",
@@ -11,7 +11,7 @@
       "buyer": "EN",
       "seller": "EN"
     },
-    "model": "Qwen3-1.7B",
+    "model": "gpt-5.4-mini-2026-03-17",
     "turn_limit": 8,
     "seed": 1
   },
@@ -23,10 +23,10 @@
       "why": "Smoke execution must call the local NegotiationArena checkout rather than a synthetic local loop."
     },
     {
-      "id": "local_qwen_provider",
+      "id": "benchmark_model_provider",
       "required": true,
-      "check": "python3 scripts/local_model_adapter.py --live-probe",
-      "why": "Benchmark agents must use local cached Qwen, local Qwen/vLLM, or later Modal Qwen, not OpenAI API calls."
+      "check": "NEGOTIATION_BENCHMARK_PROVIDER=openai_benchmark python3 scripts/run_c0_smoke.py",
+      "why": "Benchmark agents now use the explicit OpenAI gpt-5.4-mini-2026-03-17 benchmark model. Smoke-only OpenAI evidence remains separately labeled."
     },
     {
       "id": "openai_smoke_override",

@@ -4,20 +4,20 @@ This is the concise file to read first for this benchmark.
 
 ## Current Answer
 
-Qwen3-1.7B C0 EN baselines for buy/sell and resource_exchange pass the floor
-(deal_rate=1.0, offer_parse_rate=1.0). C1 ID and G2 remain blocked on pending
-human review of 16 EN-ID translation units.
+Active plan update: benchmark execution is now OpenAI `gpt-5.4-mini-2026-03-17` per user
+request on 2026-07-12, and the active language pairs are EN-ID, EN-ZH, and
+ZH-ID. The old Qwen C0 runs remain useful historical capability evidence, but
+new benchmark runs should be labeled as OpenAI `gpt-5.4-mini-2026-03-17` evidence.
 
-A fresh real C0 OpenAI buy/sell attempt at 2026-07-12T00:14:31 UTC produced no
-transcript because `api.openai.com` could not be resolved by urllib or curl.
-Blocker artifact: `artifacts/results/benchmark_model_probe.json`. Retry with
-`bash scripts/run_c0_openai_baseline.sh` after network/DNS access is restored.
+Control definition: language means required interaction-output channel, not
+translated benchmark rules. For this setting, benchmark rules/private state may
+remain in English; C0/C1/C2/C3 should constrain only the agents' visible
+negotiation messages and validate channel compliance from transcripts. The next
+implementation work is output-channel instruction templates for EN/ID/ZH plus
+channel-compliance metrics for EN share, ID share, ZH share, code switching,
+and off-pair language.
 
-The translation review gate and C1 ID baseline command were refreshed in this
-pass. `artifacts/results/translation_review_validation.json` still shows 16
-pending units, and `artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`
-
-Next useful work: **Human-check ID translation before C1/C2/C3**.
+Next useful work: **Add output-channel instruction templates for EN, ID, and ZH**.
 
 ## Question
 
@@ -32,31 +32,31 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 | Bucket | competitive_mixed_motive |
 | Priority | 1 |
 | Phase | setup |
-| Default model | `Qwen3-1.7B` |
-| Active benchmark model | `openai / gpt-4.1-mini` |
-| Model note | benchmark execution override |
-| Language pairs | EN-ID, EN-ZH, EN-AR, ZH-ID, AR-ID, ID-AR |
+| Default model | `gpt-5.4-mini-2026-03-17` |
+| Active benchmark model | `openai / gpt-5.4-mini-2026-03-17` |
+| Model note | active benchmark execution model |
+| Language pairs | EN-ID, EN-ZH, ZH-ID |
 | Conditions | C0, C1, C2, C3 |
 | Primary metrics | payoff, deal_rate, payoff_asymmetry, turns_to_deal, offer_parse_rate |
 | Acceptance gate | C0 deal rate >=50%; offer parse rate >=90% |
 
 ## Blockers / Errors
 
-BLOCKED: C1 ID baseline blocked on pending human translation review; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh; next_command=bash scripts/run_c1_baseline.sh
+None logged.
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T00:14:50+00:00` BLOCKED: C1 ID baseline blocked on pending human translation review; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh; next_command=bash scripts/run_c1_baseline.sh
-- `2026-07-12T00:15:40+00:00` OK: Harness scaffold check passed
-- `2026-07-12T00:16:31+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_081348.txt
-- `2026-07-12T00:16:31+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-12T00:16:32+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-12T00:16:33+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
-- `2026-07-12T00:16:38+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
 - `2026-07-12T00:16:38+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-12T00:16:38+00:00` OK: Post-Codex smoke/experiment attempt exited 0
+- `2026-07-12T00:16:38+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
+- `2026-07-12T00:16:40+00:00` OK: Codex pass 23 completed
+- `2026-07-12T00:28:49+00:00` NOTE: Active setting changed to OpenAI gpt-4.1-mini and active language pairs EN-ID, EN-ZH, ZH-ID per user request.
+- `2026-07-12T00:37:17+00:00` NOTE: OpenAI API verified with gpt-5.4-mini-2026-03-17; active language manipulation is interaction-output channel only for EN-ID, EN-ZH, ZH-ID.
+- `2026-07-12T00:37:45+00:00` NOTE: Historical translation-gate blockers are superseded for the active channel-control plan; rerun OpenAI with verified model/key and implement output-channel constraints.
+- `2026-07-12T00:38:14+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
@@ -68,7 +68,7 @@ or benchmark-specific failures. They will show up here.
 
 ## Open Questions
 
-- Are translated rules/prompts human-checked for the active language pair?
+- Are output-channel instructions and transcript language-compliance checks implemented for the active language pair?
 - Has `budget.md` been written before any full matrix run?
 - Did C0 and C1 pass the benchmark capability floor before C2/C3?
 - Are role-language assignments counterbalanced?

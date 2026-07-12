@@ -4,34 +4,39 @@
 
 ## Question
 
-In a cooperative resource-management game, does forced or free-choice
-cross-lingual contact reduce group welfare beyond what monolingual capability
-baselines predict?
+In a cooperative resource-management game, does the required interaction output
+language change group welfare beyond monolingual channel baselines?
 
 ## Design
 
 - Benchmark: GovSim, fishery substrate only.
 - Bucket: cooperative group.
 - Agents: 5 default agents.
-- Core pair: EN-ID.
-- Conditions: C0 EN-mono, C1 ID-mono, C2 forced mixed, C3 free choice.
-- C2 counterbalance: 2 EN / 3 ID and 3 EN / 2 ID.
-- Model: Qwen3-1.7B unless G2 escalates the whole benchmark to Qwen3-8B.
-- Active execution override: OpenAI benchmark calls are allowed per user on
-  2026-07-12. Label those artifacts as OpenAI evidence, not Qwen evidence.
+- Active language pairs: EN-ID, EN-ZH, ZH-ID.
+- Core pair: EN-ID; ZH is now an active ladder language.
+- Language means interaction-output channel. It is not benchmark-rule
+  translation. Rules/private state may stay in English unless a later experiment
+  explicitly studies rule-language effects.
+- Conditions are defined per pair Lx-Ly: C0 Lx-only output, C1 Ly-only output,
+  C2 forced mixed assigned-channel output, C3 free-choice Lx/Ly output.
+- GovSim C2 counterbalance: 2 agents Lx / 3 agents Ly and 3 agents Lx / 2 agents Ly.
+- Model: OpenAI `gpt-5.4-mini-2026-03-17` for benchmark execution per user request on
+  2026-07-12. Preserve the old Qwen plan only as historical/backlog context.
+- Label artifacts as OpenAI `gpt-5.4-mini-2026-03-17` evidence, not Qwen evidence.
 
 ## Checklist
 
 - [x] Verify GovSim license and record it in `licenses.md`.
 - [x] Bring up GovSim locally.
 - [x] Add shared local-model adapter instead of benchmark-local API calls.
-- [x] Translate rules, instructions, and resource descriptions to ID.
-- [ ] Human-check ID translation.
+- [ ] Add output-channel instruction templates for EN, ID, and ZH.
+- [ ] Add channel-compliance metrics for EN, ID, ZH, and off-pair output.
 - [x] Implement transcript logging with stripped `<think>` stored separately.
 - [x] Implement lang-share, code-switch, convergence, and off-pair metrics.
 - [x] Smoke test one C0 episode.
 - [ ] Run C0 and C1 baselines.
 - [ ] Run OpenAI-backed C0/C1 baseline commands if Qwen/Modal remains unavailable.
+- [ ] Add EN-ZH and ZH-ID pairwise channel-run plans.
 - [ ] Check G2 capability floor before C2/C3.
 - [x] Write `budget.md` before full matrix.
 
@@ -46,7 +51,7 @@ baselines predict?
 ## Acceptance
 
 At least 90% of episodes must produce parseable harvests every round. If not,
-escalate this benchmark as a whole to Qwen3-8B or pause it.
+pause the affected language pair and record the capability floor failure.
 
 ## Interesting Result
 

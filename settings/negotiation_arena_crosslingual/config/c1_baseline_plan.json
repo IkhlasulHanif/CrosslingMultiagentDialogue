@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "status": "blocked_pending_human_translation_review",
-  "purpose": "First Indonesian monolingual baseline after human review of EN-ID prompt translations. This command may use the explicit OpenAI benchmark override in config/benchmark_model.json when local or Modal Qwen is unavailable, but it must not use the OpenAI smoke-only override.",
+  "status": "planned_channel_condition",
+  "purpose": "First Indonesian monolingual output-channel baseline. Active benchmark execution uses OpenAI gpt-5.4-mini-2026-03-17 via config/benchmark_model.json; this command must not use the OpenAI smoke-only override. Benchmark rules/private state may remain in English.",
   "episodes": [
     {
       "episode_id": "baseline_c1_buy_sell_id_seed001",
@@ -12,7 +12,7 @@
         "buyer": "ID",
         "seller": "ID"
       },
-      "model": "Qwen3-1.7B",
+      "model": "gpt-5.4-mini-2026-03-17",
       "turn_limit": 8,
       "seed": 101,
       "transcript": "artifacts/transcripts/baseline_c1_buy_sell_id_seed001.json",
@@ -21,10 +21,10 @@
   ],
   "preconditions": [
     {
-      "id": "human_translation_review",
+      "id": "id_output_channel_instruction",
       "required": true,
-      "check": "python3 scripts/validate_translation_review.py",
-      "why": "C1 ID prompts require human bilingual review before they are valid benchmark evidence."
+      "check": "Runner must instruct both agents to output only Indonesian during interaction.",
+      "why": "C1 ID is a channel condition, not a translated-prompt condition."
     },
     {
       "id": "upstream_checkout",
@@ -33,10 +33,16 @@
       "why": "Baseline episodes must call the local NegotiationArena checkout."
     },
     {
+      "id": "channel_compliance_metrics",
+      "required": true,
+      "check": "Validate assigned-language output share, code-switch rate, and off-pair share for the transcript.",
+      "why": "C1 evidence is valid only if output-channel compliance is measured."
+    },
+    {
       "id": "benchmark_model_provider",
       "required": true,
-      "check": "python3 scripts/local_model_adapter.py --live-probe or NEGOTIATION_BENCHMARK_PROVIDER=openai_benchmark python3 scripts/run_c0_smoke.py",
-      "why": "Baselines are benchmark evidence and must use local cached Qwen, local Qwen/vLLM, a wired Modal Qwen endpoint, or the explicit OpenAI benchmark override. OpenAI benchmark artifacts must be labeled as OpenAI evidence and not Qwen3-1.7B evidence."
+      "check": "NEGOTIATION_BENCHMARK_PROVIDER=openai_benchmark python3 scripts/run_c1_baseline.py",
+      "why": "Baselines are benchmark evidence and now use the explicit OpenAI gpt-5.4-mini-2026-03-17 benchmark model. OpenAI benchmark artifacts must be labeled as OpenAI gpt-5.4-mini-2026-03-17 evidence."
     }
   ]
 }

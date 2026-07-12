@@ -106,14 +106,14 @@ class LocalModelAdapterTest(unittest.TestCase):
     def test_complete_retries_transient_remote_disconnect(self) -> None:
         opener = FlakyOpener(
             {
-                "model": "gpt-4.1-mini",
+                "model": "gpt-5.4-mini-2026-03-17",
                 "choices": [{"message": {"content": "Answer: 10"}, "finish_reason": "stop"}],
                 "usage": {},
             }
         )
         adapter = VLLMChatAdapter(
             base_url="https://api.openai.com/v1",
-            model="gpt-4.1-mini",
+            model="gpt-5.4-mini-2026-03-17",
             opener=opener,
             max_retries=1,
             retry_sleep_s=0,

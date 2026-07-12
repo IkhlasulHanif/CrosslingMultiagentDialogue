@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "c0_seed001_completed",
-  "purpose": "First baseline execution after the smoke bring-up. This command is Qwen/local-only and must not use the OpenAI smoke override.",
+  "purpose": "First baseline execution after the smoke bring-up. Active benchmark execution uses OpenAI gpt-5.4-mini-2026-03-17 via config/benchmark_model.json; do not use the OpenAI smoke-only override for research-matrix evidence.",
   "episodes": [
     {
       "episode_id": "baseline_c0_buy_sell_en_seed001",
@@ -12,7 +12,7 @@
         "buyer": "EN",
         "seller": "EN"
       },
-      "model": "Qwen3-1.7B",
+      "model": "gpt-5.4-mini-2026-03-17",
       "turn_limit": 8,
       "seed": 101,
       "transcript": "artifacts/transcripts/baseline_c0_buy_sell_en_seed001.json",
@@ -22,7 +22,7 @@
   "blocked_conditions": [
     {
       "condition": "C1",
-      "reason": "EN-ID human translation review is pending. Do not run or report ID monolingual baselines as valid benchmark evidence until config/translation_review.json is complete and scripts/validate_translation_review.py passes."
+      "reason": "C1 is no longer blocked on translated benchmark prompts. Implement ID-only and ZH-only interaction-output channel instructions and channel-compliance metrics before reporting C1 as valid evidence."
     }
   ],
   "preconditions": [
@@ -33,16 +33,16 @@
       "why": "Baseline episodes must call the local NegotiationArena checkout."
     },
     {
-      "id": "local_qwen_provider",
+      "id": "benchmark_model_provider",
       "required": true,
-      "check": "python3 scripts/local_model_adapter.py --live-probe",
-      "why": "Baselines are benchmark evidence and must use local cached Qwen, local Qwen/vLLM, or a later explicitly wired Modal Qwen endpoint, not the OpenAI smoke override."
+      "check": "bash scripts/run_c0_openai_baseline.sh",
+      "why": "Baselines are benchmark evidence and now use the explicit OpenAI gpt-5.4-mini-2026-03-17 benchmark model, not the smoke-only override."
     },
     {
-      "id": "translation_review_for_c1",
+      "id": "channel_compliance_for_c1",
       "required": true,
-      "check": "python3 scripts/validate_translation_review.py",
-      "why": "C1 ID prompts require human bilingual review before they are valid benchmark evidence."
+      "check": "Validate assigned-language output share, code-switch rate, and off-pair share for the transcript.",
+      "why": "C1 is a language-channel condition. The validity gate is whether agents output only the assigned language, not whether benchmark rules were translated."
     }
   ]
 }
