@@ -12,7 +12,7 @@ Current empirical story: `./harness.sh run-smoke` most recently succeeded at `20
 
 Current control definition: language means required interaction-output channel, not translated benchmark rules. For this setting, benchmark rules/private state may remain in English; C0/C1/C2/C3 constrain only the agents' visible dialogue output and validate channel compliance in transcripts. Output-channel instruction templates for EN/ID/ZH are implemented in `code/channel_instructions.py`; v2 process metrics now report EN/ID/ZH active-language shares, assigned-channel compliance, code switching, convergence, and off-pair language.
 
-Current blockers: C0/C1 baseline commands reach the model-call path, but this sandbox currently cannot resolve `api.openai.com`. Fresh baseline blocker artifacts are `artifacts/results/govsim_c0_openai_baseline_20260712T020219Z.json` with endpoint probe `artifacts/logs/openai_endpoint_probe_20260712T020219Z.json`, and `artifacts/results/govsim_c1_openai_baseline_20260712T020226Z.json` with endpoint probe `artifacts/logs/openai_endpoint_probe_20260712T020226Z.json`. Curl reports `Could not resolve host: api.openai.com`; urllib reports `[Errno 8] nodename nor servname provided, or not known`.
+Current blockers: C0/C1 baseline commands reach the model-call path, but this sandbox currently cannot resolve `api.openai.com`. Fresh baseline blocker artifacts are `artifacts/results/govsim_c0_openai_baseline_20260712T022036Z.json` with endpoint probe `artifacts/logs/openai_endpoint_probe_20260712T022036Z.json`, and `artifacts/results/govsim_c1_openai_baseline_20260712T022045Z.json` with endpoint probe `artifacts/logs/openai_endpoint_probe_20260712T022045Z.json`. Curl reports `Could not resolve host: api.openai.com`; urllib reports `[Errno 8] nodename nor servname provided, or not known`. No C0/C1 baseline episode has completed yet.
 
 OpenAI benchmark override baseline state: C0 and C1 were rerun with `gpt-5.4-mini-2026-03-17` after the active channel-control update. The historical translation gate is superseded for this setting; C1 no longer blocks before model call on translated benchmark-rule review. The next retry commands after DNS is available are `./scripts/run_openai_c0_baseline.sh` and `./scripts/run_openai_c1_baseline.sh`.
 
@@ -42,29 +42,29 @@ Does cross-lingual contact reduce cooperative resource-management outcomes beyon
 
 ## Blockers / Errors
 
-BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T020226Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T020226Z.json
+BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T022045Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T022045Z.json
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T02:01:50+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_100150.txt
-- `2026-07-12T02:02:19+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260712T020219Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T020219Z.json
-- `2026-07-12T02:02:26+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T020226Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T020226Z.json
-- `2026-07-12T02:03:41+00:00` OK: Harness scaffold check passed
-- `2026-07-12T02:04:38+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_100150.txt
-- `2026-07-12T02:04:38+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-12T02:04:54+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260712T020441Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260712T020441Z.jsonl
 - `2026-07-12T02:04:54+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-12T02:04:54+00:00` OK: Post-Codex smoke/experiment attempt exited 0
+- `2026-07-12T02:04:54+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
+- `2026-07-12T02:04:56+00:00` OK: Codex pass 5 completed
+- `2026-07-12T02:19:56+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_101956.txt
+- `2026-07-12T02:20:36+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260712T022036Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T022036Z.json
+- `2026-07-12T02:20:45+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T022045Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T022045Z.json
+- `2026-07-12T02:21:52+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
 | Transcript JSON/JSONL | 47 |
-| Result summaries | 21 |
-| Logs | 82 |
+| Result summaries | 23 |
+| Logs | 83 |
 
 ## Open Questions
 
