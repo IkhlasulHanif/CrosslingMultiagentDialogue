@@ -14,10 +14,10 @@ translated benchmark rules. Rules/private state may remain in English; C0/C1/C2/
 constrain visible negotiation messages and validate channel compliance from
 transcripts.
 
-Fresh pass result: seven OpenAI benchmark buy/sell runs completed.
+Fresh pass result: C3 free-choice buy/sell runs completed for EN-ID, EN-ZH,
+and ZH-ID with OpenAI `gpt-5.4-mini-2026-03-17` benchmark evidence at seed 101.
 
-
-Next useful work: **Run C3 free-choice EN-ID, EN-ZH, and ZH-ID**.
+Next useful work: **Add executable pairwise resource-exchange runner for EN-ID, EN-ZH, and ZH-ID**.
 
 ## Question
 
@@ -50,22 +50,22 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T18:03:01+00:00` OK: ZH-ID C2 buy_sell counterbalances documented as OpenAI benchmark evidence; buyer-ZH/seller-ID asymmetry=-20 compliance=1.0; buyer-ID/seller-ZH asymmetry=0 compliance=0.50; next_command=python3 scripts/run_pairwise_buy_sell.py --pair EN-ID --condition C3 --seed 101
-- `2026-07-12T18:04:14+00:00` OK: Harness scaffold check passed
-- `2026-07-12T18:05:17+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260713_020154.txt
-- `2026-07-12T18:05:17+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-12T18:05:18+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-12T18:05:19+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T18:05:22+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
-- `2026-07-12T18:05:22+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-12T18:07:13+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T18:07:18+00:00` OK: pair_en_id_c3_buy_sell_seed101 completed; transcript=artifacts/transcripts/pair_en_id_c3_buy_sell_seed101.json; metrics=artifacts/results/pair_en_id_c3_buy_sell_seed101.metrics.json; provider=openai_benchmark
+- `2026-07-12T18:07:22+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T18:07:30+00:00` OK: pair_en_zh_c3_buy_sell_seed101 completed; transcript=artifacts/transcripts/pair_en_zh_c3_buy_sell_seed101.json; metrics=artifacts/results/pair_en_zh_c3_buy_sell_seed101.metrics.json; provider=openai_benchmark
+- `2026-07-12T18:07:34+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T18:07:37+00:00` OK: pair_zh_id_c3_buy_sell_seed101 completed; transcript=artifacts/transcripts/pair_zh_id_c3_buy_sell_seed101.json; metrics=artifacts/results/pair_zh_id_c3_buy_sell_seed101.metrics.json; provider=openai_benchmark
+- `2026-07-12T18:08:10+00:00` OK: C3 free-choice buy_sell completed for EN-ID, EN-ZH, and ZH-ID at seed 101 as OpenAI benchmark evidence; convergence EN-ID=EN, EN-ZH=ZH, ZH-ID=ZH with no off-pair leakage; next_task=add executable pairwise resource-exchange runner or draft final paper from buy/sell-only evidence
+- `2026-07-12T18:08:59+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 12 |
-| Result summaries | 30 |
-| Logs | 77 |
+| Transcript JSON/JSONL | 15 |
+| Result summaries | 33 |
+| Logs | 78 |
 
 ## Open Questions
 

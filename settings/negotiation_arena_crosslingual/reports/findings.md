@@ -8,7 +8,8 @@ translated benchmark rules. Rules/private state may remain in English; C0/C1/C2/
 constrain visible negotiation messages and validate channel compliance from
 transcripts.
 
-Fresh pass result: seven OpenAI benchmark buy/sell runs completed.
+Fresh pass result: C3 free-choice buy/sell runs completed for EN-ID, EN-ZH,
+and ZH-ID with OpenAI `gpt-5.4-mini-2026-03-17` benchmark evidence at seed 101.
 
 - EN-ID C2 buyer-EN/seller-ID:
   `artifacts/transcripts/pair_en_id_c2_buyer_lx_seller_ly_buy_sell_seed101.json`
@@ -61,18 +62,46 @@ Fresh pass result: seven OpenAI benchmark buy/sell runs completed.
   payoff asymmetry is ZH minus ID = 0. Offer parse rate and deal rate are 1.0,
   but assigned-channel compliance is 0.50 because the ID-assigned buyer used ZH
   visible messages. Final price moved 10 ZUP below the ZH seller's first offer.
+- EN-ID C3 free-choice:
+  `artifacts/transcripts/pair_en_id_c3_buy_sell_seed101.json` and
+  `artifacts/results/pair_en_id_c3_buy_sell_seed101.metrics.json`. Deal reached
+  at price 50 after 3 visible messages. Payoffs: buyer 50, seller 10. Offer
+  parse rate, deal rate, and free-choice channel compliance are all 1.0. The
+  heuristic language classifier saw EN share 1.0, ID share 0.0, and off-pair
+  share 0.0, so this run converged to English.
+- EN-ZH C3 free-choice:
+  `artifacts/transcripts/pair_en_zh_c3_buy_sell_seed101.json` and
+  `artifacts/results/pair_en_zh_c3_buy_sell_seed101.metrics.json`. Deal reached
+  at price 50 after 4 visible messages. Payoffs: buyer 50, seller 10. Offer
+  parse rate, deal rate, and free-choice channel compliance are all 1.0. The
+  heuristic language classifier saw ZH share 1.0, EN share 0.0, and off-pair
+  share 0.0, so this run converged to Chinese rather than English.
+- ZH-ID C3 free-choice:
+  `artifacts/transcripts/pair_zh_id_c3_buy_sell_seed101.json` and
+  `artifacts/results/pair_zh_id_c3_buy_sell_seed101.metrics.json`. Deal reached
+  at price 60 after 2 visible messages. Payoffs: buyer 40, seller 20. Offer
+  parse rate, deal rate, and free-choice channel compliance are all 1.0. The
+  heuristic language classifier saw ZH share 1.0, ID share 0.0, EN share 0.0,
+  and off-pair share 0.0, so this run converged to Chinese with no detected
+  English leakage.
 
-Current empirical story: EN-ID, EN-ZH, and ZH-ID C2 are now counterbalanced for
-buy/sell at seed 101, but this single seed does not support a stable
-language-channel payoff claim. The EN minus ID payoff asymmetry is positive
-when EN is the buyer and ID is the seller, then falls to zero when EN is the
-seller and ID is the buyer. The EN minus ZH payoff asymmetry flips sign across
-the EN-ZH counterbalance (-10, then +8). The ZH minus ID asymmetry is negative
-when ZH is the buyer and ID is the seller, then falls to zero when ZH is the
-seller and ID is the buyer. EN-ZH and one ZH-ID run have poor assigned-channel
-compliance because visible dialogue mostly converged to ZH. Treat these as
-early role-sensitive and compliance-limited execution results until C3 and more
-seeds run.
+Current empirical story: EN-ID, EN-ZH, and ZH-ID C2 are counterbalanced for
+buy/sell at seed 101, and C3 free-choice has now run for all active pairs. This
+single seed does not support a stable language-channel payoff claim. The EN
+minus ID payoff asymmetry is positive when EN is the buyer and ID is the seller,
+then falls to zero when EN is the seller and ID is the buyer. The EN minus ZH
+payoff asymmetry flips sign across the EN-ZH counterbalance (-10, then +8). The
+ZH minus ID asymmetry is negative when ZH is the buyer and ID is the seller,
+then falls to zero when ZH is the seller and ID is the buyer. C3 convergence is
+EN for EN-ID, ZH for EN-ZH, and ZH for ZH-ID at seed 101. EN-ZH C2 and one
+ZH-ID C2 run have poor assigned-channel compliance because visible dialogue
+mostly converged to ZH. Treat these as early role-sensitive and
+compliance-limited execution results until more seeds run.
+
+Note on metrics: pairwise payoff asymmetry is intentionally unavailable for C3
+because both roles are assigned bilingual free-choice channels such as EN-ID,
+not unique one-language role labels. Use C3 primarily for H4 convergence and
+off-pair leakage, not H1/H2 payoff attribution.
 
 Completed active OpenAI baseline artifacts include C0 EN buy/sell at
 `artifacts/transcripts/baseline_c0_buy_sell_en_seed001.openai_benchmark.json`
@@ -96,7 +125,6 @@ checkout of `https://github.com/vinid/NegotiationArena.git` on branch
 Next exact commands:
 
 ```bash
-python3 scripts/run_pairwise_buy_sell.py --pair EN-ID --condition C3 --seed 101
-python3 scripts/run_pairwise_buy_sell.py --pair EN-ZH --condition C3 --seed 101
-python3 scripts/run_pairwise_buy_sell.py --pair ZH-ID --condition C3 --seed 101
+python3 scripts/validate_pairwise_channel_plan.py
+# Next implementation task: add a thin resource-exchange CLI that calls code/ reusable implementation.
 ```
