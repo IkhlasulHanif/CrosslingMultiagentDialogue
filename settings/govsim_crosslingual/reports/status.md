@@ -49,21 +49,21 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
+- `2026-07-12T02:42:12+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
 - `2026-07-12T02:42:14+00:00` OK: Codex pass 7 completed
 - `2026-07-12T02:57:14+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_105714.txt
-- `2026-07-12T02:58:06+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260712T025806Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T025806Z.json
-- `2026-07-12T02:58:14+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T025814Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T025814Z.json
 - `2026-07-12T02:58:54+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260712T025854Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T025854Z.json
 - `2026-07-12T02:59:01+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T025901Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T025901Z.json
 - `2026-07-12T02:59:20+00:00` OK: OpenAI benchmark key-source artifact labels now use configured_file:<candidate> or env:<name> instead of absolute secret-file paths; fresh C0/C1 baseline retries still block only on api.openai.com DNS.
 - `2026-07-12T03:00:25+00:00` OK: Harness scaffold check passed
+- `2026-07-12T03:01:58+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
 | Transcript JSON/JSONL | 49 |
-| Result summaries | 33 |
+| Result summaries | 31 |
 | Logs | 85 |
 
 ## Open Questions
