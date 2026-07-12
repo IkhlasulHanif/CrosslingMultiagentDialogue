@@ -8,18 +8,22 @@ translated benchmark rules. Rules/private state may remain in English; C0/C1/C2/
 constrain visible negotiation messages and validate channel compliance from
 transcripts.
 
-Current executable blocker: `./harness.sh run-smoke` and
-`bash scripts/run_c1_baseline.sh` now use the active OpenAI benchmark provider
-by default. They were rerun at 2026-07-12T01:21:05 UTC and
-2026-07-12T01:21:17 UTC. Bring-up, offer parser validation, process-metric
-validation, and EN/ID/ZH channel validation all passed, then the OpenAI
-benchmark provider probe failed before any new smoke or C1 transcript was
-created. Both urllib and curl could not resolve `api.openai.com`.
+Current executable blocker: `bash scripts/run_c1_baseline.sh` uses the active
+OpenAI benchmark provider by default. It was rerun at 2026-07-12T01:57:39 UTC.
+Bring-up, offer parser validation, process-metric validation, and EN/ID/ZH
+channel validation all passed, then the OpenAI benchmark provider probe failed
+before any C1 transcript was created.
+
+The OpenAI chat-completions client now maps `max_tokens` to
+`max_completion_tokens` for GPT-5/O-series style models, resolving the prior
+API parameter blocker for `gpt-5.4-mini-2026-03-17`. The refreshed probe
+artifact shows the remaining concrete blocker is DNS resolution from this
+session: urllib reported `nodename nor servname provided, or not known`, and
+curl reported `Could not resolve host: api.openai.com`.
 
 Fresh blocker artifacts:
 
 - `artifacts/results/benchmark_model_probe.json`
-- `artifacts/results/smoke_c0_buy_sell_en_001.blocked.json`
 - `artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`
 
 No channel-controlled C1/C2/C3 empirical evidence has been produced yet.

@@ -127,14 +127,28 @@ class OpenAIConfiguredChat:
             )
 
     def complete(self, messages: list[dict[str, str]], **overrides: Any) -> str:
+        max_tokens = overrides.pop("max_tokens", None)
+        max_completion_tokens = overrides.pop("max_completion_tokens", None)
+        if max_completion_tokens is None:
+            max_completion_tokens = max_tokens if max_tokens is not None else 400
+
         payload: dict[str, Any] = {
             "model": self.model,
             "messages": messages,
             "temperature": 0,
-            "max_tokens": 400,
+            self._token_limit_field(): max_completion_tokens,
         }
         payload.update({key: value for key, value in overrides.items() if value is not None})
         return self._complete_with_urllib(payload)
+
+    def _token_limit_field(self) -> str:
+        configured = self.config.get("chat_completion_token_field")
+        if configured in {"max_tokens", "max_completion_tokens"}:
+            return str(configured)
+        model = self.model.lower()
+        if model.startswith(("gpt-5", "o1", "o3", "o4")):
+            return "max_completion_tokens"
+        return "max_tokens"
 
     def _extract_content(self, body: str) -> str:
         try:
@@ -218,7 +232,14 @@ class OpenAIConfiguredChat:
             )
 
         if completed.returncode != 0:
-            detail = completed.stderr.strip() or completed.stdout.strip()
+            stderr_detail = completed.stderr.strip()
+            stdout_detail = completed.stdout.strip()
+            detail_parts = []
+            if stderr_detail:
+                detail_parts.append(f"stderr={stderr_detail}")
+            if stdout_detail:
+                detail_parts.append(f"body={stdout_detail}")
+            detail = "; ".join(detail_parts)
             raise OpenAIConfiguredError(
                 f"OpenAI {self.purpose} request failed: "
                 f"{previous_error}; curl fallback exit {completed.returncode}: {detail[:500]}"
