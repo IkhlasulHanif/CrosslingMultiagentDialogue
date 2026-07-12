@@ -16,9 +16,8 @@ transcripts.
 
 Fresh pass result: pairwise resource-exchange runner added for EN-ID, EN-ZH,
 and ZH-ID, and one EN-ID C2 resource-exchange episode completed with OpenAI
-`gpt-5.4-mini-2026-03-17` benchmark evidence at seed 101.
 
-Next useful work: **Run the remaining pairwise resource-exchange counterbalances for EN-ID, EN-ZH, and ZH-ID**.
+Next useful work: **Produce `reports/paper/main.tex` answering H1-H5 with artifact-backed claims**.
 
 ## Question
 
@@ -44,21 +43,21 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-None logged.
+BLOCKED: Scoped commit created for pairwise resource_exchange runner and EN-ID C2 evidence, but push failed: fatal unable to access https://github.com/IkhlasulHanif/CrosslingMultiagentDialogue.git/ Recv failure Operation timed out
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T18:10:07+00:00` OK: Post-Codex smoke/experiment attempt exited 0
-- `2026-07-12T18:10:07+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
-- `2026-07-12T18:10:09+00:00` OK: Codex pass 4 completed
-- `2026-07-12T18:11:09+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260713_021109.txt
-- `2026-07-12T18:13:18+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T18:13:21+00:00` OK: pair_en_id_c2_buyer_lx_seller_ly_resource_exchange_seed101 completed; transcript=artifacts/transcripts/pair_en_id_c2_buyer_lx_seller_ly_resource_exchange_seed101.json; metrics=artifacts/results/pair_en_id_c2_buyer_lx_seller_ly_resource_exchange_seed101.metrics.json; provider=openai_benchmark
-- `2026-07-12T18:13:39+00:00` OK: Pairwise resource_exchange runner added for EN-ID, EN-ZH, and ZH-ID; EN-ID C2 buyer_lx_seller_ly resource_exchange seed101 completed as OpenAI benchmark evidence with deal_rate=1.0 offer_parse_rate=1.0 compliance=1.0 pairwise_asymmetry=0; next_command=python3 scripts/run_pairwise_resource_exchange.py --pair EN-ID --condition C2 --counterbalance buyer_ly_seller_lx --seed 101
-- `2026-07-12T18:14:26+00:00` OK: Harness scaffold check passed
+- `2026-07-12T18:15:59+00:00` BLOCKED: Scoped commit created for pairwise resource_exchange runner and EN-ID C2 evidence, but push failed: fatal unable to access https://github.com/IkhlasulHanif/CrosslingMultiagentDialogue.git/ Recv failure Operation timed out
+- `2026-07-12T18:16:35+00:00` OK: Retry push succeeded for local commit 4ffb92f6 containing pairwise resource_exchange runner and EN-ID C2 evidence
+- `2026-07-12T18:17:10+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260713_021109.txt
+- `2026-07-12T18:17:10+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-12T18:17:10+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-12T18:17:11+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T18:17:17+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-12T18:17:17+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
