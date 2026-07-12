@@ -70,7 +70,7 @@ that as the answer rather than forcing an effect.
 - [x] Rerun C0 EN and C1 ID under the output-channel-only prompt policy with OpenAI GPT mini.
 - [x] Run C1 ZH baseline with ZH-only output-channel instructions.
 - [x] Run C2 EN-ID both counterbalances.
-- [ ] Run C2 EN-ZH both counterbalances.
+- [x] Run C2 EN-ZH both counterbalances.
 - [ ] Run C2 ZH-ID both counterbalances.
 - [ ] Run C3 free-choice EN-ID, EN-ZH, and ZH-ID.
 - [x] Add executable pairwise buy/sell runner for EN-ID, EN-ZH, and ZH-ID.
