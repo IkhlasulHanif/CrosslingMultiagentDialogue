@@ -49,14 +49,14 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T02:19:09+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
-- `2026-07-12T02:19:11+00:00` OK: Codex pass 6 completed
-- `2026-07-12T02:34:11+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_103411.txt
-- `2026-07-12T02:34:54+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-12T02:34:54+00:00` BLOCKED: OpenAI benchmark model probe failed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T02:34:54+00:00` BLOCKED: C1 ID baseline blocked on benchmark provider openai_benchmark; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh
 - `2026-07-12T02:35:07+00:00` BLOCKED: Top-level shell curl to https://api.openai.com/v1/models resolved and returned HTTP 401, but Python urllib and Python subprocess curl still report DNS failure for api.openai.com; C1 runner remains blocked before transcript generation; failed_command=bash scripts/run_c1_baseline.sh; artifacts=artifacts/results/benchmark_model_probe.json,artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json
 - `2026-07-12T02:36:36+00:00` OK: Harness scaffold check passed
+- `2026-07-12T02:37:05+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_103411.txt
+- `2026-07-12T02:37:05+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-12T02:37:06+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-12T02:37:08+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T02:37:11+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-12T02:37:11+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
