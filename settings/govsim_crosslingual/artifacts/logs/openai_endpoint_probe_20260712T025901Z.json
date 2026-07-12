@@ -1,0 +1,47 @@
+{
+  "api_key_present": true,
+  "base_url": "https://api.openai.com/v1",
+  "blockers": [
+    "no reachable OpenAI benchmark endpoint at https://api.openai.com/v1/models"
+  ],
+  "chat_url": "https://api.openai.com/v1/chat/completions",
+  "checks": [
+    {
+      "command": [
+        "curl",
+        "-sS",
+        "--connect-timeout",
+        "5.0",
+        "-m",
+        "5.0",
+        "-o",
+        "-",
+        "-w",
+        "\nHTTP_STATUS:%{http_code}\n",
+        "-H",
+        "Authorization: Bearer <redacted>",
+        "https://api.openai.com/v1/models"
+      ],
+      "name": "curl_models",
+      "output_tail": "curl: (6) Could not resolve host: api.openai.com\n\nHTTP_STATUS:000\n",
+      "reachable": false,
+      "returncode": 6,
+      "timed_out": false
+    },
+    {
+      "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>",
+      "error_type": "URLError",
+      "name": "urllib_models",
+      "reachable": false,
+      "status": "ERROR"
+    }
+  ],
+  "empirical_episode_ran": false,
+  "endpoint_reachable": false,
+  "model": "gpt-5.4-mini-2026-03-17",
+  "model_provider": "openai",
+  "models_url": "https://api.openai.com/v1/models",
+  "next_command_once_unblocked": "./scripts/run_openai_c1_baseline.sh",
+  "schema_version": "govsim-openai-endpoint-probe-v1",
+  "timestamp_utc": "2026-07-12T02:59:01+00:00"
+}
