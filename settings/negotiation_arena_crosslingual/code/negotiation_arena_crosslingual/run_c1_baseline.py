@@ -19,6 +19,7 @@ from run_c0_smoke import (  # noqa: E402
     append_event,
     benchmark_openai_allowed,
     load_benchmark_model_config,
+    OpenAIExternalRequestNeeded,
     run_endpoint_probe,
     run_episode,
     upstream_commit,
@@ -120,6 +121,13 @@ def main() -> int:
 
     try:
         episode = run_episode(episode_plan, provider, model_metadata)
+    except OpenAIExternalRequestNeeded as exc:
+        append_event(
+            "baseline",
+            "RUNNING",
+            f"C1 ID baseline shell bridge request ready; request={exc.request_path.relative_to(ROOT)}",
+        )
+        return 75
     except Exception as exc:
         artifact = write_json(
             "artifacts/results/baseline_c1_buy_sell_id_seed001.error.json",

@@ -109,6 +109,14 @@ class OpenAIConfiguredError(RuntimeError):
     """Raised when an explicitly allowed OpenAI benchmark/smoke client cannot respond."""
 
 
+class OpenAIExternalRequestNeeded(RuntimeError):
+    """Raised when the shell bridge must send the next OpenAI request."""
+
+    def __init__(self, request_path: Path) -> None:
+        super().__init__(f"OpenAI shell bridge request is ready: {request_path}")
+        self.request_path = request_path
+
+
 class OpenAIConfiguredChat:
     def __init__(self, config: dict[str, Any], *, purpose: str, env_model_default: str) -> None:
         self.config = config
@@ -127,6 +135,10 @@ class OpenAIConfiguredChat:
             )
 
     def complete(self, messages: list[dict[str, str]], **overrides: Any) -> str:
+        payload = self._build_payload(messages, **overrides)
+        return self._complete_with_urllib(payload)
+
+    def _build_payload(self, messages: list[dict[str, str]], **overrides: Any) -> dict[str, Any]:
         max_tokens = overrides.pop("max_tokens", None)
         max_completion_tokens = overrides.pop("max_completion_tokens", None)
         if max_completion_tokens is None:
@@ -139,7 +151,7 @@ class OpenAIConfiguredChat:
             self._token_limit_field(): max_completion_tokens,
         }
         payload.update({key: value for key, value in overrides.items() if value is not None})
-        return self._complete_with_urllib(payload)
+        return payload
 
     def _token_limit_field(self) -> str:
         configured = self.config.get("chat_completion_token_field")
@@ -257,6 +269,68 @@ class OpenAIBenchmarkChat(OpenAIConfiguredChat):
         super().__init__(config, purpose="benchmark", env_model_default="OPENAI_BENCHMARK_MODEL")
 
 
+_BRIDGE_CURSOR = 0
+
+
+class OpenAIBenchmarkShellBridgeChat(OpenAIConfiguredChat):
+    """Replay prior responses and externalize the next request for shell curl."""
+
+    def __init__(self, config: dict[str, Any]) -> None:
+        super().__init__(config, purpose="benchmark", env_model_default="OPENAI_BENCHMARK_MODEL")
+        self.state_path = Path(
+            os.environ.get(
+                "NEGOTIATION_OPENAI_BRIDGE_STATE",
+                str(ROOT / "artifacts" / "tmp" / "c1_openai_bridge_state.json"),
+            )
+        )
+        self.request_path = Path(
+            os.environ.get(
+                "NEGOTIATION_OPENAI_BRIDGE_REQUEST",
+                str(ROOT / "artifacts" / "tmp" / "c1_openai_bridge_request.json"),
+            )
+        )
+        self.payload_path = Path(
+            os.environ.get(
+                "NEGOTIATION_OPENAI_BRIDGE_PAYLOAD",
+                str(ROOT / "artifacts" / "tmp" / "c1_openai_bridge_payload.json"),
+            )
+        )
+
+    def _load_state(self) -> dict[str, Any]:
+        if not self.state_path.exists():
+            return {"responses": []}
+        return json.loads(self.state_path.read_text(encoding="utf-8"))
+
+    def complete(self, messages: list[dict[str, str]], **overrides: Any) -> str:
+        global _BRIDGE_CURSOR
+        payload = self._build_payload(messages, **overrides)
+        state = self._load_state()
+        responses = state.get("responses", [])
+        if _BRIDGE_CURSOR < len(responses):
+            response = responses[_BRIDGE_CURSOR]
+            _BRIDGE_CURSOR += 1
+            return str(response["text"])
+
+        self.request_path.parent.mkdir(parents=True, exist_ok=True)
+        self.payload_path.parent.mkdir(parents=True, exist_ok=True)
+        self.payload_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        request = {
+            "checked_at": utc_now(),
+            "status": "NEEDS_OPENAI_RESPONSE",
+            "provider": "openai_benchmark_shell_bridge",
+            "model": self.model,
+            "endpoint": self.endpoint,
+            "api_key_source": self.api_key_source,
+            "request_index": _BRIDGE_CURSOR,
+            "payload_path": str(self.payload_path),
+            "state_path": str(self.state_path),
+            "evidence_scope": "OpenAI benchmark override evidence; not Qwen3-1.7B evidence",
+            "message": "Send payload_path to endpoint with the configured OpenAI key, append the response text to state_path, then rerun the Python runner.",
+        }
+        self.request_path.write_text(json.dumps(request, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        raise OpenAIExternalRequestNeeded(self.request_path)
+
+
 def install_optional_upstream_import_shims() -> None:
     """Let unused upstream optional agent modules import without their SDKs."""
     if "openai" not in sys.modules:
@@ -324,6 +398,21 @@ def make_chat_client(provider: str) -> tuple[Any, dict[str, Any]]:
             "evidence_scope": "OpenAI benchmark override evidence; not Qwen3-1.7B evidence",
         }
 
+    if provider == "openai_benchmark_shell_bridge":
+        config = load_benchmark_model_config()
+        if not benchmark_openai_allowed(config):
+            raise OpenAIConfiguredError(
+                "OpenAI benchmark shell bridge was requested but is not allowed by config/benchmark_model.json"
+            )
+        client = OpenAIBenchmarkShellBridgeChat(config or {})
+        return client, {
+            "provider": "openai_benchmark_shell_bridge",
+            "model": client.model,
+            "endpoint": client.endpoint,
+            "api_key_source": client.api_key_source,
+            "evidence_scope": "OpenAI benchmark override evidence; not Qwen3-1.7B evidence",
+        }
+
     config = load_adapter_config()
     return make_local_chat(config), {
         "provider": config.provider,
@@ -334,6 +423,37 @@ def make_chat_client(provider: str) -> tuple[Any, dict[str, Any]]:
 
 
 def run_endpoint_probe(provider: str, failed_command: str | None = None) -> dict[str, Any]:
+    if provider == "openai_benchmark_shell_bridge":
+        try:
+            _client, metadata = make_chat_client(provider)
+        except OpenAIConfiguredError as exc:
+            probe = {
+                "checked_at": utc_now(),
+                "status": "BLOCKED",
+                "provider": provider,
+                "failed_command": failed_command,
+                "error": str(exc),
+                "message": "OpenAI benchmark shell bridge is configured but not usable.",
+                "next_action": (
+                    "Provide an OpenAI API key via the configured api_key_file_candidates or environment key, "
+                    f"then rerun {failed_command or 'bash scripts/run_c1_openai_bridge_baseline.sh'}."
+                ),
+            }
+            artifact = write_json("artifacts/results/benchmark_model_probe.json", probe)
+            append_event("benchmark_model", "BLOCKED", f"OpenAI benchmark shell bridge failed; artifact={artifact.relative_to(ROOT)}")
+            raise SystemExit(2) from exc
+
+        probe = {
+            "checked_at": utc_now(),
+            "status": "BRIDGE_READY",
+            **metadata,
+            "failed_command": None,
+            "message": "OpenAI benchmark shell bridge is ready; endpoint calls are made by the surrounding shell curl driver.",
+        }
+        artifact = write_json("artifacts/results/benchmark_model_probe.json", probe)
+        append_event("benchmark_model", "OK", f"OpenAI benchmark shell bridge ready; artifact={artifact.relative_to(ROOT)}")
+        return metadata
+
     if provider in {"openai_smoke", "openai_benchmark"}:
         is_benchmark = provider == "openai_benchmark"
         artifact_path = (

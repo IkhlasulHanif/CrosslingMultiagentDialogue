@@ -24,4 +24,5 @@ bash scripts/run_c0_openai_baseline.sh
 bash scripts/run_c0_openai_resource_exchange_baseline.sh
 python3 scripts/check_g2_capability_floor.py
 bash scripts/run_c1_baseline.sh
+bash scripts/run_c1_openai_bridge_baseline.sh
 ```
