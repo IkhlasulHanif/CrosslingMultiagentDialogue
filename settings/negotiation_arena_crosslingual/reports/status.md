@@ -14,10 +14,11 @@ translated benchmark rules. Rules/private state may remain in English; C0/C1/C2/
 constrain visible negotiation messages and validate channel compliance from
 transcripts.
 
-Fresh pass result: C3 free-choice buy/sell runs completed for EN-ID, EN-ZH,
-and ZH-ID with OpenAI `gpt-5.4-mini-2026-03-17` benchmark evidence at seed 101.
+Fresh pass result: pairwise resource-exchange runner added for EN-ID, EN-ZH,
+and ZH-ID, and one EN-ID C2 resource-exchange episode completed with OpenAI
+`gpt-5.4-mini-2026-03-17` benchmark evidence at seed 101.
 
-Next useful work: **Add executable pairwise resource-exchange runner for EN-ID, EN-ZH, and ZH-ID**.
+Next useful work: **Run the remaining pairwise resource-exchange counterbalances for EN-ID, EN-ZH, and ZH-ID**.
 
 ## Question
 
@@ -50,22 +51,22 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T18:08:59+00:00` OK: Harness scaffold check passed
-- `2026-07-12T18:08:59+00:00` OK: Pairwise EN-ID, EN-ZH, and ZH-ID channel-run plan validated; artifact=artifacts/results/pairwise_channel_plan_validation.json
-- `2026-07-12T18:09:57+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260713_020625.txt
-- `2026-07-12T18:09:57+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-12T18:09:58+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-12T18:09:58+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T18:10:07+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
-- `2026-07-12T18:10:07+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-12T18:10:07+00:00` OK: Post-Codex smoke/experiment attempt exited 0
+- `2026-07-12T18:10:07+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
+- `2026-07-12T18:10:09+00:00` OK: Codex pass 4 completed
+- `2026-07-12T18:11:09+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260713_021109.txt
+- `2026-07-12T18:13:18+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T18:13:21+00:00` OK: pair_en_id_c2_buyer_lx_seller_ly_resource_exchange_seed101 completed; transcript=artifacts/transcripts/pair_en_id_c2_buyer_lx_seller_ly_resource_exchange_seed101.json; metrics=artifacts/results/pair_en_id_c2_buyer_lx_seller_ly_resource_exchange_seed101.metrics.json; provider=openai_benchmark
+- `2026-07-12T18:13:39+00:00` OK: Pairwise resource_exchange runner added for EN-ID, EN-ZH, and ZH-ID; EN-ID C2 buyer_lx_seller_ly resource_exchange seed101 completed as OpenAI benchmark evidence with deal_rate=1.0 offer_parse_rate=1.0 compliance=1.0 pairwise_asymmetry=0; next_command=python3 scripts/run_pairwise_resource_exchange.py --pair EN-ID --condition C2 --counterbalance buyer_ly_seller_lx --seed 101
+- `2026-07-12T18:14:26+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 15 |
-| Result summaries | 33 |
-| Logs | 78 |
+| Transcript JSON/JSONL | 16 |
+| Result summaries | 34 |
+| Logs | 79 |
 
 ## Open Questions
 

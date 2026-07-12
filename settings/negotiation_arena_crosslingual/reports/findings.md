@@ -8,8 +8,20 @@ translated benchmark rules. Rules/private state may remain in English; C0/C1/C2/
 constrain visible negotiation messages and validate channel compliance from
 transcripts.
 
-Fresh pass result: C3 free-choice buy/sell runs completed for EN-ID, EN-ZH,
-and ZH-ID with OpenAI `gpt-5.4-mini-2026-03-17` benchmark evidence at seed 101.
+Fresh pass result: pairwise resource-exchange runner added for EN-ID, EN-ZH,
+and ZH-ID, and one EN-ID C2 resource-exchange episode completed with OpenAI
+`gpt-5.4-mini-2026-03-17` benchmark evidence at seed 101.
+
+- EN-ID C2 resource exchange agent_a-EN/agent_b-ID:
+  `artifacts/transcripts/pair_en_id_c2_buyer_lx_seller_ly_resource_exchange_seed101.json`
+  and
+  `artifacts/results/pair_en_id_c2_buyer_lx_seller_ly_resource_exchange_seed101.metrics.json`.
+  Deal reached after 2 visible messages. Final allocation was agent_a
+  X=15/Y=15 and agent_b X=15/Y=15. Both agents satisfied the upstream
+  ResourceGoal, so pairwise payoff asymmetry is EN minus ID = 0. Offer parse
+  rate, deal rate, and assigned channel compliance are all 1.0. First-offer
+  anchoring L1 distance is 0 because the accepted final allocation matched the
+  first offer exactly.
 
 - EN-ID C2 buyer-EN/seller-ID:
   `artifacts/transcripts/pair_en_id_c2_buyer_lx_seller_ly_buy_sell_seed101.json`
@@ -98,6 +110,12 @@ ZH-ID C2 run have poor assigned-channel compliance because visible dialogue
 mostly converged to ZH. Treat these as early role-sensitive and
 compliance-limited execution results until more seeds run.
 
+The resource-exchange path is now executable for all active pairs via
+`scripts/run_pairwise_resource_exchange.py`. Only the EN-ID C2
+agent_a-EN/agent_b-ID row has been empirically run so far; do not treat
+resource exchange as counterbalanced until the remaining EN-ID, EN-ZH, and
+ZH-ID rows are executed.
+
 Note on metrics: pairwise payoff asymmetry is intentionally unavailable for C3
 because both roles are assigned bilingual free-choice channels such as EN-ID,
 not unique one-language role labels. Use C3 primarily for H4 convergence and
@@ -126,5 +144,9 @@ Next exact commands:
 
 ```bash
 python3 scripts/validate_pairwise_channel_plan.py
-# Next implementation task: add a thin resource-exchange CLI that calls code/ reusable implementation.
+python3 scripts/run_pairwise_resource_exchange.py --pair EN-ID --condition C2 --counterbalance buyer_ly_seller_lx --seed 101
+python3 scripts/run_pairwise_resource_exchange.py --pair EN-ZH --condition C2 --counterbalance buyer_lx_seller_ly --seed 101
+python3 scripts/run_pairwise_resource_exchange.py --pair EN-ZH --condition C2 --counterbalance buyer_ly_seller_lx --seed 101
+python3 scripts/run_pairwise_resource_exchange.py --pair ZH-ID --condition C2 --counterbalance buyer_lx_seller_ly --seed 101
+python3 scripts/run_pairwise_resource_exchange.py --pair ZH-ID --condition C2 --counterbalance buyer_ly_seller_lx --seed 101
 ```
