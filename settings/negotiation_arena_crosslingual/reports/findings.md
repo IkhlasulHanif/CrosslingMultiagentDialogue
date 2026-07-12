@@ -9,7 +9,7 @@ constrain visible negotiation messages and validate channel compliance from
 transcripts.
 
 Current executable blocker: `bash scripts/run_c1_baseline.sh` uses the active
-OpenAI benchmark provider by default. It was rerun at 2026-07-12T03:10:38 UTC.
+OpenAI benchmark provider by default. It was rerun at 2026-07-12T03:28:51 UTC.
 Bring-up, offer parser validation, process-metric validation, and EN/ID/ZH
 channel validation all passed, then the OpenAI benchmark provider probe failed
 before any C1 transcript was created.
@@ -17,21 +17,18 @@ before any C1 transcript was created.
 The OpenAI chat-completions client maps `max_tokens` to
 `max_completion_tokens` for GPT-5/O-series style models, resolving the prior
 API parameter blocker for `gpt-5.4-mini-2026-03-17`. The refreshed probe
-artifact shows the remaining concrete blocker is DNS resolution from the Python
-runner path: urllib reported `nodename nor servname provided, or not known`,
-and the runner's Python-launched curl fallback reported `Could not resolve host:
-api.openai.com`. `CODEX_SANDBOX_NETWORK_DISABLED=1` is present in the Python
-runner environment. A direct top-level shell `curl -I -L --max-time 10
-https://api.openai.com/v1/models` did resolve at 2026-07-12T03:10:52 UTC and
-returned the expected unauthenticated HTTP 401, so the issue is not a missing
-checkout, prompt/metric gate, absent OpenAI config, or globally unreachable
-OpenAI host.
+artifact shows the remaining concrete blocker is DNS resolution for
+`api.openai.com`: urllib reported `nodename nor servname provided, or not
+known`, the runner's Python-launched curl fallback reported `Could not resolve
+host: api.openai.com`, and a direct shell curl probe also failed to resolve the
+host at 2026-07-12T03:29:26 UTC. The issue is not a missing checkout,
+prompt/metric gate, or absent OpenAI config.
 
 Fresh blocker artifacts:
 
 - `artifacts/results/benchmark_model_probe.json`
 - `artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`
-- `artifacts/results/network_sandbox_probe_20260712T031052Z.json`
+- `artifacts/results/network_sandbox_probe_20260712T032926Z.json`
 
 No channel-controlled C1/C2/C3 empirical evidence has been produced yet.
 
