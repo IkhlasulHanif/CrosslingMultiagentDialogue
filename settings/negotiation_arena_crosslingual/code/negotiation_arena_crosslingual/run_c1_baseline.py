@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the first Qwen/local C1 ID baseline episode, or record the exact gate."""
+"""Run the first C1 ID output-channel baseline episode, or record the exact gate."""
 
 from __future__ import annotations
 
@@ -59,25 +59,6 @@ def baseline_episode_plan(episode: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def pending_review_units(review: dict[str, Any]) -> list[str]:
-    return [
-        f"{item.get('context', '')}/{item.get('unit_id', '')}"
-        for item in review.get("units", [])
-        if item.get("reviewer_status") != "approved"
-    ]
-
-
-def translation_review_complete(review: dict[str, Any]) -> bool:
-    reviewer = review.get("reviewer", {})
-    return (
-        review.get("status") == "human_review_complete"
-        and reviewer.get("completed") is True
-        and bool(reviewer.get("name"))
-        and bool(reviewer.get("reviewed_at"))
-        and not pending_review_units(review)
-    )
-
-
 def selected_benchmark_provider() -> str:
     override = os.environ.get("NEGOTIATION_BENCHMARK_PROVIDER")
     if override:
@@ -87,64 +68,11 @@ def selected_benchmark_provider() -> str:
     return "local_qwen"
 
 
-def write_translation_blocked_artifact(review: dict[str, Any]) -> Path:
-    pending = pending_review_units(review)
-    benchmark_config = load_benchmark_model_config() or {}
-    provider_after_gate = selected_benchmark_provider()
-    if provider_after_gate == "openai_benchmark":
-        provider_model_after_gate = benchmark_config.get("default_model", "gpt-5.4-mini-2026-03-17")
-        provider_scope_after_gate = "OpenAI benchmark override evidence; not Qwen3-1.7B evidence"
-    else:
-        provider_model_after_gate = "Qwen3-1.7B"
-        provider_scope_after_gate = "Qwen/local model run"
-    payload = {
-        "checked_at": utc_now(),
-        "status": "BLOCKED",
-        "blocker": "pending_human_translation_review",
-        "failed_command": FAILED_COMMAND,
-        "condition": "C1",
-        "game_id": "buy_sell",
-        "language_pair": "EN-ID",
-        "planned_model": "Qwen3-1.7B",
-        "active_benchmark_provider_after_gate": provider_after_gate,
-        "active_benchmark_model_after_gate": provider_model_after_gate,
-        "active_benchmark_evidence_scope_after_gate": provider_scope_after_gate,
-        "openai_key_read": False,
-        "message": "C1 ID baseline is gated until a bilingual human approves every EN-ID prompt unit.",
-        "review_status": review.get("status"),
-        "reviewer_completed": review.get("reviewer", {}).get("completed"),
-        "pending_units": pending,
-        "pending_unit_count": len(pending),
-        "source_translation_file": review.get("source_translation_file"),
-        "review_file": "config/translation_review.json",
-        "review_packet": "docs/id_translation_review.md",
-        "next_action": (
-            "Have a bilingual reviewer fill config/translation_review.json with reviewer.completed=true, "
-            "reviewer.name, reviewer.reviewed_at, and reviewer_status=approved for every unit. "
-            "Then run python3 scripts/validate_translation_review.py and rerun bash scripts/run_c1_baseline.sh."
-        ),
-        "evidence_scope": "No C1 empirical evidence produced; this is a gate artifact only.",
-    }
-    return write_json(BLOCKED_ARTIFACT, payload)
-
-
 def main() -> int:
     plan = load_c1_plan()
     episodes = plan.get("episodes", [])
     if len(episodes) != 1:
         raise RuntimeError("config/c1_baseline_plan.json must contain exactly one first C1 baseline episode")
-
-    review = load_json("config/translation_review.json")
-    if not translation_review_complete(review):
-        artifact = write_translation_blocked_artifact(review)
-        append_event(
-            "baseline",
-            "BLOCKED",
-            f"C1 ID baseline blocked on pending human translation review; artifact={artifact.relative_to(ROOT)}; "
-            f"failed_command={FAILED_COMMAND}; next_command={FAILED_COMMAND}",
-        )
-        print(json.dumps({"blocked": str(artifact)}, indent=2))
-        return 2
 
     episode_config = episodes[0]
     episode_plan = baseline_episode_plan(episode_config)
@@ -153,10 +81,40 @@ def main() -> int:
     try:
         model_metadata = run_endpoint_probe(provider, failed_command=FAILED_COMMAND)
     except SystemExit as exc:
+        benchmark_config = load_benchmark_model_config() or {}
+        artifact = write_json(
+            BLOCKED_ARTIFACT,
+            {
+                "checked_at": utc_now(),
+                "status": "BLOCKED",
+                "blocker": "benchmark_provider_unavailable",
+                "failed_command": FAILED_COMMAND,
+                "condition": "C1",
+                "game_id": "buy_sell",
+                "language_pair": "EN-ID",
+                "role_languages": episode_config.get("role_languages", {}),
+                "active_benchmark_provider": provider,
+                "active_benchmark_model": benchmark_config.get("default_model", episode_config.get("model")),
+                "active_benchmark_evidence_scope": (
+                    "OpenAI benchmark override evidence; not Qwen3-1.7B evidence"
+                    if provider == "openai_benchmark"
+                    else "Qwen/local model run"
+                ),
+                "channel_gate_status": "ready",
+                "channel_gate_artifact": "artifacts/results/language_channel_validation.json",
+                "provider_probe_artifact": "artifacts/results/benchmark_model_probe.json"
+                if provider == "openai_benchmark"
+                else "artifacts/results/model_endpoint_probe.json",
+                "message": "C1 ID output-channel baseline is ready but the selected benchmark provider probe failed.",
+                "next_action": f"Fix the selected benchmark provider, then rerun {FAILED_COMMAND}.",
+                "evidence_scope": "No C1 empirical evidence produced; this is a provider blocker artifact only.",
+            },
+        )
         append_event(
             "baseline",
             "BLOCKED",
-            f"C1 ID baseline blocked on benchmark provider {provider}; failed_command={FAILED_COMMAND}",
+            f"C1 ID baseline blocked on benchmark provider {provider}; artifact={artifact.relative_to(ROOT)}; "
+            f"failed_command={FAILED_COMMAND}",
         )
         return int(exc.code) if isinstance(exc.code, int) else 2
 

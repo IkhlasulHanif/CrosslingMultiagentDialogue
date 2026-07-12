@@ -25,6 +25,7 @@ sys.path.insert(0, str(ROOT / "code" / "negotiation_arena_crosslingual"))
 sys.path.insert(0, str(UPSTREAM))
 
 from local_model_adapter import LocalModelError, load_adapter_config, make_local_chat  # noqa: E402
+from language_channels import channel_compliance, output_channel_instruction  # noqa: E402
 from offer_parser import offer_parse_rate, parse_offer  # noqa: E402
 from process_metrics import episode_payoff_asymmetry, first_offer_anchoring  # noqa: E402
 
@@ -611,7 +612,7 @@ def language_runtime_instruction(language: str, role_name: str, condition: str) 
     private_unit, private_values = buy_sell_private_prompt_unit(role_name, language)
     parts = [
         prompt_text("global", "system_negotiator", language),
-        prompt_text("global", language_policy_unit(condition, language), language),
+        output_channel_instruction(language, condition),
         prompt_text("buy_sell", "buy_sell_public_rules", language),
         prompt_text("buy_sell", private_unit, language, **private_values),
         prompt_text("buy_sell", "buy_sell_upstream_xml_response_format", language),
@@ -765,6 +766,11 @@ def write_metrics(episode: dict[str, Any], metrics_path: str) -> Path:
     metrics["offer_parse_rate"] = offer_parse_rate(parse_results)
     metrics["parsed_actions"] = [result.to_dict() for result in parse_results]
     metrics["payoff_asymmetry"] = episode_payoff_asymmetry(episode["game_id"], episode, messages)
+    metrics["channel_compliance"] = channel_compliance(
+        messages,
+        episode.get("role_languages", {}),
+        episode.get("language_pair"),
+    )
     metrics["deal_rate"] = 1.0 if episode.get("deal") else 0.0
     metrics["turns_to_deal"] = len(messages) if episode.get("deal") else None
     return write_json(metrics_path, metrics)

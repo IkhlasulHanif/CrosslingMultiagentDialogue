@@ -31,8 +31,8 @@ change payoff, anchoring, or whose terms dominate?
 - [x] Verify NegotiationArena license and record it in `licenses.md`.
 - [x] Bring up NegotiationArena locally.
 - [x] Select resource exchange and buy/sell games.
-- [ ] Add output-channel instruction templates for EN, ID, and ZH.
-- [ ] Add channel-compliance metrics for EN, ID, ZH, and off-pair output.
+- [x] Add output-channel instruction templates for EN, ID, and ZH.
+- [x] Add channel-compliance metrics for EN, ID, ZH, and off-pair output.
 - [x] Add shared local-model adapter instead of benchmark-local API calls.
 - [x] Implement structured offer parser.
 - [x] Track first-offer anchoring.

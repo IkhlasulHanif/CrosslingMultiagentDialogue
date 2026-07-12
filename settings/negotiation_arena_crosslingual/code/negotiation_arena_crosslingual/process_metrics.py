@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "code" / "negotiation_arena_crosslingual"))
 
 from offer_parser import ParseResult, parse_offer  # noqa: E402
+from language_channels import channel_compliance  # noqa: E402
 
 
 TEXT_KEYS = ("text", "message", "content", "utterance", "response", "raw")
@@ -400,6 +401,11 @@ def main() -> int:
 
     result = first_offer_anchoring(game_id, messages, final_terms)
     result["payoff_asymmetry"] = episode_payoff_asymmetry(game_id, episode_payload, messages)
+    result["channel_compliance"] = channel_compliance(
+        messages,
+        extract_role_languages(game_id, episode_payload, messages),
+        episode_payload.get("language_pair"),
+    )
     print(json.dumps(result, indent=2, ensure_ascii=False))
     return 0
 

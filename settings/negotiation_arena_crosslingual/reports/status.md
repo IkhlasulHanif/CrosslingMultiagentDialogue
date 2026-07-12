@@ -11,13 +11,13 @@ new benchmark runs should be labeled as OpenAI `gpt-5.4-mini-2026-03-17` evidenc
 
 Control definition: language means required interaction-output channel, not
 translated benchmark rules. For this setting, benchmark rules/private state may
-remain in English; C0/C1/C2/C3 should constrain only the agents' visible
-negotiation messages and validate channel compliance from transcripts. The next
-implementation work is output-channel instruction templates for EN/ID/ZH plus
-channel-compliance metrics for EN share, ID share, ZH share, code switching,
-and off-pair language.
+remain in English; C0/C1/C2/C3 constrain only the agents' visible negotiation
+messages and validate channel compliance from transcripts.
 
-Next useful work: **Add output-channel instruction templates for EN, ID, and ZH**.
+Output-channel instruction templates for EN, ID, and ZH are implemented in
+`config/language_channels.json`. Channel-compliance metrics inspect visible
+
+Next useful work: **Run C1 ID baseline with ID-only output-channel instructions**.
 
 ## Question
 
@@ -42,29 +42,29 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-None logged.
+BLOCKED: C1 ID baseline blocked on benchmark provider openai_benchmark; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T00:16:38+00:00` OK: scripts/run_smoke.sh exited 0
-- `2026-07-12T00:16:38+00:00` OK: Post-Codex smoke/experiment attempt exited 0
-- `2026-07-12T00:16:38+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
-- `2026-07-12T00:16:40+00:00` OK: Codex pass 23 completed
-- `2026-07-12T00:28:49+00:00` NOTE: Active setting changed to OpenAI gpt-4.1-mini and active language pairs EN-ID, EN-ZH, ZH-ID per user request.
-- `2026-07-12T00:37:17+00:00` NOTE: OpenAI API verified with gpt-5.4-mini-2026-03-17; active language manipulation is interaction-output channel only for EN-ID, EN-ZH, ZH-ID.
-- `2026-07-12T00:37:45+00:00` NOTE: Historical translation-gate blockers are superseded for the active channel-control plan; rerun OpenAI with verified model/key and implement output-channel constraints.
-- `2026-07-12T00:38:14+00:00` OK: Harness scaffold check passed
+- `2026-07-12T00:42:03+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-12T00:42:03+00:00` BLOCKED: OpenAI benchmark model probe failed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T00:42:03+00:00` BLOCKED: C1 ID baseline blocked on benchmark provider openai_benchmark; failed_command=bash scripts/run_c1_baseline.sh
+- `2026-07-12T00:42:40+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-12T00:42:40+00:00` BLOCKED: OpenAI benchmark model probe failed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T00:42:40+00:00` BLOCKED: C1 ID baseline blocked on benchmark provider openai_benchmark; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh
+- `2026-07-12T00:42:40+00:00` OK: Output-channel templates and EN/ID/ZH compliance metrics validated; artifact=artifacts/results/language_channel_validation.json
+- `2026-07-12T00:43:41+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
 | Transcript JSON/JSONL | 3 |
-| Result summaries | 14 |
-| Logs | 60 |
+| Result summaries | 15 |
+| Logs | 61 |
 
 ## Open Questions
 

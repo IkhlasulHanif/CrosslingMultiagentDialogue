@@ -5,11 +5,14 @@ new benchmark runs should be labeled as OpenAI `gpt-5.4-mini-2026-03-17` evidenc
 
 Control definition: language means required interaction-output channel, not
 translated benchmark rules. For this setting, benchmark rules/private state may
-remain in English; C0/C1/C2/C3 should constrain only the agents' visible
-negotiation messages and validate channel compliance from transcripts. The next
-implementation work is output-channel instruction templates for EN/ID/ZH plus
-channel-compliance metrics for EN share, ID share, ZH share, code switching,
-and off-pair language.
+remain in English; C0/C1/C2/C3 constrain only the agents' visible negotiation
+messages and validate channel compliance from transcripts.
+
+Output-channel instruction templates for EN, ID, and ZH are implemented in
+`config/language_channels.json`. Channel-compliance metrics inspect visible
+negotiation messages, excluding parser/protocol scaffolding where possible, and
+report assigned compliance, EN/ID/ZH shares, code-switch rate, and off-pair
+share. Validator artifact: `artifacts/results/language_channel_validation.json`.
 
 Historical Qwen3-1.7B C0 EN baselines for buy/sell and resource_exchange pass
 the floor (deal_rate=1.0, offer_parse_rate=1.0). Those runs are not the active
@@ -53,11 +56,16 @@ of `https://github.com/vinid/NegotiationArena.git` on branch
 `d35a7a3aa0d94c2d49f1d6ac13c5f931851abf12`. License evidence is recorded in
 `licenses.md` and `artifacts/results/bringup_check.json`.
 
-The C1 ID baseline command exists as `bash scripts/run_c1_baseline.sh`, but it
-currently still follows the old translated-rule gate. Update it so C1 means
-both agents must output only ID during negotiation messages while rules/private
-state can remain English. Then rerun `bash scripts/run_c1_baseline.sh` and
-`python3 scripts/check_g2_capability_floor.py`.
+The C1 ID baseline command exists as `bash scripts/run_c1_baseline.sh` and now
+uses the channel-control gate rather than the old translated-rule gate. The
+2026-07-12T00:42:40 UTC attempt passed bringup and validators, then blocked on
+OpenAI benchmark provider DNS: urllib and curl could not resolve
+`api.openai.com`. Blocker artifacts:
+`artifacts/results/benchmark_model_probe.json` and
+`artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`.
+
+Next exact command after network/DNS is restored:
+`bash scripts/run_c1_baseline.sh`, then `python3 scripts/check_g2_capability_floor.py`.
 
 The C0 resource-exchange baseline command is
 `bash scripts/run_c0_resource_exchange_baseline.sh`.
