@@ -50,21 +50,21 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T18:12:41+00:00` OK: GovSim C3 OpenAI EN-ZH free-choice produced artifact=artifacts/results/govsim_c3_openai_en_zh_free_20260712T181230Z.json transcript=artifacts/transcripts/govsim_c3_openai_en_zh_free_20260712T181230Z.jsonl
-- `2026-07-12T18:13:01+00:00` OK: GovSim C2 OpenAI ZH-ID counterbalance A produced artifact=artifacts/results/govsim_c2_openai_zh_id_a_20260712T181248Z.json transcript=artifacts/transcripts/govsim_c2_openai_zh_id_a_20260712T181248Z.jsonl
-- `2026-07-12T18:13:21+00:00` OK: GovSim C2 OpenAI ZH-ID counterbalance B produced artifact=artifacts/results/govsim_c2_openai_zh_id_b_20260712T181308Z.json transcript=artifacts/transcripts/govsim_c2_openai_zh_id_b_20260712T181308Z.jsonl
-- `2026-07-12T18:13:40+00:00` OK: GovSim C3 OpenAI ZH-ID free-choice produced artifact=artifacts/results/govsim_c3_openai_zh_id_free_20260712T181328Z.json transcript=artifacts/transcripts/govsim_c3_openai_zh_id_free_20260712T181328Z.jsonl
-- `2026-07-12T18:15:32+00:00` OK: Ran GovSim OpenAI ladder baselines and contact pilots for EN-ZH and ZH-ID; added thin C2/C3 ladder wrappers and updated status/findings with artifact-backed metrics.
 - `2026-07-12T18:15:43+00:00` OK: Harness scaffold check passed
 - `2026-07-12T18:16:12+00:00` OK: Harness scaffold check passed
 - `2026-07-12T18:19:54+00:00` OK: Harness scaffold check passed
+- `2026-07-12T18:20:07+00:00` OK: Produced final GovSim cross-lingual TeX/PDF report from OpenAI pilot evidence; tex=reports/paper/main.tex pdf=reports/paper/main.pdf.
+- `2026-07-12T18:21:31+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260713_020902.txt
+- `2026-07-12T18:21:31+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-12T18:21:47+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260712T182135Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260712T182135Z.jsonl
+- `2026-07-12T18:21:47+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 71 |
-| Result summaries | 85 |
+| Transcript JSON/JSONL | 72 |
+| Result summaries | 87 |
 | Logs | 93 |
 
 ## Open Questions
