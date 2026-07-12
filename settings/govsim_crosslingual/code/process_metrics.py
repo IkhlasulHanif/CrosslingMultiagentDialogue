@@ -12,7 +12,9 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
+ACTIVE_LANGUAGES = ("EN", "ID", "ZH")
 PAIR_LANGUAGES = ("EN", "ID")
+CHANNEL_COMPLIANCE_THRESHOLD = 0.80
 TOKEN_RE = re.compile(
     r"[\u0600-\u06ff]+|[\u0750-\u077f]+|[\u08a0-\u08ff]+|"
     r"[\u4e00-\u9fff]+|[A-Za-z]+(?:['-][A-Za-z]+)?|\d+"
@@ -63,6 +65,7 @@ EN_LEXICON = {
     "welfare",
     "will",
     "with",
+    "would",
 }
 
 ID_LEXICON = {
@@ -102,6 +105,19 @@ ID_LEXICON = {
     "yang",
 }
 
+ZH_HINTS = {
+    "鱼",
+    "捕",
+    "捕鱼",
+    "吨",
+    "湖",
+    "资源",
+    "可持续",
+    "合作",
+    "限制",
+    "答案",
+}
+
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
@@ -116,7 +132,7 @@ def tokenize(text: str) -> list[str]:
 
 
 def classify_token(token: str) -> str:
-    """Classify a token as EN, ID, OFF_PAIR:* or UNKNOWN.
+    """Classify a token as EN, ID, ZH, AR or UNKNOWN.
 
     The classifier is intentionally lightweight and deterministic. It is good
     enough for smoke-gate process metrics, not a replacement for manual
@@ -124,9 +140,9 @@ def classify_token(token: str) -> str:
     """
 
     if CJK_RE.search(token):
-        return "OFF_PAIR:ZH"
+        return "ZH"
     if ARABIC_RE.search(token):
-        return "OFF_PAIR:AR"
+        return "AR"
     lowered = token.lower()
     if not lowered.isalpha():
         return "UNKNOWN"
@@ -141,11 +157,15 @@ def classify_token(token: str) -> str:
 
 
 def message_metrics(record: dict[str, Any], pair_languages: tuple[str, str] = PAIR_LANGUAGES) -> dict[str, Any]:
+    pair_languages = normalize_pair_languages(pair_languages)
     text = str(record.get("visible_text") or "")
     tokens = tokenize(text)
     labels = [classify_token(token) for token in tokens]
+    active_counts = Counter(label for label in labels if label in ACTIVE_LANGUAGES)
     pair_counts = Counter(label for label in labels if label in pair_languages)
-    off_pair_counts = Counter(label.split(":", 1)[1] for label in labels if label.startswith("OFF_PAIR:"))
+    off_pair_counts = Counter(
+        label for label in labels if label not in pair_languages and label not in {"UNKNOWN"}
+    )
     unknown_count = sum(1 for label in labels if label == "UNKNOWN")
     pair_label_sequence = [label for label in labels if label in pair_languages]
     switch_points = sum(
@@ -156,6 +176,11 @@ def message_metrics(record: dict[str, Any], pair_languages: tuple[str, str] = PA
         language: (pair_counts[language] / pair_total if pair_total else 0.0)
         for language in pair_languages
     }
+    active_total = sum(active_counts.values())
+    active_shares = {
+        language: (active_counts[language] / active_total if active_total else 0.0)
+        for language in ACTIVE_LANGUAGES
+    }
     dominant_language = None
     if pair_total:
         dominant_language = max(pair_languages, key=lambda language: pair_counts[language])
@@ -164,23 +189,41 @@ def message_metrics(record: dict[str, Any], pair_languages: tuple[str, str] = PA
             dominant_language = None
 
     declared_language = record.get("language")
+    if isinstance(declared_language, str):
+        declared_language = declared_language.strip().upper()
+    else:
+        declared_language = None
     declared_mismatch = (
         declared_language in pair_languages
         and dominant_language is not None
         and declared_language != dominant_language
     )
+    declared_active_share = (
+        active_counts[declared_language] / active_total
+        if declared_language in ACTIVE_LANGUAGES and active_total
+        else None
+    )
+    channel_compliant = None
+    if declared_language in ACTIVE_LANGUAGES and active_total:
+        channel_compliant = declared_active_share >= CHANNEL_COMPLIANCE_THRESHOLD
 
     return {
         "agent_id": record.get("agent_id"),
         "round_index": record.get("round_index"),
         "token_count": len(tokens),
         "classified_pair_token_count": pair_total,
+        "classified_active_language_token_count": active_total,
         "unknown_token_count": unknown_count,
         "language_token_counts": dict(pair_counts),
         "language_share": shares,
+        "active_language_token_counts": {language: active_counts[language] for language in ACTIVE_LANGUAGES},
+        "active_language_share": active_shares,
         "dominant_language": dominant_language,
         "declared_language": declared_language,
         "declared_language_mismatch": bool(declared_mismatch),
+        "declared_language_active_share": declared_active_share,
+        "channel_compliance_threshold": CHANNEL_COMPLIANCE_THRESHOLD,
+        "channel_compliant": channel_compliant,
         "off_pair_token_count": sum(off_pair_counts.values()),
         "off_pair_scripts": dict(off_pair_counts),
         "code_switch_points": switch_points,
@@ -260,6 +303,7 @@ def summarize_records(
     records: Iterable[dict[str, Any]],
     pair_languages: tuple[str, str] = PAIR_LANGUAGES,
 ) -> dict[str, Any]:
+    pair_languages = normalize_pair_languages(pair_languages)
     model_records = [
         record
         for record in records
@@ -267,21 +311,30 @@ def summarize_records(
     ]
     messages = [message_metrics(record, pair_languages) for record in model_records]
     language_counts: Counter[str] = Counter()
+    active_language_counts: Counter[str] = Counter()
     off_pair_scripts: Counter[str] = Counter()
     total_tokens = 0
     classified_pair_tokens = 0
+    classified_active_tokens = 0
     unknown_tokens = 0
     code_switch_points = 0
     declared_mismatches = 0
+    declared_messages = 0
+    compliant_messages = 0
 
     for message in messages:
         total_tokens += message["token_count"]
         classified_pair_tokens += message["classified_pair_token_count"]
+        classified_active_tokens += message["classified_active_language_token_count"]
         unknown_tokens += message["unknown_token_count"]
         code_switch_points += message["code_switch_points"]
         declared_mismatches += int(message["declared_language_mismatch"])
         language_counts.update(message["language_token_counts"])
+        active_language_counts.update(message["active_language_token_counts"])
         off_pair_scripts.update(message["off_pair_scripts"])
+        if message["channel_compliant"] is not None:
+            declared_messages += 1
+            compliant_messages += int(message["channel_compliant"])
 
     language_share = {
         language: (language_counts[language] / classified_pair_tokens if classified_pair_tokens else 0.0)
@@ -291,13 +344,31 @@ def summarize_records(
     round_shares = _round_language_shares(messages, pair_languages)
 
     return {
-        "schema_version": "govsim-process-metrics-v1",
+        "schema_version": "govsim-process-metrics-v2",
+        "pair_languages": list(pair_languages),
+        "active_languages": list(ACTIVE_LANGUAGES),
         "message_count": len(messages),
         "token_count": total_tokens,
         "classified_pair_token_count": classified_pair_tokens,
+        "classified_active_language_token_count": classified_active_tokens,
         "unknown_token_count": unknown_tokens,
         "language_token_counts": dict(language_counts),
         "language_share": language_share,
+        "active_language_token_counts": {
+            language: active_language_counts[language] for language in ACTIVE_LANGUAGES
+        },
+        "active_language_share": {
+            language: (
+                active_language_counts[language] / classified_active_tokens
+                if classified_active_tokens
+                else 0.0
+            )
+            for language in ACTIVE_LANGUAGES
+        },
+        "channel_compliance_threshold": CHANNEL_COMPLIANCE_THRESHOLD,
+        "channel_compliant_message_count": compliant_messages,
+        "channel_compliance_evaluable_message_count": declared_messages,
+        "channel_compliant_message_rate": compliant_messages / declared_messages if declared_messages else None,
         "code_switch_message_count": sum(1 for message in messages if message["code_switch"]),
         "code_switch_message_rate": (
             sum(1 for message in messages if message["code_switch"]) / len(messages) if messages else 0.0
@@ -349,6 +420,16 @@ def summarize_transcript(path: Path, pair_languages: tuple[str, str] = PAIR_LANG
     return summary
 
 
+def normalize_pair_languages(pair_languages: tuple[str, str] | Iterable[str]) -> tuple[str, str]:
+    normalized = tuple(str(language).strip().upper() for language in pair_languages)
+    if len(normalized) != 2:
+        raise ValueError(f"expected exactly two pair languages, got {normalized!r}")
+    unknown = sorted(set(normalized) - set(ACTIVE_LANGUAGES))
+    if unknown:
+        raise ValueError(f"unsupported pair language(s): {', '.join(unknown)}")
+    return normalized
+
+
 def _json_default(value: Any) -> Any:
     if isinstance(value, float) and (math.isnan(value) or math.isinf(value)):
         return None
@@ -359,9 +440,15 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Summarize GovSim process language metrics.")
     parser.add_argument("transcript", type=Path)
     parser.add_argument("--out", type=Path)
+    parser.add_argument(
+        "--pair-languages",
+        default="-".join(PAIR_LANGUAGES),
+        help="Two active output-channel languages, for example EN-ID, EN-ZH, or ZH-ID.",
+    )
     args = parser.parse_args()
 
-    summary = summarize_transcript(args.transcript)
+    pair_languages = tuple(part.strip().upper() for part in args.pair_languages.split("-"))
+    summary = summarize_transcript(args.transcript, pair_languages=pair_languages)
     text = json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True, default=_json_default)
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)

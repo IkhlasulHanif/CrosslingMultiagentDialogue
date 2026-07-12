@@ -29,13 +29,13 @@ language change group welfare beyond monolingual channel baselines?
 - [x] Verify GovSim license and record it in `licenses.md`.
 - [x] Bring up GovSim locally.
 - [x] Add shared local-model adapter instead of benchmark-local API calls.
-- [ ] Add output-channel instruction templates for EN, ID, and ZH.
-- [ ] Add channel-compliance metrics for EN, ID, ZH, and off-pair output.
+- [x] Add output-channel instruction templates for EN, ID, and ZH.
+- [x] Add channel-compliance metrics for EN, ID, ZH, and off-pair output.
 - [x] Implement transcript logging with stripped `<think>` stored separately.
 - [x] Implement lang-share, code-switch, convergence, and off-pair metrics.
 - [x] Smoke test one C0 episode.
 - [ ] Run C0 and C1 baselines.
-- [ ] Run OpenAI-backed C0/C1 baseline commands if Qwen/Modal remains unavailable.
+- [x] Run OpenAI-backed C0/C1 baseline commands if Qwen/Modal remains unavailable.
 - [ ] Add EN-ZH and ZH-ID pairwise channel-run plans.
 - [ ] Check G2 capability floor before C2/C3.
 - [x] Write `budget.md` before full matrix.

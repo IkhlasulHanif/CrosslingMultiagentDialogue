@@ -34,6 +34,23 @@ class ProcessMetricsTest(unittest.TestCase):
         self.assertEqual(metrics["code_switch_points"], 2)
         self.assertEqual(metrics["off_pair_scripts"]["AR"], 1)
         self.assertIsNone(metrics["dominant_language"])
+        self.assertFalse(metrics["channel_compliant"])
+
+    def test_zh_is_pair_language_when_configured(self) -> None:
+        metrics = message_metrics(
+            {
+                "event_type": "model_message",
+                "round_index": 1,
+                "agent_id": "agent_3",
+                "language": "ZH",
+                "visible_text": "我们应该合作捕鱼，保护鱼和资源",
+            },
+            pair_languages=("EN", "ZH"),
+        )
+
+        self.assertGreater(metrics["language_token_counts"]["ZH"], 0)
+        self.assertEqual(metrics["off_pair_token_count"], 0)
+        self.assertTrue(metrics["channel_compliant"])
 
     def test_summary_reports_language_share_and_convergence_delta(self) -> None:
         records = [
@@ -100,7 +117,7 @@ class ProcessMetricsTest(unittest.TestCase):
             )
 
             data = json.loads(out.read_text(encoding="utf-8"))
-            self.assertEqual(data["schema_version"], "govsim-process-metrics-v1")
+            self.assertEqual(data["schema_version"], "govsim-process-metrics-v2")
             self.assertEqual(data["message_count"], 1)
             self.assertEqual(data["source_path"], str(transcript))
 

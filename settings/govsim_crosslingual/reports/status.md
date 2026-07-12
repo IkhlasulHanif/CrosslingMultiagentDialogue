@@ -6,18 +6,18 @@ This is the concise file to read first for this benchmark.
 
 Active plan update: benchmark execution is now OpenAI `gpt-5.4-mini-2026-03-17` per user request on 2026-07-12, and the active language pairs are EN-ID, EN-ZH, and ZH-ID. The old Qwen plan is historical/backlog context only.
 
-One C0 OpenAI smoke episode has run. It is runner bring-up evidence only. OpenAI benchmark C0/C1 baseline entrypoints are wired, but no OpenAI baseline episode completed in this sandbox.
+One C0 OpenAI smoke episode has run. It is runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence. OpenAI benchmark C0/C1 baseline entrypoints are wired and now reach the model-call stage with output-channel constraints, but no OpenAI baseline episode completed in this sandbox.
 
 Current empirical story: `./harness.sh run-smoke` most recently succeeded at `2026-07-11T23:30:20+00:00`, executing one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260711T232956Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260711T232956Z.jsonl`.
 
-Current control definition: language means required interaction-output channel, not translated benchmark rules. For this setting, benchmark rules/private state may remain in English; C0/C1/C2/C3 should constrain only the agents' visible dialogue output and validate channel compliance in transcripts. The next implementation work is output-channel instruction templates for EN/ID/ZH plus channel-compliance metrics for EN share, ID share, ZH share, code switching, and off-pair language.
+Current control definition: language means required interaction-output channel, not translated benchmark rules. For this setting, benchmark rules/private state may remain in English; C0/C1/C2/C3 constrain only the agents' visible dialogue output and validate channel compliance in transcripts. Output-channel instruction templates for EN/ID/ZH are implemented in `code/channel_instructions.py`; v2 process metrics now report EN/ID/ZH active-language shares, assigned-channel compliance, code switching, convergence, and off-pair language.
 
-Current blockers: OpenAI DNS now resolves from this machine, but the active shell did not expose `OPENAI_API_KEY` directly. The setting-local OpenAI runners can read `../../secrets/open_ai.txt`; rerun the runners through the harness path rather than relying on the parent shell env. If an OpenAI call still fails, the blocker artifact should distinguish DNS, certificate, auth, quota, and model-not-found.
+Current blockers: both `./scripts/run_openai_c1_baseline.sh` and `./scripts/run_openai_c0_baseline.sh` now attempt OpenAI model calls using the configured key file, but this sandbox cannot resolve `api.openai.com`. Current blocker artifacts are `artifacts/results/govsim_c1_openai_baseline_20260712T004213Z.json` with endpoint probe `artifacts/logs/openai_endpoint_probe_20260712T004213Z.json`, and `artifacts/results/govsim_c0_openai_baseline_20260712T004231Z.json` with endpoint probe `artifacts/logs/openai_endpoint_probe_20260712T004231Z.json`.
 
-OpenAI benchmark override baseline state: `./scripts/run_openai_c0_baseline.sh` was attempted earlier with the old OpenAI model name and failed when `api.openai.com` DNS was unavailable. That DNS finding is historical; rerun with `gpt-5.4-mini-2026-03-17` before treating OpenAI as blocked.
+OpenAI benchmark override baseline state: C0 and C1 were rerun with `gpt-5.4-mini-2026-03-17` after the active channel-control update. The historical translation gate is superseded for this setting; C1 no longer blocks before model call on translated benchmark-rule review.
 
 
-Next useful work: **Add output-channel instruction templates for EN, ID, and ZH**.
+Next useful work: **Run C0 and C1 baselines**.
 
 ## Question
 
@@ -42,29 +42,29 @@ Does cross-lingual contact reduce cooperative resource-management outcomes beyon
 
 ## Blockers / Errors
 
-None current; a later event marks the previous blocker as superseded.
+BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260712T004231Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T004231Z.json
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T00:09:22+00:00` OK: Codex pass 22 completed
-- `2026-07-12T00:24:22+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_082422.txt
-- `2026-07-12T00:25:03+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260712T002503Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T002503Z.json
-- `2026-07-12T00:25:24+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked before model call by translation gate: TranslationPackNotReady: ID translation pack is not ready for benchmark use: status=DRAFT, source_coverage_complete=True, human_checked=False, pack=/Users/ikhlasul.hanif/Documents/MultiAgent/settings/govsim_crosslingual/config/translations/en_id_fishery_draft.json; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T002524Z.json; review_manifest=artifacts/logs/translation_human_review_manifest.json; next=./scripts/run_openai_c1_baseline.sh
-- `2026-07-12T00:28:49+00:00` NOTE: Active setting changed to OpenAI gpt-4.1-mini and active language pairs EN-ID, EN-ZH, ZH-ID per user request.
-- `2026-07-12T00:37:17+00:00` NOTE: OpenAI API verified with gpt-5.4-mini-2026-03-17; active language manipulation is interaction-output channel only for EN-ID, EN-ZH, ZH-ID.
-- `2026-07-12T00:37:45+00:00` NOTE: Historical DNS and translation-gate blockers are superseded for the active channel-control plan; rerun OpenAI with verified model/key and implement output-channel constraints.
 - `2026-07-12T00:38:14+00:00` OK: Harness scaffold check passed
+- `2026-07-12T00:38:51+00:00` RUNNING: Starting Codex implementation loop sleep=900s max_iters=infinite
+- `2026-07-12T00:38:51+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_083851.txt
+- `2026-07-12T00:42:04+00:00` OK: Harness scaffold check passed
+- `2026-07-12T00:42:13+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T004213Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T004213Z.json
+- `2026-07-12T00:42:31+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260712T004231Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T004231Z.json
+- `2026-07-12T00:43:49+00:00` OK: Implemented EN/ID/ZH output-channel templates and v2 channel-compliance metrics; C0/C1 OpenAI baselines now bypass translated-rule gate and block only at api.openai.com DNS in this sandbox.
+- `2026-07-12T00:44:01+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
 | Transcript JSON/JSONL | 43 |
-| Result summaries | 0 |
-| Logs | 77 |
+| Result summaries | 2 |
+| Logs | 78 |
 
 ## Open Questions
 

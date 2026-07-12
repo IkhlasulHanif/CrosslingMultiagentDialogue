@@ -2,8 +2,9 @@
 """Run GovSim fishery baselines with the configured OpenAI benchmark override.
 
 These artifacts are OpenAI benchmark evidence only. They must not be reported as
-Qwen3-1.7B evidence. Indonesian baselines still enforce the human translation
-review gate before any model call.
+Qwen3-1.7B evidence. Language is treated as the interaction-output channel:
+GovSim rules/private state stay in English while model replies are constrained
+to the assigned output language.
 """
 
 from __future__ import annotations
@@ -52,11 +53,14 @@ def load_benchmark_config() -> dict[str, Any]:
 def baseline_condition_language() -> tuple[str, str]:
     condition = os.environ.get("GOVSIM_CONDITION", "C0").strip().upper()
     language = os.environ.get("GOVSIM_LANGUAGE", "EN").strip().upper()
-    if (condition, language) not in {("C0", "EN"), ("C1", "ID")}:
+    pair = os.environ.get("GOVSIM_LANGUAGE_PAIR", "EN-ID").strip().upper()
+    pair_languages = tuple(part.strip() for part in pair.split("-"))
+    if condition not in {"C0", "C1"} or language not in {"EN", "ID", "ZH"}:
         raise RuntimeError(
-            "unsupported baseline pair; use GOVSIM_CONDITION=C0 GOVSIM_LANGUAGE=EN "
-            "or GOVSIM_CONDITION=C1 GOVSIM_LANGUAGE=ID"
+            "unsupported baseline; use GOVSIM_CONDITION=C0 or C1 with GOVSIM_LANGUAGE=EN, ID, or ZH"
         )
+    if len(pair_languages) != 2 or language not in pair_languages:
+        raise RuntimeError(f"GOVSIM_LANGUAGE={language} is not in GOVSIM_LANGUAGE_PAIR={pair}")
     return condition, language
 
 
@@ -157,7 +161,6 @@ def main() -> int:
     key_source: str | None = None
 
     try:
-        require_complete_translation_pack(ROOT, language)
         config = load_benchmark_config()
         api_key, key_source = read_api_key(config)
         if not api_key:
@@ -182,6 +185,7 @@ def main() -> int:
             ),
             condition=condition,
             language=language,
+            language_pair=os.environ.get("GOVSIM_LANGUAGE_PAIR", "EN-ID").strip().upper(),
             schema_version=f"govsim-{schema_suffix}-openai-baseline-v1",
             episode_id=f"{schema_suffix}-openai-baseline-0001",
             run_storage_root=RUN_STORAGE_ROOT,

@@ -1,14 +1,14 @@
 Active plan update: benchmark execution is now OpenAI `gpt-5.4-mini-2026-03-17` per user request on 2026-07-12, and the active language pairs are EN-ID, EN-ZH, and ZH-ID. The old Qwen plan is historical/backlog context only.
 
-One C0 OpenAI smoke episode has run. It is runner bring-up evidence only. OpenAI benchmark C0/C1 baseline entrypoints are wired, but no OpenAI baseline episode completed in this sandbox.
+One C0 OpenAI smoke episode has run. It is runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence. OpenAI benchmark C0/C1 baseline entrypoints are wired and now reach the model-call stage with output-channel constraints, but no OpenAI baseline episode completed in this sandbox.
 
 Current empirical story: `./harness.sh run-smoke` most recently succeeded at `2026-07-11T23:30:20+00:00`, executing one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260711T232956Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260711T232956Z.jsonl`.
 
-Current control definition: language means required interaction-output channel, not translated benchmark rules. For this setting, benchmark rules/private state may remain in English; C0/C1/C2/C3 should constrain only the agents' visible dialogue output and validate channel compliance in transcripts. The next implementation work is output-channel instruction templates for EN/ID/ZH plus channel-compliance metrics for EN share, ID share, ZH share, code switching, and off-pair language.
+Current control definition: language means required interaction-output channel, not translated benchmark rules. For this setting, benchmark rules/private state may remain in English; C0/C1/C2/C3 constrain only the agents' visible dialogue output and validate channel compliance in transcripts. Output-channel instruction templates for EN/ID/ZH are implemented in `code/channel_instructions.py`; v2 process metrics now report EN/ID/ZH active-language shares, assigned-channel compliance, code switching, convergence, and off-pair language.
 
-Current blockers: OpenAI DNS now resolves from this machine, but the active shell did not expose `OPENAI_API_KEY` directly. The setting-local OpenAI runners can read `../../secrets/open_ai.txt`; rerun the runners through the harness path rather than relying on the parent shell env. If an OpenAI call still fails, the blocker artifact should distinguish DNS, certificate, auth, quota, and model-not-found.
+Current blockers: both `./scripts/run_openai_c1_baseline.sh` and `./scripts/run_openai_c0_baseline.sh` now attempt OpenAI model calls using the configured key file, but this sandbox cannot resolve `api.openai.com`. Current blocker artifacts are `artifacts/results/govsim_c1_openai_baseline_20260712T004213Z.json` with endpoint probe `artifacts/logs/openai_endpoint_probe_20260712T004213Z.json`, and `artifacts/results/govsim_c0_openai_baseline_20260712T004231Z.json` with endpoint probe `artifacts/logs/openai_endpoint_probe_20260712T004231Z.json`.
 
-OpenAI benchmark override baseline state: `./scripts/run_openai_c0_baseline.sh` was attempted earlier with the old OpenAI model name and failed when `api.openai.com` DNS was unavailable. That DNS finding is historical; rerun with `gpt-5.4-mini-2026-03-17` before treating OpenAI as blocked.
+OpenAI benchmark override baseline state: C0 and C1 were rerun with `gpt-5.4-mini-2026-03-17` after the active channel-control update. The historical translation gate is superseded for this setting; C1 no longer blocks before model call on translated benchmark-rule review.
 
 The Qwen C0 command `./scripts/run_qwen_c0_baseline.sh` is wired and was attempted at `2026-07-11T16:55:11+00:00` after resolving the PathFinder source and minimal import dependencies. It is blocked at `http://127.0.0.1:8000/v1/chat/completions` by sandbox/network permission `[Errno 1] Operation not permitted`; artifact `artifacts/results/govsim_c0_qwen_baseline_20260711T165511Z.json`. The attached endpoint probe `artifacts/logs/qwen_endpoint_probe_20260711T165511Z.json` found no reachable server at `http://127.0.0.1:8000/v1/models`.
 
@@ -23,6 +23,7 @@ Dependency state: `.venv` now has the minimal PathFinder import dependencies `ba
 Validation state: `python3 scripts/update_license_report.py --root . --strict` exited `0` with `READY_FOR_REVIEW`. `GOVSIM_MODEL_BASE_URL=http://127.0.0.1:8000/v1 GOVSIM_MODEL_NAME=Qwen3-1.7B ./scripts/run_qwen_c0_baseline.sh` exited `2` with a concrete endpoint blocker artifact. The historical translation-pack checks are no longer the active language gate for output-channel experiments.
 
 Exact next Qwen C0 command once a local or Modal Qwen endpoint is reachable: `GOVSIM_MODEL_BASE_URL=http://127.0.0.1:8000/v1 GOVSIM_MODEL_NAME=Qwen3-1.7B ./scripts/run_qwen_c0_baseline.sh`.
-Exact next OpenAI C0 command: `./scripts/run_openai_c0_baseline.sh`.
-Exact next output-channel implementation target: add EN/ID/ZH dialogue-only channel instructions and transcript channel-compliance metrics, then run pairwise C0 for EN-ID, EN-ZH, and ZH-ID.
+Exact next OpenAI C0 command once DNS is reachable: `./scripts/run_openai_c0_baseline.sh`.
+Exact next OpenAI C1 command once DNS is reachable: `./scripts/run_openai_c1_baseline.sh`.
+Exact next output-channel implementation target: add EN-ZH and ZH-ID pairwise run plans or thin wrappers using `GOVSIM_LANGUAGE_PAIR` and `GOVSIM_LANGUAGE`, then run pairwise C0 for EN-ID, EN-ZH, and ZH-ID.
 Exact next PathFinder source command once GitHub DNS is available: `git -C vendor/govsim submodule update --init --depth 1 pathfinder`.

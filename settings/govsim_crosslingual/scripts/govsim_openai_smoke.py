@@ -34,6 +34,14 @@ sys.path.insert(0, str(CODE_DIR))
 sys.path.insert(0, str(GOVSIM_DIR))
 
 from local_model_adapter import ChatMessage, LocalModelError, VLLMChatAdapter  # noqa: E402
+from channel_instructions import (  # noqa: E402
+    append_system_channel_instruction,
+    conversation_instruction,
+    harvest_instruction,
+    limit_instruction,
+    normalize_language,
+    summary_instruction,
+)
 from process_metrics import summarize_transcript  # noqa: E402
 from transcript_logger import TranscriptContext, TranscriptWriter  # noqa: E402
 
@@ -133,47 +141,20 @@ def identities() -> dict[str, PersonaIdentity]:
 
 
 def system_prompt(identity: PersonaIdentity, language: str) -> str:
-    if language == "EN":
-        return get_sytem_prompt_v4(identity)
-    if language != "ID":
-        raise ValueError(f"unsupported GovSim prompt language: {language}")
-
-    other_names = [name for name in NAMES if name != identity.name]
-    values = {
-        "persona_name": identity.name,
-        "other_names": ", ".join(other_names),
-    }
-    return "\n\n".join(
-        [
-            tr("fishery.system.role_v4", **values),
-            tr("fishery.system.capacity_v4"),
-            tr("fishery.system.reproduction_v4"),
-            tr("fishery.system.example_v4"),
-            tr("fishery.system.payoff_goal_v4"),
-            tr("fishery.system.communication_v4"),
-        ]
-    )
+    language = normalize_language(language)
+    return append_system_channel_instruction(get_sytem_prompt_v4(identity), language)
 
 
 def harvest_user_prompt(identity: PersonaIdentity, obs: Any, language: str) -> str:
-    if language == "EN":
-        memory_lines = "\n".join(f"- {event.created:%Y-%m-%d}: {event.description}" for event in obs.events)
-        return (
-            f"{prompt_description_simulation(identity.name, obs.current_resource_num)}\n"
-            f"Key memories of {identity.name} (format: YYYY-MM-DD: memory):\n{memory_lines}\n\n"
-            f"Task: With a fishing range set between 0-{obs.current_resource_num}, "
-            "how many tons of fish would you catch this month?\n"
-            'Answer with brief reasoning and put the final integer after "Answer:".'
-        )
-    if language == "ID":
-        memory_text = tr(
-            "fishery.memory.before_fishing",
-            persona_name=identity.name,
-            num_tons_lake=obs.current_resource_num,
-        )
-        task_text = tr("fishery.task.choose_harvest", num_tons_lake=obs.current_resource_num)
-        return f"{memory_text}\n\n{task_text}\nJawab dengan alasan singkat."
-    raise ValueError(f"unsupported GovSim prompt language: {language}")
+    language = normalize_language(language)
+    memory_lines = "\n".join(f"- {event.created:%Y-%m-%d}: {event.description}" for event in obs.events)
+    return (
+        f"{prompt_description_simulation(identity.name, obs.current_resource_num)}\n"
+        f"Key memories of {identity.name} (format: YYYY-MM-DD: memory):\n{memory_lines}\n\n"
+        f"Task: With a fishing range set between 0-{obs.current_resource_num}, "
+        "how many tons of fish would you catch this month?\n"
+        f"{harvest_instruction(language)}"
+    )
 
 
 def prompt_harvest(identity: PersonaIdentity, obs: Any, language: str = "EN") -> list[dict[str, str]]:
@@ -259,22 +240,13 @@ def conversation_prompt(
     conversation: list[tuple[PersonaIdentity, str]],
     language: str = "EN",
 ) -> list[dict[str, str]]:
+    language = normalize_language(language)
     history = "\n".join(f"- {speaker.name}: {utterance}" for speaker, utterance in conversation)
-    if language == "EN":
-        user_text = (
-            f"Monthly report: {resource_report}\n\n"
-            f"Conversation so far:\n{history or '- No one has spoken yet.'}\n\n"
-            "Say one short message to the group in English. Discuss sustainable fishing if relevant. "
-            "Do not include labels or a next-speaker field."
-        )
-    elif language == "ID":
-        user_text = (
-            f"{tr('fishery.conversation.monthly_report', resource_report=resource_report)}\n\n"
-            f"{tr('fishery.conversation.history_header', history=history or '- Belum ada yang berbicara.')}\n\n"
-            f"{tr('fishery.conversation.speak_instruction')}"
-        )
-    else:
-        raise ValueError(f"unsupported GovSim prompt language: {language}")
+    user_text = (
+        f"Monthly report: {resource_report}\n\n"
+        f"Conversation so far:\n{history or '- No one has spoken yet.'}\n\n"
+        f"{conversation_instruction(language)}"
+    )
     return [
         {"role": "system", "content": system_prompt(identity, language)},
         {"role": "user", "content": user_text},
@@ -282,8 +254,6 @@ def conversation_prompt(
 
 
 def resource_report_for_language(obs: Any, ids: dict[str, PersonaIdentity], language: str) -> str:
-    if language == "ID":
-        return " ".join(f"{ids[agent_id].name} menangkap {amount} ton." for agent_id, amount in obs.agent_resource_num.items())
     return " ".join(f"{ids[agent_id].name} caught {amount} tons." for agent_id, amount in obs.agent_resource_num.items())
 
 
@@ -294,6 +264,7 @@ def run_conversation(
     obs: Any,
     language: str = "EN",
 ) -> PersonaActionChat:
+    language = normalize_language(language)
     report = resource_report_for_language(obs, ids, language)
     conversation: list[tuple[PersonaIdentity, str]] = []
     html_interactions: list[str] = []
@@ -315,16 +286,16 @@ def run_conversation(
         )
 
     transcript_text = "\n".join(f"{speaker.name}: {utterance}" for speaker, utterance in conversation)
-    if language == "ID":
-        summary_messages = [
-            {"role": "system", "content": "Anda meringkas keputusan kelompok untuk simulasi perikanan."},
-            {"role": "user", "content": f"{tr('fishery.framework.summary_instruction')}\n{transcript_text}"},
-        ]
-    else:
-        summary_messages = [
-            {"role": "system", "content": "You summarize group decisions for a fishery simulation."},
-            {"role": "user", "content": f"Summarize this conversation in one sentence:\n{transcript_text}"},
-        ]
+    summary_messages = [
+        {
+            "role": "system",
+            "content": append_system_channel_instruction(
+                "You summarize group decisions for a fishery simulation.",
+                language,
+            ),
+        },
+        {"role": "user", "content": f"{summary_instruction(language)}\n{transcript_text}"},
+    ]
     summary = complete(adapter, summary_messages, max_tokens=100, temperature=0.0)
     transcript.log_model_response(
         round_index=0,
@@ -336,22 +307,16 @@ def run_conversation(
         prompt_messages=summary_messages,
     )
 
-    if language == "ID":
-        limit_messages = [
-            {"role": "system", "content": "Ekstrak kesepakatan numerik dari percakapan perikanan."},
-            {"role": "user", "content": f"{tr('fishery.framework.limit_extraction')}\n\nPercakapan:\n{transcript_text}"},
-        ]
-    else:
-        limit_messages = [
-            {"role": "system", "content": "Extract numeric agreements from fishery conversations."},
-            {
-                "role": "user",
-                "content": (
-                    "If the group agreed on a maximum tons-of-fish limit per person, answer with only that integer. "
-                    f"If there is no clear numeric limit, answer 0.\n\nConversation:\n{transcript_text}"
-                ),
-            },
-        ]
+    limit_messages = [
+        {
+            "role": "system",
+            "content": append_system_channel_instruction(
+                "Extract numeric agreements from fishery conversations.",
+                language,
+            ),
+        },
+        {"role": "user", "content": f"{limit_instruction(language)}\n\nConversation:\n{transcript_text}"},
+    ]
     limit_response = complete(adapter, limit_messages, max_tokens=20, temperature=0.0)
     transcript.log_model_response(
         round_index=0,
@@ -398,10 +363,15 @@ def run_episode(
     evidence_scope: str = "OpenAI smoke bring-up only; not Qwen3-1.7B research-matrix evidence",
     condition: str = "C0",
     language: str = "EN",
+    language_pair: str = "EN-ID",
     schema_version: str = "govsim-c0-openai-smoke-v1",
     episode_id: str = "c0-openai-smoke-0001",
     run_storage_root: Path = RUN_STORAGE_ROOT,
 ) -> dict[str, Any]:
+    language = normalize_language(language)
+    pair_languages = tuple(part.strip().upper() for part in language_pair.split("-"))
+    if len(pair_languages) != 2:
+        raise ValueError(f"expected two-language pair, got {language_pair!r}")
     run_storage = run_storage_root / run_id
     run_storage.mkdir(parents=True, exist_ok=True)
     ids = identities()
@@ -409,6 +379,7 @@ def run_episode(
     context = TranscriptContext(
         run_id=run_id,
         condition=condition,
+        language_pair=language_pair,
         episode_id=episode_id,
         seed=42,
         metadata={
@@ -417,6 +388,8 @@ def run_episode(
             "provider": provider,
             "model": model_name,
             "evidence_scope": evidence_scope,
+            "rule_prompt_policy": "rules/private state in English; interaction output constrained by assigned channel",
+            "assigned_output_language": language,
         },
     )
     transcript = TranscriptWriter.for_run(ROOT, context)
@@ -451,7 +424,7 @@ def run_episode(
 
     welfare = {agent: float(value) for agent, value in env.rewards.items()}
     transcript_summary_path = LOG_DIR / f"{run_id}_process_metrics.json"
-    process_summary = summarize_transcript(transcript.path)
+    process_summary = summarize_transcript(transcript.path, pair_languages=pair_languages)
     write_json(transcript_summary_path, process_summary)
 
     parseable_count = sum(1 for row in harvest_rows if row["parseable"])
