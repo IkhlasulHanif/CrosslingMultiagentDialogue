@@ -28,7 +28,12 @@ sys.path.insert(0, str(SCRIPT_DIR))
 from govsim_openai_smoke import append_event, read_api_key, run_episode, stamp, utc_now, write_json  # noqa: E402
 from endpoint_probe import probe_endpoint  # noqa: E402
 from local_model_adapter import LocalModelError, VLLMChatAdapter  # noqa: E402
-from translation_pack import TranslationPackNotReady, require_complete_translation_pack  # noqa: E402
+from translation_pack import (  # noqa: E402
+    TranslationPackNotReady,
+    render_human_review_manifest,
+    render_human_review_packet,
+    require_complete_translation_pack,
+)
 
 
 def load_benchmark_config() -> dict[str, Any]:
@@ -99,10 +104,12 @@ def blocked_result(
                 "evidence_scope": f"blocked OpenAI benchmark override {condition} baseline before model call; no matrix evidence",
                 "translation_gate": exc.check.as_dict(),
                 "human_review_packet": "artifacts/logs/translation_human_review_packet.md",
+                "human_review_manifest": "artifacts/logs/translation_human_review_manifest.json",
                 "next_unblock_command": (
                     "python3 code/translation_pack.py --root . "
                     "--out artifacts/logs/translation_status.json "
-                    "--review-out artifacts/logs/translation_human_review_packet.md --strict"
+                    "--review-out artifacts/logs/translation_human_review_packet.md "
+                    "--review-manifest-out artifacts/logs/translation_human_review_manifest.json --strict"
                 ),
             }
         )
@@ -122,7 +129,9 @@ def blocked_event_message(
     if isinstance(exc, TranslationPackNotReady):
         return (
             f"GovSim {condition} OpenAI baseline blocked before model call by translation gate: "
-            f"{type(exc).__name__}: {exc}; artifact={artifact}; next={next_command}"
+            f"{type(exc).__name__}: {exc}; artifact={artifact}; "
+            "review_manifest=artifacts/logs/translation_human_review_manifest.json; "
+            f"next={next_command}"
         )
     message = (
         f"GovSim {condition} OpenAI baseline blocked: {type(exc).__name__}: {exc}; "
@@ -191,6 +200,16 @@ def main() -> int:
     except (LocalModelError, Exception) as exc:
         endpoint_probe_result = None
         endpoint_probe_path = None
+        if isinstance(exc, TranslationPackNotReady):
+            review_packet_path = ROOT / "artifacts" / "logs" / "translation_human_review_packet.md"
+            review_manifest_path = ROOT / "artifacts" / "logs" / "translation_human_review_manifest.json"
+            review_packet_path.parent.mkdir(parents=True, exist_ok=True)
+            review_packet_path.write_text(render_human_review_packet(ROOT), encoding="utf-8")
+            review_manifest = render_human_review_manifest(ROOT)
+            review_manifest_path.write_text(
+                json.dumps(review_manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
         if not isinstance(exc, (TranslationPackNotReady, MissingOpenAIKey)) and model_name:
             config = load_benchmark_config()
             api_key, key_source = read_api_key(config)

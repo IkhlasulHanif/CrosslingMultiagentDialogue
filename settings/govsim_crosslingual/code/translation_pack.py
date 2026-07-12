@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+from datetime import datetime, timezone
+import hashlib
 import json
 import re
 from dataclasses import dataclass, field
@@ -355,12 +357,72 @@ def render_human_review_packet(root: Path, pack_path: Path = DEFAULT_PACK_PATH) 
     return "\n".join(lines).rstrip() + "\n"
 
 
+def render_human_review_manifest(root: Path, pack_path: Path = DEFAULT_PACK_PATH) -> dict[str, Any]:
+    """Render machine-readable evidence for the translation human-review gate."""
+
+    root = root.resolve()
+    path = (root / pack_path).resolve() if not pack_path.is_absolute() else pack_path.resolve()
+    data, warnings = _read_json(path)
+    check = check_translation_pack(root, pack_path)
+    entries = data.get("entries")
+    if not isinstance(entries, list):
+        entries = []
+
+    unchecked_entry_ids: list[str] = []
+    checked_entry_ids: list[str] = []
+    for index, entry in enumerate(entries):
+        if not isinstance(entry, dict):
+            unchecked_entry_ids.append(f"<invalid-entry-{index}>")
+            continue
+        entry_id = _entry_text(entry, "id") or f"<missing-id-{index}>"
+        if entry.get("human_checked") is True:
+            checked_entry_ids.append(entry_id)
+        else:
+            unchecked_entry_ids.append(entry_id)
+
+    pack_bytes = path.read_bytes() if path.exists() else b""
+    packet_text = render_human_review_packet(root, pack_path)
+    packet_sha256 = hashlib.sha256(packet_text.encode("utf-8")).hexdigest()
+
+    return {
+        "schema_version": "govsim-translation-review-manifest-v1",
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "pack_path": str(path.relative_to(root) if path.is_relative_to(root) else path),
+        "pack_sha256": hashlib.sha256(pack_bytes).hexdigest(),
+        "review_packet_path": "artifacts/logs/translation_human_review_packet.md",
+        "review_packet_sha256": packet_sha256,
+        "status": check.status,
+        "language_pair": check.language_pair,
+        "entry_count": check.entry_count,
+        "checked_entry_count": len(checked_entry_ids),
+        "unchecked_entry_count": len(unchecked_entry_ids),
+        "checked_entry_ids": checked_entry_ids,
+        "unchecked_entry_ids": unchecked_entry_ids,
+        "source_coverage_complete": check.source_coverage_complete,
+        "all_entries_human_checked": check.human_checked,
+        "mechanical_qa": check.mechanical_qa,
+        "missing": check.missing,
+        "warnings": [*warnings, *check.warnings],
+        "next_unblock_command": (
+            "python3 code/translation_pack.py --root . "
+            "--out artifacts/logs/translation_status.json "
+            "--review-out artifacts/logs/translation_human_review_packet.md "
+            "--review-manifest-out artifacts/logs/translation_human_review_manifest.json --strict"
+        ),
+        "review_rule": (
+            "C1/C2/C3 Indonesian runs remain blocked until every active entry has "
+            "human_checked=true after human review and strict validation returns 0."
+        ),
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path.cwd(), help="Setting root to inspect.")
     parser.add_argument("--pack", type=Path, default=DEFAULT_PACK_PATH, help="Translation pack path.")
     parser.add_argument("--out", type=Path, help="Optional JSON report path.")
     parser.add_argument("--review-out", type=Path, help="Optional Markdown human review packet path.")
+    parser.add_argument("--review-manifest-out", type=Path, help="Optional JSON human review manifest path.")
     parser.add_argument("--strict", action="store_true", help="Return nonzero unless the pack is complete.")
     args = parser.parse_args()
 
@@ -374,6 +436,13 @@ def main() -> int:
         review_path = args.root / args.review_out if not args.review_out.is_absolute() else args.review_out
         review_path.parent.mkdir(parents=True, exist_ok=True)
         review_path.write_text(render_human_review_packet(args.root, args.pack), encoding="utf-8")
+    if args.review_manifest_out:
+        manifest_path = (
+            args.root / args.review_manifest_out if not args.review_manifest_out.is_absolute() else args.review_manifest_out
+        )
+        manifest_path.parent.mkdir(parents=True, exist_ok=True)
+        manifest = render_human_review_manifest(args.root, args.pack)
+        manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(text)
     if result.status == "INVALID":
         return 2

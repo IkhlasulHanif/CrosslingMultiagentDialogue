@@ -18,5 +18,14 @@ Run:
 python3 code/translation_pack.py --root . --out artifacts/logs/translation_status.json
 ```
 
+To regenerate the human-review packet and the machine-readable review manifest:
+
+```bash
+python3 code/translation_pack.py --root . \
+  --out artifacts/logs/translation_status.json \
+  --review-out artifacts/logs/translation_human_review_packet.md \
+  --review-manifest-out artifacts/logs/translation_human_review_manifest.json
+```
+
 Use `--strict` only after each entry has `human_checked: true`; strict mode
 returns nonzero while the pack is still awaiting human review.

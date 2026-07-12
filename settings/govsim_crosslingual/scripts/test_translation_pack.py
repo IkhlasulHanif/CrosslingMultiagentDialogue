@@ -16,6 +16,7 @@ from translation_pack import (  # noqa: E402
     SCHEMA_VERSION,
     TranslationPackNotReady,
     check_translation_pack,
+    render_human_review_manifest,
     render_human_review_packet,
     require_complete_translation_pack,
 )
@@ -154,6 +155,19 @@ class TranslationPackTest(unittest.TestCase):
         self.assertIn("`fishery.task.choose_harvest`", packet)
         self.assertIn("{num_tons_lake}", packet)
         self.assertIn("Review decision: [ ] accept  [ ] edit required", packet)
+
+    def test_review_manifest_identifies_unchecked_entries(self) -> None:
+        manifest = render_human_review_manifest(ROOT)
+
+        self.assertEqual(manifest["schema_version"], "govsim-translation-review-manifest-v1")
+        self.assertEqual(manifest["status"], "DRAFT")
+        self.assertEqual(manifest["entry_count"], 17)
+        self.assertEqual(manifest["checked_entry_count"], 0)
+        self.assertEqual(manifest["unchecked_entry_count"], 17)
+        self.assertIn("fishery.task.choose_harvest", manifest["unchecked_entry_ids"])
+        self.assertEqual(len(manifest["pack_sha256"]), 64)
+        self.assertEqual(len(manifest["review_packet_sha256"]), 64)
+        self.assertIn("--review-manifest-out", manifest["next_unblock_command"])
 
     def test_indonesian_run_gate_blocks_draft_pack(self) -> None:
         with self.assertRaises(TranslationPackNotReady) as raised:
