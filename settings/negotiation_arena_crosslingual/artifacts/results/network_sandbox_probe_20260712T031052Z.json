@@ -1,0 +1,30 @@
+{
+  "checked_at": "2026-07-12T03:10:52+00:00",
+  "status": "BLOCKED",
+  "blocker": "subprocess_network_disabled_in_codex_sandbox",
+  "failed_command": "bash scripts/run_c1_baseline.sh",
+  "benchmark_runner_probe_artifact": "artifacts/results/benchmark_model_probe.json",
+  "c1_blocker_artifact": "artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json",
+  "environment_evidence": {
+    "CODEX_SANDBOX": "seatbelt",
+    "CODEX_SANDBOX_NETWORK_DISABLED": "1"
+  },
+  "diagnostics": [
+    {
+      "command": "bash scripts/run_c1_baseline.sh",
+      "result": "exited 2 after bring-up, offer parser validation, process metrics validation, and language-channel validation passed",
+      "error_summary": "OpenAI benchmark probe failed before transcript generation: urllib reported nodename resolution failure and Python-launched curl exited 6 with Could not resolve host: api.openai.com"
+    },
+    {
+      "command": "curl -I -L --max-time 10 https://api.openai.com/v1/models",
+      "result": "top-level shell curl resolved api.openai.com and returned HTTP 401 without credentials",
+      "interpretation": "external API DNS is reachable from the top-level tool diagnostic path"
+    },
+    {
+      "command": "python3 - <<'PY' ... subprocess.run(['/usr/bin/curl', '--config', '-'], ...) ... PY",
+      "result": "Python-launched curl exited 6 with Could not resolve host: api.openai.com",
+      "interpretation": "the benchmark runner's Python process and its child curl cannot use network from this sandbox"
+    }
+  ],
+  "next_action": "Run bash scripts/run_c1_baseline.sh in an environment where benchmark Python subprocesses are allowed outbound network access to api.openai.com."
+}
