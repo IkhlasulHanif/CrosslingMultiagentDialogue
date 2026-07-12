@@ -8,7 +8,7 @@ translated benchmark rules. Rules/private state may remain in English; C0/C1/C2/
 constrain visible negotiation messages and validate channel compliance from
 transcripts.
 
-Fresh pass result: five OpenAI benchmark buy/sell runs completed.
+Fresh pass result: seven OpenAI benchmark buy/sell runs completed.
 
 - EN-ID C2 buyer-EN/seller-ID:
   `artifacts/transcripts/pair_en_id_c2_buyer_lx_seller_ly_buy_sell_seed101.json`
@@ -45,15 +45,34 @@ Fresh pass result: five OpenAI benchmark buy/sell runs completed.
   1.0, but assigned-channel compliance is 0.667 because the EN-assigned seller
   drifted into ZH after the opening message. Final price moved 6 ZUP below the
   EN seller's first offer.
+- ZH-ID C2 buyer-ZH/seller-ID:
+  `artifacts/transcripts/pair_zh_id_c2_buyer_lx_seller_ly_buy_sell_seed101.json`
+  and
+  `artifacts/results/pair_zh_id_c2_buyer_lx_seller_ly_buy_sell_seed101.metrics.json`.
+  Deal reached at price 80. Payoffs: ZH buyer 20, ID seller 40. Pairwise
+  payoff asymmetry is ZH minus ID = -20. Offer parse rate, deal rate, and
+  assigned channel compliance are all 1.0. Final price exactly matched the ID
+  seller's first offer.
+- ZH-ID C2 buyer-ID/seller-ZH:
+  `artifacts/transcripts/pair_zh_id_c2_buyer_ly_seller_lx_buy_sell_seed101.json`
+  and
+  `artifacts/results/pair_zh_id_c2_buyer_ly_seller_lx_buy_sell_seed101.metrics.json`.
+  Deal reached at price 70. Payoffs: ID buyer 30, ZH seller 30. Pairwise
+  payoff asymmetry is ZH minus ID = 0. Offer parse rate and deal rate are 1.0,
+  but assigned-channel compliance is 0.50 because the ID-assigned buyer used ZH
+  visible messages. Final price moved 10 ZUP below the ZH seller's first offer.
 
-Current empirical story: EN-ID and EN-ZH C2 are now counterbalanced for buy/sell,
-but this single seed does not support a language-channel payoff claim. The EN
-minus ID payoff asymmetry is positive when EN is the buyer and ID is the seller,
-then falls to zero when EN is the seller and ID is the buyer. The EN minus ZH
-payoff asymmetry flips sign across the EN-ZH counterbalance (-10, then +8), and
-the EN-ZH runs have poor assigned-channel compliance because visible dialogue
-mostly converged to ZH. Treat these as early role-sensitive and compliance-limited
-execution results until more seeds and the remaining pairs run.
+Current empirical story: EN-ID, EN-ZH, and ZH-ID C2 are now counterbalanced for
+buy/sell at seed 101, but this single seed does not support a stable
+language-channel payoff claim. The EN minus ID payoff asymmetry is positive
+when EN is the buyer and ID is the seller, then falls to zero when EN is the
+seller and ID is the buyer. The EN minus ZH payoff asymmetry flips sign across
+the EN-ZH counterbalance (-10, then +8). The ZH minus ID asymmetry is negative
+when ZH is the buyer and ID is the seller, then falls to zero when ZH is the
+seller and ID is the buyer. EN-ZH and one ZH-ID run have poor assigned-channel
+compliance because visible dialogue mostly converged to ZH. Treat these as
+early role-sensitive and compliance-limited execution results until C3 and more
+seeds run.
 
 Completed active OpenAI baseline artifacts include C0 EN buy/sell at
 `artifacts/transcripts/baseline_c0_buy_sell_en_seed001.openai_benchmark.json`
@@ -77,6 +96,7 @@ checkout of `https://github.com/vinid/NegotiationArena.git` on branch
 Next exact commands:
 
 ```bash
-python3 scripts/run_pairwise_buy_sell.py --pair ZH-ID --condition C2 --counterbalance buyer_lx_seller_ly --seed 101
-python3 scripts/run_pairwise_buy_sell.py --pair ZH-ID --condition C2 --counterbalance buyer_ly_seller_lx --seed 101
+python3 scripts/run_pairwise_buy_sell.py --pair EN-ID --condition C3 --seed 101
+python3 scripts/run_pairwise_buy_sell.py --pair EN-ZH --condition C3 --seed 101
+python3 scripts/run_pairwise_buy_sell.py --pair ZH-ID --condition C3 --seed 101
 ```
