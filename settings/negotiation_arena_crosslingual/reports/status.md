@@ -14,10 +14,20 @@ translated benchmark rules. Rules/private state may remain in English; C0/C1/C2/
 constrain visible negotiation messages and validate channel compliance from
 transcripts.
 
-Current executable blocker: `bash scripts/run_c1_baseline.sh` uses the active
-OpenAI benchmark provider by default, but Python cannot resolve
+Fresh pass result: two EN-ID C2 buy/sell counterbalances and one EN-ZH C1
+ZH-only buy/sell baseline completed with OpenAI benchmark execution at
+2026-07-12T17:49-17:50 UTC. Artifacts:
+`artifacts/transcripts/pair_en_id_c2_buyer_lx_seller_ly_buy_sell_seed101.json`,
+`artifacts/transcripts/pair_en_id_c2_buyer_ly_seller_lx_buy_sell_seed101.json`,
+and `artifacts/transcripts/pair_en_zh_c1_buy_sell_seed101.json`.
 
-Next useful work: **Run C1 ID baseline with ID-only output-channel instructions**.
+EN-ID C2 is now counterbalanced for buy/sell seed 101. Buyer-EN/seller-ID
+ended at price 52 with EN minus ID payoff asymmetry 36; buyer-ID/seller-EN
+ended at price 70 with EN minus ID payoff asymmetry 0. Deal rate,
+offer-parse rate, and assigned channel compliance are 1.0 for both runs.
+
+Next useful work: **Run the remaining EN-ZH and ZH-ID C2 buy/sell
+counterbalances, then C3 free-choice runs.**
 
 ## Question
 
@@ -39,36 +49,38 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 | Conditions | C0, C1, C2, C3 |
 | Primary metrics | payoff, deal_rate, payoff_asymmetry, turns_to_deal, offer_parse_rate |
 | Acceptance gate | C0 deal rate >=50%; offer parse rate >=90% |
+| Final report | missing `reports/paper/main.pdf` |
 
 ## Blockers / Errors
 
-BLOCKED: C1 ID OpenAI shell bridge blocked; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.bridge_blocked.json; failed_command=bash scripts/run_c1_openai_bridge_baseline.sh
+None logged.
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T04:27:51+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-12T04:27:51+00:00` BLOCKED: OpenAI benchmark model probe failed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T04:27:51+00:00` BLOCKED: C1 ID baseline blocked on benchmark provider openai_benchmark; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh
-- `2026-07-12T04:28:02+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-12T04:28:02+00:00` OK: OpenAI benchmark shell bridge ready; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T04:28:02+00:00` RUNNING: C1 ID baseline shell bridge request ready; request=artifacts/tmp/c1_openai_bridge_request.json
-- `2026-07-12T04:28:18+00:00` BLOCKED: C1 ID OpenAI shell bridge blocked; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.bridge_blocked.json; failed_command=bash scripts/run_c1_openai_bridge_baseline.sh
-- `2026-07-12T04:29:14+00:00` OK: Harness scaffold check passed
+- `2026-07-12T17:49:26+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T17:49:35+00:00` OK: pair_en_id_c2_buyer_lx_seller_ly_buy_sell_seed101 completed; transcript=artifacts/transcripts/pair_en_id_c2_buyer_lx_seller_ly_buy_sell_seed101.json; metrics=artifacts/results/pair_en_id_c2_buyer_lx_seller_ly_buy_sell_seed101.metrics.json; provider=openai_benchmark
+- `2026-07-12T17:49:41+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T17:49:46+00:00` OK: pair_en_id_c2_buyer_ly_seller_lx_buy_sell_seed101 completed; transcript=artifacts/transcripts/pair_en_id_c2_buyer_ly_seller_lx_buy_sell_seed101.json; metrics=artifacts/results/pair_en_id_c2_buyer_ly_seller_lx_buy_sell_seed101.metrics.json; provider=openai_benchmark
+- `2026-07-12T17:50:21+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T17:50:24+00:00` OK: pair_en_zh_c1_buy_sell_seed101 completed; transcript=artifacts/transcripts/pair_en_zh_c1_buy_sell_seed101.json; metrics=artifacts/results/pair_en_zh_c1_buy_sell_seed101.metrics.json; provider=openai_benchmark
+- `2026-07-12T17:51:59+00:00` OK: Pairwise EN-ID, EN-ZH, and ZH-ID channel-run plan validated; artifact=artifacts/results/pairwise_channel_plan_validation.json
+- `2026-07-12T17:51:59+00:00` OK: Harness scaffold check passed
+- `2026-07-12T17:54:04+00:00` OK: G2 capability floor check ok with active OpenAI benchmark buy/sell C0/C1 metric paths; artifact=artifacts/results/g2_capability_floor.json
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 3 |
-| Result summaries | 21 |
-| Logs | 73 |
+| Transcript JSON/JSONL | 8 |
+| Result summaries | 26 |
+| Logs | 75 |
 
 ## Open Questions
 
-- Are output-channel instructions and transcript language-compliance checks implemented for the active language pair?
-- Has `budget.md` been written before any full matrix run?
-- Did C0 and C1 pass the benchmark capability floor before C2/C3?
-- Are role-language assignments counterbalanced?
+- EN-ZH and ZH-ID C2 buy/sell counterbalances still need to run before any
+  cross-pair payoff claim.
+- C3 free-choice convergence is still unrun.
+- Pairwise resource-exchange runner is still missing.

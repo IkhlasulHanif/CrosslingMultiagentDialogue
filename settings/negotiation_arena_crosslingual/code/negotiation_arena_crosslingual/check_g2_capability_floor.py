@@ -12,7 +12,13 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "code" / "negotiation_arena_crosslingual"))
 
-from run_c0_smoke import append_event, utc_now, write_json  # noqa: E402
+from run_c0_smoke import (  # noqa: E402
+    append_event,
+    benchmark_openai_allowed,
+    load_benchmark_model_config,
+    utc_now,
+    write_json,
+)
 
 
 ARTIFACT = "artifacts/results/g2_capability_floor.json"
@@ -25,6 +31,12 @@ C0_METRICS = [
     "artifacts/results/baseline_c0_resource_exchange_en_seed001.metrics.json",
 ]
 C1_METRICS = [
+    "artifacts/results/baseline_c1_buy_sell_id_seed001.metrics.json",
+]
+OPENAI_C0_METRICS = [
+    "artifacts/results/baseline_c0_buy_sell_en_seed001.openai_benchmark.metrics.json",
+]
+OPENAI_C1_METRICS = [
     "artifacts/results/baseline_c1_buy_sell_id_seed001.metrics.json",
 ]
 
@@ -93,6 +105,23 @@ def summarize(paths: list[str]) -> dict[str, Any]:
     }
 
 
+def select_gate_metric_paths() -> tuple[list[str], list[str], str]:
+    benchmark_config = load_benchmark_model_config()
+    openai_allowed = benchmark_openai_allowed(benchmark_config)
+    openai_paths_present = all((ROOT / path).exists() for path in [*OPENAI_C0_METRICS, *OPENAI_C1_METRICS])
+    if openai_allowed and openai_paths_present:
+        return (
+            OPENAI_C0_METRICS,
+            OPENAI_C1_METRICS,
+            "Gate summary only; uses active OpenAI benchmark buy/sell metric artifacts, not Qwen evidence.",
+        )
+    return (
+        C0_METRICS,
+        C1_METRICS,
+        "Gate summary only; uses historical real Qwen baseline metric artifacts as fallback evidence.",
+    )
+
+
 def translation_review_gate() -> dict[str, Any]:
     review = load_json("config/translation_review.json") or {}
     pending = [
@@ -111,23 +140,24 @@ def translation_review_gate() -> dict[str, Any]:
 
 
 def main() -> int:
-    c0 = summarize(C0_METRICS)
-    c1 = summarize(C1_METRICS)
+    c0_paths, c1_paths, evidence_scope = select_gate_metric_paths()
+    c0 = summarize(c0_paths)
+    c1 = summarize(c1_paths)
     review = translation_review_gate()
 
     if not c0["passed"]:
         status = "BLOCKED"
         blocker = "c0_capability_floor_not_met_or_missing"
         next_command = "bash scripts/run_c0_baseline.sh && bash scripts/run_c0_resource_exchange_baseline.sh"
-        message = "G2 cannot pass because required C0 Qwen baseline evidence is missing or below floor."
+        message = "G2 cannot pass because required C0 baseline evidence is missing or below floor."
         exit_code = 2
     elif not c1["passed"]:
         status = "BLOCKED"
         blocker = "c1_id_baseline_missing_pending_human_translation_review"
         next_command = "bash scripts/run_c1_baseline.sh"
         message = (
-            "C0 floor passes on existing Qwen baseline artifacts, but G2 remains blocked until "
-            "human-approved ID translations allow the C1 ID baseline to run."
+            "C0 floor passes on existing baseline artifacts, but G2 remains blocked until "
+            "the C1 ID baseline runs and passes."
         )
         exit_code = 2
     else:
@@ -146,12 +176,16 @@ def main() -> int:
             "Before C2/C3, both monolingual baselines must meet deal_rate >= 0.5 "
             "and offer_parse_rate >= 0.9."
         ),
+        "metric_path_selection": {
+            "c0_paths": c0_paths,
+            "c1_paths": c1_paths,
+        },
         "c0_en_summary": c0,
         "c1_id_summary": c1,
         "translation_review_gate": review,
         "message": message,
         "next_command": next_command,
-        "evidence_scope": "Gate summary only; uses existing real Qwen baseline metric artifacts.",
+        "evidence_scope": evidence_scope,
     }
     artifact = write_json(ARTIFACT, payload)
     append_event(

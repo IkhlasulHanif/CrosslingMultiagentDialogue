@@ -1,26 +1,27 @@
 {
-  "checked_at": "2026-07-11T23:38:51+00:00",
-  "status": "BLOCKED",
-  "blocker": "c1_id_baseline_missing_pending_human_translation_review",
-  "failed_command": "python3 scripts/check_g2_capability_floor.py",
+  "checked_at": "2026-07-12T17:54:04+00:00",
+  "status": "OK",
+  "blocker": null,
+  "failed_command": null,
   "criteria": "Before C2/C3, both monolingual baselines must meet deal_rate >= 0.5 and offer_parse_rate >= 0.9.",
+  "metric_path_selection": {
+    "c0_paths": [
+      "artifacts/results/baseline_c0_buy_sell_en_seed001.openai_benchmark.metrics.json"
+    ],
+    "c1_paths": [
+      "artifacts/results/baseline_c1_buy_sell_id_seed001.metrics.json"
+    ]
+  },
   "c0_en_summary": {
-    "present_count": 2,
+    "present_count": 1,
     "missing": [],
     "episodes": [
       {
-        "path": "artifacts/results/baseline_c0_buy_sell_en_seed001.metrics.json",
+        "path": "artifacts/results/baseline_c0_buy_sell_en_seed001.openai_benchmark.metrics.json",
         "game_id": "buy_sell",
         "deal_rate": 1.0,
         "offer_parse_rate": 1.0,
-        "turns_to_deal": 2
-      },
-      {
-        "path": "artifacts/results/baseline_c0_resource_exchange_en_seed001.metrics.json",
-        "game_id": "resource_exchange",
-        "deal_rate": 1.0,
-        "offer_parse_rate": 1.0,
-        "turns_to_deal": 2
+        "turns_to_deal": 5
       }
     ],
     "deal_rate_mean": 1.0,
@@ -32,18 +33,24 @@
     "passed": true
   },
   "c1_id_summary": {
-    "present_count": 0,
-    "missing": [
-      "artifacts/results/baseline_c1_buy_sell_id_seed001.metrics.json"
+    "present_count": 1,
+    "missing": [],
+    "episodes": [
+      {
+        "path": "artifacts/results/baseline_c1_buy_sell_id_seed001.metrics.json",
+        "game_id": "buy_sell",
+        "deal_rate": 1.0,
+        "offer_parse_rate": 1.0,
+        "turns_to_deal": 5
+      }
     ],
-    "episodes": [],
-    "deal_rate_mean": null,
-    "offer_parse_rate_mean": null,
+    "deal_rate_mean": 1.0,
+    "offer_parse_rate_mean": 1.0,
     "thresholds": {
       "min_deal_rate": 0.5,
       "min_offer_parse_rate": 0.9
     },
-    "passed": false
+    "passed": true
   },
   "translation_review_gate": {
     "status": "pending_human_review",
@@ -70,7 +77,7 @@
     "review_file": "config/translation_review.json",
     "review_packet": "docs/id_translation_review.md"
   },
-  "message": "C0 floor passes on existing Qwen baseline artifacts, but G2 remains blocked until human-approved ID translations allow the C1 ID baseline to run.",
-  "next_command": "bash scripts/run_c1_baseline.sh",
-  "evidence_scope": "Gate summary only; uses existing real Qwen baseline metric artifacts."
+  "message": "G2 capability floor passes for available C0 and C1 baseline artifacts.",
+  "next_command": "prepare C2/C3 role-language counterbalanced runs",
+  "evidence_scope": "Gate summary only; uses active OpenAI benchmark buy/sell metric artifacts, not Qwen evidence."
 }

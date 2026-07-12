@@ -29,6 +29,7 @@ from run_c0_smoke import (  # noqa: E402
     write_json,
     write_metrics,
 )
+from language_channels import output_channel_instruction  # noqa: E402
 
 
 FAILED_COMMAND = "bash scripts/run_c0_resource_exchange_baseline.sh"
@@ -260,6 +261,7 @@ def run_episode(plan: dict[str, Any], provider: str, model_metadata: dict[str, A
             agent_name: str,
             role_name: str,
             language: str,
+            condition: str,
             model_label: str,
             initial_resources: str,
             goal: str,
@@ -267,6 +269,7 @@ def run_episode(plan: dict[str, Any], provider: str, model_metadata: dict[str, A
             super().__init__(agent_name=agent_name)
             self.role_name = role_name
             self.language = language
+            self.condition = condition
             self.model = model_label
             self.initial_resources = initial_resources
             self.goal = goal
@@ -289,7 +292,9 @@ def run_episode(plan: dict[str, Any], provider: str, model_metadata: dict[str, A
             content = str(message)
             if role == "system":
                 content += (
-                    "\n\nYou must negotiate only in English. Follow the XML tag format exactly. "
+                    "\n\n"
+                    + output_channel_instruction(self.language, self.condition)
+                    + " Follow the XML tag format exactly. "
                     "For a proposal, use this exact trade syntax inside <newly proposed trade>: "
                     "Player RED Gives X: integer, Y: integer | Player BLUE Gives X: integer, Y: integer. "
                     "If accepting the prior offer, set <player answer>ACCEPT</player answer> and "
@@ -316,8 +321,24 @@ def run_episode(plan: dict[str, Any], provider: str, model_metadata: dict[str, A
     goal_b = ResourceGoal({"X": 15, "Y": 15})
     log_dir = ROOT / "artifacts" / "upstream_logs" / episode["episode_id"]
     log_dir.mkdir(parents=True, exist_ok=True)
-    agent_a = AgentImpl(AGENT_ONE, "agent_a", role_languages["agent_a"], episode["model"], str(initial_a), str(goal_a))
-    agent_b = AgentImpl(AGENT_TWO, "agent_b", role_languages["agent_b"], episode["model"], str(initial_b), str(goal_b))
+    agent_a = AgentImpl(
+        AGENT_ONE,
+        "agent_a",
+        role_languages["agent_a"],
+        episode["condition"],
+        episode["model"],
+        str(initial_a),
+        str(goal_a),
+    )
+    agent_b = AgentImpl(
+        AGENT_TWO,
+        "agent_b",
+        role_languages["agent_b"],
+        episode["condition"],
+        episode["model"],
+        str(initial_b),
+        str(goal_b),
+    )
 
     game = TradingGame(
         players=[agent_a, agent_b],

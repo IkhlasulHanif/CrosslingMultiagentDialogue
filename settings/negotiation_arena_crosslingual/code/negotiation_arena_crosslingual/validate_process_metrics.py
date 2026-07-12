@@ -10,7 +10,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "code" / "negotiation_arena_crosslingual"))
 
-from process_metrics import episode_payoff_asymmetry, first_offer_anchoring, payoff_asymmetry  # noqa: E402
+from process_metrics import (  # noqa: E402
+    episode_pairwise_payoff_asymmetry,
+    episode_payoff_asymmetry,
+    first_offer_anchoring,
+    pairwise_payoff_asymmetry,
+    payoff_asymmetry,
+)
 
 
 def fail(message: str) -> int:
@@ -100,6 +106,26 @@ def main() -> int:
     if not resource_asymmetry["available"] or resource_asymmetry["value"] != 5:
         return fail(f"resource_exchange payoff asymmetry mismatch: {resource_asymmetry}")
 
+    zh_id_asymmetry = pairwise_payoff_asymmetry(
+        "buy_sell",
+        {"buyer": 80, "seller": 30},
+        {"buyer": "ZH", "seller": "ID"},
+        "ZH-ID",
+    )
+    if not zh_id_asymmetry["available"] or zh_id_asymmetry["value"] != 50:
+        return fail(f"ZH-ID pairwise payoff asymmetry mismatch: {zh_id_asymmetry}")
+
+    en_zh_counterbalanced = episode_pairwise_payoff_asymmetry(
+        "buy_sell",
+        {
+            "language_pair": "EN-ZH",
+            "payoffs": {"buyer": 25, "seller": 40},
+            "role_languages": {"buyer": "ZH", "seller": "EN"},
+        },
+    )
+    if not en_zh_counterbalanced["available"] or en_zh_counterbalanced["value"] != 15:
+        return fail(f"EN-ZH pairwise payoff asymmetry mismatch: {en_zh_counterbalanced}")
+
     inferred_languages = episode_payoff_asymmetry(
         "resource_exchange",
         {"agent_a_payoff": 2, "agent_b_payoff": 9},
@@ -129,7 +155,7 @@ def main() -> int:
 
     print(
         "OK: first-offer anchoring tracks proposer role/language, buy_sell price delta, "
-        "resource_exchange allocation distance, payoff asymmetry, and null states."
+        "resource_exchange allocation distance, EN-ID and pairwise payoff asymmetry, and null states."
     )
     return 0
 

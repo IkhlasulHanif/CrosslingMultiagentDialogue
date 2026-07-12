@@ -8,38 +8,44 @@ translated benchmark rules. Rules/private state may remain in English; C0/C1/C2/
 constrain visible negotiation messages and validate channel compliance from
 transcripts.
 
-Current executable blocker: `bash scripts/run_c1_baseline.sh` uses the active
-OpenAI benchmark provider by default, but Python cannot resolve
-`api.openai.com` in this Codex sandbox. A fallback bridge command exists:
-`bash scripts/run_c1_openai_bridge_baseline.sh`. It lets Python generate/replay
-the upstream NegotiationArena prompts while the surrounding shell performs the
-OpenAI `curl` calls.
+Fresh pass result: three OpenAI benchmark buy/sell runs completed.
 
-Fresh pass result: the standard C1 ID baseline command was rerun at
-2026-07-12T04:27:51 UTC and blocked during the OpenAI benchmark probe with
-`nodename nor servname provided, or not known`; curl fallback also failed with
-exit 6. The shell bridge was then rerun at 2026-07-12T04:28:18 UTC. It reached
-the first real C1 model request after bring-up, offer parser validation,
-process-metric validation, and EN/ID/ZH channel validation all passed, but
-top-level shell `curl` failed with `Could not resolve host: api.openai.com`.
-No C1 transcript or metrics were created.
+- EN-ID C2 buyer-EN/seller-ID:
+  `artifacts/transcripts/pair_en_id_c2_buyer_lx_seller_ly_buy_sell_seed101.json`
+  and `artifacts/results/pair_en_id_c2_buyer_lx_seller_ly_buy_sell_seed101.metrics.json`.
+  Deal reached at price 52. Payoffs: EN buyer 48, ID seller 12. Pairwise
+  payoff asymmetry is EN minus ID = 36. Offer parse rate, deal rate, and
+  assigned channel compliance are all 1.0.
+- EN-ID C2 buyer-ID/seller-EN:
+  `artifacts/transcripts/pair_en_id_c2_buyer_ly_seller_lx_buy_sell_seed101.json`
+  and `artifacts/results/pair_en_id_c2_buyer_ly_seller_lx_buy_sell_seed101.metrics.json`.
+  Deal reached at price 70. Payoffs: ID buyer 30, EN seller 30. Pairwise
+  payoff asymmetry is EN minus ID = 0. Offer parse rate, deal rate, and
+  assigned channel compliance are all 1.0.
+- EN-ZH C1 ZH-only:
+  `artifacts/transcripts/pair_en_zh_c1_buy_sell_seed101.json` and
+  `artifacts/results/pair_en_zh_c1_buy_sell_seed101.metrics.json`. Deal reached
+  at price 80. Offer parse rate, deal rate, and assigned channel compliance are
+  all 1.0, with ZH share 1.0 and off-pair share 0.0.
 
-Fresh blocker artifacts:
+Current empirical story: EN-ID C2 is now counterbalanced for buy/sell, but this
+single seed does not support a language-channel payoff claim. The EN minus ID
+payoff asymmetry is positive when EN is the buyer and ID is the seller, then
+falls to zero when EN is the seller and ID is the buyer. Treat this as early
+role-sensitive evidence until more seeds and the remaining pairs run.
 
-- `artifacts/results/benchmark_model_probe.json`
-- `artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`
-- `artifacts/results/baseline_c1_buy_sell_id_seed001.bridge_blocked.json`
-
-No channel-controlled C1/C2/C3 empirical evidence has been produced yet.
+Completed active OpenAI baseline artifacts include C0 EN buy/sell at
+`artifacts/transcripts/baseline_c0_buy_sell_en_seed001.openai_benchmark.json`
+with metrics at
+`artifacts/results/baseline_c0_buy_sell_en_seed001.openai_benchmark.metrics.json`,
+and C1 ID buy/sell at
+`artifacts/transcripts/baseline_c1_buy_sell_id_seed001.json` with metrics at
+`artifacts/results/baseline_c1_buy_sell_id_seed001.metrics.json`.
 
 Pairwise channel-run planning is in place for EN-ID, EN-ZH, and ZH-ID at
 `config/pairwise_channel_plan.json`. It covers C0, C1, both C2 role-language
 counterbalances, and C3 free-choice rows for each active pair. Validator
 artifact: `artifacts/results/pairwise_channel_plan_validation.json`.
-
-Historical Qwen3-1.7B C0 EN baselines for buy/sell and resource_exchange pass
-the floor (deal_rate=1.0, offer_parse_rate=1.0). Those runs are historical
-capability evidence, not the active OpenAI benchmark evidence.
 
 Source bring-up remains resolved. `external/NegotiationArena` is a local
 checkout of `https://github.com/vinid/NegotiationArena.git` on branch
@@ -47,6 +53,11 @@ checkout of `https://github.com/vinid/NegotiationArena.git` on branch
 `d35a7a3aa0d94c2d49f1d6ac13c5f931851abf12`. License evidence is recorded in
 `licenses.md` and `artifacts/results/bringup_check.json`.
 
-Next exact command after network/DNS is restored:
-`bash scripts/run_c1_openai_bridge_baseline.sh`, then
-`python3 scripts/check_g2_capability_floor.py`.
+Next exact commands:
+
+```bash
+python3 scripts/run_pairwise_buy_sell.py --pair EN-ZH --condition C2 --counterbalance buyer_lx_seller_ly --seed 101
+python3 scripts/run_pairwise_buy_sell.py --pair EN-ZH --condition C2 --counterbalance buyer_ly_seller_lx --seed 101
+python3 scripts/run_pairwise_buy_sell.py --pair ZH-ID --condition C2 --counterbalance buyer_lx_seller_ly --seed 101
+python3 scripts/run_pairwise_buy_sell.py --pair ZH-ID --condition C2 --counterbalance buyer_ly_seller_lx --seed 101
+```

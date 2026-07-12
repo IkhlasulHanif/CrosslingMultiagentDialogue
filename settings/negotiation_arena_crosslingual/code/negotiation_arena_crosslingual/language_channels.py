@@ -13,6 +13,11 @@ ROOT = Path(__file__).resolve().parents[2]
 LANGUAGES = ("EN", "ID", "ZH")
 OFF_PAIR = "OFF_PAIR"
 UNKNOWN = "UNKNOWN"
+LANGUAGE_NAMES = {
+    "EN": "English",
+    "ID": "Indonesian",
+    "ZH": "Simplified Chinese",
+}
 
 EN_MARKERS = {
     "a",
@@ -85,11 +90,24 @@ def output_channel_instruction(language: str, condition: str | None = None, pair
     config = load_channel_config()
     templates = config.get("output_channel_templates", {})
     normalized_language = normalize_language(language)
+    normalized_condition = condition.upper() if condition else None
+    if normalized_condition == "C3" and normalized_language and "-" in normalized_language:
+        allowed = [part for part in normalized_language.split("-") if part]
+        unknown = [part for part in allowed if part not in LANGUAGE_NAMES]
+        if unknown:
+            raise KeyError(f"Unknown C3 free-choice language code(s): {unknown}")
+        names = " or ".join(LANGUAGE_NAMES[part] for part in allowed)
+        pair_label = pair or normalized_language
+        return (
+            f"Output-channel requirement: free-choice contact for {pair_label}. "
+            f"You may write visible negotiation messages in {names}. Do not use any third language. "
+            "Keep protocol tags such as OFFER:, ACCEPT:, REJECT:, and XML field names exactly as specified."
+        )
     if normalized_language not in templates:
         raise KeyError(f"Missing output-channel template for {language!r}")
 
     condition_key = "assigned_only"
-    if condition and condition.upper() == "C3":
+    if normalized_condition == "C3":
         condition_key = "free_choice"
 
     language_templates = templates[normalized_language]
@@ -178,12 +196,17 @@ def channel_compliance(
     for index, message in enumerate(messages):
         role = str(message.get("role")) if isinstance(message, dict) and message.get("role") is not None else None
         assigned = normalize_language(role_languages.get(role)) if role else None
+        assigned_languages = (
+            {part.strip().upper() for part in assigned.split("-") if part.strip()}
+            if assigned and "-" in assigned
+            else ({assigned} if assigned else set())
+        )
         visible_text = visible_negotiation_text(message)
         detected = classify_text_language(visible_text)
         in_pair = detected in pair_languages if detected in LANGUAGES else detected in {"MIXED", UNKNOWN}
         is_mixed = detected == "MIXED"
         is_off_pair = detected in LANGUAGES and detected not in pair_languages
-        is_compliant = bool(assigned and detected == assigned)
+        is_compliant = bool(assigned_languages and detected in assigned_languages)
 
         counts[detected if detected in counts else UNKNOWN] += 1
         compliant += 1 if is_compliant else 0
@@ -194,6 +217,7 @@ def channel_compliance(
                 "turn_index": message.get("turn_index") if isinstance(message, dict) else index,
                 "role": role,
                 "assigned_language": assigned,
+                "assigned_languages": sorted(assigned_languages),
                 "detected_language": detected,
                 "compliant": is_compliant,
                 "in_pair": in_pair,

@@ -224,6 +224,91 @@ def episode_payoff_asymmetry(game_id: str, payload: dict[str, Any], messages: It
     )
 
 
+def pairwise_payoff_asymmetry(
+    game_id: str,
+    payoffs: dict[str, Any],
+    role_languages: dict[str, Any],
+    language_pair: str | None,
+) -> dict[str, Any]:
+    roles = GAME_ROLES.get(game_id)
+    if roles is None:
+        return {"available": False, "reason": f"unsupported_game_id:{game_id}"}
+    if not language_pair or "-" not in language_pair:
+        return {"available": False, "reason": "missing_language_pair"}
+
+    pair_languages = [part.strip().upper() for part in language_pair.split("-") if part.strip()]
+    if len(pair_languages) != 2:
+        return {"available": False, "reason": "invalid_language_pair", "language_pair": language_pair}
+    lx, ly = pair_languages
+
+    normalized_payoffs: dict[str, int | float] = {}
+    normalized_languages: dict[str, str] = {}
+    for role in roles:
+        payoff = _number(payoffs.get(role))
+        if payoff is not None:
+            normalized_payoffs[role] = payoff
+        language = normalize_language(role_languages.get(role))
+        if language:
+            normalized_languages[role] = language
+
+    missing_payoff = [role for role in roles if role not in normalized_payoffs]
+    if missing_payoff:
+        return {
+            "available": False,
+            "reason": "missing_payoff",
+            "missing_roles": missing_payoff,
+            "payoffs": normalized_payoffs,
+            "role_languages": normalized_languages,
+            "language_pair": language_pair,
+        }
+
+    language_roles = {lx: [], ly: []}
+    for role, language in normalized_languages.items():
+        if language in language_roles:
+            language_roles[language].append(role)
+
+    if len(language_roles[lx]) != 1 or len(language_roles[ly]) != 1:
+        return {
+            "available": False,
+            "reason": "missing_unique_pair_roles",
+            "payoffs": normalized_payoffs,
+            "role_languages": normalized_languages,
+            "language_pair": language_pair,
+        }
+
+    lx_role = language_roles[lx][0]
+    ly_role = language_roles[ly][0]
+    lx_payoff = normalized_payoffs[lx_role]
+    ly_payoff = normalized_payoffs[ly_role]
+    return {
+        "available": True,
+        "metric": f"{lx}_agent_payoff_minus_{ly}_agent_payoff",
+        "language_pair": language_pair,
+        "value": lx_payoff - ly_payoff,
+        "lx": lx,
+        "ly": ly,
+        "lx_role": lx_role,
+        "ly_role": ly_role,
+        "lx_payoff": lx_payoff,
+        "ly_payoff": ly_payoff,
+        "payoffs": normalized_payoffs,
+        "role_languages": normalized_languages,
+    }
+
+
+def episode_pairwise_payoff_asymmetry(
+    game_id: str,
+    payload: dict[str, Any],
+    messages: Iterable[Any] | None = None,
+) -> dict[str, Any]:
+    return pairwise_payoff_asymmetry(
+        game_id,
+        extract_role_payoffs(game_id, payload),
+        extract_role_languages(game_id, payload, messages),
+        payload.get("language_pair"),
+    )
+
+
 def normalize_final_terms(game_id: str, payload: dict[str, Any] | None) -> dict[str, Any] | None:
     if not payload:
         return None
@@ -401,6 +486,7 @@ def main() -> int:
 
     result = first_offer_anchoring(game_id, messages, final_terms)
     result["payoff_asymmetry"] = episode_payoff_asymmetry(game_id, episode_payload, messages)
+    result["pairwise_payoff_asymmetry"] = episode_pairwise_payoff_asymmetry(game_id, episode_payload, messages)
     result["channel_compliance"] = channel_compliance(
         messages,
         extract_role_languages(game_id, episode_payload, messages),

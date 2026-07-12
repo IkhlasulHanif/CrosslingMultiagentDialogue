@@ -27,7 +27,7 @@ sys.path.insert(0, str(UPSTREAM))
 from local_model_adapter import LocalModelError, load_adapter_config, make_local_chat  # noqa: E402
 from language_channels import channel_compliance, output_channel_instruction  # noqa: E402
 from offer_parser import offer_parse_rate, parse_offer  # noqa: E402
-from process_metrics import episode_payoff_asymmetry, first_offer_anchoring  # noqa: E402
+from process_metrics import episode_pairwise_payoff_asymmetry, episode_payoff_asymmetry, first_offer_anchoring  # noqa: E402
 
 
 def utc_now() -> str:
@@ -734,32 +734,32 @@ def language_policy_unit(condition: str, language: str) -> str:
 
 
 def buy_sell_private_prompt_unit(role_name: str, language: str) -> tuple[str, dict[str, str]]:
-    id_language = language.upper() == "ID"
     if role_name == "seller":
         return (
             "buy_sell_seller_private_prompt",
             {
                 "seller_cost": "40 ZUP",
-                "seller_outside_option": "mempertahankan barang" if id_language else "keeping the item",
+                "seller_outside_option": "keeping the item",
             },
         )
     return (
         "buy_sell_buyer_private_prompt",
         {
             "buyer_value": "100 ZUP",
-            "buyer_outside_option": "tidak membeli barang" if id_language else "not buying the item",
+            "buyer_outside_option": "not buying the item",
         },
     )
 
 
 def language_runtime_instruction(language: str, role_name: str, condition: str) -> str:
     private_unit, private_values = buy_sell_private_prompt_unit(role_name, language)
+    rule_language = "EN"
     parts = [
-        prompt_text("global", "system_negotiator", language),
+        prompt_text("global", "system_negotiator", rule_language),
         output_channel_instruction(language, condition),
-        prompt_text("buy_sell", "buy_sell_public_rules", language),
-        prompt_text("buy_sell", private_unit, language, **private_values),
-        prompt_text("buy_sell", "buy_sell_upstream_xml_response_format", language),
+        prompt_text("buy_sell", "buy_sell_public_rules", rule_language),
+        prompt_text("buy_sell", private_unit, rule_language, **private_values),
+        prompt_text("buy_sell", "buy_sell_upstream_xml_response_format", rule_language),
     ]
     return "\n\n" + " ".join(parts)
 
@@ -862,16 +862,8 @@ def run_episode(plan: dict[str, Any], provider: str, model_metadata: dict[str, A
     log_dir.mkdir(parents=True, exist_ok=True)
     seller = AgentImpl(AGENT_ONE, "seller", role_languages["seller"], episode["condition"], episode["model"])
     buyer = AgentImpl(AGENT_TWO, "buyer", role_languages["buyer"], episode["condition"], episode["model"])
-    seller_role_prompt = (
-        f"You are {AGENT_ONE}. You are the seller."
-        if role_languages["seller"].upper() != "ID"
-        else f"Anda adalah {AGENT_ONE}. Anda adalah penjual."
-    )
-    buyer_role_prompt = (
-        f"You are {AGENT_TWO}. You are the buyer."
-        if role_languages["buyer"].upper() != "ID"
-        else f"Anda adalah {AGENT_TWO}. Anda adalah pembeli."
-    )
+    seller_role_prompt = f"You are {AGENT_ONE}. You are the seller."
+    buyer_role_prompt = f"You are {AGENT_TWO}. You are the buyer."
     game = BuySellGame(
         players=[seller, buyer],
         iterations=int(episode["turn_limit"]),
@@ -910,6 +902,7 @@ def write_metrics(episode: dict[str, Any], metrics_path: str) -> Path:
     metrics["offer_parse_rate"] = offer_parse_rate(parse_results)
     metrics["parsed_actions"] = [result.to_dict() for result in parse_results]
     metrics["payoff_asymmetry"] = episode_payoff_asymmetry(episode["game_id"], episode, messages)
+    metrics["pairwise_payoff_asymmetry"] = episode_pairwise_payoff_asymmetry(episode["game_id"], episode, messages)
     metrics["channel_compliance"] = channel_compliance(
         messages,
         episode.get("role_languages", {}),
