@@ -49,14 +49,14 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T03:13:11+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
-- `2026-07-12T03:13:13+00:00` OK: Codex pass 9 completed
-- `2026-07-12T03:28:13+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_112813.txt
-- `2026-07-12T03:28:51+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-12T03:28:52+00:00` BLOCKED: OpenAI benchmark model probe failed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T03:28:52+00:00` BLOCKED: C1 ID baseline blocked on benchmark provider openai_benchmark; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh
 - `2026-07-12T03:29:26+00:00` BLOCKED: Direct shell curl to https://api.openai.com/v1/models cannot resolve api.openai.com; C1 OpenAI benchmark runner remains blocked before transcript generation; failed_command=bash scripts/run_c1_baseline.sh; artifact=artifacts/results/network_sandbox_probe_20260712T032926Z.json
 - `2026-07-12T03:30:09+00:00` OK: Harness scaffold check passed
+- `2026-07-12T03:31:05+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_112813.txt
+- `2026-07-12T03:31:05+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-12T03:31:06+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-12T03:31:07+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T03:31:15+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-12T03:31:15+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
