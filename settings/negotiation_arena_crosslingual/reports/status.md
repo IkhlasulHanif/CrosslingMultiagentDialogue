@@ -50,14 +50,14 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T18:07:13+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T18:07:18+00:00` OK: pair_en_id_c3_buy_sell_seed101 completed; transcript=artifacts/transcripts/pair_en_id_c3_buy_sell_seed101.json; metrics=artifacts/results/pair_en_id_c3_buy_sell_seed101.metrics.json; provider=openai_benchmark
-- `2026-07-12T18:07:22+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T18:07:30+00:00` OK: pair_en_zh_c3_buy_sell_seed101 completed; transcript=artifacts/transcripts/pair_en_zh_c3_buy_sell_seed101.json; metrics=artifacts/results/pair_en_zh_c3_buy_sell_seed101.metrics.json; provider=openai_benchmark
-- `2026-07-12T18:07:34+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T18:07:37+00:00` OK: pair_zh_id_c3_buy_sell_seed101 completed; transcript=artifacts/transcripts/pair_zh_id_c3_buy_sell_seed101.json; metrics=artifacts/results/pair_zh_id_c3_buy_sell_seed101.metrics.json; provider=openai_benchmark
-- `2026-07-12T18:08:10+00:00` OK: C3 free-choice buy_sell completed for EN-ID, EN-ZH, and ZH-ID at seed 101 as OpenAI benchmark evidence; convergence EN-ID=EN, EN-ZH=ZH, ZH-ID=ZH with no off-pair leakage; next_task=add executable pairwise resource-exchange runner or draft final paper from buy/sell-only evidence
 - `2026-07-12T18:08:59+00:00` OK: Harness scaffold check passed
+- `2026-07-12T18:08:59+00:00` OK: Pairwise EN-ID, EN-ZH, and ZH-ID channel-run plan validated; artifact=artifacts/results/pairwise_channel_plan_validation.json
+- `2026-07-12T18:09:57+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260713_020625.txt
+- `2026-07-12T18:09:57+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-12T18:09:58+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-12T18:09:58+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T18:10:07+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-12T18:10:07+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
