@@ -23,7 +23,7 @@ def utc_now() -> str:
 
 
 def stamp() -> str:
-    return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
 
 
 def _output_tail(text: str, limit: int = 2000) -> str:

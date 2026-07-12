@@ -8,13 +8,13 @@ Active plan update: benchmark execution is now OpenAI `gpt-5.4-mini-2026-03-17` 
 
 One C0 OpenAI smoke episode has run. It is runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence. OpenAI benchmark C0/C1 baseline entrypoints are wired with output-channel constraints, and the shared adapter now uses `max_completion_tokens` for OpenAI GPT-5-style chat-completions calls while preserving `max_tokens` for local/vLLM-compatible Qwen endpoints.
 
-Current empirical story: `./harness.sh run-smoke` most recently succeeded at `2026-07-12T01:46:48+00:00`, executing one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260712T014637Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260712T014637Z.jsonl`. The smoke had parseable harvest rate `1.0`, total welfare `100.0`, survival time `1`, and Gini `0.0`.
+Current empirical story: `./harness.sh run-smoke` most recently succeeded at `2026-07-12T03:03:01+00:00`, executing one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260712T030248Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260712T030248Z.jsonl`. This is runner bring-up evidence only; no C0/C1 baseline episode has completed yet.
 
 Current control definition: language means required interaction-output channel, not translated benchmark rules. For this setting, benchmark rules/private state may remain in English; C0/C1/C2/C3 constrain only the agents' visible dialogue output and validate channel compliance in transcripts. Output-channel instruction templates for EN/ID/ZH are implemented in `code/channel_instructions.py`; v2 process metrics now report EN/ID/ZH active-language shares, assigned-channel compliance, code switching, convergence, and off-pair language.
 
-Current blockers: C0/C1 baseline commands reach the model-call path, but this sandbox currently cannot resolve `api.openai.com`. Fresh baseline blocker artifacts from the 2026-07-12T02:58Z/02:59Z retry are `artifacts/results/govsim_c0_openai_baseline_20260712T025854Z.json` with endpoint probe `artifacts/logs/openai_endpoint_probe_20260712T025854Z.json`, and `artifacts/results/govsim_c1_openai_baseline_20260712T025901Z.json` with endpoint probe `artifacts/logs/openai_endpoint_probe_20260712T025901Z.json`. Curl reports `Could not resolve host: api.openai.com`; urllib reports `[Errno 8] nodename nor servname provided, or not known`. No C0/C1 baseline episode has completed yet.
+Current blockers: C0/C1 baseline commands reach the model-call path, but this sandbox currently cannot resolve `api.openai.com`. Fresh baseline blocker artifacts from the 2026-07-12T03:19Z retry are `artifacts/results/govsim_c0_openai_baseline_20260712T031930Z.json` with endpoint probe `artifacts/logs/openai_endpoint_probe_20260712T031930701692Z.json`, and `artifacts/results/govsim_c1_openai_baseline_20260712T031930Z.json` with endpoint probe `artifacts/logs/openai_endpoint_probe_20260712T031930701963Z.json`. Curl reports `Could not resolve host: api.openai.com`; urllib reports `[Errno 8] nodename nor servname provided, or not known`. No C0/C1 baseline episode has completed yet.
 
-OpenAI benchmark override baseline state: C0 and C1 were rerun with `gpt-5.4-mini-2026-03-17` after the active channel-control update. The historical translation gate is superseded for this setting; C1 no longer blocks before model call on translated benchmark-rule review. Future OpenAI artifacts now record configured key sources as `configured_file:<candidate>` or `env:<name>` instead of absolute secret-file paths. The next retry commands after DNS is available are `./scripts/run_openai_c0_baseline.sh` and `./scripts/run_openai_c1_baseline.sh`.
+OpenAI benchmark override baseline state: C0 and C1 were rerun with `gpt-5.4-mini-2026-03-17` after the active channel-control update. The historical translation gate is superseded for this setting; C1 no longer blocks before model call on translated benchmark-rule review. OpenAI artifacts record configured key sources as `configured_file:<candidate>` or `env:<name>` instead of absolute secret-file paths. Endpoint probe filenames are now microsecond-stamped so parallel baseline retries keep separate probe artifacts. The next retry commands after DNS is available are `./scripts/run_openai_c0_baseline.sh` and `./scripts/run_openai_c1_baseline.sh`.
 
 
 Next useful work: **Run C0 and C1 baselines**.
@@ -42,29 +42,29 @@ Does cross-lingual contact reduce cooperative resource-management outcomes beyon
 
 ## Blockers / Errors
 
-BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T025901Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T025901Z.json
+BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T031930Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T031930701963Z.json
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T02:59:01+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T025901Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T025901Z.json
-- `2026-07-12T02:59:20+00:00` OK: OpenAI benchmark key-source artifact labels now use configured_file:<candidate> or env:<name> instead of absolute secret-file paths; fresh C0/C1 baseline retries still block only on api.openai.com DNS.
-- `2026-07-12T03:00:25+00:00` OK: Harness scaffold check passed
-- `2026-07-12T03:01:58+00:00` OK: Harness scaffold check passed
-- `2026-07-12T03:02:45+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_105714.txt
-- `2026-07-12T03:02:45+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-12T03:03:01+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260712T030248Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260712T030248Z.jsonl
-- `2026-07-12T03:03:01+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-12T03:03:03+00:00` OK: Codex pass 8 completed
+- `2026-07-12T03:18:03+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_111803.txt
+- `2026-07-12T03:18:48+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T031848Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T031848Z.json
+- `2026-07-12T03:18:48+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260712T031848Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T031848Z.json
+- `2026-07-12T03:19:30+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260712T031930Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T031930701692Z.json
+- `2026-07-12T03:19:30+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T031930Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T031930701963Z.json
+- `2026-07-12T03:19:52+00:00` OK: Made endpoint probe artifact filenames microsecond-stamped to avoid C0/C1 parallel retry collisions; fresh OpenAI C0/C1 baseline retries still block only on api.openai.com DNS with separate probe artifacts.
+- `2026-07-12T03:20:52+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
 | Transcript JSON/JSONL | 50 |
-| Result summaries | 33 |
-| Logs | 85 |
+| Result summaries | 37 |
+| Logs | 86 |
 
 ## Open Questions
 
