@@ -42,28 +42,28 @@ Does cross-lingual contact reduce cooperative resource-management outcomes beyon
 
 ## Blockers / Errors
 
-BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T022045Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T022045Z.json
+BLOCKED: Follow-up scoped commit/push attempt blocked by sandbox permission: git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock (Operation not permitted). Primary commit 66f24c0e was already pushed; only the final generated check/status update remains local.
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T02:04:54+00:00` OK: scripts/run_smoke.sh exited 0
-- `2026-07-12T02:04:54+00:00` OK: Post-Codex smoke/experiment attempt exited 0
-- `2026-07-12T02:04:54+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
-- `2026-07-12T02:04:56+00:00` OK: Codex pass 5 completed
-- `2026-07-12T02:19:56+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_101956.txt
-- `2026-07-12T02:20:36+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260712T022036Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T022036Z.json
 - `2026-07-12T02:20:45+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T022045Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T022045Z.json
 - `2026-07-12T02:21:52+00:00` OK: Harness scaffold check passed
+- `2026-07-12T02:22:30+00:00` OK: Harness scaffold check passed
+- `2026-07-12T02:22:49+00:00` BLOCKED: Follow-up scoped commit/push attempt blocked by sandbox permission: git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock (Operation not permitted). Primary commit 66f24c0e was already pushed; only the final generated check/status update remains local.
+- `2026-07-12T02:23:24+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_101956.txt
+- `2026-07-12T02:23:24+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-12T02:23:40+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260712T022328Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260712T022328Z.jsonl
+- `2026-07-12T02:23:40+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 47 |
-| Result summaries | 23 |
+| Transcript JSON/JSONL | 48 |
+| Result summaries | 25 |
 | Logs | 83 |
 
 ## Open Questions
