@@ -16,8 +16,6 @@ Blocker artifact: `artifacts/results/benchmark_model_probe.json`. Retry with
 The translation review gate and C1 ID baseline command were refreshed in this
 pass. `artifacts/results/translation_review_validation.json` still shows 16
 pending units, and `artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`
-confirms `bash scripts/run_c1_baseline.sh` exits before model calls until the
-human review file is approved. No C1/C2/C3 empirical evidence was produced.
 
 Next useful work: **Human-check ID translation before C1/C2/C3**.
 
@@ -44,23 +42,21 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-- Human review is still required for 16 EN-ID translation units before C1/C2/C3.
-- OpenAI benchmark execution is allowed by config, but this session cannot
-  resolve `api.openai.com`; see `artifacts/results/benchmark_model_probe.json`.
+BLOCKED: C1 ID baseline blocked on pending human translation review; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh; next_command=bash scripts/run_c1_baseline.sh
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T00:13:48+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_081348.txt
-- `2026-07-12T00:14:31+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-12T00:14:31+00:00` BLOCKED: OpenAI benchmark model probe failed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T00:14:31+00:00` BLOCKED: C0 OpenAI benchmark baseline blocked on provider probe; failed_command=bash scripts/run_c0_openai_baseline.sh
-- `2026-07-12T00:14:49+00:00` BLOCKED: Translation review validation blocked; artifact=artifacts/results/translation_review_validation.json; pending_units=16; next_command=Fill config/translation_review.json with reviewer.completed=true, reviewer.name, reviewer.reviewed_at, and reviewer_status=approved for every unit; then run python3 scripts/validate_translation_review.py && bash scripts/run_c1_baseline.sh.
-- `2026-07-12T00:14:50+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
 - `2026-07-12T00:14:50+00:00` BLOCKED: C1 ID baseline blocked on pending human translation review; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh; next_command=bash scripts/run_c1_baseline.sh
 - `2026-07-12T00:15:40+00:00` OK: Harness scaffold check passed
+- `2026-07-12T00:16:31+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_081348.txt
+- `2026-07-12T00:16:31+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-12T00:16:32+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-12T00:16:33+00:00` OK: OpenAI smoke model probe passed; artifact=artifacts/results/smoke_model_probe.json
+- `2026-07-12T00:16:38+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-12T00:16:38+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
