@@ -36,7 +36,7 @@ language change group welfare beyond monolingual channel baselines?
 - [x] Smoke test one C0 episode.
 - [ ] Run C0 and C1 baselines.
 - [x] Run OpenAI-backed C0/C1 baseline commands if Qwen/Modal remains unavailable.
-- [ ] Add EN-ZH and ZH-ID pairwise channel-run plans.
+- [x] Add EN-ZH and ZH-ID pairwise channel-run plans.
 - [ ] Check G2 capability floor before C2/C3.
 - [x] Write `budget.md` before full matrix.
 

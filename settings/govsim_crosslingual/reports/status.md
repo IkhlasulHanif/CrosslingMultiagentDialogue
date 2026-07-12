@@ -8,11 +8,11 @@ Active plan update: benchmark execution is now OpenAI `gpt-5.4-mini-2026-03-17` 
 
 One C0 OpenAI smoke episode has run. It is runner bring-up evidence only, not Qwen3-1.7B research-matrix evidence. OpenAI benchmark C0/C1 baseline entrypoints are wired with output-channel constraints, and the shared adapter now uses `max_completion_tokens` for OpenAI GPT-5-style chat-completions calls while preserving `max_tokens` for local/vLLM-compatible Qwen endpoints.
 
-Current empirical story: `./harness.sh run-smoke` most recently succeeded at `2026-07-12T01:05:47+00:00`, executing one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260712T010533Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260712T010533Z.jsonl`. The smoke had parseable harvest rate `1.0`, total welfare `80.0`, survival time `1`, and Gini `0.2`.
+Current empirical story: `./harness.sh run-smoke` most recently succeeded at `2026-07-12T01:26:36+00:00`, executing one EN C0 fishery episode with the upstream GovSim fishery environment and prompt text. The result artifact is `artifacts/results/govsim_c0_openai_smoke_20260712T012623Z.json`; the transcript is `artifacts/transcripts/govsim_c0_openai_smoke_20260712T012623Z.jsonl`. The smoke had parseable harvest rate `1.0`, total welfare `100.0`, survival time `1`, and Gini `0.0`.
 
 Current control definition: language means required interaction-output channel, not translated benchmark rules. For this setting, benchmark rules/private state may remain in English; C0/C1/C2/C3 constrain only the agents' visible dialogue output and validate channel compliance in transcripts. Output-channel instruction templates for EN/ID/ZH are implemented in `code/channel_instructions.py`; v2 process metrics now report EN/ID/ZH active-language shares, assigned-channel compliance, code switching, convergence, and off-pair language.
 
-Current blockers: C0/C1 baseline commands reach the model-call path, but this sandbox currently cannot resolve `api.openai.com`. Fresh baseline blocker artifacts are `artifacts/results/govsim_c0_openai_baseline_20260712T012131Z.json` with endpoint probe `artifacts/logs/openai_endpoint_probe_20260712T012131Z.json`, and `artifacts/results/govsim_c1_openai_baseline_20260712T012146Z.json` with endpoint probe `artifacts/logs/openai_endpoint_probe_20260712T012146Z.json`. Curl reports `Could not resolve host: api.openai.com`; urllib reports `[Errno 8] nodename nor servname provided, or not known`.
+Current blockers: C0/C1 baseline commands reach the model-call path, but this sandbox currently cannot resolve `api.openai.com`. Fresh baseline blocker artifacts are `artifacts/results/govsim_c0_openai_baseline_20260712T014213Z.json` with endpoint probe `artifacts/logs/openai_endpoint_probe_20260712T014213Z.json`, and `artifacts/results/govsim_c1_openai_baseline_20260712T014234Z.json` with endpoint probe `artifacts/logs/openai_endpoint_probe_20260712T014234Z.json`. Curl reports `Could not resolve host: api.openai.com`; urllib reports `[Errno 8] nodename nor servname provided, or not known`.
 
 OpenAI benchmark override baseline state: C0 and C1 were rerun with `gpt-5.4-mini-2026-03-17` after the active channel-control update. The historical translation gate is superseded for this setting; C1 no longer blocks before model call on translated benchmark-rule review. The next retry commands after DNS is available are `./scripts/run_openai_c0_baseline.sh` and `./scripts/run_openai_c1_baseline.sh`.
 
@@ -42,29 +42,29 @@ Does cross-lingual contact reduce cooperative resource-management outcomes beyon
 
 ## Blockers / Errors
 
-BLOCKED: Scoped commit/push attempt blocked by sandbox permission: git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock (Operation not permitted). Changes remain in setting working tree.
+BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T014234Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T014234Z.json
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T01:21:31+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260712T012131Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T012131Z.json
-- `2026-07-12T01:21:46+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T012146Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T012146Z.json
-- `2026-07-12T01:24:15+00:00` OK: Harness scaffold check passed
-- `2026-07-12T01:24:56+00:00` BLOCKED: Scoped commit/push attempt blocked by sandbox permission: git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock (Operation not permitted). Changes remain in setting working tree.
-- `2026-07-12T01:26:18+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_092050.txt
-- `2026-07-12T01:26:18+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-12T01:26:36+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260712T012623Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260712T012623Z.jsonl
-- `2026-07-12T01:26:36+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-12T01:26:36+00:00` OK: Post-Codex smoke/experiment attempt exited 0
+- `2026-07-12T01:26:37+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
+- `2026-07-12T01:26:38+00:00` OK: Codex pass 3 completed
+- `2026-07-12T01:41:38+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_094138.txt
+- `2026-07-12T01:42:13+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260712T014213Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T014213Z.json
+- `2026-07-12T01:42:34+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T014234Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T014234Z.json
+- `2026-07-12T01:44:59+00:00` OK: Added EN-ZH and ZH-ID pairwise OpenAI baseline wrappers plus plan/channel_run_plan.md; latest C0/C1 baseline attempts still block only on api.openai.com DNS with fresh endpoint probes.
+- `2026-07-12T01:45:20+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
 | Transcript JSON/JSONL | 45 |
-| Result summaries | 13 |
-| Logs | 80 |
+| Result summaries | 15 |
+| Logs | 81 |
 
 ## Open Questions
 
