@@ -49,21 +49,21 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T01:26:36+00:00` OK: Post-Codex smoke/experiment attempt exited 0
-- `2026-07-12T01:26:37+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
-- `2026-07-12T01:26:38+00:00` OK: Codex pass 3 completed
-- `2026-07-12T01:41:38+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_094138.txt
 - `2026-07-12T01:42:13+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260712T014213Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T014213Z.json
 - `2026-07-12T01:42:34+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T014234Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T014234Z.json
 - `2026-07-12T01:44:59+00:00` OK: Added EN-ZH and ZH-ID pairwise OpenAI baseline wrappers plus plan/channel_run_plan.md; latest C0/C1 baseline attempts still block only on api.openai.com DNS with fresh endpoint probes.
 - `2026-07-12T01:45:20+00:00` OK: Harness scaffold check passed
+- `2026-07-12T01:46:32+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_094138.txt
+- `2026-07-12T01:46:32+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-12T01:46:48+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260712T014637Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260712T014637Z.jsonl
+- `2026-07-12T01:46:48+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 45 |
-| Result summaries | 15 |
+| Transcript JSON/JSONL | 46 |
+| Result summaries | 17 |
 | Logs | 81 |
 
 ## Open Questions
