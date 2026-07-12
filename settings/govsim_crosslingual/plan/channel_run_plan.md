@@ -28,4 +28,10 @@ C3 allows either language in the pair during visible interaction. Measure
 language share, code switching, convergence, off-pair language, survival time,
 total welfare, Gini, and parseable harvest rate.
 
+| Pair | Free-choice channels | Command |
+|---|---|---|
+| EN-ID | EN or ID | `./scripts/run_openai_en_id_c3_free_choice.sh` |
+| EN-ZH | EN or ZH | not wired yet |
+| ZH-ID | ZH or ID | not wired yet |
+
 Do not run C2 or C3 until the C0/C1 capability floor is checked for the pair.

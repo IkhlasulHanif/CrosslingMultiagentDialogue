@@ -36,10 +36,16 @@ sys.path.insert(0, str(GOVSIM_DIR))
 from local_model_adapter import ChatMessage, LocalModelError, VLLMChatAdapter  # noqa: E402
 from channel_instructions import (  # noqa: E402
     append_system_channel_instruction,
+    append_system_free_choice_instruction,
     conversation_instruction,
+    free_choice_conversation_instruction,
+    free_choice_harvest_instruction,
+    free_choice_limit_instruction,
+    free_choice_summary_instruction,
     harvest_instruction,
     limit_instruction,
     normalize_language,
+    normalize_language_pair,
     summary_instruction,
 )
 from process_metrics import summarize_transcript  # noqa: E402
@@ -141,27 +147,48 @@ def identities() -> dict[str, PersonaIdentity]:
     return {f"persona_{i}": PersonaIdentity(f"persona_{i}", name) for i, name in enumerate(NAMES)}
 
 
-def system_prompt(identity: PersonaIdentity, language: str) -> str:
+def system_prompt(
+    identity: PersonaIdentity,
+    language: str,
+    free_choice_languages: tuple[str, str] | None = None,
+) -> str:
+    if free_choice_languages is not None:
+        return append_system_free_choice_instruction(get_sytem_prompt_v4(identity), free_choice_languages)
     language = normalize_language(language)
     return append_system_channel_instruction(get_sytem_prompt_v4(identity), language)
 
 
-def harvest_user_prompt(identity: PersonaIdentity, obs: Any, language: str) -> str:
+def harvest_user_prompt(
+    identity: PersonaIdentity,
+    obs: Any,
+    language: str,
+    free_choice_languages: tuple[str, str] | None = None,
+) -> str:
     language = normalize_language(language)
+    output_instruction = (
+        free_choice_harvest_instruction(free_choice_languages)
+        if free_choice_languages is not None
+        else harvest_instruction(language)
+    )
     memory_lines = "\n".join(f"- {event.created:%Y-%m-%d}: {event.description}" for event in obs.events)
     return (
         f"{prompt_description_simulation(identity.name, obs.current_resource_num)}\n"
         f"Key memories of {identity.name} (format: YYYY-MM-DD: memory):\n{memory_lines}\n\n"
         f"Task: With a fishing range set between 0-{obs.current_resource_num}, "
         "how many tons of fish would you catch this month?\n"
-        f"{harvest_instruction(language)}"
+        f"{output_instruction}"
     )
 
 
-def prompt_harvest(identity: PersonaIdentity, obs: Any, language: str = "EN") -> list[dict[str, str]]:
-    user_text = harvest_user_prompt(identity, obs, language)
+def prompt_harvest(
+    identity: PersonaIdentity,
+    obs: Any,
+    language: str = "EN",
+    free_choice_languages: tuple[str, str] | None = None,
+) -> list[dict[str, str]]:
+    user_text = harvest_user_prompt(identity, obs, language, free_choice_languages)
     return [
-        {"role": "system", "content": system_prompt(identity, language)},
+        {"role": "system", "content": system_prompt(identity, language, free_choice_languages)},
         {"role": "user", "content": user_text},
     ]
 
@@ -211,8 +238,9 @@ def choose_harvest(
     identity: PersonaIdentity,
     obs: Any,
     language: str = "EN",
+    free_choice_languages: tuple[str, str] | None = None,
 ) -> tuple[PersonaActionHarvesting, dict[str, Any]]:
-    messages = prompt_harvest(identity, obs, language)
+    messages = prompt_harvest(identity, obs, language, free_choice_languages)
     response = complete(adapter, messages)
     quantity, parseable = parse_harvest(response.visible_text, 0, int(obs.current_resource_num))
     transcript.log_model_response(
@@ -221,9 +249,13 @@ def choose_harvest(
         agent_id=identity.agent_id,
         role="assistant",
         response=response,
-        language=language,
+        language=None if free_choice_languages is not None else language,
         prompt_messages=messages,
-        extra={"parsed_harvest": quantity, "parseable": parseable},
+        extra={
+            "parsed_harvest": quantity,
+            "parseable": parseable,
+            "free_choice_languages": list(free_choice_languages) if free_choice_languages else None,
+        },
     )
     action = PersonaActionHarvesting(
         identity.agent_id,
@@ -240,16 +272,22 @@ def conversation_prompt(
     resource_report: str,
     conversation: list[tuple[PersonaIdentity, str]],
     language: str = "EN",
+    free_choice_languages: tuple[str, str] | None = None,
 ) -> list[dict[str, str]]:
     language = normalize_language(language)
     history = "\n".join(f"- {speaker.name}: {utterance}" for speaker, utterance in conversation)
+    output_instruction = (
+        free_choice_conversation_instruction(free_choice_languages)
+        if free_choice_languages is not None
+        else conversation_instruction(language)
+    )
     user_text = (
         f"Monthly report: {resource_report}\n\n"
         f"Conversation so far:\n{history or '- No one has spoken yet.'}\n\n"
-        f"{conversation_instruction(language)}"
+        f"{output_instruction}"
     )
     return [
-        {"role": "system", "content": system_prompt(identity, language)},
+        {"role": "system", "content": system_prompt(identity, language, free_choice_languages)},
         {"role": "user", "content": user_text},
     ]
 
@@ -265,8 +303,11 @@ def run_conversation(
     obs: Any,
     language: str = "EN",
     agent_languages: dict[str, str] | None = None,
+    free_choice_languages: tuple[str, str] | None = None,
 ) -> PersonaActionChat:
     language = normalize_language(language)
+    if free_choice_languages is not None:
+        free_choice_languages = normalize_language_pair(free_choice_languages)
     agent_languages = {
         agent_id: normalize_language(agent_language)
         for agent_id, agent_language in (agent_languages or {}).items()
@@ -277,7 +318,7 @@ def run_conversation(
 
     for identity in ids.values():
         speaker_language = agent_languages.get(identity.agent_id, language)
-        messages = conversation_prompt(identity, report, conversation, speaker_language)
+        messages = conversation_prompt(identity, report, conversation, speaker_language, free_choice_languages)
         response = complete(adapter, messages, max_tokens=140)
         utterance = response.visible_text.strip().splitlines()[0].strip('" ')
         conversation.append((identity, utterance))
@@ -288,20 +329,31 @@ def run_conversation(
             agent_id=identity.agent_id,
             role="assistant",
             response=response,
-            language=speaker_language,
+            language=None if free_choice_languages is not None else speaker_language,
             prompt_messages=messages,
+            extra={"free_choice_languages": list(free_choice_languages) if free_choice_languages else None},
         )
 
     transcript_text = "\n".join(f"{speaker.name}: {utterance}" for speaker, utterance in conversation)
+    summary_system = (
+        append_system_free_choice_instruction(
+            "You summarize group decisions for a fishery simulation.",
+            free_choice_languages,
+        )
+        if free_choice_languages is not None
+        else append_system_channel_instruction(
+            "You summarize group decisions for a fishery simulation.",
+            language,
+        )
+    )
+    summary_user_instruction = (
+        free_choice_summary_instruction(free_choice_languages)
+        if free_choice_languages is not None
+        else summary_instruction(language)
+    )
     summary_messages = [
-        {
-            "role": "system",
-            "content": append_system_channel_instruction(
-                "You summarize group decisions for a fishery simulation.",
-                language,
-            ),
-        },
-        {"role": "user", "content": f"{summary_instruction(language)}\n{transcript_text}"},
+        {"role": "system", "content": summary_system},
+        {"role": "user", "content": f"{summary_user_instruction}\n{transcript_text}"},
     ]
     summary = complete(adapter, summary_messages, max_tokens=100, temperature=0.0)
     transcript.log_model_response(
@@ -310,19 +362,30 @@ def run_conversation(
         agent_id="framework",
         role="assistant",
         response=summary,
-        language=language,
+        language=None if free_choice_languages is not None else language,
         prompt_messages=summary_messages,
+        extra={"free_choice_languages": list(free_choice_languages) if free_choice_languages else None},
     )
 
+    limit_system = (
+        append_system_free_choice_instruction(
+            "Extract numeric agreements from fishery conversations.",
+            free_choice_languages,
+        )
+        if free_choice_languages is not None
+        else append_system_channel_instruction(
+            "Extract numeric agreements from fishery conversations.",
+            language,
+        )
+    )
+    limit_user_instruction = (
+        free_choice_limit_instruction(free_choice_languages)
+        if free_choice_languages is not None
+        else limit_instruction(language)
+    )
     limit_messages = [
-        {
-            "role": "system",
-            "content": append_system_channel_instruction(
-                "Extract numeric agreements from fishery conversations.",
-                language,
-            ),
-        },
-        {"role": "user", "content": f"{limit_instruction(language)}\n\nConversation:\n{transcript_text}"},
+        {"role": "system", "content": limit_system},
+        {"role": "user", "content": f"{limit_user_instruction}\n\nConversation:\n{transcript_text}"},
     ]
     limit_response = complete(adapter, limit_messages, max_tokens=20, temperature=0.0)
     transcript.log_model_response(
@@ -331,8 +394,9 @@ def run_conversation(
         agent_id="framework",
         role="assistant",
         response=limit_response,
-        language=language,
+        language=None if free_choice_languages is not None else language,
         prompt_messages=limit_messages,
+        extra={"free_choice_languages": list(free_choice_languages) if free_choice_languages else None},
     )
     limit, parseable = parse_harvest(limit_response.visible_text, 0, 100)
     resource_limit = limit if parseable and limit > 0 else None
@@ -372,15 +436,21 @@ def run_episode(
     language: str = "EN",
     language_pair: str = "EN-ID",
     agent_languages: dict[str, str] | None = None,
+    free_choice_languages: tuple[str, str] | None = None,
     schema_version: str = "govsim-c0-openai-smoke-v1",
     episode_id: str = "c0-openai-smoke-0001",
     run_storage_root: Path = RUN_STORAGE_ROOT,
+    seed: int = 42,
 ) -> dict[str, Any]:
     language = normalize_language(language)
+    if free_choice_languages is not None:
+        free_choice_languages = normalize_language_pair(free_choice_languages)
     agent_languages = {
         agent_id: normalize_language(agent_language)
         for agent_id, agent_language in (agent_languages or {}).items()
     }
+    if free_choice_languages is not None and agent_languages:
+        raise ValueError("free_choice_languages cannot be combined with forced agent_languages")
     pair_languages = tuple(part.strip().upper() for part in language_pair.split("-"))
     if len(pair_languages) != 2:
         raise ValueError(f"expected two-language pair, got {language_pair!r}")
@@ -393,21 +463,30 @@ def run_episode(
         condition=condition,
         language_pair=language_pair,
         episode_id=episode_id,
-        seed=42,
+        seed=seed,
         metadata={
             "benchmark": "GovSim",
             "substrate": "fishery",
             "provider": provider,
             "model": model_name,
             "evidence_scope": evidence_scope,
-            "rule_prompt_policy": "rules/private state in English; interaction output constrained by assigned channel",
-            "assigned_output_language": "mixed" if agent_languages else language,
+            "rule_prompt_policy": (
+                "rules/private state in English; interaction output may use either free-choice pair language"
+                if free_choice_languages is not None
+                else "rules/private state in English; interaction output constrained by assigned channel"
+            ),
+            "assigned_output_language": (
+                f"free_choice:{'-'.join(free_choice_languages)}"
+                if free_choice_languages is not None
+                else "mixed" if agent_languages else language
+            ),
             "agent_output_languages": agent_languages or None,
+            "free_choice_languages": list(free_choice_languages) if free_choice_languages else None,
         },
     )
     transcript = TranscriptWriter.for_run(ROOT, context)
 
-    agent_id, obs = env.reset(seed=42)
+    agent_id, obs = env.reset(seed=seed)
     harvest_rows: list[dict[str, Any]] = []
     step_count = 0
     terminations: dict[str, bool] = {}
@@ -421,12 +500,21 @@ def run_episode(
                 ids[agent_id],
                 obs,
                 agent_languages.get(agent_id, language),
+                free_choice_languages=free_choice_languages,
             )
             harvest_rows.append(row)
         elif obs.current_location == "lake" and obs.phase == "pool_after_harvesting":
             action = PersonaAction(agent_id, "lake")
         elif obs.current_location == "restaurant":
-            action = run_conversation(adapter, transcript, ids, obs, language, agent_languages=agent_languages)
+            action = run_conversation(
+                adapter,
+                transcript,
+                ids,
+                obs,
+                language,
+                agent_languages=agent_languages,
+                free_choice_languages=free_choice_languages,
+            )
         elif obs.current_location == "home":
             action = PersonaAction(agent_id, "home")
         else:
@@ -457,6 +545,7 @@ def run_episode(
         "language": language,
         "language_pair": language_pair,
         "agent_output_languages": agent_languages or None,
+        "free_choice_languages": list(free_choice_languages) if free_choice_languages else None,
         "model_provider": provider,
         "model": model_name,
         "upstream_env": "vendor/govsim/simulation/scenarios/fishing/environment/env.py",

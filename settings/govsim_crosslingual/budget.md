@@ -79,5 +79,6 @@ Do not run an `n x n` sweep. Each pair is a controlled mini-matrix:
 
 ## Current State
 
-No episodes have run. This budget records execution gates and a bounded pilot
-size only; it is not empirical evidence.
+EN-ID C0/C1 baselines, both EN-ID C2 counterbalances, and one EN-ID C3
+free-choice episode have run as OpenAI benchmark evidence. The budget remains
+the bounded pilot envelope for additional seeds and ladder-pair runs.

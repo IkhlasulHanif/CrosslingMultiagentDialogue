@@ -111,3 +111,62 @@ def summary_instruction(language: str) -> str:
 
 def limit_instruction(language: str) -> str:
     return template_for(language).limit_instruction
+
+
+def normalize_language_pair(languages: tuple[str, str] | list[str]) -> tuple[str, str]:
+    normalized = tuple(normalize_language(language) for language in languages)
+    if len(normalized) != 2:
+        raise ValueError(f"expected exactly two output-channel languages, got {languages!r}")
+    if normalized[0] == normalized[1]:
+        raise ValueError(f"expected two distinct output-channel languages, got {languages!r}")
+    return normalized
+
+
+def _language_names(languages: tuple[str, str]) -> str:
+    templates = [template_for(language) for language in languages]
+    return " or ".join(f"{template.name} ({template.native_name})" for template in templates)
+
+
+def append_system_free_choice_instruction(system_prompt: str, languages: tuple[str, str] | list[str]) -> str:
+    pair = normalize_language_pair(languages)
+    return (
+        f"{system_prompt.rstrip()}\n\n"
+        f"Output-channel requirement: write every assistant-visible reply only in {_language_names(pair)}. "
+        "You may freely choose either allowed language for each reply, but do not use any other language."
+    )
+
+
+def free_choice_harvest_instruction(languages: tuple[str, str] | list[str]) -> str:
+    pair = normalize_language_pair(languages)
+    suffixes = {
+        "EN": '"Answer: <integer>"',
+        "ID": '"Jawaban: <integer>"',
+        "ZH": '"答案：<integer>"',
+    }
+    allowed_suffixes = " or ".join(suffixes[language] for language in pair)
+    return (
+        f"Reply only in {_language_names(pair)}. You may choose either allowed language. "
+        f"End with a final line exactly like {allowed_suffixes}."
+    )
+
+
+def free_choice_conversation_instruction(languages: tuple[str, str] | list[str]) -> str:
+    pair = normalize_language_pair(languages)
+    return (
+        f"Say one short message to the group only in {_language_names(pair)}. "
+        "You may choose either allowed language. Discuss sustainable fishing if relevant. "
+        "Do not include labels or a next-speaker field."
+    )
+
+
+def free_choice_summary_instruction(languages: tuple[str, str] | list[str]) -> str:
+    pair = normalize_language_pair(languages)
+    return f"Summarize this conversation in one sentence only in {_language_names(pair)}."
+
+
+def free_choice_limit_instruction(languages: tuple[str, str] | list[str]) -> str:
+    pair = normalize_language_pair(languages)
+    return (
+        f"If the group agreed on a maximum tons-of-fish limit per person, answer with only that integer. "
+        f"If there is no clear numeric limit, answer 0. Do not use languages outside {_language_names(pair)}."
+    )
