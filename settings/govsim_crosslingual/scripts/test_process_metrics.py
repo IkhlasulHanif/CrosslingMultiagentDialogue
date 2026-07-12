@@ -52,6 +52,21 @@ class ProcessMetricsTest(unittest.TestCase):
         self.assertEqual(metrics["off_pair_token_count"], 0)
         self.assertTrue(metrics["channel_compliant"])
 
+    def test_hebrew_script_counts_as_off_pair_text(self) -> None:
+        metrics = message_metrics(
+            {
+                "event_type": "model_message",
+                "round_index": 0,
+                "agent_id": "framework",
+                "language": "ID",
+                "visible_text": "kita jaga stok ikan untuk כולם",
+            }
+        )
+
+        self.assertEqual(metrics["off_pair_scripts"]["HE"], 1)
+        self.assertEqual(metrics["off_pair_token_count"], 1)
+        self.assertTrue(metrics["channel_compliant"])
+
     def test_summary_reports_language_share_and_convergence_delta(self) -> None:
         records = [
             {

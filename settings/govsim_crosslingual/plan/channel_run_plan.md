@@ -18,11 +18,11 @@ private state stay in English for these runs.
 
 C2 requires both counterbalances for each pair:
 
-| Pair | Assignment A | Assignment B |
-|---|---|---|
-| EN-ID | 2 EN / 3 ID | 3 EN / 2 ID |
-| EN-ZH | 2 EN / 3 ZH | 3 EN / 2 ZH |
-| ZH-ID | 2 ZH / 3 ID | 3 ZH / 2 ID |
+| Pair | Assignment A | Command A | Assignment B | Command B |
+|---|---|---|---|---|
+| EN-ID | 2 EN / 3 ID | `./scripts/run_openai_en_id_c2_counterbalance_a.sh` | 3 EN / 2 ID | `./scripts/run_openai_en_id_c2_counterbalance_b.sh` |
+| EN-ZH | 2 EN / 3 ZH | not wired yet | 3 EN / 2 ZH | not wired yet |
+| ZH-ID | 2 ZH / 3 ID | not wired yet | 3 ZH / 2 ID | not wired yet |
 
 C3 allows either language in the pair during visible interaction. Measure
 language share, code switching, convergence, off-pair language, survival time,

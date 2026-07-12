@@ -264,14 +264,20 @@ def run_conversation(
     ids: dict[str, PersonaIdentity],
     obs: Any,
     language: str = "EN",
+    agent_languages: dict[str, str] | None = None,
 ) -> PersonaActionChat:
     language = normalize_language(language)
+    agent_languages = {
+        agent_id: normalize_language(agent_language)
+        for agent_id, agent_language in (agent_languages or {}).items()
+    }
     report = resource_report_for_language(obs, ids, language)
     conversation: list[tuple[PersonaIdentity, str]] = []
     html_interactions: list[str] = []
 
     for identity in ids.values():
-        messages = conversation_prompt(identity, report, conversation, language)
+        speaker_language = agent_languages.get(identity.agent_id, language)
+        messages = conversation_prompt(identity, report, conversation, speaker_language)
         response = complete(adapter, messages, max_tokens=140)
         utterance = response.visible_text.strip().splitlines()[0].strip('" ')
         conversation.append((identity, utterance))
@@ -282,7 +288,7 @@ def run_conversation(
             agent_id=identity.agent_id,
             role="assistant",
             response=response,
-            language=language,
+            language=speaker_language,
             prompt_messages=messages,
         )
 
@@ -365,11 +371,16 @@ def run_episode(
     condition: str = "C0",
     language: str = "EN",
     language_pair: str = "EN-ID",
+    agent_languages: dict[str, str] | None = None,
     schema_version: str = "govsim-c0-openai-smoke-v1",
     episode_id: str = "c0-openai-smoke-0001",
     run_storage_root: Path = RUN_STORAGE_ROOT,
 ) -> dict[str, Any]:
     language = normalize_language(language)
+    agent_languages = {
+        agent_id: normalize_language(agent_language)
+        for agent_id, agent_language in (agent_languages or {}).items()
+    }
     pair_languages = tuple(part.strip().upper() for part in language_pair.split("-"))
     if len(pair_languages) != 2:
         raise ValueError(f"expected two-language pair, got {language_pair!r}")
@@ -390,7 +401,8 @@ def run_episode(
             "model": model_name,
             "evidence_scope": evidence_scope,
             "rule_prompt_policy": "rules/private state in English; interaction output constrained by assigned channel",
-            "assigned_output_language": language,
+            "assigned_output_language": "mixed" if agent_languages else language,
+            "agent_output_languages": agent_languages or None,
         },
     )
     transcript = TranscriptWriter.for_run(ROOT, context)
@@ -403,12 +415,18 @@ def run_episode(
     while step_count < 80:
         step_count += 1
         if obs.current_location == "lake" and obs.phase == "lake":
-            action, row = choose_harvest(adapter, transcript, ids[agent_id], obs, language)
+            action, row = choose_harvest(
+                adapter,
+                transcript,
+                ids[agent_id],
+                obs,
+                agent_languages.get(agent_id, language),
+            )
             harvest_rows.append(row)
         elif obs.current_location == "lake" and obs.phase == "pool_after_harvesting":
             action = PersonaAction(agent_id, "lake")
         elif obs.current_location == "restaurant":
-            action = run_conversation(adapter, transcript, ids, obs, language)
+            action = run_conversation(adapter, transcript, ids, obs, language, agent_languages=agent_languages)
         elif obs.current_location == "home":
             action = PersonaAction(agent_id, "home")
         else:
@@ -437,6 +455,8 @@ def run_episode(
         "evidence_scope": evidence_scope,
         "condition": condition,
         "language": language,
+        "language_pair": language_pair,
+        "agent_output_languages": agent_languages or None,
         "model_provider": provider,
         "model": model_name,
         "upstream_env": "vendor/govsim/simulation/scenarios/fishing/environment/env.py",

@@ -17,10 +17,12 @@ PAIR_LANGUAGES = ("EN", "ID")
 CHANNEL_COMPLIANCE_THRESHOLD = 0.80
 TOKEN_RE = re.compile(
     r"[\u0600-\u06ff]+|[\u0750-\u077f]+|[\u08a0-\u08ff]+|"
+    r"[\u0590-\u05ff]+|"
     r"[\u4e00-\u9fff]+|[A-Za-z]+(?:['-][A-Za-z]+)?|\d+"
 )
 CJK_RE = re.compile(r"[\u4e00-\u9fff]")
 ARABIC_RE = re.compile(r"[\u0600-\u06ff\u0750-\u077f\u08a0-\u08ff]")
+HEBREW_RE = re.compile(r"[\u0590-\u05ff]")
 
 EN_LEXICON = {
     "a",
@@ -132,7 +134,7 @@ def tokenize(text: str) -> list[str]:
 
 
 def classify_token(token: str) -> str:
-    """Classify a token as EN, ID, ZH, AR or UNKNOWN.
+    """Classify a token as EN, ID, ZH, AR, HE or UNKNOWN.
 
     The classifier is intentionally lightweight and deterministic. It is good
     enough for smoke-gate process metrics, not a replacement for manual
@@ -143,6 +145,8 @@ def classify_token(token: str) -> str:
         return "ZH"
     if ARABIC_RE.search(token):
         return "AR"
+    if HEBREW_RE.search(token):
+        return "HE"
     lowered = token.lower()
     if not lowered.isalpha():
         return "UNKNOWN"
@@ -198,13 +202,14 @@ def message_metrics(record: dict[str, Any], pair_languages: tuple[str, str] = PA
         and dominant_language is not None
         and declared_language != dominant_language
     )
+    compliance_denominator = active_total + sum(off_pair_counts.values())
     declared_active_share = (
-        active_counts[declared_language] / active_total
-        if declared_language in ACTIVE_LANGUAGES and active_total
+        active_counts[declared_language] / compliance_denominator
+        if declared_language in ACTIVE_LANGUAGES and compliance_denominator
         else None
     )
     channel_compliant = None
-    if declared_language in ACTIVE_LANGUAGES and active_total:
+    if declared_language in ACTIVE_LANGUAGES and compliance_denominator:
         channel_compliant = declared_active_share >= CHANNEL_COMPLIANCE_THRESHOLD
 
     return {
