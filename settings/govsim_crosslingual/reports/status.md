@@ -42,28 +42,28 @@ Does cross-lingual contact reduce cooperative resource-management outcomes beyon
 
 ## Blockers / Errors
 
-BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T031930Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T031930701963Z.json
+BLOCKED: Follow-up scoped commit/push for generated check/status update blocked by sandbox permission: git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock (Operation not permitted). Primary commit caa6f269 was already pushed with baseline blocker artifacts and endpoint probe filename fix.
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T03:03:03+00:00` OK: Codex pass 8 completed
-- `2026-07-12T03:18:03+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_111803.txt
-- `2026-07-12T03:18:48+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T031848Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T031848Z.json
-- `2026-07-12T03:18:48+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260712T031848Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T031848Z.json
-- `2026-07-12T03:19:30+00:00` BLOCKED: GovSim C0 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c0_openai_baseline_20260712T031930Z.json; next=./scripts/run_openai_c0_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T031930701692Z.json
-- `2026-07-12T03:19:30+00:00` BLOCKED: GovSim C1 OpenAI baseline blocked: LocalModelError: Local model endpoint unavailable at https://api.openai.com/v1/chat/completions: [Errno 8] nodename nor servname provided, or not known; artifact=artifacts/results/govsim_c1_openai_baseline_20260712T031930Z.json; next=./scripts/run_openai_c1_baseline.sh; endpoint_probe=artifacts/logs/openai_endpoint_probe_20260712T031930701963Z.json
 - `2026-07-12T03:19:52+00:00` OK: Made endpoint probe artifact filenames microsecond-stamped to avoid C0/C1 parallel retry collisions; fresh OpenAI C0/C1 baseline retries still block only on api.openai.com DNS with separate probe artifacts.
 - `2026-07-12T03:20:52+00:00` OK: Harness scaffold check passed
+- `2026-07-12T03:21:49+00:00` OK: Harness scaffold check passed
+- `2026-07-12T03:22:00+00:00` BLOCKED: Follow-up scoped commit/push for generated check/status update blocked by sandbox permission: git could not create /Users/ikhlasul.hanif/Documents/MultiAgent/.git/index.lock (Operation not permitted). Primary commit caa6f269 was already pushed with baseline blocker artifacts and endpoint probe filename fix.
+- `2026-07-12T03:22:39+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_111803.txt
+- `2026-07-12T03:22:39+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-12T03:22:55+00:00` OK: GovSim C0 OpenAI smoke produced transcript/result artifact=artifacts/results/govsim_c0_openai_smoke_20260712T032243Z.json transcript=artifacts/transcripts/govsim_c0_openai_smoke_20260712T032243Z.jsonl
+- `2026-07-12T03:22:55+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
-| Transcript JSON/JSONL | 50 |
-| Result summaries | 37 |
+| Transcript JSON/JSONL | 51 |
+| Result summaries | 39 |
 | Logs | 86 |
 
 ## Open Questions
