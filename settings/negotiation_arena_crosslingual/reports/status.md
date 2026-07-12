@@ -50,14 +50,14 @@ or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T18:00:54+00:00` OK: Codex pass 2 completed
-- `2026-07-12T18:01:54+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260713_020154.txt
-- `2026-07-12T18:02:25+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T18:02:28+00:00` OK: pair_zh_id_c2_buyer_lx_seller_ly_buy_sell_seed101 completed; transcript=artifacts/transcripts/pair_zh_id_c2_buyer_lx_seller_ly_buy_sell_seed101.json; metrics=artifacts/results/pair_zh_id_c2_buyer_lx_seller_ly_buy_sell_seed101.metrics.json; provider=openai_benchmark
-- `2026-07-12T18:02:33+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T18:02:41+00:00` OK: pair_zh_id_c2_buyer_ly_seller_lx_buy_sell_seed101 completed; transcript=artifacts/transcripts/pair_zh_id_c2_buyer_ly_seller_lx_buy_sell_seed101.json; metrics=artifacts/results/pair_zh_id_c2_buyer_ly_seller_lx_buy_sell_seed101.metrics.json; provider=openai_benchmark
 - `2026-07-12T18:03:01+00:00` OK: ZH-ID C2 buy_sell counterbalances documented as OpenAI benchmark evidence; buyer-ZH/seller-ID asymmetry=-20 compliance=1.0; buyer-ID/seller-ZH asymmetry=0 compliance=0.50; next_command=python3 scripts/run_pairwise_buy_sell.py --pair EN-ID --condition C3 --seed 101
 - `2026-07-12T18:04:14+00:00` OK: Harness scaffold check passed
+- `2026-07-12T18:05:17+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260713_020154.txt
+- `2026-07-12T18:05:17+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-12T18:05:18+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-12T18:05:19+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T18:05:22+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-12T18:05:22+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
