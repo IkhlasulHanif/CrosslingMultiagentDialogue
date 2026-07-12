@@ -14,10 +14,16 @@ translated benchmark rules. Rules/private state may remain in English; C0/C1/C2/
 constrain visible negotiation messages and validate channel compliance from
 transcripts.
 
-Current executable blocker: `bash scripts/run_c1_baseline.sh` was rerun at
-2026-07-12T01:02:46 UTC. Bring-up, offer parser validation, process-metric
+Current executable blocker: `./harness.sh run-smoke` and
+`bash scripts/run_c1_baseline.sh` now use the active OpenAI benchmark provider
+by default. They were rerun at 2026-07-12T01:21:05 UTC and
+2026-07-12T01:21:17 UTC. Bring-up, offer parser validation, process-metric
+validation, and EN/ID/ZH channel validation all pass before the provider probe.
+The probe is blocked because both urllib and curl cannot resolve
+`api.openai.com`.
 
-Next useful work: **Run C1 ID baseline with ID-only output-channel instructions**.
+Next useful work: **Restore network/API access for the configured OpenAI
+benchmark model, then rerun `bash scripts/run_c1_baseline.sh`.**
 
 ## Question
 
@@ -42,29 +48,34 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-BLOCKED: C1 ID baseline blocked on benchmark provider openai_benchmark; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh
+BLOCKED: OpenAI benchmark provider probe failed before smoke/C1 transcript
+creation. Current artifacts:
+
+- `artifacts/results/benchmark_model_probe.json`
+- `artifacts/results/smoke_c0_buy_sell_en_001.blocked.json`
+- `artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T01:00:31+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-12T01:00:31+00:00` BLOCKED: OpenAI benchmark model probe failed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T01:00:31+00:00` BLOCKED: C1 ID baseline blocked on benchmark provider openai_benchmark; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh
-- `2026-07-12T01:02:41+00:00` OK: Pairwise EN-ID, EN-ZH, and ZH-ID channel-run plan validated; artifact=artifacts/results/pairwise_channel_plan_validation.json
-- `2026-07-12T01:02:45+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-12T01:02:46+00:00` BLOCKED: OpenAI benchmark model probe failed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T01:02:46+00:00` BLOCKED: C1 ID baseline blocked on benchmark provider openai_benchmark; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh
-- `2026-07-12T01:03:19+00:00` OK: Harness scaffold check passed
+- `2026-07-12T01:21:04+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-12T01:21:05+00:00` BLOCKED: OpenAI benchmark model probe failed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T01:21:05+00:00` BLOCKED: C0 smoke blocked on provider openai_benchmark; artifact=artifacts/results/smoke_c0_buy_sell_en_001.blocked.json; failed_command=bash scripts/run_smoke.sh
+- `2026-07-12T01:21:05+00:00` ERROR: scripts/run_smoke.sh exited 2
+- `2026-07-12T01:21:17+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-12T01:21:17+00:00` BLOCKED: OpenAI benchmark model probe failed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T01:21:17+00:00` BLOCKED: C1 ID baseline blocked on benchmark provider openai_benchmark; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh
+- `2026-07-12T01:22:00+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
 | Artifact | Count |
 |---|---:|
 | Transcript JSON/JSONL | 3 |
-| Result summaries | 16 |
-| Logs | 62 |
+| Result summaries | 17 |
+| Logs | 63 |
 
 ## Open Questions
 

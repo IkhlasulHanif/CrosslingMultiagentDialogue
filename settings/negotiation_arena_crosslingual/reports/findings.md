@@ -8,15 +8,18 @@ translated benchmark rules. Rules/private state may remain in English; C0/C1/C2/
 constrain visible negotiation messages and validate channel compliance from
 transcripts.
 
-Current executable blocker: `bash scripts/run_c1_baseline.sh` was rerun at
-2026-07-12T01:02:46 UTC. Bring-up, offer parser validation, process-metric
+Current executable blocker: `./harness.sh run-smoke` and
+`bash scripts/run_c1_baseline.sh` now use the active OpenAI benchmark provider
+by default. They were rerun at 2026-07-12T01:21:05 UTC and
+2026-07-12T01:21:17 UTC. Bring-up, offer parser validation, process-metric
 validation, and EN/ID/ZH channel validation all passed, then the OpenAI
-benchmark provider probe failed before any C1 transcript was created. Both
-urllib and curl could not resolve `api.openai.com`.
+benchmark provider probe failed before any new smoke or C1 transcript was
+created. Both urllib and curl could not resolve `api.openai.com`.
 
 Fresh blocker artifacts:
 
 - `artifacts/results/benchmark_model_probe.json`
+- `artifacts/results/smoke_c0_buy_sell_en_001.blocked.json`
 - `artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json`
 
 No channel-controlled C1/C2/C3 empirical evidence has been produced yet.

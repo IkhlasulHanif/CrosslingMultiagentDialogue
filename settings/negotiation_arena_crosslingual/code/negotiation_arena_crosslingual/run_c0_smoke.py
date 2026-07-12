@@ -265,6 +265,9 @@ def selected_provider() -> str:
     override = os.environ.get("NEGOTIATION_SMOKE_PROVIDER")
     if override:
         return override
+    benchmark_config = load_benchmark_model_config()
+    if benchmark_openai_allowed(benchmark_config):
+        return "openai_benchmark"
     smoke_config = load_smoke_model_config()
     return "openai_smoke" if smoke_openai_allowed(smoke_config) else "local_qwen"
 
@@ -780,7 +783,46 @@ def main() -> int:
     plan = load_plan()
     artifacts = plan["expected_artifacts"]
     provider = selected_provider()
-    model_metadata = run_endpoint_probe(provider)
+    failed_command = "bash scripts/run_smoke.sh"
+    try:
+        model_metadata = run_endpoint_probe(provider, failed_command=failed_command)
+    except SystemExit as exc:
+        benchmark_config = load_benchmark_model_config() or {}
+        smoke_config = load_smoke_model_config() or {}
+        active_config = benchmark_config if provider == "openai_benchmark" else smoke_config
+        probe_artifact = (
+            "artifacts/results/benchmark_model_probe.json"
+            if provider == "openai_benchmark"
+            else "artifacts/results/smoke_model_probe.json"
+            if provider == "openai_smoke"
+            else "artifacts/results/model_endpoint_probe.json"
+        )
+        artifact = write_json(
+            "artifacts/results/smoke_c0_buy_sell_en_001.blocked.json",
+            {
+                "checked_at": utc_now(),
+                "status": "BLOCKED",
+                "blocker": "model_provider_unavailable",
+                "failed_command": failed_command,
+                "condition": plan.get("episode", {}).get("condition"),
+                "game_id": plan.get("episode", {}).get("game_id"),
+                "language_pair": plan.get("episode", {}).get("language_pair"),
+                "role_languages": plan.get("episode", {}).get("role_languages", {}),
+                "active_provider": provider,
+                "active_model": active_config.get("default_model", plan.get("episode", {}).get("model")),
+                "provider_probe_artifact": probe_artifact,
+                "message": "C0 smoke is ready but the selected model provider probe failed before any transcript was created.",
+                "next_action": f"Fix the selected provider, then rerun {failed_command}.",
+                "evidence_scope": "No smoke empirical evidence produced by this attempt; this is a provider blocker artifact only.",
+            },
+        )
+        append_event(
+            "smoke",
+            "BLOCKED",
+            f"C0 smoke blocked on provider {provider}; artifact={artifact.relative_to(ROOT)}; "
+            f"failed_command={failed_command}",
+        )
+        return int(exc.code) if isinstance(exc.code, int) else 2
 
     try:
         episode = run_episode(plan, provider, model_metadata)
