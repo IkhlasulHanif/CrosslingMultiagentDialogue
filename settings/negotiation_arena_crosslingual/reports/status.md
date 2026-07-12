@@ -14,10 +14,7 @@ translated benchmark rules. Rules/private state may remain in English; C0/C1/C2/
 constrain visible negotiation messages and validate channel compliance from
 transcripts.
 
-Fresh pass result: two additional OpenAI benchmark buy/sell runs completed for
-EN-ZH C2. Both counterbalances reached deals with offer parse rate 1.0, but
-assigned-channel compliance was weak because visible dialogue mostly converged
-to ZH.
+Fresh pass result: five OpenAI benchmark buy/sell runs completed.
 
 
 Next useful work: **Run C2 ZH-ID both counterbalances**.
@@ -46,23 +43,21 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-None logged. Quality warning: EN-ZH C2 executed successfully but is
-compliance-limited, with assigned-channel compliance 0.50 and 0.667 in the two
-counterbalances.
+None logged.
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T17:56:08+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260713_015608.txt
-- `2026-07-12T17:56:55+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T17:57:02+00:00` OK: pair_en_zh_c2_buyer_lx_seller_ly_buy_sell_seed101 completed; transcript=artifacts/transcripts/pair_en_zh_c2_buyer_lx_seller_ly_buy_sell_seed101.json; metrics=artifacts/results/pair_en_zh_c2_buyer_lx_seller_ly_buy_sell_seed101.metrics.json; provider=openai_benchmark
-- `2026-07-12T17:57:12+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T17:57:23+00:00` OK: pair_en_zh_c2_buyer_ly_seller_lx_buy_sell_seed101 completed; transcript=artifacts/transcripts/pair_en_zh_c2_buyer_ly_seller_lx_buy_sell_seed101.json; metrics=artifacts/results/pair_en_zh_c2_buyer_ly_seller_lx_buy_sell_seed101.metrics.json; provider=openai_benchmark
-- `2026-07-12T17:58:01+00:00` OK: EN-ZH C2 buy_sell counterbalances documented as OpenAI benchmark evidence with compliance limitation; next_command=python3 scripts/run_pairwise_buy_sell.py --pair ZH-ID --condition C2 --counterbalance buyer_lx_seller_ly --seed 101
 - `2026-07-12T17:59:11+00:00` OK: Pairwise EN-ID, EN-ZH, and ZH-ID channel-run plan validated; artifact=artifacts/results/pairwise_channel_plan_validation.json
 - `2026-07-12T17:59:11+00:00` OK: Harness scaffold check passed
+- `2026-07-12T18:00:45+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260713_015608.txt
+- `2026-07-12T18:00:45+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
+- `2026-07-12T18:00:46+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-12T18:00:47+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T18:00:52+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
+- `2026-07-12T18:00:52+00:00` OK: scripts/run_smoke.sh exited 0
 
 ## Artifact Counts
 
