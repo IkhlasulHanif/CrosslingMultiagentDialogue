@@ -9,7 +9,7 @@ constrain visible negotiation messages and validate channel compliance from
 transcripts.
 
 Current executable blocker: `bash scripts/run_c1_baseline.sh` uses the active
-OpenAI benchmark provider by default. It was rerun at 2026-07-12T02:34:54 UTC.
+OpenAI benchmark provider by default. It was rerun at 2026-07-12T02:53:01 UTC.
 Bring-up, offer parser validation, process-metric validation, and EN/ID/ZH
 channel validation all passed, then the OpenAI benchmark provider probe failed
 before any C1 transcript was created.
@@ -21,7 +21,7 @@ artifact shows the remaining concrete blocker is DNS resolution from the Python
 runner path: urllib reported `nodename nor servname provided, or not known`,
 and the runner's Python-launched curl fallback reported `Could not resolve host:
 api.openai.com`. A direct top-level shell `curl -I -L --max-time 10
-https://api.openai.com/v1/models` did resolve at 2026-07-12T02:35:07 UTC and
+https://api.openai.com/v1/models` did resolve at 2026-07-12T02:53:16 UTC and
 returned the expected unauthenticated HTTP 401, so the issue is not a missing
 checkout, prompt/metric gate, or absent OpenAI config.
 

@@ -15,7 +15,7 @@ constrain visible negotiation messages and validate channel compliance from
 transcripts.
 
 Current executable blocker: `bash scripts/run_c1_baseline.sh` uses the active
-OpenAI benchmark provider by default. It was rerun at 2026-07-12T02:34:54 UTC.
+OpenAI benchmark provider by default. It was rerun at 2026-07-12T02:53:01 UTC.
 
 Next useful work: **Run C1 ID baseline with ID-only output-channel instructions**.
 
@@ -42,21 +42,21 @@ Does the higher-resource language channel capture a negotiation payoff premium?
 
 ## Blockers / Errors
 
-BLOCKED: Top-level shell curl to https://api.openai.com/v1/models resolved and returned HTTP 401, but Python urllib and Python subprocess curl still report DNS failure for api.openai.com; C1 runner remains blocked before transcript generation; failed_command=bash scripts/run_c1_baseline.sh; artifacts=artifacts/results/benchmark_model_probe.json,artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json
+BLOCKED: Direct top-level shell curl to https://api.openai.com/v1/models resolved and returned HTTP 401, but the Python urllib path and Python-launched curl fallback still report DNS failure for api.openai.com; C1 runner remains blocked before transcript generation; failed_command=bash scripts/run_c1_baseline.sh; artifacts=artifacts/results/benchmark_model_probe.json,artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json
 
 Use `./harness.sh error "..."` for token exhaustion, quota, DNS, build errors,
 or benchmark-specific failures. They will show up here.
 
 ## Recent Events
 
-- `2026-07-12T02:35:07+00:00` BLOCKED: Top-level shell curl to https://api.openai.com/v1/models resolved and returned HTTP 401, but Python urllib and Python subprocess curl still report DNS failure for api.openai.com; C1 runner remains blocked before transcript generation; failed_command=bash scripts/run_c1_baseline.sh; artifacts=artifacts/results/benchmark_model_probe.json,artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json
-- `2026-07-12T02:36:36+00:00` OK: Harness scaffold check passed
-- `2026-07-12T02:37:05+00:00` OK: Codex implementation pass exited 0; log=codex_once_20260712_103411.txt
-- `2026-07-12T02:37:05+00:00` RUNNING: Parent harness starting post-Codex smoke/experiment attempt
-- `2026-07-12T02:37:06+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
-- `2026-07-12T02:37:08+00:00` OK: OpenAI benchmark model probe passed; artifact=artifacts/results/benchmark_model_probe.json
-- `2026-07-12T02:37:11+00:00` OK: C0 buy_sell smoke completed; transcript=artifacts/transcripts/smoke_c0_buy_sell_en_001.json; metrics=artifacts/results/smoke_c0_buy_sell_en_001.metrics.json
-- `2026-07-12T02:37:11+00:00` OK: scripts/run_smoke.sh exited 0
+- `2026-07-12T02:37:12+00:00` RUNNING: Attempting scoped commit/push after successful post-Codex smoke; if no later git blocker appears, check git log/remote for success
+- `2026-07-12T02:37:14+00:00` OK: Codex pass 7 completed
+- `2026-07-12T02:52:14+00:00` RUNNING: Starting Codex implementation pass; log=codex_once_20260712_105214.txt
+- `2026-07-12T02:53:00+00:00` OK: NegotiationArena checkout found; artifact=artifacts/results/bringup_check.json
+- `2026-07-12T02:53:01+00:00` BLOCKED: OpenAI benchmark model probe failed; artifact=artifacts/results/benchmark_model_probe.json
+- `2026-07-12T02:53:01+00:00` BLOCKED: C1 ID baseline blocked on benchmark provider openai_benchmark; artifact=artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json; failed_command=bash scripts/run_c1_baseline.sh
+- `2026-07-12T02:53:16+00:00` BLOCKED: Direct top-level shell curl to https://api.openai.com/v1/models resolved and returned HTTP 401, but the Python urllib path and Python-launched curl fallback still report DNS failure for api.openai.com; C1 runner remains blocked before transcript generation; failed_command=bash scripts/run_c1_baseline.sh; artifacts=artifacts/results/benchmark_model_probe.json,artifacts/results/baseline_c1_buy_sell_id_seed001.blocked.json
+- `2026-07-12T02:54:22+00:00` OK: Harness scaffold check passed
 
 ## Artifact Counts
 
@@ -64,7 +64,7 @@ or benchmark-specific failures. They will show up here.
 |---|---:|
 | Transcript JSON/JSONL | 3 |
 | Result summaries | 17 |
-| Logs | 67 |
+| Logs | 68 |
 
 ## Open Questions
 
