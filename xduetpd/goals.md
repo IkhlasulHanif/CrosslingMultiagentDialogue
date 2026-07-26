@@ -357,3 +357,9 @@ DEVIATION: M0 uses a deterministic mock provider for offline scaffold
 acceptance. Rationale: M0 validates schema, turn protocol, probe plumbing, and
 evidence paths without API spend; all formal experiment cells remain configured
 for OpenAI-only execution by setting `XDUETPD_PROVIDER=openai`.
+
+DEVIATION: On 2026-07-26, the human owner explicitly approved continuing past
+the M1 S1-JV blocker as a provisional run. Scope: M1.1 may be marked done for
+the purpose of launching non-JV pilot cells only. Core, H5, and culture phases
+must stop before any S1-backed JV cell until the Javanese translation and
+adjudication queue is cleared.
