@@ -2,6 +2,7 @@
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
+repo_root="$(git rev-parse --show-toplevel)"
 
 if [[ ! -f STATE.yaml ]]; then
   make bootstrap
@@ -15,9 +16,9 @@ while true; do
       echo
       echo "All STATE.yaml tasks are done."
     } > reports/DONE.md
-    git add -- xduetpd
-    git commit -m "[done] X-DuET-PD loop complete" || true
-    git push
+    git -C "$repo_root" add -- xduetpd
+    git -C "$repo_root" commit -m "[done] X-DuET-PD loop complete" || true
+    git -C "$repo_root" push
     exit 0
   fi
 
@@ -38,9 +39,9 @@ while true; do
         echo "- smallest human question: what should change before retrying this task?"
       } > "$blocker"
     fi
-    git add -- xduetpd
-    git commit -m "[${task_id}] blocked" || true
-    git push
+    git -C "$repo_root" add -- xduetpd
+    git -C "$repo_root" commit -m "[${task_id}] blocked" || true
+    git -C "$repo_root" push
     exit 1
   fi
 
@@ -51,9 +52,9 @@ while true; do
     if make $make_cmd && make "$check_cmd"; then
       evidence="reports/evidence/${task_id}/"
       python3 scripts/state.py mark --id "$task_id" --status done --evidence "$evidence"
-      git add -- xduetpd
-      git commit -m "[${task_id}] ${make_cmd}"
-      git push
+      git -C "$repo_root" add -- xduetpd
+      git -C "$repo_root" commit -m "[${task_id}] ${make_cmd}"
+      git -C "$repo_root" push
       break
     fi
     if [[ "$attempts" -ge 3 ]]; then
@@ -66,9 +67,9 @@ while true; do
         echo "- smallest human question: should this task be debugged further, relaxed, or marked as a substantive finding?"
       } > "reports/blockers/${task_id}.md"
       python3 scripts/state.py mark --id "$task_id" --status blocked
-      git add -- xduetpd
-      git commit -m "[${task_id}] blocked"
-      git push
+      git -C "$repo_root" add -- xduetpd
+      git -C "$repo_root" commit -m "[${task_id}] blocked"
+      git -C "$repo_root" push
       exit 1
     fi
   done
