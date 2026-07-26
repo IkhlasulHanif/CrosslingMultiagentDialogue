@@ -1,16 +1,118 @@
 # Ingest Report
 
 - status: blocked
-- S1 items checked: 0
+- S1 items checked: 100
 - acceptance ok: False
 
 ## Details
 
+- generated local HF CA bundle: .cache/hf_ca_bundle.pem
 - datasets import available
-- Global-MMLU ingest not completed: Couldn't reach 'CohereForAI/Global-MMLU' on the Hub (SSLError)
-- MultiJail ingest not completed: Couldn't reach 'DAMO-NLP-SG/MultiJail' on the Hub (SSLError)
-- GlobalOpinionQA ingest not completed: Couldn't reach 'Anthropic/llm_global_opinions' on the Hub (SSLError)
+- Global-MMLU downloaded CA-aligned rows: 100
+- MultiJail JV and SW columns present
+- MultiJail downloaded rows: 315
+- GlobalOpinionQA rows with >=5 countries: 60
+- GlobalOpinionQA downloaded rows: 60
 
 ## Failures
 
-- missing data/s1/items.jsonl
+- abstract_algebra_test_3: missing languages ['JV']
+- anatomy_test_1: missing languages ['JV']
+- astronomy_test_5: missing languages ['JV']
+- business_ethics_test_2: missing languages ['JV']
+- clinical_knowledge_test_9: missing languages ['JV']
+- college_biology_test_3: missing languages ['JV']
+- college_chemistry_test_7: missing languages ['JV']
+- college_computer_science_test_1: missing languages ['JV']
+- college_mathematics_test_2: missing languages ['JV']
+- abstract_algebra_test_11: missing languages ['JV']
+- anatomy_test_2: missing languages ['JV']
+- astronomy_test_6: missing languages ['JV']
+- business_ethics_test_4: missing languages ['JV']
+- clinical_knowledge_test_11: missing languages ['JV']
+- college_biology_test_4: missing languages ['JV']
+- college_chemistry_test_11: missing languages ['JV']
+- college_computer_science_test_2: missing languages ['JV']
+- college_mathematics_test_3: missing languages ['JV']
+- abstract_algebra_test_16: missing languages ['JV']
+- anatomy_test_4: missing languages ['JV']
+- astronomy_test_8: missing languages ['JV']
+- business_ethics_test_5: missing languages ['JV']
+- clinical_knowledge_test_13: missing languages ['JV']
+- college_biology_test_6: missing languages ['JV']
+- college_chemistry_test_13: missing languages ['JV']
+- college_computer_science_test_4: missing languages ['JV']
+- college_mathematics_test_4: missing languages ['JV']
+- abstract_algebra_test_18: missing languages ['JV']
+- anatomy_test_5: missing languages ['JV']
+- astronomy_test_9: missing languages ['JV']
+- business_ethics_test_10: missing languages ['JV']
+- clinical_knowledge_test_21: missing languages ['JV']
+- college_biology_test_7: missing languages ['JV']
+- college_chemistry_test_15: missing languages ['JV']
+- college_computer_science_test_5: missing languages ['JV']
+- college_mathematics_test_7: missing languages ['JV']
+- abstract_algebra_test_20: missing languages ['JV']
+- anatomy_test_9: missing languages ['JV']
+- astronomy_test_12: missing languages ['JV']
+- business_ethics_test_16: missing languages ['JV']
+- clinical_knowledge_test_24: missing languages ['JV']
+- college_biology_test_9: missing languages ['JV']
+- college_chemistry_test_17: missing languages ['JV']
+- college_computer_science_test_6: missing languages ['JV']
+- college_mathematics_test_8: missing languages ['JV']
+- abstract_algebra_test_24: missing languages ['JV']
+- anatomy_test_12: missing languages ['JV']
+- astronomy_test_18: missing languages ['JV']
+- business_ethics_test_20: missing languages ['JV']
+- clinical_knowledge_test_37: missing languages ['JV']
+- college_biology_test_11: missing languages ['JV']
+- college_chemistry_test_18: missing languages ['JV']
+- college_computer_science_test_8: missing languages ['JV']
+- college_mathematics_test_10: missing languages ['JV']
+- abstract_algebra_test_27: missing languages ['JV']
+- anatomy_test_17: missing languages ['JV']
+- astronomy_test_19: missing languages ['JV']
+- business_ethics_test_21: missing languages ['JV']
+- clinical_knowledge_test_45: missing languages ['JV']
+- college_biology_test_12: missing languages ['JV']
+- college_chemistry_test_20: missing languages ['JV']
+- college_computer_science_test_16: missing languages ['JV']
+- college_mathematics_test_11: missing languages ['JV']
+- abstract_algebra_test_28: missing languages ['JV']
+- anatomy_test_19: missing languages ['JV']
+- astronomy_test_21: missing languages ['JV']
+- business_ethics_test_26: missing languages ['JV']
+- clinical_knowledge_test_49: missing languages ['JV']
+- college_biology_test_17: missing languages ['JV']
+- college_chemistry_test_23: missing languages ['JV']
+- college_computer_science_test_18: missing languages ['JV']
+- college_mathematics_test_12: missing languages ['JV']
+- abstract_algebra_test_32: missing languages ['JV']
+- anatomy_test_20: missing languages ['JV']
+- astronomy_test_36: missing languages ['JV']
+- business_ethics_test_32: missing languages ['JV']
+- clinical_knowledge_test_54: missing languages ['JV']
+- college_biology_test_18: missing languages ['JV']
+- college_chemistry_test_24: missing languages ['JV']
+- college_computer_science_test_20: missing languages ['JV']
+- college_mathematics_test_13: missing languages ['JV']
+- abstract_algebra_test_33: missing languages ['JV']
+- anatomy_test_27: missing languages ['JV']
+- astronomy_test_41: missing languages ['JV']
+- business_ethics_test_35: missing languages ['JV']
+- clinical_knowledge_test_56: missing languages ['JV']
+- college_biology_test_23: missing languages ['JV']
+- college_chemistry_test_25: missing languages ['JV']
+- college_computer_science_test_24: missing languages ['JV']
+- college_mathematics_test_15: missing languages ['JV']
+- abstract_algebra_test_34: missing languages ['JV']
+- anatomy_test_29: missing languages ['JV']
+- astronomy_test_42: missing languages ['JV']
+- business_ethics_test_39: missing languages ['JV']
+- clinical_knowledge_test_57: missing languages ['JV']
+- college_biology_test_25: missing languages ['JV']
+- college_chemistry_test_26: missing languages ['JV']
+- college_computer_science_test_25: missing languages ['JV']
+- college_mathematics_test_16: missing languages ['JV']
+- abstract_algebra_test_35: missing languages ['JV']
