@@ -363,3 +363,10 @@ the M1 S1-JV blocker as a provisional run. Scope: M1.1 may be marked done for
 the purpose of launching non-JV pilot cells only. Core, H5, and culture phases
 must stop before any S1-backed JV cell until the Javanese translation and
 adjudication queue is cleared.
+
+DEVIATION: On 2026-07-26, the human owner explicitly revised the provisional
+run scope: "ignore JV for now" and "don't stop at pilot." Scope: unattended
+execution may skip JV cells, and any other cell whose required stimulus
+language variant is unavailable, then continue through M4 report generation.
+Skipped cells must be listed as shortfalls in evidence/report artifacts; they
+must not silently fall back to English.

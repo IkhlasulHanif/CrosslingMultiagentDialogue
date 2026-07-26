@@ -12,6 +12,9 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from cell_policy import runnable_cells
 
 
 def main() -> int:
@@ -184,12 +187,16 @@ def validate_jsonl_file(path: Path, kind: str) -> list[str]:
 
 
 def planned_cells(phase: str) -> list[str]:
-    cells = []
-    for path in sorted((ROOT / "configs" / "cells").glob("*.yaml")):
-        data = yaml.safe_load(path.read_text(encoding="utf-8"))
-        if data.get("phase") == phase:
-            cells.append(data["cell_id"])
-    return cells
+    runnable, skipped = runnable_cells(phase)
+    skip_report = ROOT / "reports" / "evidence" / "run" / f"skipped_{phase}.md"
+    if skipped and not skip_report.exists():
+        failures_text = "\n".join(f"- {row['cell_id']}: {row['reason']}" for row in skipped)
+        skip_report.parent.mkdir(parents=True, exist_ok=True)
+        skip_report.write_text(
+            f"# Skipped Cells: {phase}\n\n- skipped: {len(skipped)}\n\n{failures_text}\n",
+            encoding="utf-8",
+        )
+    return [data["cell_id"] for data in runnable]
 
 
 def completed_cells() -> set[str]:

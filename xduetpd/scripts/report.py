@@ -12,6 +12,8 @@ from typing import Any
 import matplotlib.pyplot as plt
 import yaml
 
+from cell_policy import runnable_cells
+
 ROOT = Path(__file__).resolve().parents[1]
 LANG_TIERS = {
     "high": {"EN", "ZH", "ES"},
@@ -27,16 +29,19 @@ def main() -> int:
     figures.mkdir(parents=True, exist_ok=True)
     metrics = compute_metrics(rows)
     (findings / "cell_metrics.csv").write_text(csv_from_dicts(metrics), encoding="utf-8")
+    skipped = skipped_cell_rows()
+    (findings / "skipped_cells.csv").write_text(csv_from_dicts(skipped), encoding="utf-8")
     verdicts = build_verdicts(metrics, rows)
     (findings / "verdicts.yaml").write_text(yaml.safe_dump(verdicts, sort_keys=False), encoding="utf-8")
     write_figures(rows, metrics, figures)
-    (findings / "REPORT.md").write_text(render_report(metrics, verdicts, rows), encoding="utf-8")
+    (findings / "REPORT.md").write_text(render_report(metrics, verdicts, rows, skipped), encoding="utf-8")
     evidence = ROOT / "reports" / "evidence" / "M4.1" / "report_check.md"
     evidence.parent.mkdir(parents=True, exist_ok=True)
     evidence.write_text(
         "# Report Evidence\n\n"
         f"- summary rows: {len(rows)}\n"
         f"- metric rows: {len(metrics)}\n"
+        f"- skipped cells: {len(skipped)}\n"
         "- outputs: reports/findings/REPORT.md, verdicts.yaml, figures/F1-F5.png\n",
         encoding="utf-8",
     )
@@ -95,6 +100,14 @@ def compute_metrics(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return metrics
 
 
+def skipped_cell_rows() -> list[dict[str, str]]:
+    skipped: list[dict[str, str]] = []
+    for phase in ["pilot", "core", "h5", "safety", "culture"]:
+        _, phase_skipped = runnable_cells(phase)
+        skipped.extend(phase_skipped)
+    return skipped
+
+
 def build_verdicts(metrics: list[dict[str, Any]], rows: list[dict[str, Any]]) -> dict[str, Any]:
     enough = any(metric["n_valid"] > 0 for metric in metrics)
     return {
@@ -141,7 +154,12 @@ def write_figures(rows: list[dict[str, Any]], metrics: list[dict[str, Any]], fig
         plt.close(fig)
 
 
-def render_report(metrics: list[dict[str, Any]], verdicts: dict[str, Any], rows: list[dict[str, Any]]) -> str:
+def render_report(
+    metrics: list[dict[str, Any]],
+    verdicts: dict[str, Any],
+    rows: list[dict[str, Any]],
+    skipped: list[dict[str, str]],
+) -> str:
     invalid = [metric for metric in metrics if metric["invalid_kill"]]
     lines = [
         "# X-DuET-PD Report",
@@ -150,9 +168,11 @@ def render_report(metrics: list[dict[str, Any]], verdicts: dict[str, Any], rows:
         "",
         f"- Completed dialogue summaries: {len(rows)}",
         f"- Completed cells: {len(metrics)}",
+        f"- Skipped cells due provisional language/data override: {len(skipped)}",
         f"- INVALID cells by kill criterion: {len(invalid)}",
         "",
         "Cell inventory is available in `reports/findings/cell_metrics.csv`.",
+        "Skipped-cell inventory is available in `reports/findings/skipped_cells.csv`.",
         "",
         "Probe agreement table: null until OpenAI P3-bearing cells complete.",
         "",
@@ -196,6 +216,7 @@ def render_report(metrics: list[dict[str, Any]], verdicts: dict[str, Any], rows:
             "- JSONL logs preserve probe channels.",
             "- Cell configs and seeds are generated under `configs/cells/`.",
             "- JV review queue path: `data/s1/jv_review.csv`.",
+            "- Skipped language cells path: `reports/findings/skipped_cells.csv`.",
             "- Appeal taxonomy mapping path: `configs/appeals.yaml`.",
             "- Invalidated cells are listed in `cell_metrics.csv`.",
         ]

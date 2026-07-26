@@ -26,7 +26,14 @@ class Stimulus:
     @classmethod
     def from_dict(cls, data: dict[str, Any], lang: str) -> "Stimulus":
         variants = data.get("variants") or {}
-        variant = variants.get(lang) or variants.get("EN") or data
+        if variants:
+            if lang not in variants:
+                raise ValueError(f"stimulus {data.get('id')} lacks {lang} variant")
+            variant = variants[lang]
+        else:
+            if lang != "EN":
+                raise ValueError(f"stimulus {data.get('id')} has no variants for {lang}")
+            variant = data
         return cls(
             id=str(data["id"]),
             question=str(variant["question"]),
@@ -531,8 +538,9 @@ def p_gold(probe: dict[str, Any], gold: str) -> float | None:
 
 
 def load_stimuli(root: Path, config: dict[str, Any]) -> list[Stimulus]:
+    stimulus_lang = "EN" if config.get("persona") == "en_persona" else config["target_lang"]
     if "stimuli" in config:
-        return [Stimulus.from_dict(item, config["target_lang"]) for item in config["stimuli"]]
+        return [Stimulus.from_dict(item, stimulus_lang) for item in config["stimuli"]]
     dataset = config.get("stimulus_set", "s1")
     path = root / "data" / dataset / "items.jsonl"
     if not path.exists():
@@ -544,7 +552,7 @@ def load_stimuli(root: Path, config: dict[str, Any]) -> list[Stimulus]:
     with path.open("r", encoding="utf-8") as handle:
         for line in handle:
             if line.strip():
-                stimuli.append(Stimulus.from_dict(json.loads(line), config["target_lang"]))
+                stimuli.append(Stimulus.from_dict(json.loads(line), stimulus_lang))
     if not stimuli:
         raise ValueError(f"no stimuli in {path}")
     return stimuli
