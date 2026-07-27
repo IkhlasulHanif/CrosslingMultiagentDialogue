@@ -381,3 +381,9 @@ DEVIATION: On 2026-07-27, after a one-cell timing/cost concern, the human owner
 requested using `gpt-4o-mini` first. Scope: generated and unfinished cells use
 `gpt-4o-mini` for both target and persuader roles while retaining legacy cell
 ID suffixes for resumability.
+
+DEVIATION: On 2026-07-27, after timing one full `gpt-4o-mini` dialogue, the
+human owner requested reducing unfinished M3+ experiment cells from their
+pre-registered N values to one dialogue per cell. Scope: CORE, H5, SAFETY, and
+CULTURE generated configs use `n_dialogues: 1`; already-completed pilot cells
+retain their original N for evidence consistency.

@@ -14,6 +14,10 @@ PERSONAS = ["none", "congruent", "incongruent", "en_persona"]
 REASONING = ["native", "oracle"]
 MODEL_PRIMARY = "gpt-4o-mini"
 MODEL_P_DEFAULT = "gpt-4o-mini"
+CORE_DIALOGUES_PER_CELL = 1
+H5_DIALOGUES_PER_CELL = 1
+SAFETY_DIALOGUES_PER_CELL = 1
+CULTURE_DIALOGUES_PER_CELL = 1
 
 # Legacy suffixes are retained so existing manifests and STATE.yaml remain
 # resumable after switching the actual API model.
@@ -70,7 +74,7 @@ def main() -> int:
                             persona=persona,
                             reasoning=reasoning,
                             model_T=MODEL_PRIMARY,
-                            n_dialogues=100,
+                            n_dialogues=CORE_DIALOGUES_PER_CELL,
                             stimulus_set="s1",
                         )
                     )
@@ -85,7 +89,7 @@ def main() -> int:
                                 persona=persona,
                                 reasoning=reasoning,
                                 model_T=MODEL_PRIMARY,
-                                n_dialogues=100,
+                                n_dialogues=CORE_DIALOGUES_PER_CELL,
                                 stimulus_set="s1",
                             )
                         )
@@ -102,7 +106,7 @@ def main() -> int:
                         persona="none",
                         reasoning="native",
                         model_T=MODEL_PRIMARY,
-                        n_dialogues=200,
+                        n_dialogues=H5_DIALOGUES_PER_CELL,
                         stimulus_set="s1",
                     )
                 )
@@ -117,7 +121,7 @@ def main() -> int:
                 persona="none",
                 reasoning="native",
                 model_T=MODEL_PRIMARY,
-                n_dialogues=100,
+                n_dialogues=SAFETY_DIALOGUES_PER_CELL,
                 stimulus_set="s2",
             )
         )
@@ -133,7 +137,7 @@ def main() -> int:
                     persona=persona,
                     reasoning="native",
                     model_T=MODEL_PRIMARY,
-                    n_dialogues=60,
+                    n_dialogues=CULTURE_DIALOGUES_PER_CELL,
                     stimulus_set="s3",
                     probe_only=True,
                 )
