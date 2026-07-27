@@ -376,3 +376,8 @@ DEVIATION: On 2026-07-27, the human owner requested switching future runs to
 `gpt-5.4-mini` for both target and persuader roles while retaining legacy cell
 ID suffixes for resumability. OpenAI P3 top-logprobs cap is 5 for this model,
 not 20; P3 remains validation-only and this cap must be visible in code.
+
+DEVIATION: On 2026-07-27, after a one-cell timing/cost concern, the human owner
+requested using `gpt-4o-mini` first. Scope: generated and unfinished cells use
+`gpt-4o-mini` for both target and persuader roles while retaining legacy cell
+ID suffixes for resumability.

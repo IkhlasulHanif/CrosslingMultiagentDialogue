@@ -6,8 +6,8 @@ LETTERS = ("A", "B", "C", "D")
 DIRECTIONS = ("misleading", "corrective")
 PERSONAS = ("none", "congruent", "incongruent", "en_persona")
 REASONING_MODES = ("native", "oracle")
-MODELS_T = ("gpt-5.4-mini",)
-MODEL_P_DEFAULT = "gpt-5.4-mini"
+MODELS_T = ("gpt-4o-mini",)
+MODEL_P_DEFAULT = "gpt-4o-mini"
 
 APPEAL_ORDER = (
     "credibility",

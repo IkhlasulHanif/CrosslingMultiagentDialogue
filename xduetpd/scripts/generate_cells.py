@@ -12,8 +12,8 @@ H5_LANGUAGES = ["EN", "ID", "AR", "SW", "JV"]
 DIRECTIONS = ["misleading", "corrective"]
 PERSONAS = ["none", "congruent", "incongruent", "en_persona"]
 REASONING = ["native", "oracle"]
-MODEL_PRIMARY = "gpt-5.4-mini"
-MODEL_P_DEFAULT = "gpt-5.4-mini"
+MODEL_PRIMARY = "gpt-4o-mini"
+MODEL_P_DEFAULT = "gpt-4o-mini"
 
 # Legacy suffixes are retained so existing manifests and STATE.yaml remain
 # resumable after switching the actual API model.
