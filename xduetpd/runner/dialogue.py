@@ -50,8 +50,7 @@ def run_cell(config: dict[str, Any], provider: Provider, root: Path) -> dict[str
         return {"cell_id": cell_id, "skipped": True, "dialogues": 0}
 
     run_id = f"{cell_id}-{uuid.uuid4().hex[:10]}"
-    jsonl_path = root / "results" / "jsonl" / f"{cell_id}.jsonl"
-    summary_path = root / "results" / "summaries" / f"{cell_id}.jsonl"
+    jsonl_path, summary_path = output_paths(root, cell_id, run_id)
     inspect_dir = root / "inspect"
     jsonl_path.parent.mkdir(parents=True, exist_ok=True)
     summary_path.parent.mkdir(parents=True, exist_ok=True)
@@ -578,6 +577,18 @@ def append_manifest(path: Path, entry: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(entry, ensure_ascii=False, sort_keys=True) + "\n")
+
+
+def output_paths(root: Path, cell_id: str, run_id: str) -> tuple[Path, Path]:
+    jsonl_path = root / "results" / "jsonl" / f"{cell_id}.jsonl"
+    summary_path = root / "results" / "summaries" / f"{cell_id}.jsonl"
+    if jsonl_path.exists() or summary_path.exists():
+        suffix = run_id.rsplit("-", 1)[-1]
+        return (
+            root / "results" / "jsonl" / f"{cell_id}_{suffix}.jsonl",
+            root / "results" / "summaries" / f"{cell_id}_{suffix}.jsonl",
+        )
+    return jsonl_path, summary_path
 
 
 def render_transcript(

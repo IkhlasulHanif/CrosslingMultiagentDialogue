@@ -7,6 +7,8 @@ import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
+from http.client import RemoteDisconnected
+from socket import timeout as SocketTimeout
 from typing import Any
 
 from .constants import LETTERS
@@ -91,17 +93,21 @@ class OpenAIHTTPProvider(Provider):
         top_logprobs: bool = False,
         seed: int | None = None,
     ) -> ModelReply:
+        completion_budget = _completion_budget(model, max_tokens, top_logprobs)
         payload: dict[str, Any] = {
             "model": model,
             "messages": messages,
             "temperature": temperature,
-            "max_tokens": max_tokens,
         }
+        if _uses_max_completion_tokens(model):
+            payload["max_completion_tokens"] = completion_budget
+        else:
+            payload["max_tokens"] = completion_budget
         if seed is not None:
             payload["seed"] = seed
         if top_logprobs:
             payload["logprobs"] = True
-            payload["top_logprobs"] = 20
+            payload["top_logprobs"] = _top_logprobs_cap(model)
         req = urllib.request.Request(
             f"{self.base_url}/v1/chat/completions",
             data=json.dumps(payload).encode("utf-8"),
@@ -112,12 +118,7 @@ class OpenAIHTTPProvider(Provider):
             method="POST",
         )
         started = time.time()
-        try:
-            with urllib.request.urlopen(req, timeout=120) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-        except urllib.error.HTTPError as exc:
-            body = exc.read().decode("utf-8", errors="replace")
-            raise RuntimeError(f"OpenAI HTTP {exc.code}: {body}") from exc
+        data = self._post(req)
         choice = data["choices"][0]
         content = choice["message"].get("content") or ""
         logprobs = _parse_letter_top_logprobs(choice.get("logprobs")) if top_logprobs else None
@@ -125,6 +126,22 @@ class OpenAIHTTPProvider(Provider):
         cost = float(usage.get("total_tokens", 0)) * 0.0
         _ = started
         return ModelReply(content, logprobs, cost)
+
+    def _post(self, req: urllib.request.Request) -> dict[str, Any]:
+        delays = [1.0, 3.0, 8.0, 20.0]
+        for attempt in range(len(delays) + 1):
+            try:
+                with urllib.request.urlopen(req, timeout=120) as resp:
+                    return json.loads(resp.read().decode("utf-8"))
+            except urllib.error.HTTPError as exc:
+                body = exc.read().decode("utf-8", errors="replace")
+                if exc.code not in {408, 409, 429, 500, 502, 503, 504} or attempt == len(delays):
+                    raise RuntimeError(f"OpenAI HTTP {exc.code}: {body}") from exc
+            except (urllib.error.URLError, ConnectionResetError, RemoteDisconnected, SocketTimeout, TimeoutError) as exc:
+                if attempt == len(delays):
+                    raise RuntimeError(f"OpenAI transient failure after retries: {exc}") from exc
+            time.sleep(delays[attempt])
+        raise RuntimeError("OpenAI transient failure after retries")
 
 
 def build_provider(name: str | None = None) -> Provider:
@@ -172,3 +189,19 @@ def _parse_letter_top_logprobs(raw: Any) -> dict[str, float] | None:
     if all(value == -1000.0 for value in out.values()):
         return None
     return out
+
+
+def _uses_max_completion_tokens(model: str) -> bool:
+    return model.startswith("gpt-5")
+
+
+def _top_logprobs_cap(model: str) -> int:
+    if model.startswith("gpt-5.4"):
+        return 5
+    return 20
+
+
+def _completion_budget(model: str, max_tokens: int, top_logprobs: bool) -> int:
+    if model.startswith("gpt-5") and top_logprobs:
+        return max(max_tokens, 4)
+    return max_tokens

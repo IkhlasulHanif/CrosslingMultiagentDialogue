@@ -370,3 +370,9 @@ execution may skip JV cells, and any other cell whose required stimulus
 language variant is unavailable, then continue through M4 report generation.
 Skipped cells must be listed as shortfalls in evidence/report artifacts; they
 must not silently fall back to English.
+
+DEVIATION: On 2026-07-27, the human owner requested switching future runs to
+`gpt-5.4-mini` for cost. Scope: generated and unfinished cells may use
+`gpt-5.4-mini` for both target and persuader roles while retaining legacy cell
+ID suffixes for resumability. OpenAI P3 top-logprobs cap is 5 for this model,
+not 20; P3 remains validation-only and this cap must be visible in code.

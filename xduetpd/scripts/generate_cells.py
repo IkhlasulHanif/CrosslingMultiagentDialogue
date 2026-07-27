@@ -12,6 +12,12 @@ H5_LANGUAGES = ["EN", "ID", "AR", "SW", "JV"]
 DIRECTIONS = ["misleading", "corrective"]
 PERSONAS = ["none", "congruent", "incongruent", "en_persona"]
 REASONING = ["native", "oracle"]
+MODEL_PRIMARY = "gpt-5.4-mini"
+MODEL_P_DEFAULT = "gpt-5.4-mini"
+
+# Legacy suffixes are retained so existing manifests and STATE.yaml remain
+# resumable after switching the actual API model.
+PILOT_MODEL_SLOTS = [("4omini", MODEL_PRIMARY), ("4o", MODEL_PRIMARY)]
 
 
 def main() -> int:
@@ -27,7 +33,7 @@ def main() -> int:
             direction="misleading",
             persona="none",
             reasoning="native",
-            model_T="gpt-4o-mini",
+            model_T=MODEL_PRIMARY,
             n_dialogues=1,
             stimulus_set="sample/s1_smoke",
             seeds=[101],
@@ -35,10 +41,10 @@ def main() -> int:
     )
     for target_lang in ["EN", "ID", "SW"]:
         for direction in DIRECTIONS:
-            for model_t in ["gpt-4o-mini", "gpt-4o"]:
+            for slot, model_t in PILOT_MODEL_SLOTS:
                 cells.append(
                     cell(
-                        cell_id=f"pilot_t{target_lang.lower()}_p{target_lang.lower()}_{direction}_{model_slug(model_t)}",
+                        cell_id=f"pilot_t{target_lang.lower()}_p{target_lang.lower()}_{direction}_{slot}",
                         phase="pilot",
                         target_lang=target_lang,
                         persuader_lang=target_lang,
@@ -63,7 +69,7 @@ def main() -> int:
                             direction=direction,
                             persona=persona,
                             reasoning=reasoning,
-                            model_T="gpt-4o-mini",
+                            model_T=MODEL_PRIMARY,
                             n_dialogues=100,
                             stimulus_set="s1",
                         )
@@ -78,7 +84,7 @@ def main() -> int:
                                 direction=direction,
                                 persona=persona,
                                 reasoning=reasoning,
-                                model_T="gpt-4o",
+                                model_T=MODEL_PRIMARY,
                                 n_dialogues=100,
                                 stimulus_set="s1",
                             )
@@ -95,7 +101,7 @@ def main() -> int:
                         direction=direction,
                         persona="none",
                         reasoning="native",
-                        model_T="gpt-4o-mini",
+                        model_T=MODEL_PRIMARY,
                         n_dialogues=200,
                         stimulus_set="s1",
                     )
@@ -110,7 +116,7 @@ def main() -> int:
                 direction="misleading",
                 persona="none",
                 reasoning="native",
-                model_T="gpt-4o-mini",
+                model_T=MODEL_PRIMARY,
                 n_dialogues=100,
                 stimulus_set="s2",
             )
@@ -126,7 +132,7 @@ def main() -> int:
                     direction="corrective",
                     persona=persona,
                     reasoning="native",
-                    model_T="gpt-4o-mini",
+                    model_T=MODEL_PRIMARY,
                     n_dialogues=60,
                     stimulus_set="s3",
                     probe_only=True,
@@ -167,7 +173,7 @@ def cell(**kwargs):
         "persona": kwargs["persona"],
         "reasoning": kwargs["reasoning"],
         "model_T": kwargs["model_T"],
-        "model_P": kwargs.get("model_P", "gpt-4o-mini"),
+        "model_P": kwargs.get("model_P", MODEL_P_DEFAULT),
         "n_dialogues": kwargs["n_dialogues"],
         "stimulus_set": kwargs["stimulus_set"],
         "seeds": kwargs.get("seeds", [1001, 2001, 3001, 4001, 5001]),

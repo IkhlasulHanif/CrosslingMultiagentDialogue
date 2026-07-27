@@ -191,7 +191,7 @@ def render_report(
             "## C. Interpretation Guardrails",
             "",
             "- Manipulability triple-condition: enforced by verdict template; no FtW-only claim is promoted.",
-            "- Size check: requires gpt-4o-mini and gpt-4o paired cells.",
+            "- Size check: downgraded for this provisional run because future cells use gpt-5.4-mini.",
             "- Oracle check: requires native and oracle arms.",
             "- Probe check: headline effects require P1.",
             "- Item check: pending full S1 cells.",
