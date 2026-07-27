@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import random
+import ssl
 import time
 import urllib.error
 import urllib.request
@@ -12,6 +13,11 @@ from socket import timeout as SocketTimeout
 from typing import Any
 
 from .constants import LETTERS
+
+try:
+    import certifi
+except ImportError:  # pragma: no cover - depends on local Python install
+    certifi = None
 
 
 @dataclass
@@ -129,9 +135,10 @@ class OpenAIHTTPProvider(Provider):
 
     def _post(self, req: urllib.request.Request) -> dict[str, Any]:
         delays = [1.0, 3.0, 8.0, 20.0]
+        context = _ssl_context()
         for attempt in range(len(delays) + 1):
             try:
-                with urllib.request.urlopen(req, timeout=120) as resp:
+                with urllib.request.urlopen(req, timeout=120, context=context) as resp:
                     return json.loads(resp.read().decode("utf-8"))
             except urllib.error.HTTPError as exc:
                 body = exc.read().decode("utf-8", errors="replace")
@@ -142,6 +149,12 @@ class OpenAIHTTPProvider(Provider):
                     raise RuntimeError(f"OpenAI transient failure after retries: {exc}") from exc
             time.sleep(delays[attempt])
         raise RuntimeError("OpenAI transient failure after retries")
+
+
+def _ssl_context() -> ssl.SSLContext | None:
+    if certifi is None:
+        return None
+    return ssl.create_default_context(cafile=certifi.where())
 
 
 def build_provider(name: str | None = None) -> Provider:
