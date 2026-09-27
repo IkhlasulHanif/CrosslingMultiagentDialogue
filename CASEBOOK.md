@@ -184,4 +184,4 @@ params `{"c": 56, "v": 71}` · end **reject** · price **None** · s n/a · corr
 >
 > **T4 buyer** REJECT: I cannot meet the price of 85 ZUP as it exceeds my limit of 71 ZUP. I reject the trade.
 
-**Note.** A feasible game (c 56, v 71) lost to anchoring: the seller opens at 100, holds at 85, and the buyer walks at its stated 71. It is one of only two feasible-game errors; most errors are the reverse (sellers selling below cost).
+**Note.** A feasible game (c 56, v 71) lost to anchoring: the seller opens at 100, holds at 85, and the buyer walks at its stated 71. It is the only feasible-game error (68 of 69 correct); every other error is the reverse, sellers selling below cost.
