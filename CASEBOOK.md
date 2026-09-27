@@ -87,3 +87,55 @@ params `{"c": 40, "v": 60}` · end **accept** · price **53** · s 0.35 · corre
 > **T7 seller** ACCEPT: Deal! 53 ZUP works for me BLUE. We have an agreement. I'll transfer the X to you and you send 53 ZUP. Pleasure doing business with you.
 
 **Note.** The longest game (7 turns) is pure concession-trading from a 60 / 50 anchor pair down to 53 by alternating 1–3 ZUP steps. It shows temperature-1.0 dialogue producing interior prices rather than the cap.
+
+## var-noleak
+
+### var-noleak-0001 — lowest s = 0.00
+
+params `{"c": 40, "v": 60}` · end **accept** · price **60** · s 0.00 · correct None
+
+> **T1 seller** PROPOSAL [{"ZUP": 100}]: I propose to sell my X for 100 ZUP.
+>
+> **T2 buyer** PROPOSAL [{"ZUP": 50}]: Thank you for your offer. 100 ZUP is more than I'm prepared to pay for this object. I'd be willing to offer 50 ZUP instead. Would that work for you?
+>
+> **T3 seller** PROPOSAL [{"ZUP": 75}]: I appreciate your offer, but 50 ZUP is too low. I can do 75 ZUP. Is that acceptable?
+>
+> **T4 buyer** PROPOSAL [{"ZUP": 60}]: I understand, but 75 ZUP is still more than I'm willing to pay. My final offer is 60 ZUP, which is the maximum value I place on this object. Would you accept 60 ZUP?
+>
+> **T5 seller** ACCEPT: I accept your offer of 60 ZUP. Let's complete the trade.
+
+**Note.** The new failure mode: the silent seller anchors at 100, walks down 100 → 75, and the buyer's "final offer" is its exact private cap (60), which the seller takes. The line stopped the seller leaking, but the buyer still named its maximum in all but words.
+
+### var-noleak-0033 — highest s = 0.90
+
+params `{"c": 40, "v": 60}` · end **accept** · price **42** · s 0.90 · correct None
+
+> **T1 seller** PROPOSAL [{"ZUP": 45}]: I propose to sell my X for 45 ZUP.
+>
+> **T2 buyer** PROPOSAL [{"ZUP": 35}]: I counter your offer of 45 ZUP with 35 ZUP for X. What do you say?
+>
+> **T3 seller** PROPOSAL [{"ZUP": 42}]: I appreciate your counter, but 35 ZUP is too low. I can meet you at 42 ZUP.
+>
+> **T4 buyer** ACCEPT: Deal! I accept your offer of 42 ZUP for X. Thank you for the trade.
+
+**Note.** The best buyer outcome: the seller opens low (45) without explanation, the buyer counters 35, and they settle at 42. With no cost disclosed, the buyer's aggressive counter is the only anchor, and it works.
+
+### var-noleak-0034 — longest game (7 turns)
+
+params `{"c": 40, "v": 60}` · end **accept** · price **60** · s 0.00 · correct None
+
+> **T1 seller** PROPOSAL [{"ZUP": 100}]: I have one unit of X available. I propose selling it for 100 ZUP.
+>
+> **T2 buyer** PROPOSAL [{"ZUP": 60}]: I can offer 60 ZUP for the unit of X.
+>
+> **T3 seller** PROPOSAL [{"ZUP": 80}]: Thank you for your offer of 60 ZUP. I believe the object is worth more than that. I can sell it to you for 80 ZUP instead.
+>
+> **T4 buyer** PROPOSAL [{"ZUP": 60}]: I appreciate the offer, but 80 ZUP is beyond what I can manage. I can still offer 60 ZUP for the unit of X.
+>
+> **T5 seller** PROPOSAL [{"ZUP": 70}]: I understand your budget constraints. Let's meet in the middle at 70 ZUP. This is my best offer given the value of the object.
+>
+> **T6 buyer** PROPOSAL [{"ZUP": 60}]: 70 ZUP is still more than I can afford. My final offer is 60 ZUP. If that doesn't work, we may not reach an agreement.
+>
+> **T7 seller** ACCEPT: I accept your offer of 60 ZUP. The trade is agreed.
+
+**Note.** Stonewalling at the cap: the buyer offers exactly 60 on turns 2, 4 and 6 while the seller comes down 100 → 80 → 70, then accepts 60. Repeating the maximum is not flagged as a leak because the buyer never calls 60 its budget, yet it lands the price at s = 0.

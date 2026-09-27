@@ -1,6 +1,6 @@
 # STATE
 
-**Current step:** S1 `var-baseline` then S2 `var-noleak`, resumed 19:17 UTC at K2_RPM=8 (one process, 4 workers) after a 2 h API throttle.
+**Current step:** S3 `var-zopa` smoke. Decision after S2: the no-leak line is NOT the default (S1 leak 80% > 20%, but S2 raised cap-collapse from 25% to 47%).
 **Branch:** `grounded-arena`
 **Spend:** $0.00 (IFM preview has no published price; see DEVIATIONS.md). The binding limit is 10M tokens/day/key; see `make cost`.
 
@@ -11,7 +11,7 @@
 |---|---|---|---|---|---|---|---|---|
 | S0 | s0-smoke | 5 | 40% | 0.40 | n/a | 100% | 8507 | PASS |
 | S1 | var-baseline | 100 | 25% | 0.33 | n/a | 80% | 8245 | PASS |
-| S2 | var-noleak | 26 | 38% | 0.50 | n/a | 15% | 9250 | PASS |
+| S2 | var-noleak | 100 | 47% | 0.50 | n/a | 15% | 10672 | PASS |
 <!-- gates:end -->
 
 ## S0: setup and cost
