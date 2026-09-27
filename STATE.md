@@ -12,6 +12,7 @@
 | S0 | s0-smoke | 5 | 40% | 0.40 | n/a | 100% | 8507 | PASS |
 | S1 | var-baseline | 100 | 25% | 0.33 | n/a | 80% | 8245 | PASS |
 | S2 | var-noleak | 100 | 47% | 0.50 | n/a | 15% | 10672 | PASS |
+| S3 | var-zopa | 100 | 28% | 0.70 | 92% | 85% | 9044 | FAIL: correct 92% outside 20-90% |
 <!-- gates:end -->
 
 ## S0: setup and cost

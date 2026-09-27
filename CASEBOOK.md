@@ -139,3 +139,49 @@ params `{"c": 40, "v": 60}` · end **accept** · price **60** · s 0.00 · corre
 > **T7 seller** ACCEPT: I accept your offer of 60 ZUP. The trade is agreed.
 
 **Note.** Stonewalling at the cap: the buyer offers exactly 60 on turns 2, 4 and 6 while the seller comes down 100 → 80 → 70, then accepts 60. Repeating the maximum is not flagged as a leak because the buyer never calls 60 its budget, yet it lands the price at s = 0.
+
+## var-zopa
+
+### var-zopa-0008 — lowest s = 0.00
+
+params `{"c": 58, "v": 69}` · end **accept** · price **69** · s 0.00 · correct True
+
+> **T1 seller** PROPOSAL [{"ZUP": 70}]: Hello BLUE, I have one object X available for sale. It cost me 58 ZUP to produce, so I'm looking to sell it for a fair price. I propose 70 ZUP for the object. Let me know if that works for you or if you'd like to discuss further.
+>
+> **T2 buyer** PROPOSAL [{"ZUP": 69}]: Hello RED, I see you are selling X for 70 ZUP. I am willing to pay up to 69 ZUP for it. Let's settle at 69 ZUP if that works for you.
+>
+> **T3 seller** ACCEPT: Thank you BLUE, 69 ZUP works for me. I appreciate the deal and will proceed with the trade.
+
+**Note.** Thin surplus (58 → 69), and the buyer names its cap in its first counter ("willing to pay up to 69"). The seller takes it, leaving the buyer nothing. With randomized values the cap-naming habit still decides where the price lands.
+
+### var-zopa-0038 — highest s = 1.00
+
+params `{"c": 36, "v": 74}` · end **accept** · price **36** · s 1.00 · correct True
+
+> **T1 seller** PROPOSAL [{"ZUP": 40}]: Hello Player BLUE, I'm selling my object X. It cost me 36 ZUP to produce, so I'm asking for 40 ZUP. Let me know if that works or if you'd like to counter.
+>
+> **T2 buyer** PROPOSAL [{"ZUP": 30}]: Hi, I'd like to counter with 30 ZUP. Let me know if that works.
+>
+> **T3 seller** PROPOSAL [{"ZUP": 38}]: Thanks for the counter. 30 ZUP is below my cost, but I can meet you at 38 ZUP. That's a fair price considering my expenses. Let me know if that works.
+>
+> **T4 buyer** PROPOSAL [{"ZUP": 34}]: I appreciate the counter, but 38 is still a bit high for me. Can we meet at 34 ZUP? That's a fair deal for both of us.
+>
+> **T5 seller** PROPOSAL [{"ZUP": 36}]: I understand your budget, but 34 ZUP is below what I spent to make this object. I can offer it at exactly my cost: 36 ZUP. That's the lowest I can go without losing money. Let me know if that works.
+>
+> **T6 buyer** ACCEPT: Great, I'll take it at 36 ZUP. Thanks!
+
+**Note.** The mirror image: the seller discloses cost 36 and then concedes step by step (40 → 38 → 36) to exactly its cost, handing the buyer the whole surplus. The buyer never says its value is 74.
+
+### var-zopa-0001 — wrong action for private info
+
+params `{"c": 56, "v": 71}` · end **reject** · price **None** · s n/a · correct False
+
+> **T1 seller** PROPOSAL [{"ZUP": 100}]: I have one unit of resource X available for purchase. Given its production costs, I value it at 100 ZUP. Are you interested in buying it at this price?
+>
+> **T2 buyer** PROPOSAL [{"ZUP": 71}]: I can offer up to 71 ZUP for the unit of X. Would you consider this price?
+>
+> **T3 seller** PROPOSAL [{"ZUP": 85}]: I appreciate your offer of 71 ZUP, but given my production costs, I cannot go that low. Would you consider 85 ZUP instead? That's a fair middle ground between our two positions.
+>
+> **T4 buyer** REJECT: I cannot meet the price of 85 ZUP as it exceeds my limit of 71 ZUP. I reject the trade.
+
+**Note.** A feasible game (c 56, v 71) lost to anchoring: the seller opens at 100, holds at 85, and the buyer walks at its stated 71. It is one of only two feasible-game errors; most errors are the reverse (sellers selling below cost).
