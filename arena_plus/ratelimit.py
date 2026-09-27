@@ -9,7 +9,7 @@ import os
 import time
 from pathlib import Path
 
-RPM = int(os.environ.get("K2_RPM", "15"))
+RPM = int(os.environ.get("K2_RPM", "12"))
 F = Path(__file__).resolve().parents[1] / "logs" / ".ratelimit.json"
 
 

@@ -40,7 +40,8 @@ def git(*args, cwd=REPO):
 
 
 def config_hash(run, cfg):
-    h = hashlib.sha256(cfg_path(run).read_bytes())
+    # workers is operational only (throughput), so it is excluded from the hash
+    h = hashlib.sha256("\n".join(l for l in cfg_path(run).read_text().splitlines() if not l.startswith("workers")).encode())
     for f in ["engine.py", "protocol.py", "k2.py", "i18n.py"] + [f"variants/{v}.py" for v in cfg["variants"]] + ["variants/_checks.py"]:
         h.update((REPO / "arena_plus" / f).read_bytes())
     return h.hexdigest()[:16]

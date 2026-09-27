@@ -5,12 +5,14 @@ Each seat keeps its own message list; assistant turns replay `reasoning_content`
 """
 import importlib
 import random
+import time
 from arena_plus import i18n, k2, protocol as P, ratelimit
 
 ITERATIONS = 10                       # upstream runner/buysell_main.py
 MAX_PROPOSALS = ITERATIONS // 2 - 1   # upstream BuySellGame.init_players
 MAX_RESAMPLE = 3                      # format failures / truncations per turn before the game is voided
 SEATS = ("seller", "buyer")
+ENGINE_RETRIES = 5                    # engine-level retries of a whole k2.chat call (after k2's own 6)
 
 
 def load_variants(names):
@@ -58,6 +60,19 @@ def system_prompt(params, seat, variants):
     return text
 
 
+def _chat(messages, **kw):
+    """k2.chat behind the shared rate limiter; if k2's own retries are exhausted (sustained 429s),
+    wait a minute and try again with a fresh limiter slot instead of dropping the game."""
+    for attempt in range(ENGINE_RETRIES):
+        ratelimit.acquire()
+        try:
+            return k2.chat(messages, **kw)
+        except RuntimeError as e:
+            if isinstance(e, k2.BudgetExceeded) or attempt == ENGINE_RETRIES - 1:
+                raise
+            time.sleep(60)
+
+
 def _reasoning(msg):
     r = getattr(msg, "reasoning_content", None)
     if r is None and msg.model_extra:
@@ -80,8 +95,7 @@ def play(run, seed, variant_names, langs=None):
         seat = SEATS[(it - 1) % 2]
         attempts = []
         for attempt in range(MAX_RESAMPLE):
-            ratelimit.acquire()
-            msg, finish = k2.chat(msgs[seat], run=run, game_id=game_id, turn=it, seat=seat)
+            msg, finish = _chat(msgs[seat], run=run, game_id=game_id, turn=it, seat=seat)
             reasoning, content = _reasoning(msg), msg.content or ""
             rec = dict(finish_reason=finish, content=content, reasoning=reasoning)
             if finish == "length":

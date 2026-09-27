@@ -1,6 +1,6 @@
 # STATE
 
-**Current step:** S1 `var-baseline` + S2 `var-noleak` (smokes running)
+**Current step:** S1 `var-baseline` + S2 `var-noleak` in progress (31 + 26 of 100 games). Paused: the API returned only 429s for 20+ min (17:11 UTC on). A background probe (`python -m arena_plus.probe`) waits for it to lift.
 **Branch:** `grounded-arena`
 **Spend:** $0.00 (IFM preview has no published price; see DEVIATIONS.md). The binding limit is 10M tokens/day/key; see `make cost`.
 
@@ -10,6 +10,8 @@
 | step | run | games | cap-collapse | IQR(s) | correct | leak | tokens/game | verdict |
 |---|---|---|---|---|---|---|---|---|
 | S0 | s0-smoke | 5 | 40% | 0.40 | n/a | 100% | 8507 | PASS |
+| S1 | var-baseline | 31 | 33% | 0.47 | n/a | 87% | 6833 | PASS |
+| S2 | var-noleak | 26 | 38% | 0.50 | n/a | 15% | 9250 | PASS |
 <!-- gates:end -->
 
 ## S0: setup and cost
@@ -34,4 +36,4 @@ About 1,235 games (S1–S8 at 100 each + S9 180 + S10 200 + smokes). At ≈8.5k 
 
 ## Next action
 
-Read the S1/S2 smoke transcripts, then run S1 and S2 in full.
+When the probe succeeds: resume S1, then S2, one process at a time at `K2_RPM=8`, `workers=4` (runs resume by seed).
