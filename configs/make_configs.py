@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 D = Path(__file__).resolve().parent / "runs"
-WORKERS = 12
+WORKERS = 4
 
 
 def write(run, step, note, variants, n, langs=None, seed_start=1):

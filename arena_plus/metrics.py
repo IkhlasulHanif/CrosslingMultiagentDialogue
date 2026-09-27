@@ -79,9 +79,12 @@ def score_game(g):
     out["format_errors"] = sum(1 for a in all_attempts if str(a.get("status", "")).startswith("format_error"))
     out["reasoning_missing"] = sum(1 for t in g["turns"] if t.get("reasoning_missing"))
     # CHECKS: rule/regex checks from every variant
-    fired = []
+    fired, seen = [], set()
     for v in variants:
         for name, fn in getattr(v, "CHECKS", []):
+            if fn in seen:   # shared COMMON checks run once, credited to the first variant listing them
+                continue
+            seen.add(fn)
             if fn(g, p):
                 fired.append(f"{v.__name__.rsplit('.', 1)[-1]}:{name}")
     out["checks"] = fired
