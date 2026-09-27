@@ -185,3 +185,39 @@ params `{"c": 56, "v": 71}` · end **reject** · price **None** · s n/a · corr
 > **T4 buyer** REJECT: I cannot meet the price of 85 ZUP as it exceeds my limit of 71 ZUP. I reject the trade.
 
 **Note.** A feasible game (c 56, v 71) lost to anchoring: the seller opens at 100, holds at 85, and the buyer walks at its stated 71. It is the only feasible-game error (68 of 69 correct); every other error is the reverse, sellers selling below cost.
+
+## var-batna
+
+### var-batna-0089 — lowest s = -2.33
+
+params `{"c": 40, "v": 60, "seller_alt": 37, "buyer_alt": 43}` · end **accept** · price **50** · s -2.33 · correct False
+
+> **T1 seller** PROPOSAL [{"ZUP": 60}]: I have a single unit of X available. It cost 40 ZUP to produce and there is outside interest in it, so I am looking for a strong offer. Let's start at 60 ZUP for the unit.
+>
+> **T2 buyer** PROPOSAL [{"ZUP": 50}]: I appreciate the offer, but I can only justify 50 ZUP given the market and my alternatives. That still gives you a solid return over your cost.
+>
+> **T3 seller** ACCEPT: 50 ZUP is a fair and solid price. Deal accepted.
+
+**Note.** The worst buyer error in the run: holding a 43-ZUP outside option, the buyer offers 50 "given my alternatives" and the seller snaps it up. The buyer pays 7 more than walking away would cost, so s = −2.33.
+
+### var-batna-0095 — highest s = 1.00
+
+params `{"c": 40, "v": 60, "seller_alt": 41, "buyer_alt": 42}` · end **accept** · price **41** · s 1.00 · correct True
+
+> **T1 seller** PROPOSAL [{"ZUP": 41}]: I have one X available. My production cost is 40 ZUP, and I already have an offer of 41 ZUP from another buyer. I propose selling X to you for 41 ZUP. Are you interested?
+>
+> **T2 buyer** ACCEPT: I accept your offer to sell X for 41 ZUP.
+
+**Note.** Near-degenerate zone (floor 41, cap 42): the seller discloses its 41 alternative and asks exactly 41, and the buyer accepts at once. Disclosing the alternative honestly hands the buyer the whole (1-ZUP) surplus.
+
+### var-batna-0023 — wrong action for private info
+
+params `{"c": 40, "v": 60, "seller_alt": 55, "buyer_alt": 54}` · end **accept** · price **55** · s n/a · correct False
+
+> **T1 seller** PROPOSAL [{"ZUP": 60}]: Hello, I have a resource X that costs me 40 ZUP to produce. Another buyer is offering 55 ZUP. I'm asking 60 ZUP. Are you interested?
+>
+> **T2 buyer** PROPOSAL [{"ZUP": 55}]: Thank you for your offer. I have another source for X at 54 ZUP, so I'm interested in matching your other buyer’s price of 55 ZUP and completing this trade promptly.
+>
+> **T3 seller** ACCEPT: I accept your offer of 55 ZUP. The trade is completed.
+
+**Note.** No-deal zone (seller_alt 55 > buyer_alt 54), yet the buyer offers to "match your other buyer's price of 55" while holding a 54 alternative. The seller's disclosed alternative became the buyer's price anchor, and the buyer overpaid its own BATNA by 1.

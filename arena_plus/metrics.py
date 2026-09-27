@@ -64,7 +64,8 @@ def score_game(g):
     out["rw"] = rw
     if rw and not out["void"]:
         ok_price = deal and isinstance(price, (int, float)) and floor <= price <= cap
-        out["correct"] = (feasible and ok_price) or (not feasible and not deal)
+        tie = cap == floor   # zero surplus: dealing at exactly that price and walking away are equally right
+        out["correct"] = (feasible and ok_price) or (not feasible and not deal) or (tie and deal and price == floor)
     else:
         out["correct"] = None
     # leak: a seat states its own private value in its visible message

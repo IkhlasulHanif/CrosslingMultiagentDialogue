@@ -7,7 +7,7 @@ REPO = Path(__file__).resolve().parents[1]
 LOG = REPO / "logs" / "api_calls.jsonl"
 USD_PER_M_IN, USD_PER_M_OUT = 0.0, 0.0   # fill in S0
 BUDGET_USD = 50.0                        # human sets; never raise it yourself
-SAMPLING = dict(temperature=1.0, top_p=0.95, max_tokens=8192)  # max_tokens frozen in S0
+SAMPLING = dict(temperature=1.0, top_p=0.95, max_tokens=16384)  # max_tokens frozen in S0; raised 8192 -> 16384 after S4 (§3.4 truncation rule)
 
 def _load_env():
     for line in (REPO / ".env").read_text().splitlines():
