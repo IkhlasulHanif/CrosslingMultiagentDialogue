@@ -221,3 +221,43 @@ params `{"c": 40, "v": 60, "seller_alt": 55, "buyer_alt": 54}` · end **accept**
 > **T3 seller** ACCEPT: I accept your offer of 55 ZUP. The trade is completed.
 
 **Note.** No-deal zone (seller_alt 55 > buyer_alt 54), yet the buyer offers to "match your other buyer's price of 55" while holding a 54 alternative. The seller's disclosed alternative became the buyer's price anchor, and the buyer overpaid its own BATNA by 1.
+
+## var-deadline
+
+### var-deadline-0006 — lowest s = 0.00
+
+params `{"c": 40, "v": 60, "pressured": "seller"}` · end **accept** · price **60** · s 0.00 · correct None
+
+> **T1 seller** PROPOSAL [{"ZUP": 60}]: I have one X available. It cost me 40 ZUP to produce. I am offering it for 60 ZUP. If you can meet me near there, we can close immediately and avoid wasting rounds.
+>
+> **T2 buyer** ACCEPT: I accept your offer of 60 ZUP for X. Let's close the deal.
+
+**Note.** A pressured seller opens at the buyer's cap to "close immediately and avoid wasting rounds", and the unpressured buyer accepts at once. Here the pressure produced speed, not concessions, and the buyer still paid its full 60.
+
+### var-deadline-0051 — highest s = 1.00
+
+params `{"c": 40, "v": 60, "pressured": "seller"}` · end **accept** · price **40** · s 1.00 · correct None
+
+> **T1 seller** PROPOSAL [{"ZUP": 40}]: I’m ready to sell the single unit of X for 40 ZUP. Let me know if you want to trade or counter.
+>
+> **T2 buyer** ACCEPT: Thank you, I accept your offer of 40 ZUP for the single unit of X.
+
+**Note.** The opposite reading of the same pressure: this pressured seller opens at exactly its cost (40) and the buyer accepts in one round, taking the entire surplus. The two seeds together show the variance the deadline adds.
+
+### var-deadline-0034 — longest game (6 turns)
+
+params `{"c": 40, "v": 60, "pressured": "buyer"}` · end **accept** · price **55** · s 0.25 · correct None
+
+> **T1 seller** PROPOSAL [{"ZUP": 60}]: Greetings, Player BLUE. I have one unit of resource X available for sale. It cost me 40 ZUP to produce, and I'm asking 60 ZUP for it. Let me know if you'd like to counter-offer.
+>
+> **T2 buyer** PROPOSAL [{"ZUP": 50}]: Thank you for the offer, Player RED. I appreciate the transparency about your production cost. While I understand your asking price of 60 ZUP, I'd like to propose 50 ZUP instead. This still gives you a solid 10 ZUP profit above your cost, while allowing me to stay within a comfortable budget. Would you be willing to accept this counter-offer?
+>
+> **T3 seller** PROPOSAL [{"ZUP": 55}]: Thank you for the counter, Player BLUE. I appreciate that 50 ZUP is within your comfortable budget. How about we meet in the middle at 55 ZUP? That's a 15 ZUP profit for me and still 5 ZUP below my original asking price. Fair?
+>
+> **T4 buyer** PROPOSAL [{"ZUP": 52}]: I appreciate you coming down to 55, Player RED. Let me offer 52 ZUP as a final compromise. This gives you a solid 12 ZUP profit above your production cost, which I think is fair. It also allows me to stay well within my budget. If that works for you, we have a deal. Otherwise, I'm prepared to meet you at 55 if needed.
+>
+> **T5 seller** PROPOSAL [{"ZUP": 55}]: Player BLUE, I appreciate the 52 ZUP offer and the spirit of compromise. However, since you mentioned you're prepared to meet at 55, I'll hold firm at my last offer of 55 ZUP. This gives me a fair 15 ZUP profit, and you've indicated this works within your budget. Shall we shake on it at 55?
+>
+> **T6 buyer** ACCEPT: You have a deal, Player RED. 55 ZUP for the resource X is acceptable. Thank you for your willingness to negotiate, and I appreciate you coming down from your original asking price of 60. Let's finalize this trade.
+
+**Note.** The longest game, with a pressured buyer: it concedes 50 → 52 and then accepts the seller's 55 in round 3. The seller misreads the buyer's words ("you mentioned you're prepared to meet at 55") and holds, and the time-pressed buyer gives in rather than spend a 4th round.

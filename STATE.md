@@ -14,6 +14,7 @@
 | S2 | var-noleak | 100 | 47% | 0.50 | n/a | 15% | 10672 | PASS |
 | S3 | var-zopa | 100 | 28% | 0.70 | 92% | 85% | 9044 | FAIL: correct 92% outside 20-90% |
 | S4 | var-batna | 100 | 23% | 0.57 | 97% | 49% | 10325 | FAIL: correct 97% outside 20-90% |
+| S5 | var-deadline | 100 | 29% | 0.40 | n/a | 83% | 8951 | PASS |
 <!-- gates:end -->
 
 ## S0: setup and cost
