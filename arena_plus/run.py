@@ -41,7 +41,7 @@ def git(*args, cwd=REPO):
 
 def config_hash(run, cfg):
     h = hashlib.sha256(cfg_path(run).read_bytes())
-    for f in ["engine.py", "protocol.py", "k2.py"] + [f"variants/{v}.py" for v in cfg["variants"]] + ["variants/_checks.py"]:
+    for f in ["engine.py", "protocol.py", "k2.py", "i18n.py"] + [f"variants/{v}.py" for v in cfg["variants"]] + ["variants/_checks.py"]:
         h.update((REPO / "arena_plus" / f).read_bytes())
     return h.hexdigest()[:16]
 
@@ -49,7 +49,7 @@ def config_hash(run, cfg):
 def write_manifest(run, cfg, n_games):
     d = REPO / "runs" / run
     d.mkdir(parents=True, exist_ok=True)
-    man = dict(run=run, step=cfg.get("step"), variants=cfg["variants"], config_hash=config_hash(run, cfg),
+    man = dict(run=run, step=cfg.get("step"), variants=cfg["variants"], langs=cfg.get("langs"), config_hash=config_hash(run, cfg),
                model=k2.os.environ["IFM_MODEL"], base_url=k2.os.environ["IFM_BASE_URL"], sampling=k2.SAMPLING,
                iterations=ITERATIONS, upstream="vendor/NegotiationArena",
                upstream_commit=git("rev-parse", "HEAD", cwd=REPO / "vendor" / "NegotiationArena"),
@@ -113,7 +113,7 @@ def run_games(run, n=None):
 
     def one(seed):
         wait_for_quota()
-        g = play(run, seed, cfg["variants"])
+        g = play(run, seed, cfg["variants"], cfg.get("langs"))
         with _lock:
             with (out_dir / "games.jsonl").open("a") as f:
                 f.write(json.dumps(g, ensure_ascii=False) + "\n")

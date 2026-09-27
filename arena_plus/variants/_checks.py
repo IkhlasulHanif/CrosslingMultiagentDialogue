@@ -4,7 +4,7 @@ from arena_plus.metrics import leaks
 
 
 def price_out_of_bounds(g, p):
-    return g["deal"] and isinstance(g["price"], int) and not (p["c"] <= g["price"] <= p["v"])
+    return g["deal"] and isinstance(g["price"], int) and not (p.get("seller_goal_c", p["c"]) <= g["price"] <= p.get("v_true", p["v"]))
 
 
 def buyer_states_max(g, p):

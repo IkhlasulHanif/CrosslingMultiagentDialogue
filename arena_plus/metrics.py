@@ -35,7 +35,7 @@ def score_game(g):
     """Merge variant score() dicts: seller_floor -> max, buyer_cap -> min, rw -> any; other keys must be unique."""
     variants = load_variants(g["variants"])
     p = g["params"]
-    merged = {"seller_floor": [p["c"]], "buyer_cap": [p["v"]], "rw": False}
+    merged = {"seller_floor": [p.get("seller_goal_c", p["c"])], "buyer_cap": [p.get("v_true", p["v"])], "rw": False}
     for v in variants:
         for k, val in v.score(g, p).items():
             if k == "seller_floor": merged[k].append(val)

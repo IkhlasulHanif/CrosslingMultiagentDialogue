@@ -5,7 +5,7 @@ Each seat keeps its own message list; assistant turns replay `reasoning_content`
 """
 import importlib
 import random
-from arena_plus import k2, protocol as P
+from arena_plus import i18n, k2, protocol as P, ratelimit
 
 ITERATIONS = 10                       # upstream runner/buysell_main.py
 MAX_PROPOSALS = ITERATIONS // 2 - 1   # upstream BuySellGame.init_players
@@ -37,18 +37,24 @@ def merge_params(variants, seed):
 
 
 def system_prompt(params, seat, variants):
+    """Stage A: upstream English frame. Stage B (params["lang"] set): localized frame + reply-language pin."""
     item, money = params.get("item", "X"), params.get("money", P.MONEY_TOKEN)
+    lang = params.get("lang", {}).get(seat)
+    c, v = params.get("seller_goal_c", params["c"]), params.get("buyer_goal_v", params["v"])
     if seat == "seller":
-        goal = P.seller_goal(params.get("seller_goal_c", params["c"]), item, money)
+        goal = P.seller_goal(c, item, money) if lang is None else i18n.SELLER_GOAL[lang].format(money=money, item=item, cost=c)
         resources = f"{item}: 1"
     else:
-        goal = P.buyer_goal(params.get("buyer_goal_v", params["v"]), item, money)
+        goal = P.buyer_goal(v, item, money) if lang is None else i18n.BUYER_GOAL[lang].format(money=money, item=item, value=v)
         resources = f"{money}: {params.get('buyer_money', 1000 if money == P.MONEY_TOKEN else 10 * params['v'])}"
-    base = P.render(item=item, resources=resources, goal=goal, max_proposals=MAX_PROPOSALS, money=money)
+    render = P.render if lang is None else (lambda **kw: i18n.render(lang, **kw))
+    base = render(item=item, resources=resources, goal=goal, max_proposals=MAX_PROPOSALS, money=money)
     frags = [f for f in (v.prompt_fragments(params, seat) for v in variants) if f]
+    if lang is not None:
+        frags.append(i18n.PIN[lang])
     text = base + ("\n" + "\n".join(frags) + "\n" if frags else "")
     if seat == "buyer":  # upstream ChatGPTAgent.init_agent: BLUE's role is appended to its system prompt
-        text += f"You are {P.AGENT_TWO}."
+        text += f"You are {P.AGENT_TWO}." if lang is None else i18n.ROLE[lang].format(player=P.AGENT_TWO)
     return text
 
 
@@ -59,17 +65,22 @@ def _reasoning(msg):
     return r
 
 
-def play(run, seed, variant_names):
+def play(run, seed, variant_names, langs=None):
+    """langs: None (Stage A, English upstream frame) or {"seller": code, "buyer": code} (Stage B)."""
     variants = load_variants(variant_names)
     params = merge_params(variants, seed)
+    if langs:
+        params["lang"] = dict(langs)
     game_id = f"{run}-{seed:04d}"
     msgs = {s: [{"role": "system", "content": system_prompt(params, s, variants)}] for s in SEATS}
-    msgs["seller"].append({"role": "user", "content": f"You are {P.AGENT_ONE}."})  # upstream RED init
+    red_role = f"You are {P.AGENT_ONE}." if not langs else i18n.ROLE[langs["seller"]].format(player=P.AGENT_ONE)
+    msgs["seller"].append({"role": "user", "content": red_role})  # upstream RED init
     turns, end, last_proposal = [], "limit", None
     for it in range(1, ITERATIONS + 1):
         seat = SEATS[(it - 1) % 2]
         attempts = []
         for attempt in range(MAX_RESAMPLE):
+            ratelimit.acquire()
             msg, finish = k2.chat(msgs[seat], run=run, game_id=game_id, turn=it, seat=seat)
             reasoning, content = _reasoning(msg), msg.content or ""
             rec = dict(finish_reason=finish, content=content, reasoning=reasoning)
