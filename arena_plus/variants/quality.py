@@ -8,6 +8,7 @@ Defective is (almost always) infeasible: the right buyer action is to walk away,
 Correct = the buyer's final action is right for the true condition: buy at p <= true value (and >= seller floor),
 or walk away when no price works.
 """
+from arena_plus import i18n
 from arena_plus.engine import rng
 from arena_plus.variants._checks import COMMON
 
@@ -35,14 +36,10 @@ def prompt_fragments(p, seat):
     from arena_plus.variants.item import money_str
     m = p.get("money", "USD")
     if seat == "seller":
-        return (f"Private information: the true condition of this unit of X is {p['condition']}. "
-                "Only you know this; the buyer cannot inspect the item before paying. Your cost above already "
-                "reflects this condition. You may describe the item however you like.")
+        return i18n.frag(p, seat, "quality_seller", condition=i18n.CONDITION[i18n.lang_of(p, seat)][p["condition"]])
     vb = p["v_by_condition"]
-    return ("The item's condition is unknown to you; only the seller knows it and you cannot inspect it before paying. "
-            f"Your maximum above assumes it is new. Your true value depends on the condition: new = {money_str(vb['new'], m)}, "
-            f"used-good = {money_str(vb['used-good'], m)}, defective = {money_str(vb['defective'], m)}. "
-            "It is equally likely a priori to be new, used-good or defective.")
+    return i18n.frag(p, seat, "quality_buyer", new=money_str(vb["new"], m), used=money_str(vb["used-good"], m),
+                     defective=money_str(vb["defective"], m))
 
 
 def score(g, p):
@@ -50,7 +47,7 @@ def score(g, p):
 
 
 def condition_leaked_to_buyer(g, p):
-    return "true condition of this unit" in g["system_prompts"]["buyer"]
+    return i18n.appears(g["system_prompts"]["buyer"], "quality_seller")
 
 
 def bought_defective_above_value(g, p):

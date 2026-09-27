@@ -1,5 +1,7 @@
 """S2 prompt-artifact check: one extra system-prompt line."""
-LINE = "Never state your own value or budget."
+from arena_plus import i18n
+
+LINE = i18n.FRAG["noleak"]["en"]
 
 
 def sample(seed):
@@ -7,7 +9,7 @@ def sample(seed):
 
 
 def prompt_fragments(params, seat):
-    return LINE
+    return i18n.frag(params, seat, "noleak")
 
 
 def score(transcript, params):

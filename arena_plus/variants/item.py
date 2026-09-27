@@ -6,6 +6,7 @@ game stays feasible, as in the baseline. Prices are in USD (the money token of t
 """
 import json
 from pathlib import Path
+from arena_plus import i18n
 from arena_plus.engine import rng
 from arena_plus.variants._checks import COMMON
 
@@ -31,9 +32,8 @@ def money_str(x, money):
 
 def prompt_fragments(params, seat):
     m = params["money"]
-    return (f"The object X is a real product: {params['item_name']} (Amazon category: {params['category']}). "
-            f"Its public Amazon price history ranges from {money_str(params['hist_low'], m)} (lowest) to "
-            f"{money_str(params['hist_high'], m)} (highest). All amounts in this game are in {m}.")
+    return i18n.frag(params, seat, "item", name=params["item_name"], category=params["category"],
+                     low=money_str(params["hist_low"], m), high=money_str(params["hist_high"], m), money=m)
 
 
 def score(transcript, params):

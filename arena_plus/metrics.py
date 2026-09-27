@@ -4,9 +4,17 @@ import statistics
 from arena_plus.engine import load_variants
 
 GATE = dict(cap_collapse_max=0.50, iqr_min=0.25, correct_lo=0.20, correct_hi=0.90)
-LEAK_WORDS = {
-    "seller": r"cost|costed|costs|produc|paid|spent|floor|minimum|lowest|break[- ]?even|biaya|modal",
-    "buyer": r"budget|at most|maximum|max\b|willing|worth|value|valuation|afford|ceiling|limit|anggaran",
+LEAK_WORDS = {  # union over the Stage B languages (en, id, es, ar, ja)
+    "seller": r"cost|costed|costs|produc|paid|spent|floor|minimum|lowest|break[- ]?even"
+              r"|biaya|modal|produksi|minimal|terendah"
+              r"|cost[oó]|producir|producción|mínimo|pagué"
+              r"|تكلف|كلف|إنتاج|الحد الأدنى|أقل"
+              r"|コスト|原価|生産|最低|下限",
+    "buyer": r"budget|at most|maximum|max\b|willing|worth|value|valuation|afford|ceiling|limit"
+             r"|anggaran|paling banyak|maksimal|maksimum|bersedia|nilai|batas"
+             r"|presupuesto|como máximo|máximo|dispuesto|valor|límite"
+             r"|ميزاني|كحد أقصى|الحد الأقصى|مستعد|قيمة"
+             r"|予算|最大|上限|支払ってもよい|価値",
 }
 NUM = r"(?<![\d.,])(?:Rp\.?\s?|\$|US\$\s?)?(\d{1,3}(?:[.,]\d{3})+|\d+)(?![\d])"
 

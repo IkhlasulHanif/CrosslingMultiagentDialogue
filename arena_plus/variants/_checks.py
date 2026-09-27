@@ -18,10 +18,13 @@ def seller_states_cost(g, p):
 
 
 def private_info_crossed(g, p):
-    """Structural: a seat's system prompt must not contain the other seat's goal line."""
+    """Structural: a seat's system prompt must not contain the other seat's goal line (in the other seat's language)."""
+    from arena_plus import i18n
     item, money = p.get("item", "X"), p.get("money", P.MONEY_TOKEN)
-    sg = P.seller_goal(p.get("seller_goal_c", p["c"]), item, money)
-    bg = P.buyer_goal(p.get("buyer_goal_v", p["v"]), item, money)
+    c, v = p.get("seller_goal_c", p["c"]), p.get("buyer_goal_v", p["v"])
+    ls, lb = i18n.lang_of(p, "seller"), i18n.lang_of(p, "buyer")
+    sg = i18n.SELLER_GOAL[ls].format(money=money, item=item, cost=c)
+    bg = i18n.BUYER_GOAL[lb].format(money=money, item=item, value=v)
     return sg in g["system_prompts"]["buyer"] or bg in g["system_prompts"]["seller"]
 
 

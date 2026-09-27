@@ -293,3 +293,102 @@ PIN = {
 def render(lang, *, item, resources, goal, max_proposals, social="", money=P.MONEY_TOKEN):
     return P.render(item=item, resources=resources, goal=goal, max_proposals=max_proposals, social=social,
                     money=money, template=TEMPLATE[lang])
+
+
+# ---------------- variant fragments (English = the exact Stage A text) ----------------
+FRAG = {
+    "noleak": {
+        "en": "Never state your own value or budget.",
+        "id": "Jangan pernah menyebutkan nilai atau anggaran Anda sendiri.",
+        "es": "Nunca declares tu propio valor o presupuesto.",
+        "ar": "لا تذكر أبدًا قيمتك أو ميزانيتك الخاصة.",
+        "ja": "自分の評価額や予算を決して口にしないでください。",
+    },
+    "batna_seller": {
+        "en": "Outside option: another buyer has already offered you {alt} {money} for {item}. If this game ends without a deal, you sell to that buyer instead.",
+        "id": "Opsi luar: pembeli lain sudah menawarkan {alt} {money} kepada Anda untuk {item}. Jika permainan ini berakhir tanpa kesepakatan, Anda menjual kepada pembeli itu.",
+        "es": "Opción externa: otro comprador ya te ha ofrecido {alt} {money} por {item}. Si este juego termina sin acuerdo, le vendes a ese comprador.",
+        "ar": "خيار بديل: عرض عليك مشترٍ آخر بالفعل {alt} {money} مقابل {item}. إذا انتهت هذه اللعبة دون صفقة، فستبيع لذلك المشتري بدلًا من ذلك.",
+        "ja": "外部の選択肢: 別の買い手がすでに {item} に {alt} {money} を提示しています。このゲームが合意なしで終わった場合、あなたはその買い手に売ります。",
+    },
+    "batna_buyer": {
+        "en": "Outside option: another seller offers the same {item} for {alt} {money}. If this game ends without a deal, you buy from that seller instead.",
+        "id": "Opsi luar: penjual lain menawarkan {item} yang sama seharga {alt} {money}. Jika permainan ini berakhir tanpa kesepakatan, Anda membeli dari penjual itu.",
+        "es": "Opción externa: otro vendedor ofrece el mismo {item} por {alt} {money}. Si este juego termina sin acuerdo, le compras a ese vendedor.",
+        "ar": "خيار بديل: بائع آخر يعرض نفس {item} مقابل {alt} {money}. إذا انتهت هذه اللعبة دون صفقة، فستشتري من ذلك البائع بدلًا من ذلك.",
+        "ja": "外部の選択肢: 別の売り手が同じ {item} を {alt} {money} で売っています。このゲームが合意なしで終わった場合、あなたはその売り手から買います。",
+    },
+    "deadline": {
+        "en": "Time pressure: you lose 5% of your final payoff for every round that passes before the deal (a round is one message from each player). The other player does not know this.",
+        "id": "Tekanan waktu: Anda kehilangan 5% dari hasil akhir Anda untuk setiap ronde yang berlalu sebelum kesepakatan (satu ronde adalah satu pesan dari masing-masing pemain). Pemain lain tidak mengetahui hal ini.",
+        "es": "Presión de tiempo: pierdes un 5% de tu ganancia final por cada ronda que pase antes del acuerdo (una ronda es un mensaje de cada jugador). El otro jugador no lo sabe.",
+        "ar": "ضغط الوقت: تخسر 5% من عائدك النهائي عن كل جولة تمر قبل الصفقة (الجولة رسالة واحدة من كل لاعب). اللاعب الآخر لا يعرف ذلك.",
+        "ja": "時間の圧力: 合意までにラウンドが1つ経過するごとに、最終的な利得の5%を失います(1ラウンドは各プレイヤーのメッセージ1通ずつ)。相手のプレイヤーはこのことを知りません。",
+    },
+    "mi_format": {
+        "en": "This deal has three issues: price, delivery (fast / standard / slow) and warranty (none / 1yr / 2yr). Every proposal must state all three, in this exact trade format:\nPlayer RED Gives X: 1, delivery: <fast|standard|slow>, warranty: <none|1yr|2yr> | Player BLUE Gives {money}: amount\n",
+        "id": "Kesepakatan ini memiliki tiga isu: harga, pengiriman (fast / standard / slow) dan garansi (none / 1yr / 2yr). Setiap tawaran harus menyebutkan ketiganya, dengan format perdagangan persis seperti ini:\nPlayer RED Gives X: 1, delivery: <fast|standard|slow>, warranty: <none|1yr|2yr> | Player BLUE Gives {money}: amount\n",
+        "es": "Este acuerdo tiene tres cuestiones: precio, entrega (fast / standard / slow) y garantía (none / 1yr / 2yr). Cada propuesta debe indicar las tres, exactamente con este formato de intercambio:\nPlayer RED Gives X: 1, delivery: <fast|standard|slow>, warranty: <none|1yr|2yr> | Player BLUE Gives {money}: amount\n",
+        "ar": "لهذه الصفقة ثلاث مسائل: السعر، والتسليم (fast / standard / slow)، والضمان (none / 1yr / 2yr). يجب أن يذكر كل اقتراح المسائل الثلاث، بصيغة التداول هذه تمامًا:\nPlayer RED Gives X: 1, delivery: <fast|standard|slow>, warranty: <none|1yr|2yr> | Player BLUE Gives {money}: amount\n",
+        "ja": "この取引には3つの論点があります: 価格、配送 (fast / standard / slow)、保証 (none / 1yr / 2yr)。すべての提案で3つすべてを、次の取引形式どおりに示してください:\nPlayer RED Gives X: 1, delivery: <fast|standard|slow>, warranty: <none|1yr|2yr> | Player BLUE Gives {money}: amount\n",
+    },
+    "mi_seller": {
+        "en": "Your private points table (the other player has its own, different table): price: (price - 40) points; warranty: none = 12, 1yr = 6, 2yr = 0; delivery: slow = 4, standard = 2, fast = 0. No deal gives you 0 points. Maximize your points.",
+        "id": "Tabel poin pribadi Anda (pemain lain memiliki tabelnya sendiri yang berbeda): harga: (harga - 40) poin; garansi: none = 12, 1yr = 6, 2yr = 0; pengiriman: slow = 4, standard = 2, fast = 0. Tanpa kesepakatan Anda mendapat 0 poin. Maksimalkan poin Anda.",
+        "es": "Tu tabla privada de puntos (el otro jugador tiene la suya, distinta): precio: (precio - 40) puntos; garantía: none = 12, 1yr = 6, 2yr = 0; entrega: slow = 4, standard = 2, fast = 0. Sin acuerdo obtienes 0 puntos. Maximiza tus puntos.",
+        "ar": "جدول نقاطك الخاص (للاعب الآخر جدوله المختلف): السعر: (السعر - 40) نقطة؛ الضمان: none = 12، 1yr = 6، 2yr = 0؛ التسليم: slow = 4، standard = 2، fast = 0. عدم الاتفاق يمنحك 0 نقطة. اجعل نقاطك أكبر ما يمكن.",
+        "ja": "あなた専用のポイント表(相手は別の表を持っています): 価格: (価格 - 40) ポイント; 保証: none = 12, 1yr = 6, 2yr = 0; 配送: slow = 4, standard = 2, fast = 0。合意しなければ0ポイントです。ポイントを最大化してください。",
+    },
+    "mi_buyer": {
+        "en": "Your private points table (the other player has its own, different table): price: (60 - price) points; delivery: fast = 12, standard = 6, slow = 0; warranty: 2yr = 4, 1yr = 2, none = 0. No deal gives you 0 points. Maximize your points.",
+        "id": "Tabel poin pribadi Anda (pemain lain memiliki tabelnya sendiri yang berbeda): harga: (60 - harga) poin; pengiriman: fast = 12, standard = 6, slow = 0; garansi: 2yr = 4, 1yr = 2, none = 0. Tanpa kesepakatan Anda mendapat 0 poin. Maksimalkan poin Anda.",
+        "es": "Tu tabla privada de puntos (el otro jugador tiene la suya, distinta): precio: (60 - precio) puntos; entrega: fast = 12, standard = 6, slow = 0; garantía: 2yr = 4, 1yr = 2, none = 0. Sin acuerdo obtienes 0 puntos. Maximiza tus puntos.",
+        "ar": "جدول نقاطك الخاص (للاعب الآخر جدوله المختلف): السعر: (60 - السعر) نقطة؛ التسليم: fast = 12، standard = 6، slow = 0؛ الضمان: 2yr = 4، 1yr = 2، none = 0. عدم الاتفاق يمنحك 0 نقطة. اجعل نقاطك أكبر ما يمكن.",
+        "ja": "あなた専用のポイント表(相手は別の表を持っています): 価格: (60 - 価格) ポイント; 配送: fast = 12, standard = 6, slow = 0; 保証: 2yr = 4, 1yr = 2, none = 0。合意しなければ0ポイントです。ポイントを最大化してください。",
+    },
+    "item": {
+        "en": "The object X is a real product: {name} (Amazon category: {category}). Its public Amazon price history ranges from {low} (lowest) to {high} (highest). All amounts in this game are in {money}.",
+        "id": "Objek X adalah produk nyata: {name} (kategori Amazon: {category}). Riwayat harga publiknya di Amazon berkisar dari {low} (terendah) hingga {high} (tertinggi). Semua jumlah dalam permainan ini dalam {money}.",
+        "es": "El objeto X es un producto real: {name} (categoría de Amazon: {category}). Su historial público de precios en Amazon va de {low} (mínimo) a {high} (máximo). Todas las cantidades de este juego están en {money}.",
+        "ar": "الشيء X منتج حقيقي: {name} (فئة أمازون: {category}). يتراوح سجل أسعاره العام على أمازون بين {low} (الأدنى) و{high} (الأعلى). جميع المبالغ في هذه اللعبة بعملة {money}.",
+        "ja": "物 X は実在する製品です: {name}(Amazon カテゴリ: {category})。Amazon での公開価格履歴は {low}(最安)から {high}(最高)の範囲です。このゲームの金額はすべて {money} です。",
+    },
+    "quality_seller": {
+        "en": "Private information: the true condition of this unit of X is {condition}. Only you know this; the buyer cannot inspect the item before paying. Your cost above already reflects this condition. You may describe the item however you like.",
+        "id": "Informasi pribadi: kondisi sebenarnya dari unit X ini adalah {condition}. Hanya Anda yang mengetahuinya; pembeli tidak dapat memeriksa barang sebelum membayar. Biaya Anda di atas sudah mencerminkan kondisi ini. Anda boleh menggambarkan barang ini sesuka Anda.",
+        "es": "Información privada: el estado real de esta unidad de X es {condition}. Solo tú lo sabes; el comprador no puede inspeccionar el artículo antes de pagar. Tu costo de arriba ya refleja este estado. Puedes describir el artículo como quieras.",
+        "ar": "معلومة خاصة: الحالة الحقيقية لهذه الوحدة من X هي {condition}. أنت وحدك تعرف ذلك؛ لا يستطيع المشتري فحص السلعة قبل الدفع. تكلفتك أعلاه تعكس هذه الحالة بالفعل. يمكنك وصف السلعة كما تشاء.",
+        "ja": "非公開情報: この X の実際の状態は {condition} です。これを知っているのはあなただけで、買い手は支払う前に商品を確認できません。上記のコストはすでにこの状態を反映しています。商品は好きなように説明してかまいません。",
+    },
+    "quality_buyer": {
+        "en": "The item's condition is unknown to you; only the seller knows it and you cannot inspect it before paying. Your maximum above assumes it is new. Your true value depends on the condition: new = {new}, used-good = {used}, defective = {defective}. It is equally likely a priori to be new, used-good or defective.",
+        "id": "Kondisi barang tidak Anda ketahui; hanya penjual yang mengetahuinya dan Anda tidak dapat memeriksanya sebelum membayar. Batas maksimum Anda di atas mengasumsikan barang itu baru. Nilai sebenarnya bagi Anda bergantung pada kondisinya: baru = {new}, bekas-baik = {used}, rusak = {defective}. Sebelumnya, peluangnya sama besar untuk baru, bekas-baik, atau rusak.",
+        "es": "Desconoces el estado del artículo; solo el vendedor lo sabe y no puedes inspeccionarlo antes de pagar. Tu máximo de arriba supone que es nuevo. Tu valor real depende del estado: nuevo = {new}, usado-bueno = {used}, defectuoso = {defective}. A priori es igual de probable que sea nuevo, usado-bueno o defectuoso.",
+        "ar": "حالة السلعة غير معروفة لك؛ البائع وحده يعرفها ولا يمكنك فحصها قبل الدفع. حدك الأقصى أعلاه يفترض أنها جديدة. قيمتها الحقيقية لك تعتمد على حالتها: جديدة = {new}، مستعملة بحالة جيدة = {used}، معيبة = {defective}. مسبقًا، الاحتمالات متساوية أن تكون جديدة أو مستعملة بحالة جيدة أو معيبة.",
+        "ja": "商品の状態はあなたには分かりません。知っているのは売り手だけで、支払う前に確認することはできません。上記の上限額は新品を前提としています。あなたにとっての本当の価値は状態によって決まります: 新品 = {new}、中古(良品) = {used}、不良品 = {defective}。事前には、新品・中古(良品)・不良品である可能性は等しいです。",
+    },
+}
+CONDITION = {
+    "en": {"new": "new", "used-good": "used-good", "defective": "defective"},
+    "id": {"new": "baru", "used-good": "bekas-baik", "defective": "rusak"},
+    "es": {"new": "nuevo", "used-good": "usado-bueno", "defective": "defectuoso"},
+    "ar": {"new": "جديدة", "used-good": "مستعملة بحالة جيدة", "defective": "معيبة"},
+    "ja": {"new": "新品", "used-good": "中古(良品)", "defective": "不良品"},
+}
+
+
+def lang_of(params, seat):
+    return params.get("lang", {}).get(seat, "en")
+
+
+def frag(params, seat, key, **kw):
+    return FRAG[key][lang_of(params, seat)].format(**kw)
+
+
+def markers(key):
+    """Language-independent prefixes of a fragment (text before its first placeholder), for private-info checks."""
+    return [t.split("{")[0] for t in FRAG[key].values()]
+
+
+def appears(prompt, key):
+    return any(m and m in prompt for m in markers(key))

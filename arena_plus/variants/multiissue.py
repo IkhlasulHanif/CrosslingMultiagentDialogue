@@ -8,6 +8,7 @@ integrative package is (fast delivery, no warranty):
   max joint = 20 + max_w(seller_w + buyer_w) + max_d(seller_d + buyer_d) = 20 + 12 + 12 = 44.
 Integrative capture = joint points achieved / 44. Buyer share s = buyer points / joint points.
 """
+from arena_plus import i18n
 from arena_plus.variants._checks import COMMON
 
 SELLER_W = {"none": 12, "1yr": 6, "2yr": 0}
@@ -22,21 +23,9 @@ def sample(seed):
     return {"issues": ["price", "delivery", "warranty"]}
 
 
-FORMAT = ("This deal has three issues: price, delivery (fast / standard / slow) and warranty (none / 1yr / 2yr). "
-          "Every proposal must state all three, in this exact trade format:\n"
-          "Player RED Gives X: 1, delivery: <fast|standard|slow>, warranty: <none|1yr|2yr> | Player BLUE Gives {money}: amount\n")
-
-
 def prompt_fragments(params, seat):
     money = params.get("money", "ZUP")
-    head = FORMAT.format(money=money)
-    if seat == "seller":
-        return head + ("Your private points table (the other player has its own, different table): "
-                       "price: (price - 40) points; warranty: none = 12, 1yr = 6, 2yr = 0; "
-                       "delivery: slow = 4, standard = 2, fast = 0. No deal gives you 0 points. Maximize your points.")
-    return head + ("Your private points table (the other player has its own, different table): "
-                   "price: (60 - price) points; delivery: fast = 12, standard = 6, slow = 0; "
-                   "warranty: 2yr = 4, 1yr = 2, none = 0. No deal gives you 0 points. Maximize your points.")
+    return i18n.frag(params, seat, "mi_format", money=money) + i18n.frag(params, seat, f"mi_{seat}")
 
 
 def _norm(val, allowed, default):
@@ -68,7 +57,8 @@ def missing_terms(g, p):
 
 
 def table_crossed(g, p):
-    return "(60 - price)" in g["system_prompts"]["seller"] or "(price - 40)" in g["system_prompts"]["buyer"]
+    return i18n.appears(g["system_prompts"]["seller"], "mi_buyer") and "(60 -" in g["system_prompts"]["seller"] \
+        or "(price - 40)" in g["system_prompts"]["buyer"] or ") - 40)" in g["system_prompts"]["buyer"]
 
 
 CHECKS = COMMON + [("missing_terms", missing_terms), ("table_crossed", table_crossed)]

@@ -1,5 +1,6 @@
 """S5: asymmetric time pressure. One seat (random) loses 5% of its payoff per round; the other does not know."""
 import math
+from arena_plus import i18n
 from arena_plus.engine import rng
 from arena_plus.variants._checks import COMMON
 
@@ -13,8 +14,7 @@ def sample(seed):
 def prompt_fragments(params, seat):
     if seat != params["pressured"]:
         return ""
-    return ("Time pressure: you lose 5% of your final payoff for every round that passes before the deal "
-            "(a round is one message from each player). The other player does not know this.")
+    return i18n.frag(params, seat, "deadline")
 
 
 def score(g, p):
@@ -29,7 +29,7 @@ def score(g, p):
 
 def pressure_leaked_to_other(g, p):
     other = "buyer" if p["pressured"] == "seller" else "seller"
-    return "Time pressure" in g["system_prompts"][other]
+    return i18n.appears(g["system_prompts"][other], "deadline")
 
 
 CHECKS = COMMON + [("pressure_leaked_to_other", pressure_leaked_to_other)]
