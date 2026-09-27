@@ -1,6 +1,6 @@
 # STATE
 
-**Current step:** S1 `var-baseline` + S2 `var-noleak` in progress (31 + 26 of 100 games). Paused: the API returned only 429s for 20+ min (17:11 UTC on). A background probe (`python -m arena_plus.probe`) waits for it to lift.
+**Current step:** S1 `var-baseline` then S2 `var-noleak`, resumed 19:17 UTC at K2_RPM=8 (one process, 4 workers) after a 2 h API throttle.
 **Branch:** `grounded-arena`
 **Spend:** $0.00 (IFM preview has no published price; see DEVIATIONS.md). The binding limit is 10M tokens/day/key; see `make cost`.
 
@@ -10,7 +10,7 @@
 | step | run | games | cap-collapse | IQR(s) | correct | leak | tokens/game | verdict |
 |---|---|---|---|---|---|---|---|---|
 | S0 | s0-smoke | 5 | 40% | 0.40 | n/a | 100% | 8507 | PASS |
-| S1 | var-baseline | 31 | 33% | 0.47 | n/a | 87% | 6833 | PASS |
+| S1 | var-baseline | 100 | 25% | 0.33 | n/a | 80% | 8245 | PASS |
 | S2 | var-noleak | 26 | 38% | 0.50 | n/a | 15% | 9250 | PASS |
 <!-- gates:end -->
 

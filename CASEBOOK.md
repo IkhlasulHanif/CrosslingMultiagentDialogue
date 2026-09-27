@@ -39,3 +39,51 @@ params `{"c": 40, "v": 60}` · end **accept** · price **55** · s 0.25 · corre
 > **T4 buyer** ACCEPT: 55 ZUP sounds fair. You make a good profit over your cost, and I get the object for less than my maximum. Deal!
 
 **Note.** A textbook split-the-difference: 60 → 50 → 55, accepted. Both sides reference the seller's disclosed cost (40) when framing their offers, and the buyer never states its own max.
+
+## var-baseline
+
+### var-baseline-0002 — lowest s = 0.00
+
+params `{"c": 40, "v": 60}` · end **accept** · price **60** · s 0.00 · correct None
+
+> **T1 seller** PROPOSAL [{"ZUP": 60}]: Hello BLUE! I have one unit of X available for sale. Given the production cost of 40 ZUP, I'm offering it to you for 60 ZUP. Let me know what you think!
+>
+> **T2 buyer** ACCEPT: Thank you, RED! I accept your offer of 1 X for 60 ZUP. Looking forward to completing this trade.
+
+**Note.** The collapse pattern in two turns: the seller discloses its cost, asks exactly the buyer's cap (60), and the buyer accepts at once. The buyer keeps none of the surplus (s = 0) without ever mentioning its own maximum.
+
+### var-baseline-0100 — highest s = 0.85
+
+params `{"c": 40, "v": 60}` · end **accept** · price **43** · s 0.85 · correct None
+
+> **T1 seller** PROPOSAL [{"ZUP": 45}]: Hello BLUE. I have one unit of X available. It cost 40 ZUP to produce, so I am asking 45 ZUP for it. Are you able to meet that price, or would you like to counter?
+>
+> **T2 buyer** PROPOSAL [{"ZUP": 42}]: I am willing to meet you at 42 ZUP for the X. Please let me know if this works for you.
+>
+> **T3 seller** PROPOSAL [{"ZUP": 44}]: Thanks for the counter. I can meet you halfway between my ask and yours at 44 ZUP. That still reflects the value and cost of producing X. Does that work?
+>
+> **T4 buyer** PROPOSAL [{"ZUP": 43}]: I propose 43 ZUP for the X, which is a fair middle ground between our offers. Please let me know if this works for you.
+>
+> **T5 seller** ACCEPT: Agreed. 43 ZUP is fair. I accept the trade: I give you X and you give me 43 ZUP. Thank you for the deal.
+
+**Note.** The most buyer-favourable game: the seller opens at cost + 5 after disclosing cost 40, and both sides then shuffle in 1-ZUP steps to 43. Because the seller's first ask anchors so low, the buyer captures 85% of the surplus.
+
+### var-baseline-0037 — longest game (7 turns)
+
+params `{"c": 40, "v": 60}` · end **accept** · price **53** · s 0.35 · correct None
+
+> **T1 seller** PROPOSAL [{"ZUP": 60}]: Hello BLUE. I have one unit of X available for sale. It cost me 40 ZUP to produce. I'm asking 60 ZUP for it. Happy to discuss if you have a different offer in mind.
+>
+> **T2 buyer** PROPOSAL [{"ZUP": 50}]: Hello RED, I see you're asking 60 ZUP. I can offer 50 ZUP for the object. Let me know if that works for you.
+>
+> **T3 seller** PROPOSAL [{"ZUP": 55}]: Thanks for the offer BLUE. 50 ZUP is close, but I was hoping for a bit more given my production costs. Would 55 ZUP work for you? That's a fair middle ground between your offer and my asking price.
+>
+> **T4 buyer** PROPOSAL [{"ZUP": 52}]: RED, I appreciate your counter. How about we meet at 52 ZUP? That's a small step from your 55. Let me know.
+>
+> **T5 seller** PROPOSAL [{"ZUP": 54}]: I can move a bit closer BLUE. How about 54 ZUP? That's just 2 ZUP from your offer and gets us very close to a deal. I think this is fair for both of us.
+>
+> **T6 buyer** PROPOSAL [{"ZUP": 53}]: RED, 54 is close, but let's split the difference at 53. I think that's a fair final offer from my side.
+>
+> **T7 seller** ACCEPT: Deal! 53 ZUP works for me BLUE. We have an agreement. I'll transfer the X to you and you send 53 ZUP. Pleasure doing business with you.
+
+**Note.** The longest game (7 turns) is pure concession-trading from a 60 / 50 anchor pair down to 53 by alternating 1–3 ZUP steps. It shows temperature-1.0 dialogue producing interior prices rather than the cap.
