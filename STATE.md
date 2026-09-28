@@ -1,6 +1,6 @@
 # STATE
 
-**Current step:** S3 `var-zopa` smoke. Decision after S2: the no-leak line is NOT the default (S1 leak 80% > 20%, but S2 raised cap-collapse from 25% to 47%).
+**Current step:** S8 `var-quality` (8/100) then S9 arms, waiting on the IFM token quota. It is a rolling 24 h window: 10.03M tokens were used between 16:40 UTC 09-27 and 03:10 UTC 09-28, so calls resume gradually from about 16:40 UTC 09-28.
 **Branch:** `grounded-arena`
 **Spend:** $0.00 (IFM preview has no published price; see DEVIATIONS.md). The binding limit is 10M tokens/day/key; see `make cost`.
 
@@ -39,6 +39,16 @@
 
 About 1,235 games (S1–S8 at 100 each + S9 180 + S10 200 + smokes). At ≈8.5k tokens/game (longer games in variants may double it) that is **≈10–20M tokens ≈ 1–2 days of the 10M/day cap, $0**.
 
+## Projected remaining cost (tokens; USD = $0)
+
+| work | games | ≈ tokens/game | ≈ tokens |
+|---|---|---|---|
+| S8 rest + S9 (3 arms) | 92 + 165 | 10k | 2.6M |
+| S10 grounded-v1 | 200 | 10–40k (depends on merged variants) | 2–8M |
+| Stage B (B1 500, B2 1,200, B3 200) | 1,900 | 10–12k (non-English replies run longer) | 19–23M |
+
+At the 10M-per-rolling-24h cap that is about 3–4 more days of wall time. USD spend stays $0 of $50, so the §7 budget cut of B2 is not triggered.
+
 ## Next action
 
-When the probe succeeds: resume S1, then S2, one process at a time at `K2_RPM=8`, `workers=4` (runs resume by seed).
+The runner waits on the quota by itself. As each run finishes: score it, write the note, add the casebook entries, commit and push. After S9: build S10 from the variants that passed.
