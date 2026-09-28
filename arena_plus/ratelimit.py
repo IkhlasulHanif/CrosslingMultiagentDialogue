@@ -31,3 +31,31 @@ def acquire():
                 return
             wait = 60 - (now - ts[0]) + 0.05
         time.sleep(max(wait, 0.2))
+
+
+# ---- rolling 24 h token quota (IFM counts the 10M/day cap over a rolling window, observed 2026-09-28) ----
+QUOTA_SOFT = int(os.environ.get("K2_QUOTA_SOFT", "9500000"))
+LOG = Path(__file__).resolve().parents[1] / "logs" / "api_calls.jsonl"
+_cache = {"t": 0.0, "used": 0, "oldest": []}
+
+
+def tokens_last_24h():
+    now = time.time()
+    if now - _cache["t"] > 30:   # re-read the log at most every 30 s
+        used, recent = 0, []
+        if LOG.exists():
+            for line in LOG.read_text().splitlines():
+                r = json.loads(line)
+                if now - r["ts"] < 86400:
+                    n = r["prompt_tokens"] + r["completion_tokens"]
+                    used += n; recent.append((r["ts"], n))
+        _cache.update(t=now, used=used, oldest=sorted(recent))
+    return _cache["used"]
+
+
+def wait_for_quota():
+    """Block while the rolling-24h token count is above QUOTA_SOFT; resume as old calls roll out of the window."""
+    while (used := tokens_last_24h()) > QUOTA_SOFT:
+        print(f"[quota] {used:,} tokens in the last 24 h > {QUOTA_SOFT:,}; waiting", flush=True)
+        _cache["t"] = 0
+        time.sleep(300)

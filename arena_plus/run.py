@@ -17,13 +17,12 @@ import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-from arena_plus import k2
+from arena_plus import k2, ratelimit
 from arena_plus.engine import play, ITERATIONS
 from arena_plus.metrics import score_game, summarize
 
 REPO = k2.REPO
 DAILY_TOKEN_CAP = 10_000_000      # IFM per-key daily cap (docs.ifm.ai, Limits)
-DAILY_SOFT = 9_400_000            # stop starting new games above this; resume after 00:00 UTC
 _lock = threading.Lock()
 
 
@@ -73,14 +72,6 @@ def tokens_today():
     return tot
 
 
-def wait_for_quota():
-    while (t := tokens_today()) > DAILY_SOFT:
-        now = dt.datetime.now(dt.timezone.utc)
-        reset = dt.datetime.combine(now.date() + dt.timedelta(days=1), dt.time(0, 3), dt.timezone.utc)
-        print(f"[quota] {t:,} tokens today > {DAILY_SOFT:,}; sleeping until {reset:%Y-%m-%d %H:%M} UTC", flush=True)
-        time.sleep(min(1800, (reset - now).total_seconds() + 5))
-
-
 def done_seeds(run):
     f = REPO / "runs" / run / "games.jsonl"
     if not f.exists():
@@ -113,7 +104,7 @@ def run_games(run, n=None):
     print(f"[run] {run}: {len(seeds)} games to play (workers={cfg.get('workers', 8)})", flush=True)
 
     def one(seed):
-        wait_for_quota()
+        ratelimit.wait_for_quota()
         g = play(run, seed, cfg["variants"], cfg.get("langs"))
         with _lock:
             with (out_dir / "games.jsonl").open("a") as f:
@@ -183,7 +174,7 @@ def cost():
     for k, (c, p, o, g) in by.items():
         print(f"{k:28} {c:7d} {len(g):6d} {p:12,d} {o:12,d} {(p + o) / len(g):9,.0f}")
     print(f"spent ${k2.spent_usd():.2f} of ${k2.BUDGET_USD} (IFM preview has no published price: see DEVIATIONS.md)")
-    print(f"tokens today (UTC): {tokens_today():,} / {DAILY_TOKEN_CAP:,}")
+    print(f"tokens today (UTC): {tokens_today():,}; rolling 24 h: {ratelimit.tokens_last_24h():,} / {DAILY_TOKEN_CAP:,}")
 
 
 if __name__ == "__main__":

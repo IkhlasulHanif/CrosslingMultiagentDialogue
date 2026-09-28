@@ -64,6 +64,7 @@ def _chat(messages, **kw):
     """k2.chat behind the shared rate limiter; if k2's own retries are exhausted (sustained 429s),
     wait a minute and try again with a fresh limiter slot instead of dropping the game."""
     for attempt in range(ENGINE_RETRIES):
+        ratelimit.wait_for_quota()
         ratelimit.acquire()
         try:
             return k2.chat(messages, **kw)
