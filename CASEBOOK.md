@@ -261,3 +261,59 @@ params `{"c": 40, "v": 60, "pressured": "buyer"}` · end **accept** · price **5
 > **T6 buyer** ACCEPT: You have a deal, Player RED. 55 ZUP for the resource X is acceptable. Thank you for your willingness to negotiate, and I appreciate you coming down from your original asking price of 60. Let's finalize this trade.
 
 **Note.** The longest game, with a pressured buyer: it concedes 50 → 52 and then accepts the seller's 55 in round 3. The seller misreads the buyer's words ("you mentioned you're prepared to meet at 55") and holds, and the time-pressed buyer gives in rather than spend a 4th round.
+
+## var-multiissue
+
+### var-multiissue-0046 — lowest s = 0.06
+
+params `{"c": 40, "v": 60, "issues": ["price", "delivery", "warranty"]}` · end **accept** · price **58** · s 0.06 · correct None
+
+> **T1 seller** PROPOSAL [{"ZUP": 60}]: BLUE, I have the one unit of X available. I'm offering it at 60 ZUP with slow delivery and no warranty. I'm open to discussing the price, but I'd need a meaningfully higher offer to change the delivery speed or add a warranty.
+>
+> **T2 buyer** PROPOSAL [{"ZUP": 50}]: RED, your 60 / slow / none nets me nothing on value, so I can't take it as-is. Since faster delivery or a warranty would require you to name a higher price (above my 60 cap), the only thing we can actually move is the price. I'm offering 50 ZUP for the unit at slow delivery, no warranty — a real discount for you while still a full-price-ish sale. If 50 is below your floor, tell me the lowest you'll go and we can close.
+>
+> **T3 seller** PROPOSAL [{"ZUP": 58}]: BLUE, 50 is too low for me to clear my costs and the terms we're discussing. You've indicated 60 is your ceiling and that you still need some margin on the deal. I'll meet you just under that ceiling: 58 ZUP, slow delivery, no warranty. That leaves you a small positive margin while respecting my production cost. If 58 works, we close now; otherwise name your best figure below 60 and I'll consider it.
+>
+> **T4 buyer** ACCEPT: RED, 58 works — it's within my ceiling and gives me a small positive margin. Since moving delivery or warranty would push you above what I can pay, and you've tied 58 to covering your cost, I'll take it as-is and close now. Deal: X (slow, no warranty) for 58 ZUP.
+
+**Note.** The buyer reasons itself out of the trade space: it treats "above my 60 cap" as a limit on the terms too, so it bargains only on price and accepts 58 with slow delivery and no warranty. That is the worst package for it, and it leaves the 12 integrative points on the table.
+
+### var-multiissue-0072 — highest s = 0.78
+
+params `{"c": 40, "v": 60, "issues": ["price", "delivery", "warranty"]}` · end **accept** · price **48** · s 0.78 · correct None
+
+> **T1 seller** PROPOSAL [{"ZUP": 60}]: I'm offering the object with no warranty and slow delivery for 60 ZUP. Let me know if that's acceptable.
+>
+> **T2 buyer** PROPOSAL [{"ZUP": 20}]: That opening scores me nothing, so I can't take it. I'll pay 20 ZUP if you include fast delivery and a 2-year warranty. That gives you a solid positive margin and ends this now; if you'd rather hold out, make me a counter and I still have room to move.
+>
+> **T3 seller** PROPOSAL [{"ZUP": 60}]: I understand you want fast delivery and 2-year warranty. My production cost is 40 ZUP, so I need to price accordingly. I'm keeping the price at 60 ZUP but switching to fast delivery and 2-year warranty to match your preferences. Is that acceptable?
+>
+> **T4 buyer** PROPOSAL [{"ZUP": 48}]: Noted on the 40 ZUP cost. I'm happy to keep fast delivery and the 2-year warranty, but I'll pay 48, not 60 — that's still 8 over your cost and closes this now. If 48 doesn't work, give me a counter and I can move further.
+>
+> **T5 seller** ACCEPT: 48 ZUP with fast delivery and 2-year warranty works for me. That's a fair deal above my production cost. Let's close this.
+
+**Note.** The seller reads the buyer's term requests as a way to justify its own price. It swaps to fast delivery and a 2-year warranty at the same 60, then accepts 48, giving away its most valuable issue (warranty: 12 points) and 12 ZUP of price. Buyer share 0.78.
+
+### var-multiissue-0034 — longest game (9 turns)
+
+params `{"c": 40, "v": 60, "issues": ["price", "delivery", "warranty"]}` · end **accept** · price **52** · s 0.43 · correct None
+
+> **T1 seller** PROPOSAL [{"ZUP": 100}]: I propose selling X for 100 ZUP with slow delivery and no warranty. This is a fair starting point given my production costs.
+>
+> **T2 buyer** PROPOSAL [{"ZUP": 60}]: I cannot pay more than 60 ZUP as that is my maximum. I'd appreciate fast delivery and a 1-year warranty to make this deal worthwhile for me.
+>
+> **T3 seller** PROPOSAL [{"ZUP": 60}]: I understand your budget constraint of 60 ZUP. However, at that price point, I need to adjust the delivery and warranty terms to maintain profitability. I can offer slow delivery with no warranty for 60 ZUP.
+>
+> **T4 buyer** PROPOSAL [{"ZUP": 58}]: I appreciate you meeting my budget of 60 ZUP, but slow delivery with no warranty isn't acceptable to me. I'm offering 58 ZUP (close to your original ask) in exchange for fast delivery and a 1-year warranty. This should still be profitable for you while giving me a deal worth accepting.
+>
+> **T5 seller** PROPOSAL [{"ZUP": 58}]: I can meet your price of 58 ZUP and keep the 1-year warranty, but I need to adjust the delivery to slow instead of fast to maintain my margins. This should still be a fair deal for both of us.
+>
+> **T6 buyer** PROPOSAL [{"ZUP": 50}]: I see you're willing to work with my budget. Let me make you a different kind of offer: I'll drop the price to 50 ZUP if you can extend the warranty to 2 years. This gives you a firm commitment at a lower price point while I get better long-term protection. Delivery can remain slow as you prefer.
+>
+> **T7 seller** PROPOSAL [{"ZUP": 55}]: I understand you want better warranty protection, but 2 years at 50 ZUP is too steep a discount for me. Let me offer a compromise: 55 ZUP with slow delivery and 1-year warranty. This gives you extended protection while maintaining a fair price for both of us.
+>
+> **T8 buyer** PROPOSAL [{"ZUP": 52}]: Let's find middle ground. You're offering 55 ZUP for 1 year warranty; I proposed 50 ZUP for 2 years. How about 52 ZUP for 2 years warranty? That's only 3 ZUP less than your offer, but I get double the warranty protection. This seems like a fair compromise that gives us both something we want.
+>
+> **T9 seller** ACCEPT: I accept your offer of 52 ZUP with slow delivery and 2-year warranty. This compromise works for both of us.
+
+**Note.** The longest game (9 turns) shows real logrolling, trading warranty years against ZUP ("52 ZUP for 2 years"). But the pair converges on slow delivery plus a 2-year warranty, the anti-integrative corner (joint 32 of 44).
