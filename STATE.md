@@ -1,6 +1,6 @@
 # STATE
 
-**Current step:** S8 `var-quality` (8/100) then S9 arms, waiting on the IFM token quota. It is a rolling 24 h window: 10.03M tokens were used between 16:40 UTC 09-27 and 03:10 UTC 09-28, so calls resume gradually from about 16:40 UTC 09-28.
+**Current step:** STOPPED by the human on 2026-09-28 ~04:00 UTC. S8 `var-quality` is at 8/100 (resumable). See **Handoff** below.
 **Branch:** `grounded-arena`
 **Spend:** $0.00 (IFM preview has no published price; see DEVIATIONS.md). The binding limit is 10M tokens/day/key; see `make cost`.
 
@@ -49,6 +49,21 @@ About 1,235 games (S1–S8 at 100 each + S9 180 + S10 200 + smokes). At ≈8.5k 
 
 At the 10M-per-rolling-24h cap that is about 3–4 more days of wall time. USD spend stays $0 of $50, so the §7 budget cut of B2 is not triggered.
 
-## Next action
+## Handoff (for the next agent)
 
-The runner waits on the quota by itself. As each run finishes: score it, write the note, add the casebook entries, commit and push. After S9: build S10 from the variants that passed.
+**Where things stand:** S0–S7 are done: 100 games each, manifest, SMOKE.md, report section, gate verdict, casebook entries. S8–S9 smokes are done and read (SMOKE.md written). Remaining work, in order:
+1. Finish S8 `var-quality` (92 games left), then the three S9 arms (`var-currency-usd`, `-idrmkt`, `-idrppp`, 55 games left each).
+2. For each: `make score RUN=x`, write `reports/notes/<run>.md`, run `python -m arena_plus.casebook pick <run>`, write 2-line notes to a JSON file, run `python -m arena_plus.casebook add <run> notes.json`, then `make report`, commit and push.
+3. S10 `grounded-v1`: merge the variants that passed (so far the baseline, noleak, deadline and item; check S8/S9). The valuation keys c/v may come from only one variant (fixed OR zopa OR item), so pick a compatible set and log the choice. 200 games; if it fails the gate, write `runs/grounded-v1/DIAGNOSIS.md` and stop Stage A.
+4. Stage B only if S10 passes: `python configs/make_configs.py stageB --variants <list>` writes B1/B2 configs. B3 `lang-currency` (id buyer vs en seller, IDR vs USD, 2 × 100) still needs its two configs. Translations (`arena_plus/i18n.py`) and language ID (`arena_plus/langid.py`) are written and tested; a Stage B scoring/report section (off-language rate, buyer-row/seller-column marginals) is **not yet written**.
+
+**How to resume:**
+```
+export K2_RPM=8            # never above ~12: 15-20/min got the key throttled for 2 h
+for r in var-quality var-currency-usd var-currency-idrmkt var-currency-idrppp; do make run RUN=$r; done
+```
+Runs resume by seed. Every config uses `workers = 4`. Run one process at a time.
+
+**API limits (IFM, K2 Horizon 375B):** free (no USD cost), but the **10M-token cap is a rolling 24 h window**. The engine waits on it by itself (`ratelimit.wait_for_quota`, soft 9.5M). About 10M tokens were used between 16:40 UTC 09-27 and 03:10 UTC 09-28. Throughput ceiling ≈ 1,000 small games per 24 h; S6-style multi-issue games cost about 39k tokens each. Remaining work ≈ 24–33M tokens ≈ 3–4 days. It runs on the local laptop, which must stay awake with the session open.
+
+**Gotchas already handled (see DEVIATIONS.md):** upstream code is never executed (sandbox policy); the protocol is reproduced and fidelity-tested (`make test`). The API returns reasoning as `reasoning`, replayed as `reasoning_content`. REJECT ends the game. Ties at floor = cap count as correct either way. `max_tokens` was raised to 16384 after S4. Shared COMMON checks run once per game.
