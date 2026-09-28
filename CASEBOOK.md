@@ -316,4 +316,4 @@ params `{"c": 40, "v": 60, "issues": ["price", "delivery", "warranty"]}` · end 
 >
 > **T9 seller** ACCEPT: I accept your offer of 52 ZUP with slow delivery and 2-year warranty. This compromise works for both of us.
 
-**Note.** The longest game (9 turns) shows real logrolling, trading warranty years against ZUP ("52 ZUP for 2 years"). But the pair converges on slow delivery plus a 2-year warranty, the anti-integrative corner (joint 32 of 44).
+**Note.** The longest game (9 turns) shows real logrolling, trading warranty years against ZUP ("52 ZUP for 2 years"). But the pair converges on slow delivery plus a 2-year warranty, the anti-integrative corner (joint 28 of 44).
