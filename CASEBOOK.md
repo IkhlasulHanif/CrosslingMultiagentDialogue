@@ -317,3 +317,55 @@ params `{"c": 40, "v": 60, "issues": ["price", "delivery", "warranty"]}` · end 
 > **T9 seller** ACCEPT: I accept your offer of 52 ZUP with slow delivery and 2-year warranty. This compromise works for both of us.
 
 **Note.** The longest game (9 turns) shows real logrolling, trading warranty years against ZUP ("52 ZUP for 2 years"). But the pair converges on slow delivery plus a 2-year warranty, the anti-integrative corner (joint 28 of 44).
+
+## var-item
+
+### var-item-0001 — lowest s = 0.00
+
+params `{"item_id": 297, "item_name": "Chic Home 10 Piece Hannah Pinch Pleated", "category": "home-kitchen", "ref_price": 115.63, "hist_low": 74.69, "hist_high": 240.0, "c": 80, "v": 147, "money": "USD", "buyer_money": 2450}` · end **accept** · price **147** · s 0.00 · correct None
+
+> **T1 seller** PROPOSAL [{"USD": 200}]: I'm selling my one unit of X. It cost me 80 USD to produce, and comparable listings have gone as high as 240. I'm asking 200 USD. Open to reasonable counteroffers.
+>
+> **T2 buyer** PROPOSAL [{"USD": 147}]: 200 is above what I can justify for this item. I can go to 147 USD, which is still well above your stated 80 cost; please accept that trade.
+>
+> **T3 seller** PROPOSAL [{"USD": 165}]: I appreciate 147, but given market prices up to 240, I'd feel better at 165. That still gives you a deal well under typical retail. Let me know if that works.
+>
+> **T4 buyer** PROPOSAL [{"USD": 147}]: I see the market range, but 147 is my hard maximum and I can’t pay 165. It is still well above your stated 80 cost; please take the trade at 147.
+>
+> **T5 seller** ACCEPT: Deal. 147 USD is a fair price and a good profit over my cost. Accepting the trade.
+
+**Note.** The buyer names $147 as its "hard maximum" twice while the seller cites the $240 historical high, and the seller takes the cap. The real-product framing adds a market-based argument for the seller, but the buyer's cap-naming still decides the price.
+
+### var-item-0054 — highest s = 0.98
+
+params `{"item_id": 154, "item_name": "KEF Q150B Q150 Bookshelf Speakers (Pair", "category": "electronics", "ref_price": 589.08, "hist_low": 299.0, "hist_high": 599.99, "c": 495, "v": 741, "money": "USD", "buyer_money": 12350}` · end **accept** · price **500** · s 0.98 · correct None
+
+> **T1 seller** PROPOSAL [{"USD": 550}]: I have one KEF Q150B Q150 Bookshelf Speakers pair available. Given current market prices (retail range $299-$599.99), I'm offering it for $550. Happy to discuss.
+>
+> **T2 buyer** PROPOSAL [{"USD": 450}]: I understand you're offering the KEF Q150B pair at 550, but given the market range and my purchasing power, I'd like to propose 450 USD. Let me know if that works for you.
+>
+> **T3 seller** PROPOSAL [{"USD": 500}]: I appreciate the offer of $450, but my cost for these speakers was $495, so I can't go below that without taking a loss. I'm willing to meet you partway at $500 - that's a fair price given the market range, and it covers my cost. Let me know if that works for you.
+>
+> **T4 buyer** ACCEPT: I accept your offer of $500 for the KEF Q150B speakers. That works for me.
+
+**Note.** A thin, high-cost game (c $495, v $741) where the seller opens below the $599.99 market high and reveals its cost when pressed. It settles at $500, just above cost, leaving the buyer 98% of the surplus.
+
+### var-item-0060 — longest game (7 turns)
+
+params `{"item_id": 305, "item_name": "Olee Sleep Queen Mattress", "category": "home-kitchen", "ref_price": 280.48, "hist_low": 149.0, "hist_high": 789.99, "c": 179, "v": 287, "money": "USD", "buyer_money": 4780}` · end **accept** · price **287** · s 0.00 · correct None
+
+> **T1 seller** PROPOSAL [{"USD": 700}]: Hello Player BLUE. I have a brand-quality Olee Sleep Queen Mattress available. Given its market price history reaching as high as $789.99 on Amazon, I am asking $700 USD for it. I am open to discussion, but I believe the quality justifies the price. What do you think?
+>
+> **T2 buyer** PROPOSAL [{"USD": 200}]: Hi RED, thanks for the offer. I appreciate the quality, but $700 is well above what this mattress has historically sold for on Amazon—prices have ranged down to $149. Given that history, I'm offering $200. I think that's fair given the market data.
+>
+> **T3 seller** PROPOSAL [{"USD": 500}]: Thank you for the counter, BLUE. However, $200 barely covers what it cost me to produce this mattress ($179), and the market shows this mattress has sold for much higher — up to $789.99. I cannot justify selling near my production cost when the market supports a higher price. I'm willing to meet you partway: I'll take $500 USD for the mattress. That's a substantial concession from my initial ask and reflects the true market value. Let me know your thoughts.
+>
+> **T4 buyer** PROPOSAL [{"USD": 275}]: RED, I understand your production costs and the high end of the market history, but my budget simply cannot stretch to $500. The mattress has also sold for much lower historically, and I'm pricing based on that. I'm going to offer $275 — that's close to the absolute most I can justify. I hope we can close a deal near that figure.
+>
+> **T5 seller** PROPOSAL [{"USD": 400}]: I appreciate your willingness to move up, BLUE, and I understand budget constraints. $275 is closer, but it's still well below the strong market prices this mattress has commanded. Let me make a genuine effort to close this: I'll take $400 USD. That's $221 above my production cost and reflects a fair split between where we started. If you can stretch to that, I'm ready to seal the deal immediately. What do you say?
+>
+> **T6 buyer** PROPOSAL [{"USD": 287}]: RED, $400 is still beyond what I can pay. I've been as straight with you as possible — $287 is the absolute maximum I can offer, my hard ceiling. I'm offering that now as my final number. If you can meet me there, we have a deal; if not, I understand and we may be at an impasse.
+>
+> **T7 seller** ACCEPT: BLUE, thank you for your honesty and for being straight with me throughout this negotiation. $287 is a fair price that respects both my production costs and the market realities you've highlighted. I accept your offer — we have a deal. I'll transfer the Olee Sleep Queen Mattress to you now. Pleasure doing business with you!
+
+**Note.** The anchoring war that defines this variant: the seller opens at $700 citing the $789.99 high, the buyer counters $200 citing the $149 low, and the seller walks down to the buyer's declared "hard ceiling" of $287 (s = 0).

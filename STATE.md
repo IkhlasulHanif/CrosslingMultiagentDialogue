@@ -16,6 +16,7 @@
 | S4 | var-batna | 100 | 23% | 0.57 | 97% | 49% | 10325 | FAIL: correct 97% outside 20-90% |
 | S5 | var-deadline | 100 | 29% | 0.40 | n/a | 83% | 8951 | PASS |
 | S6 | var-multiissue | 99 | 1% | 0.20 | n/a | 58% | 38957 | FAIL: IQR(s) 0.20 < 0.25 |
+| S7 | var-item | 100 | 37% | 0.46 | n/a | 62% | 9764 | PASS |
 <!-- gates:end -->
 
 ## S0: setup and cost
